@@ -1,0 +1,127 @@
+---
+title: "Can log(Mixture of laplace density) be concave?"
+author: "Dongyue Xie"
+date: "2022-05-28"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Plot log of density function 
+
+\[g(x) = \sum_k w_k \text{Laplace}(x;0,\sigma^2_k).\]
+
+A concave function $f(\cdot)$ satisfies for any $\alpha\in[0,1]$, 
+
+\[f((1-\alpha)x+\alpha y)\geq (1-\alpha)f(x)+\alpha f(y)\]
+
+```{r}
+
+#'density of laplace distribution x~Laplace(mu,b)
+dlap = function(x,mu,b){
+  return(1/2/b*exp(-abs(x-mu)/b))
+}
+
+#'density of log g(x)
+#'x is a scalar
+lg = function(x,w,s2){
+  return(log(sum(w*dlap(x,0,s2))))
+}
+
+#'density of log g(x)
+#'x is a vector
+lg_vec = function(x,w,s2){
+  n = length(x)
+  out = rep(0,n)
+  for(i in 1:n){
+    out[i] = lg(x[i],w,s2)
+  }
+  return(out)
+}
+
+plot_lg = function(x,w,s2){
+  plot(x,lg_vec(x,w,s2),type='l',xlab='x',ylab='log(g)',
+       main=paste('w=(',paste(w,collapse = ", "),'); s2=(',paste(s2,collapse = ", "),')',sep=''))
+}
+```
+
+```{r}
+lg_p = expression(log(w1*1/2/b1*exp(-x/b1)+w2*1/2/b2*exp(-x/b2)))
+lg_n = expression(log(w1*1/2/b1*exp(x/b1)+w2*1/2/b2*exp(x/b2)))
+lg2_p = D(D(lg_p,'x'),'x')
+lg2_n = D(D(lg_n,'x'),'x')
+
+plot_lg_d2 = function(r,w1,
+                    b1 = 0.1,
+                    b2 = 2){
+  w2 = 1-w1
+  xx = c()
+  x = seq(-r,0,length.out = 500)
+  xx = c(xx,x)
+  y_n = eval(lg2_n)
+  x = seq(0,r,length.out = 500)
+  xx = c(xx,x)
+  y_p = eval(lg2_p)
+  plot(xx,c(y_n,y_p),type='l',ylab="(log g)''",xlab='x')
+  print(range(c(y_n,y_p)))
+}
+```
+
+```{r}
+x = seq(-5,5,length.out = 1000)
+w = c(0.9,0.1)
+s2 = c(0.1,3)
+plot_lg(x,w,s2)
+plot_lg_d2(5,w[1],s2[1],s2[2])
+```
+
+```{r}
+x = seq(-5,5,length.out = 1000)
+w = c(0.1,0.9)
+s2 = c(0.1,3)
+plot_lg(x,w,s2)
+plot_lg_d2(5,w[1],s2[1],s2[2])
+```
+
+```{r}
+#'softmax
+softmax = function(a){
+  exp(a-max(a))/sum(exp(a-max(a)))
+}
+s2 = exp(seq(-8,5,by=log(2)))
+w = softmax(log(1/s2))
+#plot(w,type='l')
+#plot(s2,type='l')
+plot_lg(x,w,s2)
+```
+
+
+more cases, let mixture components be close
+
+
+
+```{r}
+x = seq(-20,20,length.out = 1000)
+w = c(0.5,0.5)
+s2 = c(2,3)
+plot_lg(x,w,s2)
+plot_lg_d2(20,w[1],s2[1],s2[2])
+```
+
+```{r}
+x = seq(-20,20,length.out = 1000)
+w = c(0.1,0.9)
+s2 = c(2,3)
+plot_lg(x,w,s2)
+plot_lg_d2(20,w[1],s2[1],s2[2])
+```
+
+```{r}
+x = seq(-20,20,length.out = 1000)
+w = c(0.5,0.5)
+s2 = c(2.9,3)
+plot_lg(x,w,s2)
+plot_lg_d2(20,w[1],s2[1],s2[2])
+```
