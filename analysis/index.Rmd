@@ -9,3 +9,15 @@ editor_options:
 ---
 
 
+
+## Normal mean penalty form
+
+1. [bound on (log g)''](bound_log_marginal.html)
+2. [log density of normal mixture](log_gmm_concave.html)
+  + [log density of normal mixture, variance ratio](log_gmm_concave_ratio.html)
+3. [log density of laplace mixture](log_lmm_concave.html)
+4. [normal mean penalty plots](normal_mean_penalty.html)
+
+
+
+
