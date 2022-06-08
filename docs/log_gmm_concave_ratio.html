@@ -525,15 +525,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeb24414a3c487d6d2e424ea0254732ecdfe377d3atargetblankb24414aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree88116dc7f3f7a132497392b3888f4ee1bfb01bb8targetblank88116dca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/b24414a3c487d6d2e424ea0254732ecdfe377d3a" target="_blank">b24414a</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/88116dc7f3f7a132497392b3888f4ee1bfb01bb8" target="_blank">88116dc</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeb24414a3c487d6d2e424ea0254732ecdfe377d3atargetblankb24414aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree88116dc7f3f7a132497392b3888f4ee1bfb01bb8targetblank88116dca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -543,7 +543,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/b24414a3c487d6d2e424ea0254732ecdfe377d3a" target="_blank">b24414a</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/88116dc7f3f7a132497392b3888f4ee1bfb01bb8" target="_blank">88116dc</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -610,6 +610,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/88116dc7f3f7a132497392b3888f4ee1bfb01bb8/analysis/log_gmm_concave_ratio.Rmd" target="_blank">88116dc</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-07
+</td>
+<td>
+add hline at 0
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/3851c60ed367b9d78646514f14e5f24ee7b7b185/docs/log_gmm_concave_ratio.html" target="_blank">3851c60</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -982,9 +1016,10 @@ plot_penalty_d2 = function(x,g,s=1){
   compound_penalty = compound_penalty_d2(x,g,s)
   z = inv_S_vec(x,g,s)
   original_penalty = original_penalty_d2(z,g,s)
-  plot(x,compound_penalty,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;penalty&#39;,ylim=range(c(compound_penalty,original_penalty)),
+  plot(x,compound_penalty,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;2nd derivative of penalty&#39;,ylim=range(c(compound_penalty,original_penalty)),
        main=paste(&#39;w=(&#39;,paste(g$pi,collapse = &quot;, &quot;),&#39;); sd=(&#39;,paste(round(g$sd,2),collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
   lines(x,original_penalty,col=&#39;blue&#39;,lty=2)
+  abline(h=0,lty=2,col=&#39;grey80&#39;)
   legend(&#39;topright&#39;,c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,&#39;blue&#39;))
 }</code></pre>
 <pre class="r"><code>library(ashr)
@@ -992,8 +1027,82 @@ x = seq(-10,10,length.out = 101)
 g = normalmix(pi = c(0.5,0.5),mean=rep(0,2),sd = c(0,sqrt(2)))
 plot_penalty(x,g)</code></pre>
 <p><img src="figure/log_gmm_concave_ratio.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3851c60ed367b9d78646514f14e5f24ee7b7b185/docs/figure/log_gmm_concave_ratio.Rmd/unnamed-chunk-6-1.png" target="_blank">3851c60</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot_penalty_d2(x,g)</code></pre>
 <p><img src="figure/log_gmm_concave_ratio.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3851c60ed367b9d78646514f14e5f24ee7b7b185/docs/figure/log_gmm_concave_ratio.Rmd/unnamed-chunk-6-2.png" target="_blank">3851c60</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
