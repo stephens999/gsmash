@@ -113,6 +113,26 @@ Now consider the problem $y|\theta\sim N(\theta,1)$, $\theta\sim 0.5\delta_0+0.5
 
 To evaluate $\rho(\theta)$, we find $z$ such that $S(z) = \theta$ then $\rho(\theta) = \rho(S(z))$.
 
+To determine the convexity, we evaluate the second derivative of $\rho(\cdot)$:
+
+For the compound penalty $c(\theta) = -l(\theta) - \frac{s^2(l'(\theta))^2}{2}$
+
+\[c'(\theta) = -l'(\theta) - s^2l'(\theta)l''(\theta)\]
+
+\[c''(\theta) = -l''(\theta) - s^2(l''(\theta)^2+l'''(\theta)l'(\theta))\]
+
+For the original penalty:
+
+\[\rho''(S(\theta)) = -l''(\theta)/S'(\theta).\]
+
+\[S(\theta) = \theta + s^2l_{NM}'(\theta)\]
+
+\[S'(\theta) = 1 + s^2l_{NM}''(\theta)\]
+
+\[\rho''(S(\theta)) = -l''(\theta)/S'(\theta) = -l''(\theta)/(1+s^2l''(\theta)).\]
+
+To evaluate $\rho''(\theta)$, we find $z$ such that $S(z) = \theta$ then $\rho''(\theta) = \rho''(S(z))$.
+
 ```{r}
 #'density of log g(x)
 #'x is a scalar
@@ -196,7 +216,9 @@ inv_S_vec = function(x,g,s=1){
   out
 }
 
+```
 
+```{r}
 plot_penalty = function(x,g,s=1){
   
   
@@ -211,11 +233,69 @@ plot_penalty = function(x,g,s=1){
   legend('bottomright',c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,'blue'))
 }
 
+f = expression(log(w1/sqrt((s1_2+s2)*2*pi)*exp(-x^2/2/(s1_2+s2))+w2/sqrt((s2_2+s2)*2*pi)*exp(-x^2/2/(s2_2+s2))))
+f1 = D(f,'x')
+f2 = D(f1,'x')
+f3 = D(f2,'x')
+
+lf_d3 = function(x = seq(-10,10,length.out = 100),
+                     s = 1,
+                     w1 = 1,
+                     s1_2 = 0.1,
+                     s2_2 = 2){
+  s2 = s^2
+  w2 = 1-w1
+  y = eval(f3)
+  y
+}
+
+lf_d2 = function(x = seq(-10,10,length.out = 100),
+                     s = 1,
+                     w1 = 1,
+                     s1_2 = 0.1,
+                     s2_2 = 2){
+  s2 = s^2
+  w2 = 1-w1
+  y = eval(f2)
+  y
+}
+
+lf_d1 = function(x = seq(-10,10,length.out = 100),
+                     s = 1,
+                     w1 = 1,
+                     s1_2 = 0.1,
+                     s2_2 = 2){
+  s2 = s^2
+  w2 = 1-w1
+  y = eval(f1)
+  y
+}
+
+compound_penalty_d2 = function(x,g,s){
+  -lf_d2(x,s,g$pi[1],g$sd[1]^2,g$sd[2]^2) - s^2*(lf_d2(x,s,g$pi[1],g$sd[1]^2,g$sd[2]^2)^2+lf_d3(x,s,g$pi[1],g$sd[1]^2,g$sd[2]^2)*lf_d1(x,s,g$pi[1],g$sd[1]^2,g$sd[2]^2))
+}
+
+original_penalty_d2 = function(x,g,s){
+  -lf_d2(x,s,g$pi[1],g$sd[1]^2,g$sd[2]^2)/(1+s^2*lf_d2(x,s,g$pi[1],g$sd[1]^2,g$sd[2]^2))
+}
+
+plot_penalty_d2 = function(x,g,s=1){
+  compound_penalty = compound_penalty_d2(x,g,s)
+  z = inv_S_vec(x,g,s)
+  original_penalty = original_penalty_d2(z,g,s)
+  plot(x,compound_penalty,type='l',xlab='theta',ylab='penalty',ylim=range(c(compound_penalty,original_penalty)),
+       main=paste('w=(',paste(g$pi,collapse = ", "),'); sd=(',paste(round(g$sd,2),collapse = ", "),')',sep=''))
+  lines(x,original_penalty,col='blue',lty=2)
+  legend('topright',c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,'blue'))
+}
+
 ```
 
 ```{r}
+library(ashr)
 x = seq(-10,10,length.out = 101)
 g = normalmix(pi = c(0.5,0.5),mean=rep(0,2),sd = c(0,sqrt(2)))
 plot_penalty(x,g)
+plot_penalty_d2(x,g)
 ```
 
