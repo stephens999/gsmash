@@ -283,9 +283,10 @@ plot_penalty_d2 = function(x,g,s=1){
   compound_penalty = compound_penalty_d2(x,g,s)
   z = inv_S_vec(x,g,s)
   original_penalty = original_penalty_d2(z,g,s)
-  plot(x,compound_penalty,type='l',xlab='theta',ylab='penalty',ylim=range(c(compound_penalty,original_penalty)),
+  plot(x,compound_penalty,type='l',xlab='theta',ylab='2nd derivative of penalty',ylim=range(c(compound_penalty,original_penalty)),
        main=paste('w=(',paste(g$pi,collapse = ", "),'); sd=(',paste(round(g$sd,2),collapse = ", "),')',sep=''))
   lines(x,original_penalty,col='blue',lty=2)
+  abline(h=0,lty=2,col='grey80')
   legend('topright',c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,'blue'))
 }
 
