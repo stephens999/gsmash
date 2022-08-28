@@ -1,0 +1,27 @@
+---
+title: "taylor expansion of exp function"
+author: "Dongyue Xie"
+date: "2022-08-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+$f(x) = -e^x$,
+
+$f(\lambda) = -e^\lambda-e^\lambda(x-\lambda)-\frac{e^\lambda}{2}(x-\lambda)^2$
+
+```{r}
+x = seq(0,5,length.out = 1000)
+f_lambda = function(l,x){
+  -exp(l) - exp(l)*(x-l) - exp(l)/2*(x-l)^2
+}
+plot(x,-exp(x),type='l',lwd=2)
+lines(x,f_lambda(0,x),col='gray80')
+lines(x,f_lambda(1,x),col=2)
+lines(x,f_lambda(2,x),col=3)
+lines(x,f_lambda(3,x),col=4)
+```
+

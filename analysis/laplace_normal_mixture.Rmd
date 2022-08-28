@@ -1,0 +1,19 @@
+---
+title: "laplace and normal mixture"
+author: "Dongyue Xie"
+date: "2022-06-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Approximate the Laplace distribution with mixture of Normals by using Gauss-Laguerre quadrature.
+
+
+
+```{r}
+
+```
+
