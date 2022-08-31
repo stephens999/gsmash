@@ -7,14 +7,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
 
-$f(x) = -e^x$,
+## 2nd order Taylor expansion of -exp(x) around $\lambda$
 
 $f(\lambda) = -e^\lambda-e^\lambda(x-\lambda)-\frac{e^\lambda}{2}(x-\lambda)^2$
 
 ```{r}
-x = seq(0,5,length.out = 1000)
+x = seq(-5,5,length.out = 1000)
 f_lambda = function(l,x){
   -exp(l) - exp(l)*(x-l) - exp(l)/2*(x-l)^2
 }
@@ -24,4 +23,63 @@ lines(x,f_lambda(1,x),col=2)
 lines(x,f_lambda(2,x),col=3)
 lines(x,f_lambda(3,x),col=4)
 ```
+
+## Expected Poisson log-likelihood
+
+Q: when $y = 0$, what is the $theta$ that maximizes $f(\theta)$?
+
+Poisson log-likelihood is 
+\[l(\lambda) = y\lambda - e^\lambda.\]
+
+\[E_{q(\lambda)} \left(-e^\theta-e^\theta(\lambda-\theta)-\frac{e^\theta}{2}(\lambda-\theta)^2\right)\]
+
+$f(\theta) = -e^\theta-e^\theta(a-\theta)-\frac{e^\theta}{2}(a^2+b-2a\theta+\theta^2)$, $b>0$. Here $a = E_{q(\lambda)}\lambda$, $b = Var_{q(\lambda)}(\lambda)$.
+
+$f'(\theta) = -\frac{e^\theta}{2}(b+(\theta-a)^2)$
+
+
+```{r}
+x = seq(-5,5,length.out = 1000)
+f_theta = function(x,a=1,b=1){
+  -exp(x) - exp(x)*(a-x) - exp(x)/2*(a^2+b-2*a*x+x^2)
+}
+plot(x,f_theta(x),type='l',lwd=2)
+```
+
+```{r}
+x = seq(-5,5,length.out = 1000)
+f_theta_d1 = function(x,a=1,b=1){
+  -exp(x)/2 * (b+(x-a)^2)
+}
+plot(x,f_theta_d1(x),type='l',lwd=2)
+```
+
+So when $y=0$, the $theta$ that maximizes $f(\theta)$ is $-\infty$.
+
+when $y > 0$,
+
+$f(\theta) = y\theta-e^\theta-e^\theta(a-\theta)-\frac{e^\theta}{2}(a^2+b-2a\theta+\theta^2)$
+
+$f'(\theta) = y -\frac{e^\theta}{2}(b+(\theta-a)^2)$
+
+
+```{r}
+x = seq(-50,2,length.out = 1000)
+f_theta = function(x,y,a=1,b=1){
+  y*x -exp(x) - exp(x)*(a-x) - exp(x)/2*(a^2+b-2*a*x+x^2)
+}
+plot(x,f_theta(x,y=1),type='l',lwd=2)
+```
+
+```{r}
+x = seq(-50,2,length.out = 1000)
+f_theta_d1 = function(x,y,a=1,b=1){
+  y-exp(x)/2 * (b+(x-a)^2)
+}
+plot(x,f_theta_d1(x,y=1),type='l',lwd=2)
+```
+
+## Conclusion
+
+
 
