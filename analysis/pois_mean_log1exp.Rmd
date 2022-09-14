@@ -1,0 +1,105 @@
+---
+title: "poisson mean woth log(1+exp(x)) link function"
+author: "Dongyue Xie"
+date: "2022-05-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Consider the model 
+
+\begin{equation}
+\begin{split}
+    & y_j\sim \Poi(\log(1+\exp(\mu_j))),
+    \\
+    &\mu_j\sim g(\cdot).
+\end{split}
+\end{equation}
+
+Using the lower bound in Seeger and Bouchard(2012), we can perform inference by iteratively fitting EBNM problem.
+
+```{r}
+source('code/poisson_mean/pois_mean_log1exp.R')
+```
+
+Generate data
+
+```{r}
+set.seed(12345)
+n = 1000
+w = 0.2
+lambda = c(rep(0.1,n*(1-w)),rep(10,n*w))
+x = rpois(n,lambda)
+plot(x,main='',col='grey80',pch=20)
+lines(lambda,col='grey50')
+legend('topleft',c('data','true mean'),pch=c(20,NA),lty=c(NA,1),col=c('grey80','grey50'))
+```
+
+Point normal prior, mean = estimate
+
+```{r,warning=FALSE}
+out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode='estimate',prior_family='point_normal'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+
+plot(x,main='',col='grey80',pch=20)
+lines(log(1+exp(out$m)),col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out$kappa
+out$ebnm_res$fitted_g
+```
+
+Point normal prior, mean = 0
+
+```{r,warning=FALSE}
+out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family='point_normal'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+
+plot(x,main='',col='grey80',pch=20)
+lines(log(1+exp(out$m)),col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out$ebnm_res$fitted_g
+```
+
+ash prior, mean = estimate
+
+```{r}
+out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode='estimate',prior_family='normal_scale_mixture'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+
+plot(x,main='',col='grey80',pch=20)
+lines(log(1+exp(out$m)),col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+
+```{r}
+out$ebnm_res$fitted_g
+```
+
+
+ash prior, mean = 0
+
+```{r}
+out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family='normal_scale_mixture'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+
+plot(x,main='',col='grey80',pch=20)
+lines(log(1+exp(out$m)),col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+
+```{r}
+out$ebnm_res$fitted_g
+```
+
+
