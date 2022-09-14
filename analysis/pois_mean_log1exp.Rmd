@@ -1,5 +1,5 @@
 ---
-title: "poisson mean woth log(1+exp(x)) link function"
+title: "Poisson mean with log(1+exp(x)) link function"
 author: "Dongyue Xie"
 date: "2022-05-13"
 output: workflowr::wflow_html
@@ -13,7 +13,7 @@ Consider the model
 
 \begin{equation}
 \begin{split}
-    & y_j\sim \Poi(\log(1+\exp(\mu_j))),
+    & y_j\sim Poisson(\log(1+\exp(\mu_j))),
     \\
     &\mu_j\sim g(\cdot).
 \end{split}
