@@ -529,15 +529,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef830ff218cf3d299cafee943611da46d3f4eae33targetblankf830ff2a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreea802b62e0e35a2ad91d2ef2af318ae8aa7a970c9targetblanka802b62a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/f830ff218cf3d299cafee943611da46d3f4eae33" target="_blank">f830ff2</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/a802b62e0e35a2ad91d2ef2af318ae8aa7a970c9" target="_blank">a802b62</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef830ff218cf3d299cafee943611da46d3f4eae33targetblankf830ff2a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreea802b62e0e35a2ad91d2ef2af318ae8aa7a970c9targetblanka802b62a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +547,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/f830ff218cf3d299cafee943611da46d3f4eae33" target="_blank">f830ff2</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/a802b62e0e35a2ad91d2ef2af318ae8aa7a970c9" target="_blank">a802b62</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,7 +566,13 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  code/poisson_mean/
+    Untracked:  code/poisson_mean/neg_binom_mean_polya_gamma.R
+    Untracked:  code/poisson_mean/pois_mean_GG.R
+    Untracked:  code/poisson_mean/pois_mean_GG_opt.R
+    Untracked:  code/poisson_mean/pois_mean_GMG.R
+    Untracked:  code/poisson_mean/pois_mean_GMGM.R
+    Untracked:  code/poisson_mean/pois_mean_penalized.R
+    Untracked:  code/poisson_mean/test_example.R
 
 </code></pre>
 <p>
@@ -617,6 +623,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/a802b62e0e35a2ad91d2ef2af318ae8aa7a970c9/analysis/pois_mean_log1exp.Rmd" target="_blank">a802b62</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+<td>
+wflow_publish("analysis/pois_mean_log1exp.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/9a320ec9f63ba874326c349229a02100678dacec/docs/pois_mean_log1exp.html" target="_blank">9a320ec</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/f830ff218cf3d299cafee943611da46d3f4eae33/analysis/pois_mean_log1exp.Rmd" target="_blank">f830ff2</a>
 </td>
 <td>
@@ -659,8 +699,10 @@ plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
 lines(lambda,col=&#39;grey50&#39;)
 legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;),pch=c(20,NA),lty=c(NA,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;))</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Point normal prior, mean = estimate</p>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;point_normal&#39;))
+</div>
+<div id="point-laplace-prior-mean-estimate" class="section level2">
+<h2>point-laplace prior, mean = estimate</h2>
+<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 300,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;point_laplace&#39;))
 plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
@@ -671,41 +713,47 @@ legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mea
 <pre><code>[1] 3.82</code></pre>
 <pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
 <pre><code>$pi
-[1] 1.270211e-07 9.999999e-01
+[1] 0.7912412 0.2087588
 
 $mean
-[1] 0.4561822 0.4561822
+[1] -1.82694 -1.82694
 
-$sd
-[1] 0.000000 3.186213
+$scale
+[1]  0.00000 10.49169
 
 attr(,&quot;class&quot;)
-[1] &quot;normalmix&quot;
+[1] &quot;laplacemix&quot;
 attr(,&quot;row.names&quot;)
 [1] 1 2</code></pre>
-<p>Point normal prior, mean = 0</p>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family=&#39;point_normal&#39;))
+</div>
+<div id="point-laplace-prior-mean-0" class="section level2">
+<h2>point-laplace prior, mean = 0</h2>
+<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 300,ebnm_params=list(mode=0,prior_family=&#39;point_laplace&#39;))
 plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
 lines(log(1+exp(out$m)),col=4)
 legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out$kappa</code></pre>
+<pre><code>[1] 3.82</code></pre>
 <pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
 <pre><code>$pi
-[1] 0.8025787 0.1974213
+[1] 0.7989592 0.2010408
 
 $mean
 [1] 0 0
 
-$sd
-[1] 0.000000 9.455385
+$scale
+[1] 0.000000 8.740808
 
 attr(,&quot;class&quot;)
-[1] &quot;normalmix&quot;
+[1] &quot;laplacemix&quot;
 attr(,&quot;row.names&quot;)
 [1] 1 2</code></pre>
-<p>ash prior, mean = estimate</p>
+</div>
+<div id="ash-prior-mean-estimate" class="section level2">
+<h2>ash prior, mean = estimate</h2>
 <pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;normal_scale_mixture&#39;))
 plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -731,7 +779,9 @@ attr(,&quot;class&quot;)
 [1] &quot;normalmix&quot;
 attr(,&quot;row.names&quot;)
  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14</code></pre>
-<p>ash prior, mean = 0</p>
+</div>
+<div id="ash-prior-mean-0" class="section level2">
+<h2>ash prior, mean = 0</h2>
 <pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family=&#39;normal_scale_mixture&#39;))
 plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -756,6 +806,57 @@ attr(,&quot;class&quot;)
 [1] &quot;normalmix&quot;
 attr(,&quot;row.names&quot;)
  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14</code></pre>
+</div>
+<div id="point-normal-prior-mean-estimate" class="section level2">
+<h2>Point normal prior, mean = estimate</h2>
+<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 100,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;point_normal&#39;))
+plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
+lines(log(1+exp(out$m)),col=4)
+legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out$kappa</code></pre>
+<pre><code>[1] 3.82</code></pre>
+<pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
+<pre><code>$pi
+[1] 5.096152e-10 1.000000e+00
+
+$mean
+[1] 0.1558144 0.1558144
+
+$sd
+[1] 0.000000 3.161129
+
+attr(,&quot;class&quot;)
+[1] &quot;normalmix&quot;
+attr(,&quot;row.names&quot;)
+[1] 1 2</code></pre>
+<p>Why ELBO is not increasing in this case?</p>
+</div>
+<div id="point-normal-prior-mean-0" class="section level2">
+<h2>Point normal prior, mean = 0</h2>
+<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family=&#39;point_normal&#39;))
+plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
+lines(log(1+exp(out$m)),col=4)
+legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
+<pre><code>$pi
+[1] 0.8025787 0.1974213
+
+$mean
+[1] 0 0
+
+$sd
+[1] 0.000000 9.455385
+
+attr(,&quot;class&quot;)
+[1] &quot;normalmix&quot;
+attr(,&quot;row.names&quot;)
+[1] 1 2</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
