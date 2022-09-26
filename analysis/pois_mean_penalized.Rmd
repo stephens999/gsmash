@@ -1,0 +1,161 @@
+---
+title: "poisson mean via penalized form"
+author: "Dongyue Xie"
+date: "2022-05-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+source("code/poisson_mean/pois_mean_penalized.R")
+```
+
+We solve the following Poisson mean problem by optimization method, \[x_i\sim Poisson(\exp\mu_i),\mu_i\sim g(\cdot)\]
+
+We first generate data and fit poisson ash with log link.
+```{r,warning=FALSE}
+library(ashr)
+set.seed(12345)
+w = c(0.8,0.2)
+n = 100
+mu = c(rnorm(n*w[1],0,0.01),rnorm(n*w[2],0,2))
+x = rpois(n,exp(mu))
+
+fit.ash = ash(x,1,lik=lik_pois(x,link='log'),mode=0)
+fit.ash$fitted_g
+plot(x,col='grey50',main='ash fit',ylim=c(0,150))
+lines(fit.ash$result$PosteriorMean,col=4)
+legend('topleft',c('data','ash posterior mean'), pch=c(1,NA),lty=c(NA,1),col=c('grey50',4))
+
+plot(mu,col='grey50',main='ash fit',ylim=c(-2,6))
+lines(log(fit.ash$result$PosteriorMean))
+legend('topleft',c('true mu','log(ash posterior mean)'), pch=c(1,NA),lty=c(NA,1),col=c('grey50',4))
+```
+
+## known prior
+
+Now we fit the penalize poisson mean problem with known prior.
+
+Use Nelder-Mead:
+
+```{r}
+grid=c(0.01,2)
+fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'Nelder-Mead')
+plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+
+fit$s2
+```
+
+Use BFGS:
+
+```{r}
+fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'BFGS')
+plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+
+fit$s2
+```
+
+Use `nleqslv` for solving gradient = 0 directly.
+
+```{r}
+library(nleqslv)
+z_init = log(1+x)
+theta0 = c(z_init,-z_init,rep(1,n))
+#L_known_g(theta0,x,w,grid)
+#L_grad_known_g(theta0,x,w,grid)
+
+fit_nleqslv = nleqslv(theta0,
+                L_grad_known_g,
+                y=x,
+                w=w,
+                grid=grid)
+z=fit_nleqslv$x[1:n]
+s2=exp(fit_nleqslv$x[(n+1):(2*n)])
+plot(L_grad_known_g(fit_nleqslv$x,x,w,grid))
+L_known_g(fit_nleqslv$x,x,w,grid)
+m = S(z,sqrt(s2),w,grid)
+
+
+plot(z,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(m,col=4)
+legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+```
+
+
+## estimating prior
+
+```{r}
+fit.ash = ashr::ash(log(x+0.01),sqrt(exp(-log(x+0.01))),pointmass=F,mixcompdist='normal',prior='uniform')
+grid = fit.ash$fitted_g$sd
+K = length(grid)
+```
+
+```{r}
+fit = pois_mean_penalized(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'BFGS')
+```
+
+```{r}
+round(fit$w,3)
+```
+
+```{r}
+plot(L_grad(fit$fit$par,x,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+
+fit$s2
+```
+
+
+
+Use `nleqslv` for solving gradient = 0 directly.
+
+```{r}
+z_init = log(1+x)
+theta0 = c(z_init,-z_init,rep(1,n),rep(1/K,K))
+#L(theta0,x,grid)
+#L_grad(theta0,x,grid)
+
+fit_nleqslv = nleqslv(theta0,
+                L_grad,
+                y=x,
+                grid=grid)
+z=fit_nleqslv$x[1:n]
+s2=exp(fit_nleqslv$x[(n+1):(2*n)])
+w = softmax(fit_nleqslv$x[-(1:(3*n))])
+plot(L_grad(fit_nleqslv$x,x,grid))
+L(fit_nleqslv$x,x,grid)
+m = S(z,sqrt(s2),w,grid)
+
+plot(grid,w)
+
+plot(z,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(m,col=4)
+legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+
+
+```
+
+
+
+
+
+
