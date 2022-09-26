@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dongyue Xie" />
+
+<meta name="date" content="2022-05-16" />
+
+<title>poisson mean via penalized form</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gsmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">poisson mean via penalized form</h1>
+<h4 class="author">Dongyue Xie</h4>
+<h4 class="date">2022-05-16</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-09-26
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>gsmash/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef15734b81b8758c4a5d8cc5d30cc082c844d6677targetblankf15734ba">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/f15734b81b8758c4a5d8cc5d30cc082c844d6677" target="_blank">f15734b</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef15734b81b8758c4a5d8cc5d30cc082c844d6677targetblankf15734ba"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/f15734b81b8758c4a5d8cc5d30cc082c844d6677" target="_blank">f15734b</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
+
+Untracked files:
+    Untracked:  analysis/neg_binom_mean_lower_bound.Rmd
+    Untracked:  analysis/neg_binom_mean_polya_gamma.Rmd
+    Untracked:  code/poisson_mean/neg_binom_mean_lower_bound.R
+    Untracked:  code/poisson_mean/neg_binom_mean_polya_gamma.R
+    Untracked:  code/poisson_mean/pois_mean_GG.R
+    Untracked:  code/poisson_mean/pois_mean_GG_opt.R
+    Untracked:  code/poisson_mean/pois_mean_GMG.R
+    Untracked:  code/poisson_mean/pois_mean_GMGM.R
+    Untracked:  code/poisson_mean/pois_mean_penalized.R
+    Untracked:  code/poisson_mean/test_example.R
+    Untracked:  code/poisson_smooth/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/pois_mean_penalized.Rmd</code>)
+and HTML (<code>docs/pois_mean_penalized.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/f15734b81b8758c4a5d8cc5d30cc082c844d6677/analysis/pois_mean_penalized.Rmd" target="_blank">f15734b</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-26
+</td>
+<td>
+wflow_publish("analysis/pois_mean_penalized.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<pre class="r"><code>source(&quot;code/poisson_mean/pois_mean_penalized.R&quot;)</code></pre>
+<p>We solve the following Poisson mean problem by optimization method,
+<span class="math display">\[x_i\sim Poisson(\exp\mu_i),\mu_i\sim
+g(\cdot)\]</span></p>
+<p>We first generate data and fit poisson ash with log link.</p>
+<pre class="r"><code>library(ashr)
+set.seed(12345)
+w = c(0.8,0.2)
+n = 100
+mu = c(rnorm(n*w[1],0,0.01),rnorm(n*w[2],0,2))
+x = rpois(n,exp(mu))
+
+fit.ash = ash(x,1,lik=lik_pois(x,link=&#39;log&#39;),mode=0)
+fit.ash$fitted_g</code></pre>
+<pre><code>$pi
+ [1] 0.63235722 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+ [7] 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000 0.00000000
+[13] 0.00000000 0.12675581 0.13923979 0.00000000 0.02269363 0.00000000
+[19] 0.00000000 0.00000000 0.02662634 0.00000000 0.00000000 0.05232721
+[25] 0.00000000
+
+$a
+ [1]    0.00000000   -0.08044647   -0.11376848   -0.16089293   -0.22753697
+ [6]   -0.32178586   -0.45507393   -0.64357173   -0.91014787   -1.28714346
+[11]   -1.82029573   -2.57428692   -3.64059147   -5.14857383   -7.28118294
+[16]  -10.29714766  -14.56236588  -20.59429533  -29.12473176  -41.18859065
+[21]  -58.24946352  -82.37718131 -116.49892703 -164.75436261 -232.99785407
+
+$b
+ [1]   0.00000000   0.08044647   0.11376848   0.16089293   0.22753697
+ [6]   0.32178586   0.45507393   0.64357173   0.91014787   1.28714346
+[11]   1.82029573   2.57428692   3.64059147   5.14857383   7.28118294
+[16]  10.29714766  14.56236588  20.59429533  29.12473176  41.18859065
+[21]  58.24946352  82.37718131 116.49892703 164.75436261 232.99785407
+
+attr(,&quot;class&quot;)
+[1] &quot;unimix&quot;
+attr(,&quot;row.names&quot;)
+ [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25</code></pre>
+<pre class="r"><code>plot(x,col=&#39;grey50&#39;,main=&#39;ash fit&#39;,ylim=c(0,150))
+lines(fit.ash$result$PosteriorMean,col=4)
+legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;ash posterior mean&#39;), pch=c(1,NA),lty=c(NA,1),col=c(&#39;grey50&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(mu,col=&#39;grey50&#39;,main=&#39;ash fit&#39;,ylim=c(-2,6))
+lines(log(fit.ash$result$PosteriorMean))
+legend(&#39;topleft&#39;,c(&#39;true mu&#39;,&#39;log(ash posterior mean)&#39;), pch=c(1,NA),lty=c(NA,1),col=c(&#39;grey50&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="known-prior" class="section level2">
+<h2>known prior</h2>
+<p>Now we fit the penalize poisson mean problem with known prior.</p>
+<p>Use Nelder-Mead:</p>
+<pre class="r"><code>grid=c(0.01,2)
+fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;Nelder-Mead&#39;)
+plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 0.503943270 0.335962180 1.007886541 0.503943270 0.503943270 0.335962180
+  [7] 1.007886541 1.007886541 0.503943270 0.503943270 1.007886541 0.503943270
+ [13] 0.503943270 1.007886541 0.251971635 0.503943270 1.007886541 0.503943270
+ [19] 0.503943270 1.007886541 1.007886541 1.007886541 1.007886541 0.503943270
+ [25] 0.335962180 0.503943270 0.335962180 0.503943270 0.503943270 0.503943270
+ [31] 1.007886541 0.503943270 0.503943270 0.503943270 0.335962180 0.503943270
+ [37] 0.201577308 0.335962180 0.503943270 0.503943270 0.251971635 0.251971635
+ [43] 0.335962180 0.335962180 0.503943270 0.503943270 0.251971635 0.503943270
+ [49] 1.007886541 0.335962180 1.007886541 0.251971635 1.007886541 1.007886541
+ [55] 0.335962180 0.335962180 1.007886541 1.007886541 1.007886541 0.503943270
+ [61] 0.251971635 0.335962180 0.335962180 0.335962180 0.503943270 1.007886541
+ [67] 1.007886541 0.335962180 0.201577308 0.503943270 1.007886541 1.007886541
+ [73] 1.007886541 0.201577308 0.335962180 0.503943270 0.503943270 1.007886541
+ [79] 1.007886541 0.335962180 0.335962180 0.091626049 1.007886541 0.008541411
+ [85] 0.251971635 0.020997636 0.201577308 0.503943270 0.167981090 0.335962180
+ [91] 1.007886541 1.007886541 0.025197164 1.007886541 1.007886541 0.503943270
+ [97] 1.007886541 0.012598582 1.007886541 1.007886541</code></pre>
+<p>Use BFGS:</p>
+<pre class="r"><code>fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;BFGS&#39;)
+plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 1.563562e+42 3.787427e+75 4.879849e+30 1.563562e+42 1.563562e+42
+  [6] 3.787427e+75 4.879849e+30 4.879849e+30 1.563562e+42 1.563562e+42
+ [11] 4.879849e+30 1.563562e+42 1.563562e+42 4.879849e+30 8.588190e+86
+ [16] 1.563562e+42 4.879849e+30 1.563562e+42 1.563562e+42 4.879849e+30
+ [21] 4.879849e+30 4.879849e+30 4.879849e+30 1.563562e+42 3.787427e+75
+ [26] 1.563562e+42 3.787427e+75 1.563562e+42 1.563562e+42 1.563562e+42
+ [31] 4.879849e+30 1.563562e+42 1.563562e+42 1.563562e+42 3.787427e+75
+ [36] 1.563562e+42 1.008232e+59 3.787427e+75 1.563562e+42 1.563562e+42
+ [41] 8.588190e+86 8.588190e+86 3.787427e+75 3.787427e+75 1.563562e+42
+ [46] 1.563562e+42 8.588190e+86 1.563562e+42 4.879849e+30 3.787427e+75
+ [51] 4.879849e+30 8.588190e+86 4.879849e+30 4.879849e+30 3.787427e+75
+ [56] 3.787427e+75 4.879849e+30 4.879849e+30 4.879849e+30 1.563562e+42
+ [61] 8.588190e+86 3.787427e+75 3.787427e+75 3.787427e+75 1.563562e+42
+ [66] 4.879849e+30 4.879849e+30 3.787427e+75 1.008232e+59 1.563562e+42
+ [71] 4.879849e+30 4.879849e+30 4.879849e+30 1.008232e+59 3.787427e+75
+ [76] 1.563562e+42 1.563562e+42 4.879849e+30 4.879849e+30 3.787427e+75
+ [81] 3.787427e+75 6.174722e+50 4.879849e+30 5.189492e+48 8.588190e+86
+ [86] 4.763309e+49 1.008232e+59 1.563562e+42 4.250852e+50 3.787427e+75
+ [91] 4.879849e+30 4.879849e+30 7.775782e+49 4.879849e+30 4.879849e+30
+ [96] 1.563562e+42 4.879849e+30 1.306805e+49 4.879849e+30 4.879849e+30</code></pre>
+<p>Use <code>nleqslv</code> for solving gradient = 0 directly.</p>
+<pre class="r"><code>library(nleqslv)
+z_init = log(1+x)
+theta0 = c(z_init,-z_init,rep(1,n))
+#L_known_g(theta0,x,w,grid)
+#L_grad_known_g(theta0,x,w,grid)
+
+fit_nleqslv = nleqslv(theta0,
+                L_grad_known_g,
+                y=x,
+                w=w,
+                grid=grid)
+z=fit_nleqslv$x[1:n]
+s2=exp(fit_nleqslv$x[(n+1):(2*n)])
+plot(L_grad_known_g(fit_nleqslv$x,x,w,grid))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>L_known_g(fit_nleqslv$x,x,w,grid)</code></pre>
+<pre><code>[1] -733.7425</code></pre>
+<pre class="r"><code>m = S(z,sqrt(s2),w,grid)
+
+
+plot(z,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(m,col=4)
+legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="estimating-prior" class="section level2">
+<h2>estimating prior</h2>
+<pre class="r"><code>fit.ash = ashr::ash(log(x+0.01),sqrt(exp(-log(x+0.01))),pointmass=F,mixcompdist=&#39;normal&#39;,prior=&#39;uniform&#39;)
+grid = fit.ash$fitted_g$sd
+K = length(grid)</code></pre>
+<pre class="r"><code>fit = pois_mean_penalized(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;BFGS&#39;)</code></pre>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.001
+[13] 0.997 0.002 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000</code></pre>
+<pre class="r"><code>plot(L_grad(fit$fit$par,x,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 1.662263e+289 2.651347e+214  1.701144e+72 1.661045e+289 1.662265e+289
+  [6] 3.621524e+213  1.701144e+72  1.701144e+72 1.662227e+289 1.662234e+289
+ [11]  1.701144e+72 1.662234e+289 1.661032e+289  1.701144e+72 1.902646e+232
+ [16] 1.662234e+289  1.701144e+72 1.661032e+289 1.662226e+289  1.701144e+72
+ [21]  1.701144e+72  1.701144e+72  1.701144e+72 1.660996e+289 3.256023e+214
+ [26] 1.662257e+289 3.254388e+214 1.662226e+289 1.662227e+289 1.662220e+289
+ [31]  1.701144e+72 1.662233e+289 1.662253e+289 1.662233e+289 2.653101e+214
+ [36] 1.662262e+289 5.357096e+238 2.568121e+214 1.662230e+289 1.661932e+289
+ [41] 1.902646e+232 1.902646e+232 4.773782e+278 4.773723e+278 1.662243e+289
+ [46] 1.662246e+289 1.902646e+232 1.662219e+289  1.701144e+72 9.934917e+209
+ [51]  1.701144e+72 1.902646e+232  1.701144e+72  1.701144e+72 4.773723e+278
+ [56] 4.773723e+278  1.701144e+72  1.701144e+72  1.701144e+72 1.662265e+289
+ [61] 1.902646e+232 1.892733e+215 1.454471e+188 1.890177e+215 1.661031e+289
+ [66]  1.701144e+72  1.701144e+72 7.501820e+214 5.357096e+238 1.661040e+289
+ [71]  1.701144e+72  1.701144e+72  1.701144e+72 5.357096e+238 7.037162e+241
+ [76] 1.662257e+289 1.661040e+289  1.701144e+72  1.701144e+72 3.413647e+214
+ [81] 1.465413e+214 2.261519e+123  1.701144e+72  3.589303e+78 1.902646e+232
+ [86]  1.017289e+84 5.357096e+238 1.662260e+289 4.568985e+216 2.567518e+214
+ [91]  1.701144e+72  1.701144e+72  5.844931e+85  1.701144e+72  1.701144e+72
+ [96] 1.662256e+289  1.701144e+72  7.675118e+53  1.701144e+72  1.701144e+72</code></pre>
+<p>Use <code>nleqslv</code> for solving gradient = 0 directly.</p>
+<pre class="r"><code>z_init = log(1+x)
+theta0 = c(z_init,-z_init,rep(1,n),rep(1/K,K))
+#L(theta0,x,grid)
+#L_grad(theta0,x,grid)
+
+fit_nleqslv = nleqslv(theta0,
+                L_grad,
+                y=x,
+                grid=grid)
+z=fit_nleqslv$x[1:n]
+s2=exp(fit_nleqslv$x[(n+1):(2*n)])
+w = softmax(fit_nleqslv$x[-(1:(3*n))])
+plot(L_grad(fit_nleqslv$x,x,grid))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>L(fit_nleqslv$x,x,grid)</code></pre>
+<pre><code>[1] -725.1228</code></pre>
+<pre class="r"><code>m = S(z,sqrt(s2),w,grid)
+
+plot(grid,w)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(z,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(m,col=4)
+legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22000)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] nleqslv_3.3.3   ashr_2.2-54     workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9       highr_0.9        compiler_4.2.1   pillar_1.8.1    
+ [5] bslib_0.4.0      later_1.3.0      git2r_0.30.1     jquerylib_0.1.4 
+ [9] tools_4.2.1      getPass_0.2-2    digest_0.6.29    lattice_0.20-45 
+[13] jsonlite_1.8.0   evaluate_0.16    tibble_3.1.8     lifecycle_1.0.2 
+[17] pkgconfig_2.0.3  rlang_1.0.5      Matrix_1.4-1     cli_3.3.0       
+[21] rstudioapi_0.14  yaml_2.3.5       xfun_0.32        fastmap_1.1.0   
+[25] invgamma_1.1     httr_1.4.4       stringr_1.4.1    knitr_1.40      
+[29] fs_1.5.2         vctrs_0.4.1      sass_0.4.2       grid_4.2.1      
+[33] rprojroot_2.0.3  glue_1.6.2       R6_2.5.1         processx_3.7.0  
+[37] fansi_1.0.3      rmarkdown_2.16   mixsqp_0.3-43    irlba_2.3.5     
+[41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
+[45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.5     utf8_1.2.2      
+[49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
