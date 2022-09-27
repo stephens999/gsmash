@@ -9,18 +9,23 @@ editor_options:
 
 ## Introduction
 
-Minimize 
+\[y\sim N(\mu,s^2),\mu\sim g(\cdot)\]
 
-\[h(\theta,g) = \frac{1}{2s^2}(y-\theta)^2+\rho_{g,s}(\theta).\]
+Optimization: $\theta = E_q\mu$,
 
+\[\min_{\theta,g}h(\theta,g) = \frac{1}{2s^2}(y-\theta)^2+\rho_{g,s}(\theta).\]
 
-\[S(\theta) = \theta +s^2l'_{NM}(\theta;g,s^2)\]
+Since
 
-Use the compound penalty term $c(\theta) = \rho(S(\theta))$,
+\[S_{g,s^2}(z) = z +s^2l'_{NM}(z;g,s^2)\]
 
-\[\tilde h(\theta,g) = \frac{1}{2s^2}(y-S(\theta))^2-l_{NM}(\theta;g,s^2)-(\theta-S_{\theta})^2/(2s^2)\]
+Use the compound penalty term $c(z) = \rho(S(z))$, the final problem is
 
-Then set $\bar\mu = S(\theta)$. 
+\[\min_{z,g} \tilde h(z,g) = \frac{1}{2s^2}(y-S(z))^2-l_{NM}(z;g,s^2)-(z-S(z))^2/(2s^2)\]
+
+\[\min_{z,g} \tilde h(z,g) = \frac{1}{2s^2}(y-z-s^2l'_{NM}(z;g,s^2))^2-l_{NM}-s^2(l'_{NM})^2/2\]
+
+Then set $\hat\theta = S(z)$. 
 
 
 
@@ -65,23 +70,81 @@ f_obj = function(theta,y,s,grid){
   }
   res
 }
+
+#'objective function with known g
+#'@param theta (mu_bar)
+#'@param grid prior sds
+f_obj_known_g = function(theta,y,s,w,grid){
+  n = length(y)
+  res = 0
+  #w = softmax(theta[-(1:n)])
+  for(i in 1:n){
+    res = res + (y[i]-theta[i]-s^2*l_nm_d1(theta[i],s,w,grid))^2/2/s^2 - l_nm(theta[i],s,w,grid) - s^2*(l_nm_d1(theta[i],s,w,grid))^2/2
+  }
+  res
+}
 ```
 
+## ash fit
 
-```{r}
+```{r,warning=FALSE}
 set.seed(12345)
 n = 200
 w0 = 0.9
 lambda = c(rep(0,round(n*w0)),rep(10,n-round(n*w0)))
+w_true = c(w0,1-w0)
+grid_true = c(0.01,7)
 s = 1
 y = rnorm(n,lambda,s)
 library(ashr)
-fit.ash = ashr::ash(y,s,pointmass=F,mixcompdist='normal',prior='uniform')
+fit.ash = ashr::ash(y,s,mixcompdist = 'normal')
 #grid = exp(seq(log(s/100),log(sqrt(max(abs(y^2-s^2)))),by=log(sqrt(2))))
-plot(fit.ash$fitted_g$sd,fit.ash$fitted_g$pi)
+#fit.ash = S(y,s,w_true,grid_true)
+#plot(fit.ash$fitted_g$sd,fit.ash$fitted_g$pi)
 grid = fit.ash$fitted_g$sd
+grid = grid[-1]
 K = length(grid)
+
+plot(y,main='ash fit',col='grey80')
+lines(lambda,col='grey60')
+lines(fit.ash$result$PosteriorMean)
+legend('topleft',c('data','true mean','ash posteriorMean'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey60',1))
 ```
+
+## Known prior
+
+### Init $z$ at data $y$.
+
+```{r}
+fit = optim(c(y),f_obj_known_g,method='BFGS',y=y,grid=grid_true,s=s,w=w_true)
+fit$value
+```
+
+```{r}
+plot(y,main='known prior',col='grey80')
+lines(lambda,col='grey60')
+lines(fit$par,type='p',pch=20,col='grey80')
+lines(S(fit$par,s,c(w0,1-w0),c(0.01,7)))
+legend('topleft',c('data','true mean','z','estimated mean'),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c('grey80','grey80','grey60',1))
+```
+
+
+### Init $z$ at 0.
+
+```{r}
+fit = optim(rep(0,n),f_obj_known_g,method='BFGS',y=y,grid=grid_true,s=s,w=w_true)
+fit$value
+```
+
+```{r}
+plot(y,main='known prior',col='grey80')
+lines(lambda,col='grey60')
+lines(fit$par,type='p',pch=20,col='grey80')
+lines(S(fit$par,s,c(w0,1-w0),c(0.01,7)))
+legend('topleft',c('data','true mean','z','estimated mean'),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c('grey80','grey80','grey60',1))
+```
+
+## Estimate prior
 
 ## init at y
 
@@ -89,36 +152,18 @@ K = length(grid)
 mu_init = y
 w_init = rep(1/K,K)
 fit = optim(c(mu_init,w_init),f_obj,method='BFGS',y=y,grid=grid,s=s)
+fit$value
+round(softmax(fit$par[-(1:n)]),2)
+plot(grid,round(softmax(fit$par[-(1:n)]),2),ylab='w hat')
 ```
+
 
 ```{r}
-plot(y,col='grey80',xlab='',main='penalized, z')
-lines(lambda,col='grey80')
-lines(fit$par[1:n],col=2)
-plot(y,col='grey80',xlab='',main='penalized, theta = S(z) ')
-lines(lambda,col='grey80')
-lines(S(fit$par[1:n],s,softmax(fit$par[-(1:n)]),grid),col=2)
-plot(y,col='grey80',xlab='',main='ash')
-lines(fit.ash$result$PosteriorMean,col=4)
-round(softmax(fit$par[-(1:n)]),2)
-round(fit.ash$fitted_g$pi,2)
-```
-
-
-```{r,eval=F}
-mu_init = y
-w_init = rep(1/K,K)
-fit.lbfgsb = optim(c(mu_init,w_init),f_obj,method='L-BFGS-B',y=y,grid=grid,s=s)
-```
-
-```{r,eval=F}
-plot(y,col='grey80',xlab='',main='penalized')
-lines(lambda,col='grey80')
-lines(fit.lbfgsb$par[1:n],col=2)
-plot(y,col='grey80',xlab='',main='ash')
-lines(fit.ash$result$PosteriorMean,col=4)
-round(softmax(fit.lbfgsb$par[-(1:n)]),2)
-round(fit.ash$fitted_g$pi,2)
+plot(y,main='estimated prior',col='grey80')
+lines(lambda,col='grey60')
+lines(fit$par[1:n],type='p',pch=20,col='grey80')
+lines(S(fit$par[1:n],s,softmax(fit$par[-(1:n)]),grid))
+legend('topleft',c('data','true mean','z','estimated mean'),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c('grey80','grey80','grey60',1))
 ```
 
 ## init at 0
@@ -127,20 +172,23 @@ round(fit.ash$fitted_g$pi,2)
 mu_init = rep(0,n)
 w_init = rep(1/K,K)
 fit = optim(c(mu_init,w_init),f_obj,method='BFGS',y=y,grid=grid,s=s)
+fit$value
+round(softmax(fit$par[-(1:n)]),2)
+plot(grid,round(softmax(fit$par[-(1:n)]),2),ylab='w hat')
 ```
 
+
 ```{r}
-plot(y,col='grey80',xlab='',main='penalized, z')
-lines(lambda,col='grey80')
-lines(fit$par[1:n],col=2)
-plot(y,col='grey80',xlab='',main='penalized, theta = S(z) ')
-lines(lambda,col='grey80')
-lines(S(fit$par[1:n],s,softmax(fit$par[-(1:n)]),grid),col=2)
-plot(y,col='grey80',xlab='',main='ash')
-lines(fit.ash$result$PosteriorMean,col=4)
-round(softmax(fit$par[-(1:n)]),2)
-round(fit.ash$fitted_g$pi,2)
+plot(y,main='estimated prior',col='grey80')
+lines(lambda,col='grey60')
+lines(fit$par[1:n],type='p',pch=20,col='grey80')
+lines(S(fit$par[1:n],s,softmax(fit$par[-(1:n)]),grid))
+legend('topleft',c('data','true mean','z','estimated mean'),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c('grey80','grey80','grey60',1))
 ```
+
+
+
+
 
 
 
