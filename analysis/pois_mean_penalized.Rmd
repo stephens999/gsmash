@@ -43,56 +43,87 @@ Use Nelder-Mead:
 
 ```{r}
 grid=c(0.01,2)
-fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'Nelder-Mead')
+fit = pois_mean_penalized_optim(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'Nelder-Mead')
 plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab='gradient',main='check gradient')
 
 plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
 lines(mu,col='grey80',type='p',pch=20)
 lines(fit$m,col=4)
-legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
 
 fit$s2
+
+L_known_g(fit$fit$par,x,w,grid)
 ```
 
 Use BFGS:
-
 ```{r}
-fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'BFGS')
+fit = pois_mean_penalized_optim(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'BFGS')
 plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab='gradient',main='check gradient')
 
 plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
 lines(mu,col='grey80',type='p',pch=20)
 lines(fit$m,col=4)
-legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
 
 fit$s2
+
+L_known_g(fit$fit$par,x,w,grid)
 ```
+
+
+Use CG:
+```{r}
+fit = pois_mean_penalized_optim(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'CG')
+plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
+
+fit$s2
+
+L_known_g(fit$fit$par,x,w,grid)
+```
+
 
 Use `nleqslv` for solving gradient = 0 directly.
 
 ```{r}
 library(nleqslv)
-z_init = log(1+x)
-theta0 = c(z_init,-z_init,rep(1,n))
-#L_known_g(theta0,x,w,grid)
-#L_grad_known_g(theta0,x,w,grid)
+grid=c(0.01,2)
+fit = pois_mean_penalized_nleqslv(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'Broyden')
+plot(L_grad_known_g(fit$fit$x,x,w,grid),ylab='gradient',main='check gradient')
 
-fit_nleqslv = nleqslv(theta0,
-                L_grad_known_g,
-                y=x,
-                w=w,
-                grid=grid)
-z=fit_nleqslv$x[1:n]
-s2=exp(fit_nleqslv$x[(n+1):(2*n)])
-plot(L_grad_known_g(fit_nleqslv$x,x,w,grid))
-L_known_g(fit_nleqslv$x,x,w,grid)
-m = S(z,sqrt(s2),w,grid)
-
-
-plot(z,col='grey50')
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
 lines(mu,col='grey80',type='p',pch=20)
-lines(m,col=4)
-legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
+
+fit$s2
+
+L_known_g(fit$fit$x,x,w,grid)
+```
+
+
+```{r}
+fit = pois_mean_penalized_nleqslv(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = 'Newton')
+plot(L_grad_known_g(fit$fit$x,x,w,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
+
+fit$s2
+
+L_known_g(fit$fit$x,x,w,grid)
 ```
 
 
@@ -104,57 +135,137 @@ grid = fit.ash$fitted_g$sd
 K = length(grid)
 ```
 
+opt_method = 'BFGS'
+
 ```{r}
-fit = pois_mean_penalized(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'BFGS')
+fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'BFGS')
 ```
 
 ```{r}
 round(fit$w,3)
+plot(grid,fit$w)
 ```
 
 ```{r}
 plot(L_grad(fit$fit$par,x,grid),ylab='gradient',main='check gradient')
 
 plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
 lines(mu,col='grey80',type='p',pch=20)
 lines(fit$m,col=4)
-legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
+
+fit$s2
+```
+
+opt_method = 'Nelder-Mead'
+
+```{r}
+fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'Nelder-Mead')
+```
+
+```{r}
+round(fit$w,3)
+plot(grid,fit$w)
+```
+
+```{r}
+plot(L_grad(fit$fit$par,x,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
 
 fit$s2
 ```
 
 
-
-Use `nleqslv` for solving gradient = 0 directly.
+opt_method = 'L-BFGS-B'
 
 ```{r}
-z_init = log(1+x)
-theta0 = c(z_init,-z_init,rep(1,n),rep(1/K,K))
-#L(theta0,x,grid)
-#L_grad(theta0,x,grid)
+fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'L-BFGS-B')
+```
 
-fit_nleqslv = nleqslv(theta0,
-                L_grad,
-                y=x,
-                grid=grid)
-z=fit_nleqslv$x[1:n]
-s2=exp(fit_nleqslv$x[(n+1):(2*n)])
-w = softmax(fit_nleqslv$x[-(1:(3*n))])
-plot(L_grad(fit_nleqslv$x,x,grid))
-L(fit_nleqslv$x,x,grid)
-m = S(z,sqrt(s2),w,grid)
+```{r}
+round(fit$w,3)
+plot(grid,fit$w)
+```
 
-plot(grid,w)
+```{r}
+plot(L_grad(fit$fit$par,x,grid),ylab='gradient',main='check gradient')
 
-plot(z,col='grey50')
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
 lines(mu,col='grey80',type='p',pch=20)
-lines(m,col=4)
-legend('topleft',c('z','true mu','mu hat'), pch=c(1,20,NA),lty=c(NA,NA,1),col=c('grey50','grey80',4))
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
 
-
+fit$s2
 ```
 
 
+opt_method = 'CG'
+
+```{r}
+fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'CG')
+```
+
+```{r}
+round(fit$w,3)
+plot(grid,fit$w)
+```
+
+```{r}
+plot(L_grad(fit$fit$par,x,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
+
+fit$s2
+```
+
+
+Use `nleqslv` for solving gradient = 0 directly.
+
+
+```{r}
+fit = pois_mean_penalized_nleqslv(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'Broyden')
+plot(L_grad(fit$fit$x,x,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
+
+round(fit$w,3)
+
+plot(grid,fit$w)
+
+fit$s2
+```
+
+```{r}
+fit = pois_mean_penalized_nleqslv(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = 'Newton')
+plot(L_grad(fit$fit$x,x,grid),ylab='gradient',main='check gradient')
+
+plot(fit$z,col='grey50')
+lines(log(1+x),type='p',pch=8,col='grey50')
+lines(mu,col='grey80',type='p',pch=20)
+lines(fit$m,col=4)
+legend('topleft',c('log(1+x)','z','true mu','mu hat'), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c('grey50','grey50','grey80',4))
+
+round(fit$w,3)
+
+plot(grid,fit$w)
+
+fit$s2
+```
 
 
 
