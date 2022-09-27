@@ -13,7 +13,7 @@
 
 <title>hOMEPAGe</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
@@ -32,6 +32,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -151,11 +153,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -266,7 +272,13 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -305,7 +317,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-06
+<strong>Last updated:</strong> 2022-09-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -352,13 +364,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong8b15558">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree1e05e86c592476a945053e20547e1895541a48cetargetblank1e05e86a">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 8b15558
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/1e05e86c592476a945053e20547e1895541a48ce" target="_blank">1e05e86</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong8b15558"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree1e05e86c592476a945053e20547e1895541a48cetargetblank1e05e86a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -367,7 +381,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 8b15558.
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/1e05e86c592476a945053e20547e1895541a48ce" target="_blank">1e05e86</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -382,15 +397,21 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  analysis/log_gmm_concave_ratio.Rmd
-    Untracked:  analysis/log_lmm_concave.Rmd
-    Untracked:  analysis/normal_mean_penalized_optimization.Rmd
-    Untracked:  analysis/normal_mean_penalty.Rmd
-    Untracked:  analysis/poisson_mean_loglik_expansion.Rmd
-    Untracked:  analysis/poisson_mean_loglik_expansion_optim.Rmd
+    Untracked:  code/poisson_mean/neg_binom_mean_lower_bound.R
+    Untracked:  code/poisson_mean/neg_binom_mean_polya_gamma.R
+    Untracked:  code/poisson_mean/pois_mean_GG.R
+    Untracked:  code/poisson_mean/pois_mean_GG_opt.R
+    Untracked:  code/poisson_mean/pois_mean_GMG.R
+    Untracked:  code/poisson_mean/pois_mean_GMGM.R
+    Untracked:  code/poisson_mean/test_example.R
+    Untracked:  code/poisson_smooth/
+
+Unstaged changes:
+    Modified:   code/poisson_mean/pois_mean_penalized.R
 
 </code></pre>
 <p>
@@ -440,7 +461,41 @@ Message
 Rmd
 </td>
 <td>
-8b15558
+<a href="https://github.com/DongyueXie/gsmash/blob/1e05e86c592476a945053e20547e1895541a48ce/analysis/index.Rmd" target="_blank">1e05e86</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-27
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/5fb1cadf2a64efbc7d72b81f155cdc9f019fbf42/docs/index.html" target="_blank">5fb1cad</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/8b155584e84ad720b937ae63e469e4c0c60cd3b1/analysis/index.Rmd" target="_blank">8b15558</a>
 </td>
 <td>
 Dongyue Xie
@@ -457,7 +512,7 @@ Publish the initial files for myproject
 html
 </td>
 <td>
-a3f39a4
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/a3f39a473d562db98bf9c99fdf46dd567c37fa40/docs/index.html" target="_blank">a3f39a4</a>
 </td>
 <td>
 Dongyue Xie
@@ -474,7 +529,7 @@ Build site.
 Rmd
 </td>
 <td>
-e87f570
+<a href="https://github.com/DongyueXie/gsmash/blob/e87f570ccbd32ea0a823384769106e4789a08278/analysis/index.Rmd" target="_blank">e87f570</a>
 </td>
 <td>
 Dongyue Xie
@@ -491,7 +546,7 @@ none
 html
 </td>
 <td>
-76d4095
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/76d409570a3c824998dd1417c804e90f6b0af96b/docs/index.html" target="_blank">76d4095</a>
 </td>
 <td>
 Dongyue Xie
@@ -508,7 +563,7 @@ Build site.
 Rmd
 </td>
 <td>
-9df5fb2
+<a href="https://github.com/DongyueXie/gsmash/blob/9df5fb21d9065b9f8839be3ae9720862b711899d/analysis/index.Rmd" target="_blank">9df5fb2</a>
 </td>
 <td>
 Dongyue Xie
@@ -525,7 +580,7 @@ Start my new project
 Rmd
 </td>
 <td>
-c28e1a6
+<a href="https://github.com/DongyueXie/gsmash/blob/c28e1a6c12d0566bd84b071d0416473145f84751/analysis/index.Rmd" target="_blank">c28e1a6</a>
 </td>
 <td>
 Dongyue Xie
@@ -546,21 +601,32 @@ Start workflowr project.
 </div>
 <div id="normal-mean-penalty-form" class="section level2">
 <h2>Normal mean penalty form</h2>
-<ol style="list-style-type: decimal">
+<ul>
 <li><a href="bound_log_marginal.html">bound on (log g)’’</a></li>
-<li><a href="log_gmm_concave.html">log density of normal
-mixture</a></li>
-</ol>
+<li><a href="log_gmm_concave.html">log density of normal mixture</a>
 <ul>
 <li><a href="log_gmm_concave_ratio.html">log density of normal mixture,
 variance ratio</a></li>
-</ul>
-<ol start="3" style="list-style-type: decimal">
+</ul></li>
 <li><a href="log_lmm_concave.html">log density of laplace
 mixture</a></li>
 <li><a href="normal_mean_penalty.html">normal mean penalty
 plots</a></li>
-</ol>
+<li><a href="normal_mean_penalized_optimization.html">Solve normal mean
+problem using optimization</a></li>
+</ul>
+</div>
+<div id="poisson-mean" class="section level2">
+<h2>Poisson mean</h2>
+<ul>
+<li><a href="pois_mean_penalized.html">Poisson mean penalized
+form</a></li>
+<li><a href="neg_binom_mean_lower_bound.html">NB JJ lower bound</a></li>
+<li><a href="neg_binom_mean_polya_gamma.html">NB PG
+augmentation</a></li>
+<li><a href="pois_mean_log1exp.html">Poisson mean <span
+class="math inline">\(log(1+exp(\cdot))\)</span> link</a></li>
+</ul>
 </div>
 
 
