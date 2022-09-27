@@ -1,6 +1,6 @@
 #'@title Poisson mean problem via penalized form
 
-pois_mean_penalized = function(x,
+pois_mean_penalized_optim = function(x,
                                w=NULL,
                                grid,
                                est_w = TRUE,
@@ -55,8 +55,65 @@ pois_mean_penalized = function(x,
 
 }
 
+pois_mean_penalized_nleqslv = function(x,
+                                     w=NULL,
+                                     grid,
+                                     est_w = TRUE,
+                                     z_init = NULL,
+                                     lambda_init = NULL,
+                                     opt_method='BFGS'){
+  n = length(x)
+  K = length(grid)
+  if(is.null(w)){
+    w = rep(1/K,K)
+    est_w = TRUE
+  }
+  if(is.null(z_init)){
+    z_init = log(1+x)
+  }
+  if(is.null(lambda_init)){
+    lambda_init = rep(1,n)
+  }
+  if(est_w){
+    theta0 = c(z_init,-z_init,lambda_init,w)
+    fit  = nleqslv(theta0,
+                    L_grad,
+                    y=x,
+                    grid=grid,
+                   method = opt_method)
+    z=fit$x[1:n]
+    s2=exp(fit$x[(n+1):(2*n)])
+    w = softmax(fit$x[-(1:(3*n))])
+    return(list(z=z,
+                m=S(z,sqrt(s2),w,grid),
+                s2=s2,
+                w=w,
+                lambda = fit$x[(2*n+1):(3*n)],
+                fit=fit))
+  }else{
+    theta0 = c(z_init,-z_init,lambda_init)
+    fit  = nleqslv(theta0,
+                   L_grad_known_g,
+                   y=x,
+                   w=w,
+                   grid=grid,
+                   method = opt_method)
+    z=fit$x[1:n]
+    s2=exp(fit$x[(n+1):(2*n)])
+    return(list(z=z,
+                m=S(z,sqrt(s2),w,grid),
+                s2=s2,
+                w=w,
+                lambda = fit$x[(2*n+1):(3*n)],
+                fit=fit))
+  }
+
+}
+
 #'@title Lagrangian of possion mean penalized problem
-# theta = (z,v=log(s2),lambda,a)
+#'@param theta = (z,v=log(s2),lambda,a)
+#'@param y data vector
+#'@param grid prior sd
 L = function(theta,y,grid){
   n = length(y)
   z = theta[1:n]
@@ -80,6 +137,7 @@ L_grad = function(theta,y,grid){
   return(c(L_dz,L_dv,L_dlambda,L_da))
 }
 
+#'@title Lagrangian of possion mean penalized problem, when g is known
 # theta = (z,v=log(s2),lambda)
 L_known_g = function(theta,y,w,grid){
   n = length(y)
@@ -103,10 +161,11 @@ L_grad_known_g = function(theta,y,w,grid){
   return(c(L_dz,L_dv,L_dlambda))
 }
 
-#'objective function
+#'objective function, sum over h_i()
 #'@param theta (z,s2,a)
 #'@param y data vector
 #'@param grid prior sds
+#'@return objevtive value, a scalar
 h_obj = function(theta,y,grid){
   n = length(y)
   z = theta[1:n]
@@ -125,6 +184,7 @@ h_obj_calc = function(z,s2,a,y,grid){
 #'@param theta (z,s2,a)
 #'@param y data vector
 #'@param grid prior sds
+#'@return a length n vector of gradients
 h_obj_d1_z = function(theta,y,grid){
   n = length(y)
   z = theta[1:n]
@@ -144,6 +204,7 @@ h_obj_d1_z_calc = function(z,s2,a,y,grid){
 #'@param theta (z,s2,a)
 #'@param y data vector
 #'@param grid prior sds
+#'@return a length n vector of gradients
 h_obj_d1_s2 = function(theta,y,grid){
   n = length(y)
   z = theta[1:n]
@@ -165,6 +226,7 @@ h_obj_d1_s2_calc = function(z,s2,a,y,grid){
 #'@param theta (z,s2,a)
 #'@param y data vector
 #'@param grid prior sds
+#'@return a length K vector of gradients
 h_obj_d1_a = function(theta,y,grid){
   n = length(y)
   #K = length(grid)
@@ -183,7 +245,9 @@ h_obj_d1_a_calc = function(z,s2,a,y,grid){
   return(colSums((exp(z+s2*l_dz)-y+0.5-l_dz)*s2*l_dadz-l_da))
 }
 
+#'@title calculate constraint function
 #'@param theta (z,s2,a)
+#'@return a vector of length n, constraint function values
 h_cstr = function(theta,y,grid){
   n = length(y)
   z = theta[1:n]
@@ -198,6 +262,9 @@ h_cstr_calc = function(z,s2,a,grid){
   return(log(s2)+z+s2*l_dz)
 }
 
+#'@title calculate constraint function derivative wrt z
+#'@param theta (z,s2,a)
+#'@return a vector of length n gradient
 h_cstr_d1_z = function(theta,y,grid){
   n = length(y)
   z = theta[1:n]
@@ -211,6 +278,9 @@ h_cstr_d1_z_calc = function(z,s2,a,grid){
   return(1+s2*l_nm_d2_z(z,sqrt(s2),w,grid))
 }
 
+#'@title calculate constraint function derivative wrt s2
+#'@param theta (z,s2,a)
+#'@return a vector of length n gradient
 h_cstr_d1_s2 = function(theta,y,grid){
   n = length(y)
   z = theta[1:n]
@@ -225,7 +295,8 @@ h_cstr_d1_s2_calc = function(z,s2,a,grid){
 }
 
 
-#'@ The gradient of cstr w.r.t a is a n*K matrix
+#'@title The gradient of constraint function w.r.t a
+#'@return a n*K matrix
 h_cstr_d1_a = function(theta,y,grid){
   n = length(y)
   K = length(grid)
