@@ -1,0 +1,229 @@
+---
+title: "Negative binomial mean via polya gamma augmentation"
+author: "Dongyue Xie"
+date: "2022-04-14"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+# Model
+
+Consider the model
+
+\begin{equation}
+    \begin{split}
+        &y_i\sim NB(r,p_i),
+        \\
+        &\log\frac{p_i}{1-p_i} = \mu_i\sim g(\cdot),
+    \end{split}
+\end{equation}
+where $p(y;r,p)\propto p^y(1-p)^r$.
+
+We use PG augmentation proposed in  Polson et al.(2013) to perform posterior inference.
+
+```{r}
+source('code/poisson_mean/neg_binom_mean_polya_gamma.R')
+```
+
+```{r}
+set.seed(12345)
+n = 1000 
+w = 0.2
+mu = c(rep(0.1,n*(1-w)),rep(10,n*w))
+x = rnbinom(n, size = 10, mu=mu)
+```
+
+# When r is known.
+
+Assume r is given, estimate p.
+
+## point_laplace, mean = estimate
+
+```{r,warning=FALSE}
+out = nb_mean_polya_gamma(x=x,r=10,
+                          maxiter = 2000,
+                          tol=1e-8,
+                          ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+```
+
+```{r}
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+out$ebnm_res$fitted_g
+```
+
+```{r}
+plot(x,main='',col='grey80',pch=20)
+lines(mu,col='grey50')
+lines(out$mean_est,col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+## point_laplace, mean = 0
+
+```{r,warning=FALSE}
+out = nb_mean_polya_gamma(x=x,r=10,
+                          maxiter = 2000,
+                          tol=1e-8,
+                          ebnm_params=list(mode=0,prior_family='point_laplace'))
+```
+
+```{r}
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+out$ebnm_res$fitted_g
+```
+
+```{r}
+plot(x,main='',col='grey80',pch=20)
+lines(mu,col='grey50')
+lines(out$mean_est,col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+## When r is unknown, estimating r is much harder
+
+We start with letting r_init = true r = 10,
+
+```{r}
+
+out = nb_mean_polya_gamma(x=x,r=10,est_r=T,update_r_every = 1,
+                          maxiter = 300,
+                          ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+
+```
+
+```{r}
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+out$r
+out$r_trace
+```
+
+```{r}
+plot(x,main='',col='grey80',pch=20)
+lines(mu,col='grey50')
+lines(out$mean_est,col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+It gets stuck at a local optimum - mean converges to constant, r converges to 0.
+
+
+Maybe this is due to the inaccurate posterior mean and variance at the beginning, we can try to update r after a couple iterations and see what will happen.
+
+
+```{r}
+
+out = nb_mean_polya_gamma(x=x,r=10,est_r=T,update_r_every = 10,
+                          tol=1e-8,
+                          maxiter = 2000,
+                          ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+
+```
+
+```{r}
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+out$r
+out$r_trace
+```
+
+
+```{r}
+plot(x,main='',col='grey80',pch=20)
+lines(mu,col='grey50')
+lines(out$mean_est,col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+
+
+
+```{r}
+
+out = nb_mean_polya_gamma(x=x,r=10,est_r=T,update_r_every = 20,
+                          maxiter = 2000,
+                          tol=1e-8,
+                          ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+
+```
+
+```{r}
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+out$r
+out$r_trace
+```
+
+```{r}
+plot(x,main='',col='grey80',pch=20)
+lines(mu,col='grey50')
+lines(out$mean_est,col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+
+### increase n
+
+```{r}
+set.seed(12345)
+n = 10000
+w = 0.2
+mu = c(rep(0.1,n*(1-w)),rep(10,n*w))
+x = rnbinom(n, size = 10, mu=mu)
+```
+
+```{r}
+
+out = nb_mean_polya_gamma(x=x,r=10,est_r=T,update_r_every = 20,
+                          maxiter = 2000,
+                          tol=1e-8,
+                          ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+
+```
+
+```{r}
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+out$r
+out$r_trace
+```
+
+```{r}
+plot(x,main='',col='grey80',pch=20)
+lines(mu,col='grey50')
+lines(out$mean_est,col=4)
+legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+m = out$m
+v = out$v
+delta = -sum(m)/2-sum(log(cosh(sqrt(m^2+v)/2)))-n*log(2)
+r_vec = 1:50
+obj_val = c()
+for(r in r_vec){
+  obj_val = c(obj_val,Fr(log(r),x,m,v,delta))
+}
+plot(r_vec,obj_val,type='l')
+```
+
+```{r}
+obj_val = c()
+for(r in r_vec){
+  obj_val = c(obj_val,Fr_d1(log(r),x,m,v,delta))
+}
+plot(r_vec,obj_val,type='l')
+```
+
