@@ -528,15 +528,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef15734b81b8758c4a5d8cc5d30cc082c844d6677targetblankf15734ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeafbcd7b5d8c5de2adfe54cbba6418f4a55fbb503targetblankafbcd7ba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/f15734b81b8758c4a5d8cc5d30cc082c844d6677" target="_blank">f15734b</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/afbcd7b5d8c5de2adfe54cbba6418f4a55fbb503" target="_blank">afbcd7b</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef15734b81b8758c4a5d8cc5d30cc082c844d6677targetblankf15734ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeafbcd7b5d8c5de2adfe54cbba6418f4a55fbb503targetblankafbcd7ba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -546,7 +546,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/f15734b81b8758c4a5d8cc5d30cc082c844d6677" target="_blank">f15734b</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/afbcd7b5d8c5de2adfe54cbba6418f4a55fbb503" target="_blank">afbcd7b</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -563,7 +563,6 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
 
 Untracked files:
     Untracked:  analysis/neg_binom_mean_lower_bound.Rmd
@@ -574,9 +573,11 @@ Untracked files:
     Untracked:  code/poisson_mean/pois_mean_GG_opt.R
     Untracked:  code/poisson_mean/pois_mean_GMG.R
     Untracked:  code/poisson_mean/pois_mean_GMGM.R
-    Untracked:  code/poisson_mean/pois_mean_penalized.R
     Untracked:  code/poisson_mean/test_example.R
     Untracked:  code/poisson_smooth/
+
+Unstaged changes:
+    Modified:   code/poisson_mean/pois_mean_penalized.R
 
 </code></pre>
 <p>
@@ -622,6 +623,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/afbcd7b5d8c5de2adfe54cbba6418f4a55fbb503/analysis/pois_mean_penalized.Rmd" target="_blank">afbcd7b</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-26
+</td>
+<td>
+wflow_publish("analysis/pois_mean_penalized.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/3e8e7d23c39a21bdc50f1a4004da79a0873052f4/docs/pois_mean_penalized.html" target="_blank">3e8e7d2</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -701,13 +736,14 @@ legend(&#39;topleft&#39;,c(&#39;true mu&#39;,&#39;log(ash posterior mean)&#39;),
 <p>Now we fit the penalize poisson mean problem with known prior.</p>
 <p>Use Nelder-Mead:</p>
 <pre class="r"><code>grid=c(0.01,2)
-fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;Nelder-Mead&#39;)
+fit = pois_mean_penalized_optim(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;Nelder-Mead&#39;)
 plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
 <p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
 lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
 lines(fit$m,col=4)
-legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
 <p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>fit$s2</code></pre>
 <pre><code>  [1] 0.503943270 0.335962180 1.007886541 0.503943270 0.503943270 0.335962180
@@ -727,14 +763,17 @@ legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=
  [85] 0.251971635 0.020997636 0.201577308 0.503943270 0.167981090 0.335962180
  [91] 1.007886541 1.007886541 0.025197164 1.007886541 1.007886541 0.503943270
  [97] 1.007886541 0.012598582 1.007886541 1.007886541</code></pre>
+<pre class="r"><code>L_known_g(fit$fit$par,x,w,grid)</code></pre>
+<pre><code>[1] -688.6274</code></pre>
 <p>Use BFGS:</p>
-<pre class="r"><code>fit = pois_mean_penalized(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;BFGS&#39;)
+<pre class="r"><code>fit = pois_mean_penalized_optim(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;BFGS&#39;)
 plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
 <p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
 lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
 lines(fit$m,col=4)
-legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
 <p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>fit$s2</code></pre>
 <pre><code>  [1] 1.563562e+42 3.787427e+75 4.879849e+30 1.563562e+42 1.563562e+42
@@ -757,49 +796,126 @@ legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=
  [86] 4.763309e+49 1.008232e+59 1.563562e+42 4.250852e+50 3.787427e+75
  [91] 4.879849e+30 4.879849e+30 7.775782e+49 4.879849e+30 4.879849e+30
  [96] 1.563562e+42 4.879849e+30 1.306805e+49 4.879849e+30 4.879849e+30</code></pre>
+<pre class="r"><code>L_known_g(fit$fit$par,x,w,grid)</code></pre>
+<pre><code>[1] -471183.7</code></pre>
+<p>Use CG:</p>
+<pre class="r"><code>fit = pois_mean_penalized_optim(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;CG&#39;)
+plot(L_grad_known_g(fit$fit$par,x,w,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 1.335038e+125 4.357316e+214  5.025312e+85 1.335038e+125 1.335038e+125
+  [6] 4.357316e+214  5.025312e+85  5.025312e+85 1.335038e+125 1.335038e+125
+ [11]  5.025312e+85 1.335038e+125 1.335038e+125  5.025312e+85 2.279027e+245
+ [16] 1.335038e+125  5.025312e+85 1.335038e+125 1.335038e+125  5.025312e+85
+ [21]  5.025312e+85  5.025312e+85  5.025312e+85 1.335038e+125 4.357316e+214
+ [26] 1.335038e+125 4.357316e+214 1.335038e+125 1.335038e+125 1.335038e+125
+ [31]  5.025312e+85 1.335038e+125 1.335038e+125 1.335038e+125 4.357316e+214
+ [36] 1.335038e+125 5.869611e+167 4.357316e+214 1.335038e+125 1.335038e+125
+ [41] 2.279027e+245 2.279027e+245 4.357316e+214 4.357316e+214 1.335038e+125
+ [46] 1.335038e+125 2.279027e+245 1.335038e+125  5.025312e+85 4.357316e+214
+ [51]  5.025312e+85 2.279027e+245  5.025312e+85  5.025312e+85 4.357316e+214
+ [56] 4.357316e+214  5.025312e+85  5.025312e+85  5.025312e+85 1.335038e+125
+ [61] 2.279027e+245 4.357316e+214 4.357316e+214 4.357316e+214 1.335038e+125
+ [66]  5.025312e+85  5.025312e+85 4.357316e+214 5.869611e+167 1.335038e+125
+ [71]  5.025312e+85  5.025312e+85  5.025312e+85 5.869611e+167 4.357316e+214
+ [76] 1.335038e+125 1.335038e+125  5.025312e+85  5.025312e+85 4.357316e+214
+ [81] 4.357316e+214 1.036774e+144  5.025312e+85 1.571839e+125 2.279027e+245
+ [86] 5.419367e+140 5.869611e+167 1.335038e+125 3.669941e+143 4.357316e+214
+ [91]  5.025312e+85  5.025312e+85 5.736992e+141  5.025312e+85  5.025312e+85
+ [96] 1.335038e+125  5.025312e+85 2.040635e+135  5.025312e+85  5.025312e+85</code></pre>
+<pre class="r"><code>L_known_g(fit$fit$par,x,w,grid)</code></pre>
+<pre><code>[1] -3254344</code></pre>
 <p>Use <code>nleqslv</code> for solving gradient = 0 directly.</p>
 <pre class="r"><code>library(nleqslv)
-z_init = log(1+x)
-theta0 = c(z_init,-z_init,rep(1,n))
-#L_known_g(theta0,x,w,grid)
-#L_grad_known_g(theta0,x,w,grid)
-
-fit_nleqslv = nleqslv(theta0,
-                L_grad_known_g,
-                y=x,
-                w=w,
-                grid=grid)
-z=fit_nleqslv$x[1:n]
-s2=exp(fit_nleqslv$x[(n+1):(2*n)])
-plot(L_grad_known_g(fit_nleqslv$x,x,w,grid))</code></pre>
-<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>L_known_g(fit_nleqslv$x,x,w,grid)</code></pre>
-<pre><code>[1] -733.7425</code></pre>
-<pre class="r"><code>m = S(z,sqrt(s2),w,grid)
-
-
-plot(z,col=&#39;grey50&#39;)
+grid=c(0.01,2)
+fit = pois_mean_penalized_nleqslv(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;Broyden&#39;)
+plot(L_grad_known_g(fit$fit$x,x,w,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
 lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
-lines(m,col=4)
-legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 1.008880159 0.879275042 1.152719331 1.008880159 1.008880159 0.879275042
+  [7] 1.152719331 1.152719331 1.008880159 1.008880159 1.152719331 1.008880159
+ [13] 1.008880159 1.152719331 0.667709938 1.008880159 1.152719331 1.008880159
+ [19] 1.008880159 1.152719331 1.152719331 1.152719331 1.152719331 1.008880159
+ [25] 0.879275042 1.008880159 0.879275042 1.008880159 1.008880159 1.008880159
+ [31] 1.152719331 1.008880159 1.008880159 1.008880159 0.879275042 1.008880159
+ [37] 0.474556224 0.879275042 1.008880159 1.008880159 0.667709938 0.667709938
+ [43] 0.879275042 0.879275042 1.008880159 1.008880159 0.667709938 1.008880159
+ [49] 1.152719331 0.879275042 1.152719331 0.667709938 1.152719331 1.152719331
+ [55] 0.879275042 0.879275042 1.152719331 1.152719331 1.152719331 1.008880159
+ [61] 0.667709938 0.879275042 0.879275042 0.879275042 1.008880159 1.152719331
+ [67] 1.152719331 0.879275042 0.474556224 1.008880159 1.152719331 1.152719331
+ [73] 1.152719331 0.474556224 0.879275042 1.008880159 1.008880159 1.152719331
+ [79] 1.152719331 0.879275042 0.879275042 0.111429385 1.152719331 0.008671599
+ [85] 0.667709938 0.021951297 0.474556224 1.008880159 0.307423274 0.879275042
+ [91] 1.152719331 1.152719331 0.026592590 1.152719331 1.152719331 1.008880159
+ [97] 1.152719331 0.012916529 1.152719331 1.152719331</code></pre>
+<pre class="r"><code>L_known_g(fit$fit$x,x,w,grid)</code></pre>
+<pre><code>[1] -733.7425</code></pre>
+<pre class="r"><code>fit = pois_mean_penalized_nleqslv(x,w=w,grid=grid,est_w=FALSE,z_init = log(1+x),opt_method = &#39;Newton&#39;)
+plot(L_grad_known_g(fit$fit$x,x,w,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1]  1.005338369  0.872197937  1.151864543  1.005338369  1.005338369
+  [6]  0.872197937  1.151864543  1.151864543  1.005338369  1.005338369
+ [11]  1.151864543  1.005338369  1.005338369  1.151864543 38.218242360
+ [16]  1.005338369  1.151864543  1.005338369  1.005338369  1.151864543
+ [21]  1.151864543  1.151864543  1.151864543  1.005338369  0.872197937
+ [26]  1.005338369  0.872197937  1.005338369  1.005338369  1.005338369
+ [31]  1.151864543  1.005338369  1.005338369  1.005338369  0.872197937
+ [36]  1.005338369  0.475474444  0.872197937  1.005338369  1.005338369
+ [41] 38.218242360 38.218242360  0.872197937  0.872197937  1.005338369
+ [46]  1.005338369 38.218242360  1.005338369  1.151864543  0.872197937
+ [51]  1.151864543 38.218242360  1.151864543  1.151864543  0.872197937
+ [56]  0.872197937  1.151864543  1.151864543  1.151864543  1.005338369
+ [61] 38.218242360  0.872197937  0.872197937  0.872197937  1.005338369
+ [66]  1.151864543  1.151864543  0.872197937  0.475474444  1.005338369
+ [71]  1.151864543  1.151864543  1.151864543  0.475474444  0.872197937
+ [76]  1.005338369  1.005338369  1.151864543  1.151864543  0.872197937
+ [81]  0.872197937  0.111334228  1.151864543  0.008670817 38.218242360
+ [86]  0.021946771  0.475474444  1.005338369  0.306481214  0.872197937
+ [91]  1.151864543  1.151864543  0.026586098  1.151864543  1.151864543
+ [96]  1.005338369  1.151864543  0.012914866  1.151864543  1.151864543</code></pre>
+<pre class="r"><code>L_known_g(fit$fit$x,x,w,grid)</code></pre>
+<pre><code>[1] -645.5743</code></pre>
 </div>
 <div id="estimating-prior" class="section level2">
 <h2>estimating prior</h2>
 <pre class="r"><code>fit.ash = ashr::ash(log(x+0.01),sqrt(exp(-log(x+0.01))),pointmass=F,mixcompdist=&#39;normal&#39;,prior=&#39;uniform&#39;)
 grid = fit.ash$fitted_g$sd
 K = length(grid)</code></pre>
-<pre class="r"><code>fit = pois_mean_penalized(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;BFGS&#39;)</code></pre>
+<p>opt_method = ‘BFGS’</p>
+<pre class="r"><code>fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;BFGS&#39;)</code></pre>
 <pre class="r"><code>round(fit$w,3)</code></pre>
 <pre><code> [1] 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.001
 [13] 0.997 0.002 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000</code></pre>
+<pre class="r"><code>plot(grid,fit$w)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(L_grad(fit$fit$par,x,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
-<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
 lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
 lines(fit$m,col=4)
-legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>fit$s2</code></pre>
 <pre><code>  [1] 1.662263e+289 2.651347e+214  1.701144e+72 1.661045e+289 1.662265e+289
   [6] 3.621524e+213  1.701144e+72  1.701144e+72 1.662227e+289 1.662234e+289
@@ -821,32 +937,173 @@ legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=
  [86]  1.017289e+84 5.357096e+238 1.662260e+289 4.568985e+216 2.567518e+214
  [91]  1.701144e+72  1.701144e+72  5.844931e+85  1.701144e+72  1.701144e+72
  [96] 1.662256e+289  1.701144e+72  7.675118e+53  1.701144e+72  1.701144e+72</code></pre>
-<p>Use <code>nleqslv</code> for solving gradient = 0 directly.</p>
-<pre class="r"><code>z_init = log(1+x)
-theta0 = c(z_init,-z_init,rep(1,n),rep(1/K,K))
-#L(theta0,x,grid)
-#L_grad(theta0,x,grid)
-
-fit_nleqslv = nleqslv(theta0,
-                L_grad,
-                y=x,
-                grid=grid)
-z=fit_nleqslv$x[1:n]
-s2=exp(fit_nleqslv$x[(n+1):(2*n)])
-w = softmax(fit_nleqslv$x[-(1:(3*n))])
-plot(L_grad(fit_nleqslv$x,x,grid))</code></pre>
-<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>L(fit_nleqslv$x,x,grid)</code></pre>
-<pre><code>[1] -725.1228</code></pre>
-<pre class="r"><code>m = S(z,sqrt(s2),w,grid)
-
-plot(grid,w)</code></pre>
-<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(z,col=&#39;grey50&#39;)
+<p>opt_method = ‘Nelder-Mead’</p>
+<pre class="r"><code>fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;Nelder-Mead&#39;)</code></pre>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.047
+[13] 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.047 0.018</code></pre>
+<pre class="r"><code>plot(grid,fit$w)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(L_grad(fit$fit$par,x,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
 lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
-lines(m,col=4)
-legend(&#39;topleft&#39;,c(&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(1,20,NA),lty=c(NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 0.50226581 0.33484387 1.00453162 0.50226581 0.50226581 0.33484387
+  [7] 1.00453162 1.00453162 0.50226581 0.50226581 1.00453162 0.50226581
+ [13] 0.50226581 1.00453162 0.25113290 0.50226581 1.00453162 0.50226581
+ [19] 0.50226581 1.00453162 1.00453162 1.00453162 1.00453162 0.50226581
+ [25] 0.33484387 0.50226581 0.33484387 0.50226581 0.50226581 0.50226581
+ [31] 1.00453162 0.50226581 0.50226581 0.50226581 0.33484387 0.50226581
+ [37] 0.20090632 0.33484387 0.50226581 0.50226581 0.25113290 0.25113290
+ [43] 0.33484387 0.33484387 0.50226581 0.50226581 0.25113290 0.50226581
+ [49] 1.00453162 0.33484387 1.00453162 0.25113290 1.00453162 1.00453162
+ [55] 0.33484387 0.33484387 1.00453162 1.00453162 1.00453162 0.50226581
+ [61] 0.25113290 0.33484387 0.33484387 0.33484387 0.50226581 1.00453162
+ [67] 1.00453162 0.33484387 0.20090632 0.50226581 1.00453162 1.00453162
+ [73] 1.00453162 0.20090632 0.33484387 0.50226581 0.50226581 1.00453162
+ [79] 1.00453162 0.33484387 0.33484387 0.09132106 1.00453162 0.00851298
+ [85] 0.25113290 0.02092774 0.20090632 0.50226581 0.16742194 0.33484387
+ [91] 1.00453162 1.00453162 0.02511329 1.00453162 1.00453162 0.50226581
+ [97] 1.00453162 0.01255665 1.00453162 1.00453162</code></pre>
+<p>opt_method = ‘L-BFGS-B’</p>
+<pre class="r"><code>fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;L-BFGS-B&#39;)</code></pre>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0.058 0.058 0.058 0.058 0.058 0.058 0.058 0.059 0.061 0.065 0.072 0.086
+[13] 0.111 0.112 0.029 0.001 0.000 0.000 0.000 0.000 0.000 0.000</code></pre>
+<pre class="r"><code>plot(grid,fit$w)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(L_grad(fit$fit$par,x,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-17-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 1.960959e+02 2.464830e+03 5.218593e+01 1.960959e+02 1.960959e+02
+  [6] 2.464830e+03 5.218593e+01 5.218593e+01 1.960959e+02 1.960959e+02
+ [11] 5.218593e+01 1.960959e+02 1.960959e+02 5.218593e+01 1.483908e+04
+ [16] 1.960959e+02 5.218593e+01 1.960959e+02 1.960959e+02 5.218593e+01
+ [21] 5.218593e+01 5.218593e+01 5.218593e+01 1.960959e+02 2.464830e+03
+ [26] 1.960959e+02 2.464830e+03 1.960959e+02 1.960959e+02 1.960959e+02
+ [31] 5.218593e+01 1.960959e+02 1.960959e+02 1.960959e+02 2.464830e+03
+ [36] 1.960959e+02 1.030434e+03 2.464830e+03 1.960959e+02 1.960959e+02
+ [41] 1.483908e+04 1.483908e+04 2.464830e+03 2.464830e+03 1.960959e+02
+ [46] 1.960959e+02 1.483908e+04 1.960959e+02 5.218593e+01 2.464830e+03
+ [51] 5.218593e+01 1.483908e+04 5.218593e+01 5.218593e+01 2.464830e+03
+ [56] 2.464830e+03 5.218593e+01 5.218593e+01 5.218593e+01 1.960959e+02
+ [61] 1.483908e+04 2.464830e+03 2.464830e+03 2.464830e+03 1.960959e+02
+ [66] 5.218593e+01 5.218593e+01 2.464830e+03 1.030434e+03 1.960959e+02
+ [71] 5.218593e+01 5.218593e+01 5.218593e+01 1.030434e+03 2.464830e+03
+ [76] 1.960959e+02 1.960959e+02 5.218593e+01 5.218593e+01 2.464830e+03
+ [81] 2.464830e+03 3.472784e+01 5.218593e+01 1.634692e-19 1.483908e+04
+ [86] 6.241046e-03 1.030434e+03 1.960959e+02 2.443946e+02 2.464830e+03
+ [91] 5.218593e+01 5.218593e+01 1.055648e-01 5.218593e+01 5.218593e+01
+ [96] 1.960959e+02 5.218593e+01 5.825360e-12 5.218593e+01 5.218593e+01</code></pre>
+<p>opt_method = ‘CG’</p>
+<pre class="r"><code>fit = pois_mean_penalized_optim(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;CG&#39;)</code></pre>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0</code></pre>
+<pre class="r"><code>plot(grid,fit$w)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(L_grad(fit$fit$par,x,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 2.532475e+154 2.330736e+246 2.954520e+106 2.532475e+154 2.532475e+154
+  [6] 2.330736e+246 2.954520e+106 2.954520e+106 2.532475e+154 2.532475e+154
+ [11] 2.954520e+106 2.532475e+154 2.532475e+154 2.954520e+106 2.752708e+305
+ [16] 2.532475e+154 2.954520e+106 2.532475e+154 2.532475e+154 2.954520e+106
+ [21] 2.954520e+106 2.954520e+106 2.954520e+106 2.532475e+154 2.330736e+246
+ [26] 2.532475e+154 2.330736e+246 2.532475e+154 2.532475e+154 2.532475e+154
+ [31] 2.954520e+106 2.532475e+154 2.532475e+154 2.532475e+154 2.330736e+246
+ [36] 2.532475e+154 1.159014e+229 2.330736e+246 2.532475e+154 2.532475e+154
+ [41] 2.752708e+305 2.752708e+305 2.330736e+246 2.330736e+246 2.532475e+154
+ [46] 2.532475e+154 2.752708e+305 2.532475e+154 2.954520e+106 2.330736e+246
+ [51] 2.954520e+106 2.752708e+305 2.954520e+106 2.954520e+106 2.330736e+246
+ [56] 2.330736e+246 2.954520e+106 2.954520e+106 2.954520e+106 2.532475e+154
+ [61] 2.752708e+305 2.330736e+246 2.330736e+246 2.330736e+246 2.532475e+154
+ [66] 2.954520e+106 2.954520e+106 2.330736e+246 1.159014e+229 2.532475e+154
+ [71] 2.954520e+106 2.954520e+106 2.954520e+106 1.159014e+229 2.330736e+246
+ [76] 2.532475e+154 2.532475e+154 2.954520e+106 2.954520e+106 2.330736e+246
+ [81] 2.330736e+246 5.988746e+155 2.954520e+106 9.356365e+177 2.752708e+305
+ [86] 1.338887e+177 1.159014e+229 2.532475e+154 2.858358e+190 2.330736e+246
+ [91] 2.954520e+106 2.954520e+106 6.187887e+176 2.954520e+106 2.954520e+106
+ [96] 2.532475e+154 2.954520e+106 5.328433e+177 2.954520e+106 2.954520e+106</code></pre>
+<p>Use <code>nleqslv</code> for solving gradient = 0 directly.</p>
+<pre class="r"><code>fit = pois_mean_penalized_nleqslv(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;Broyden&#39;)
+plot(L_grad(fit$fit$x,x,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-21-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0</code></pre>
+<pre class="r"><code>plot(grid,fit$w)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-21-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 1.161368708 0.710919446 1.870311590 1.161368708 1.161368708 0.710919446
+  [7] 1.870311588 1.870311588 1.161368708 1.161368708 1.870311592 1.161368708
+ [13] 1.161368708 1.870311588 0.475917124 1.161368708 1.870311588 1.161368708
+ [19] 1.161368708 1.870311590 1.870311588 1.870311588 1.870311588 1.161368708
+ [25] 0.710919446 1.161368708 0.710919446 1.161368708 1.161368708 1.161368708
+ [31] 1.870311590 1.161368708 1.161368708 1.161368708 0.710919446 1.161368708
+ [37] 0.347687554 0.710919446 1.161368708 1.161368708 0.475917124 0.475917124
+ [43] 0.710919446 0.710919446 1.161368708 1.161368708 0.475917124 1.161368708
+ [49] 1.870311589 0.710919446 1.870311589 0.475917124 1.870311589 1.870311589
+ [55] 0.710919446 0.710919446 1.870311586 1.870311589 1.870311587 1.161368708
+ [61] 0.475917124 0.710919446 0.710919446 0.710919446 1.161368708 1.870311590
+ [67] 1.870311587 0.710919446 0.347687553 1.161368708 1.870311588 1.870311592
+ [73] 1.870311588 0.347687554 0.710919446 1.161368708 1.161368708 1.870311586
+ [79] 1.870311586 0.710919446 0.710919446 0.122911972 1.870311586 0.008833582
+ [85] 0.475917124 0.022779652 0.347687554 1.161368708 0.270392653 0.710919446
+ [91] 1.870311589 1.870311588 0.027743775 1.870311586 1.870311585 1.161368708
+ [97] 1.870311586 0.013244965 1.870311586 1.870311588</code></pre>
+<pre class="r"><code>fit = pois_mean_penalized_nleqslv(x,w=NULL,grid=grid,est_w=TRUE,z_init = log(1+x),opt_method = &#39;Newton&#39;)
+plot(L_grad(fit$fit$x,x,grid),ylab=&#39;gradient&#39;,main=&#39;check gradient&#39;)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$z,col=&#39;grey50&#39;)
+lines(log(1+x),type=&#39;p&#39;,pch=8,col=&#39;grey50&#39;)
+lines(mu,col=&#39;grey80&#39;,type=&#39;p&#39;,pch=20)
+lines(fit$m,col=4)
+legend(&#39;topleft&#39;,c(&#39;log(1+x)&#39;,&#39;z&#39;,&#39;true mu&#39;,&#39;mu hat&#39;), pch=c(8,1,20,NA),lty=c(NA,NA,NA,1),col=c(&#39;grey50&#39;,&#39;grey50&#39;,&#39;grey80&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-22-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0</code></pre>
+<pre class="r"><code>plot(grid,fit$w)</code></pre>
+<p><img src="figure/pois_mean_penalized.Rmd/unnamed-chunk-22-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$s2</code></pre>
+<pre><code>  [1] 1.161367355 0.710917648 1.870314513 1.161367354 1.161367354 0.710917648
+  [7] 1.870314514 1.870314513 1.161367354 1.161367355 1.870314514 1.161367354
+ [13] 1.161367355 1.870314514 0.475927027 1.161367354 1.870314514 1.161367355
+ [19] 1.161367354 1.870314512 1.870314515 1.870314513 1.870314512 1.161367354
+ [25] 0.710917649 1.161367355 0.710917649 1.161367354 1.161367354 1.161367354
+ [31] 1.870314514 1.161367355 1.161367354 1.161367354 0.710917648 1.161367354
+ [37] 0.347691536 0.710917648 1.161367355 1.161367354 0.475927027 0.475927027
+ [43] 0.710917649 0.710917648 1.161367354 1.161367354 0.475927027 1.161367354
+ [49] 1.870314514 0.710917648 1.870314515 0.475927027 1.870314512 1.870314513
+ [55] 0.710917648 0.710917648 1.870314514 1.870314513 1.870314513 1.161367354
+ [61] 0.475927027 0.710917649 0.710917648 0.710917649 1.161367354 1.870314515
+ [67] 1.870314513 0.710917649 0.347691536 1.161367354 1.870314514 1.870314514
+ [73] 1.870314515 0.347691536 0.710917649 1.161367354 1.161367354 1.870314514
+ [79] 1.870314514 0.710917648 0.710917649 0.122911966 1.870314514 0.008833588
+ [85] 0.475927027 0.022779651 0.347691536 1.161367354 0.270393882 0.710917648
+ [91] 1.870314514 1.870314516 0.027743770 1.870314515 1.870314512 1.161367354
+ [97] 1.870314512 0.013244968 1.870314514 1.870314515</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
