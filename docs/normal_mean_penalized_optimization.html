@@ -13,7 +13,7 @@
 
 <meta name="date" content="2022-05-25" />
 
-<title>normal mean penalized form optimization</title>
+<title>Normal mean penalized form optimization - Compound method</title>
 
 <script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -366,8 +366,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">normal mean penalized form
-optimization</h1>
+<h1 class="title toc-ignore">Normal mean penalized form optimization -
+Compound method</h1>
 <h4 class="author">Dongyue Xie</h4>
 <h4 class="date">2022-05-25</h4>
 
@@ -398,7 +398,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-09-27
+<strong>Last updated:</strong> 2022-09-28
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -529,15 +529,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree33ecc09e8a9a4866fbdc021be77e93c7b4d2f105targetblank33ecc09a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed29ca8a274bcc58d8383076896e47c8ee2348130targetblankd29ca8aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/33ecc09e8a9a4866fbdc021be77e93c7b4d2f105" target="_blank">33ecc09</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/d29ca8a274bcc58d8383076896e47c8ee2348130" target="_blank">d29ca8a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree33ecc09e8a9a4866fbdc021be77e93c7b4d2f105targetblank33ecc09a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed29ca8a274bcc58d8383076896e47c8ee2348130targetblankd29ca8aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +547,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/33ecc09e8a9a4866fbdc021be77e93c7b4d2f105" target="_blank">33ecc09</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/d29ca8a274bcc58d8383076896e47c8ee2348130" target="_blank">d29ca8a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -564,23 +564,9 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
 
 Untracked files:
-    Untracked:  analysis/neg_binom_mean_lower_bound.Rmd
-    Untracked:  analysis/neg_binom_mean_polya_gamma.Rmd
-    Untracked:  code/poisson_mean/neg_binom_mean_lower_bound.R
-    Untracked:  code/poisson_mean/neg_binom_mean_polya_gamma.R
-    Untracked:  code/poisson_mean/pois_mean_GG.R
-    Untracked:  code/poisson_mean/pois_mean_GG_opt.R
-    Untracked:  code/poisson_mean/pois_mean_GMG.R
-    Untracked:  code/poisson_mean/pois_mean_GMGM.R
-    Untracked:  code/poisson_mean/test_example.R
-    Untracked:  code/poisson_smooth/
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
-    Modified:   code/poisson_mean/pois_mean_penalized.R
+    Untracked:  analysis/normal_mean_penalized_optimization_inversion.Rmd
 
 </code></pre>
 <p>
@@ -632,6 +618,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/d29ca8a274bcc58d8383076896e47c8ee2348130/analysis/normal_mean_penalized_optimization.Rmd" target="_blank">d29ca8a</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-28
+</td>
+<td>
+revise knowned g case, fixed a bug in l_nm_d1
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/be758f27ac20fc86c54f454fba4a0b5ad177dac1/docs/normal_mean_penalized_optimization.html" target="_blank">be758f2</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/33ecc09e8a9a4866fbdc021be77e93c7b4d2f105/analysis/normal_mean_penalized_optimization.Rmd" target="_blank">33ecc09</a>
 </td>
 <td>
@@ -670,78 +690,72 @@ add un-knited files
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p><span class="math display">\[y\sim N(\mu,s^2),\mu\sim
+<p><span class="math display">\[y|\mu\sim N(\mu,s^2),\mu\sim
 g(\cdot)\]</span></p>
 <p>Optimization: <span class="math inline">\(\theta =
 E_q\mu\)</span>,</p>
 <p><span class="math display">\[\min_{\theta,g}h(\theta,g) =
 \frac{1}{2s^2}(y-\theta)^2+\rho_{g,s}(\theta).\]</span></p>
-<p>Since</p>
 <p><span class="math display">\[S_{g,s^2}(z) = z
 +s^2l&#39;_{NM}(z;g,s^2)\]</span></p>
-<p>Use the compound penalty term <span class="math inline">\(c(z) =
-\rho(S(z))\)</span>, the final problem is</p>
+<p>The penalty term is only tractable at <span
+class="math inline">\(\rho(S(\cdot))\)</span>. There are two ways to
+accommodate this.</p>
+<p>Define the penalty evaluated at <span
+class="math inline">\(S_{g,s^2}(\cdot)\)</span> as <span
+class="math inline">\(c_{g,s^2}(\cdot):=\rho_{g,s^2}(S_{g,s^2}(\cdot))\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>Compound way</li>
+</ol>
+<p>Let <span class="math inline">\(\theta = S_{g,s^2}(z)\)</span> such
+that <span class="math inline">\(\rho_{g,s^2}(\theta) =
+c_{g,s^2}(z)\)</span>, the optimization problem is</p>
 <p><span class="math display">\[\min_{z,g} \tilde h(z,g) =
-\frac{1}{2s^2}(y-S(z))^2-l_{NM}(z;g,s^2)-(z-S(z))^2/(2s^2)\]</span></p>
+\frac{1}{2s^2}(y-S_{g,s^2}(z))^2-l_{NM}(z;g,s^2)-(z-S_{g,s^2}(z))^2/(2s^2)\]</span></p>
 <p><span class="math display">\[\min_{z,g} \tilde h(z,g) =
 \frac{1}{2s^2}(y-z-s^2l&#39;_{NM}(z;g,s^2))^2-l_{NM}-s^2(l&#39;_{NM})^2/2\]</span></p>
 <p>Then set <span class="math inline">\(\hat\theta = S(z)\)</span>.</p>
-<pre class="r"><code>#&#39;log marginal likelihood of normal mean model
-#&#39;@param x scalar 
-#&#39;@param g prior, normal mixture
-l_nm = function(x,s,w,grid){
-  log(sum(w*dnorm(x,0,sqrt(grid^2+s^2))))
-}
+<ol start="2" style="list-style-type: decimal">
+<li>Inversion way</li>
+</ol>
+<p>Note that <span
+class="math inline">\(c_{g,s^2}(S^{-1}_{g,s^2}(\theta)) =
+\rho_{g,s^2}(\theta)\)</span>, so we can write the optimization problem
+as</p>
+<p><span class="math display">\[\min_{\theta,g}  h(\theta,g) =
+\frac{1}{2s^2}(y-\theta)^2-c_{g,s^2}(S^{-1}_{g,s^2}(\theta))\]</span></p>
+<p>For the inversion method implementation and illustration, see <a
+href="normal_mean_penalized_optimization_inversion.html">here</a></p>
+<pre class="r"><code># #&#39;log marginal likelihood of normal mean model
+# #&#39;@param x scalar 
+# #&#39;@param g prior, normal mixture
+# l_nm = function(x,s,w,grid){
+#   log(sum(w*dnorm(x,0,sqrt(grid^2+s^2))))
+# }
+# 
+# #&#39;first order derivative of log marginal likelihood of normal mean model
+# #&#39;@param x scalar 
+# #&#39;@param g prior, normal mixture
+# l_nm_d1 = function(x,s,w,grid){
+#   f = sum(w*dnorm(x,0,sqrt(grid^2+s^2)))
+#   f_d1 = sum(w*dnorm(x,0,sqrt(grid^2+s^2))*x/(grid^2+s^2))
+#   f_d1/f
+# }
+# 
+# softmax = function(a){
+#   exp(a-max(a))/sum(exp(a-max(a)))
+# }
+# 
+# #&#39;posterior mean operator
+# S = function(x,s,w,grid){
+#   K = length(w)
+#   g = normalmix(pi=w,mean=rep(0,K),sd=grid)
+#   fit.ash = ash(x,s,g=g,fixg=T)
+#   fit.ash$result$PosteriorMean
+# }
 
-#&#39;first order derivative of log marginal likelihood of normal mean model
-#&#39;@param x scalar 
-#&#39;@param g prior, normal mixture
-l_nm_d1 = function(x,s,w,grid){
-  f = sum(w*dnorm(x,0,sqrt(grid^2+s^2)))
-  f_d1 = sum(w*dnorm(x,0,sqrt(grid^2+s^2))*x/(grid^2+s^2))
-  f_d1/f
-}
-
-softmax = function(a){
-  exp(a-max(a))/sum(exp(a-max(a)))
-}
-
-#&#39;posterior mean operator
-S = function(x,s,w,grid){
-  K = length(w)
-  g = normalmix(pi=w,mean=rep(0,K),sd=grid)
-  fit.ash = ash(x,s,g=g,fixg=T)
-  fit.ash$result$PosteriorMean
-}
-
-#&#39;objective function
-#&#39;@param theta (mu_bar,w)
-#&#39;@param grid prior sds
-f_obj = function(theta,y,s,grid){
-  n = length(y)
-  res = 0
-  w = softmax(theta[-(1:n)])
-  for(i in 1:n){
-    res = res + (y[i]-theta[i]-s^2*l_nm_d1(theta[i],s,w,grid))^2/2/s^2 - l_nm(theta[i],s,w,grid) - s^2*(l_nm_d1(theta[i],s,w,grid))^2/2
-  }
-  res
-}
-
-#&#39;objective function with known g
-#&#39;@param theta (mu_bar)
-#&#39;@param grid prior sds
-f_obj_known_g = function(theta,y,s,w,grid){
-  n = length(y)
-  res = 0
-  #w = softmax(theta[-(1:n)])
-  for(i in 1:n){
-    res = res + (y[i]-theta[i]-s^2*l_nm_d1(theta[i],s,w,grid))^2/2/s^2 - l_nm(theta[i],s,w,grid) - s^2*(l_nm_d1(theta[i],s,w,grid))^2/2
-  }
-  res
-}</code></pre>
-</div>
-<div id="ash-fit" class="section level2">
-<h2>ash fit</h2>
+source(&quot;code/poisson_mean/pois_mean_penalized.R&quot;)</code></pre>
+<p>generate data, and get grid by running ash</p>
 <pre class="r"><code>set.seed(12345)
 n = 200
 w0 = 0.9
@@ -759,79 +773,132 @@ grid = fit.ash$fitted_g$sd
 grid = grid[-1]
 K = length(grid)
 
-plot(y,main=&#39;ash fit&#39;,col=&#39;grey80&#39;)
-lines(lambda,col=&#39;grey60&#39;)
-lines(fit.ash$result$PosteriorMean)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;ash posteriorMean&#39;),pch=c(1,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+#plot(y,main=&#39;ash fit&#39;,col=&#39;grey80&#39;)
+#lines(lambda,col=&#39;grey60&#39;)
+#lines(fit.ash$result$PosteriorMean)
+#legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;ash posteriorMean&#39;),pch=c(1,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
 </div>
 <div id="known-prior" class="section level2">
 <h2>Known prior</h2>
+<p>We start with known prior, when <span
+class="math inline">\(g\)</span> is fully specified.</p>
+<p>When the prior is known, we are able to perform optimization one by
+one.</p>
+<pre class="r"><code>#&#39;objective function with known g
+#&#39;@param theta mu_bar
+#&#39;@param y,s a single observation and its std
+#&#39;@param w
+#&#39;@param grid prior sds
+f_obj_known_g = function(theta,y,s,w,grid){
+  
+  res = (y-theta-s^2*l_nm_d1_z(theta,s,w,grid))^2/2/s^2 - l_nm(theta,s,w,grid) - s^2*(l_nm_d1_z(theta,s,w,grid))^2/2
+  
+  return(res)
+}
+
+ebnm_penalized_compound_known_g = function(x,s,w,grid,z_init = NULL,opt_method = &#39;L-BFGS-B&#39;){
+  n = length(x)
+  z = double(n)
+  if(length(s)==1){
+    s = rep(s,n)
+  }
+  if(is.null(z_init)){
+    z_init = x
+  }
+  for(i in 1:n){
+    z[i] = optim(z_init[i],f_obj_known_g,
+                   y=x[i],
+                   s=s[i],
+                   w=w,
+                   grid=grid,
+                   method = opt_method)$par
+  }
+  posteriorMean = S(z,s,w,grid)
+  return(list(z=z,posteriorMean=posteriorMean))
+}</code></pre>
+<pre class="r"><code>ploter = function(fit,y,lambda){
+  plot(y,main=&#39;known prior&#39;,col=&#39;grey80&#39;)
+  lines(lambda,col=&#39;grey60&#39;)
+  lines(fit$z,type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
+  lines(fit$posteriorMean)
+  legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;z&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c(&#39;grey80&#39;,&#39;grey80&#39;,&#39;grey60&#39;,1))
+}</code></pre>
 <div id="init-z-at-data-y." class="section level3">
 <h3>Init <span class="math inline">\(z\)</span> at data <span
 class="math inline">\(y\)</span>.</h3>
-<pre class="r"><code>fit = optim(c(y),f_obj_known_g,method=&#39;BFGS&#39;,y=y,grid=grid_true,s=s,w=w_true)
-fit$value</code></pre>
-<pre><code>[1] 305.3612</code></pre>
-<pre class="r"><code>plot(y,main=&#39;known prior&#39;,col=&#39;grey80&#39;)
-lines(lambda,col=&#39;grey60&#39;)
-lines(fit$par,type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
-lines(S(fit$par,s,c(w0,1-w0),c(0.01,7)))
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;z&#39;,&#39;estimated mean&#39;),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c(&#39;grey80&#39;,&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = y,opt_method = &#39;L-BFGS-B&#39;)</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="init-z-at-0." class="section level3">
 <h3>Init <span class="math inline">\(z\)</span> at 0.</h3>
-<pre class="r"><code>fit = optim(rep(0,n),f_obj_known_g,method=&#39;BFGS&#39;,y=y,grid=grid_true,s=s,w=w_true)
-fit$value</code></pre>
-<pre><code>[1] 370.1249</code></pre>
-<pre class="r"><code>plot(y,main=&#39;known prior&#39;,col=&#39;grey80&#39;)
-lines(lambda,col=&#39;grey60&#39;)
-lines(fit$par,type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
-lines(S(fit$par,s,c(w0,1-w0),c(0.01,7)))
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;z&#39;,&#39;estimated mean&#39;),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c(&#39;grey80&#39;,&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = double(n),opt_method = &#39;L-BFGS-B&#39;)</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="estimate-prior" class="section level2">
 <h2>Estimate prior</h2>
-</div>
-<div id="init-at-y" class="section level2">
-<h2>init at y</h2>
-<pre class="r"><code>mu_init = y
-w_init = rep(1/K,K)
-fit = optim(c(mu_init,w_init),f_obj,method=&#39;BFGS&#39;,y=y,grid=grid,s=s)
-fit$value</code></pre>
-<pre><code>[1] 304.7594</code></pre>
-<pre class="r"><code>round(softmax(fit$par[-(1:n)]),2)</code></pre>
-<pre><code> [1] 0.89 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.11 0.00
-[16] 0.00 0.00</code></pre>
-<pre class="r"><code>plot(grid,round(softmax(fit$par[-(1:n)]),2),ylab=&#39;w hat&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(y,main=&#39;estimated prior&#39;,col=&#39;grey80&#39;)
-lines(lambda,col=&#39;grey60&#39;)
-lines(fit$par[1:n],type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
-lines(S(fit$par[1:n],s,softmax(fit$par[-(1:n)]),grid))
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;z&#39;,&#39;estimated mean&#39;),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c(&#39;grey80&#39;,&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="init-at-0" class="section level2">
-<h2>init at 0</h2>
-<pre class="r"><code>mu_init = rep(0,n)
-w_init = rep(1/K,K)
-fit = optim(c(mu_init,w_init),f_obj,method=&#39;BFGS&#39;,y=y,grid=grid,s=s)
-fit$value</code></pre>
-<pre><code>[1] 186.8715</code></pre>
-<pre class="r"><code>round(softmax(fit$par[-(1:n)]),2)</code></pre>
-<pre><code> [1] 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0</code></pre>
-<pre class="r"><code>plot(grid,round(softmax(fit$par[-(1:n)]),2),ylab=&#39;w hat&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(y,main=&#39;estimated prior&#39;,col=&#39;grey80&#39;)
-lines(lambda,col=&#39;grey60&#39;)
-lines(fit$par[1:n],type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
-lines(S(fit$par[1:n],s,softmax(fit$par[-(1:n)]),grid))
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;z&#39;,&#39;estimated mean&#39;),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c(&#39;grey80&#39;,&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
+<pre class="r"><code>#&#39;objective function
+#&#39;@param theta (mu_bar,w)
+#&#39;@param grid prior sds
+f_obj = function(theta,y,s,grid){
+  n = length(y)
+  w = softmax(theta[-(1:n)])
+  z = theta[1:n]
+  
+  res = sum((y-z-s^2*l_nm_d1_z(z,s,w,grid))^2/2/s^2 - l_nm(z,s,w,grid) - s^2*(l_nm_d1_z(z,s,w,grid))^2/2)
+
+  return(res)
+}
+
+ebnm_penalized_compound = function(x,s,grid,z_init = NULL,w_init=NULL,opt_method = &#39;L-BFGS-B&#39;){
+  n = length(x)
+  K = length(grid)
+  if(is.null(w_init)){
+    w_init = rep(1/K,K)
+  }
+  if(length(s)==1){
+    s = rep(s,n)
+  }
+  if(is.null(z_init)){
+    z_init = x
+  }
+  out = optim(c(z_init,w_init),f_obj,method=opt_method,
+              y=y,grid=grid,s=s)
+  z = out$par[1:n]
+  w = softmax(out$par[-(1:n)])
+  posteriorMean = S(z,s,w,grid)
+  return(list(z=z,w=w,posteriorMean=posteriorMean,opt_res = out))
+}</code></pre>
+<div id="init-at-y" class="section level3">
+<h3>init at y</h3>
+<pre class="r"><code>fit = ebnm_penalized_compound(y,s,grid,z_init = y)
+plot(grid,fit$w,ylab=&#39;w hat&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$opt_res$value</code></pre>
+<pre><code>[1] 408.2915</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="init-at-0" class="section level3">
+<h3>init at 0</h3>
+<pre class="r"><code>fit = ebnm_penalized_compound(y,s,grid,z_init = rep(0,n))
+plot(grid,fit$w,ylab=&#39;w hat&#39;)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$opt_res$value</code></pre>
+<pre><code>[1] 408.6266</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ash-fit" class="section level3">
+<h3>ash fit</h3>
+<pre class="r"><code>fit.ash = ash(y,s,mixcompdist = &#39;normal&#39;,pointmass=FALSE,prior=&#39;uniform&#39;,mixsd=grid)
+plot(y,main=&#39;ash fit&#39;,col=&#39;grey80&#39;)
+lines(lambda,col=&#39;grey60&#39;)
+lines(fit.ash$result$PosteriorMean)
+legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;ash posteriorMean&#39;),pch=c(1,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -874,6 +941,7 @@ loaded via a namespace (and not attached):
 [41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
 [45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.5     utf8_1.2.2      
 [49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
+</div>
 </div>
 </div>
 
