@@ -529,15 +529,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed29ca8a274bcc58d8383076896e47c8ee2348130targetblankd29ca8aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreebb07d433033d445e47aad267dc3f099407ff260dtargetblankbb07d43a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/d29ca8a274bcc58d8383076896e47c8ee2348130" target="_blank">d29ca8a</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/bb07d433033d445e47aad267dc3f099407ff260d" target="_blank">bb07d43</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed29ca8a274bcc58d8383076896e47c8ee2348130targetblankd29ca8aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreebb07d433033d445e47aad267dc3f099407ff260dtargetblankbb07d43a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +547,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/d29ca8a274bcc58d8383076896e47c8ee2348130" target="_blank">d29ca8a</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/bb07d433033d445e47aad267dc3f099407ff260d" target="_blank">bb07d43</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -613,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/bb07d433033d445e47aad267dc3f099407ff260d/analysis/normal_mean_penalized_optimization.Rmd" target="_blank">bb07d43</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-28
+</td>
+<td>
+fixe plot title
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/4f44ec8fd487e19a57e39a6521804b2568822c90/docs/normal_mean_penalized_optimization.html" target="_blank">4f44ec8</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -816,8 +850,8 @@ ebnm_penalized_compound_known_g = function(x,s,w,grid,z_init = NULL,opt_method =
   posteriorMean = S(z,s,w,grid)
   return(list(z=z,posteriorMean=posteriorMean))
 }</code></pre>
-<pre class="r"><code>ploter = function(fit,y,lambda){
-  plot(y,main=&#39;known prior&#39;,col=&#39;grey80&#39;)
+<pre class="r"><code>ploter = function(fit,y,lambda,main=&#39;known prior&#39;){
+  plot(y,main=main,col=&#39;grey80&#39;)
   lines(lambda,col=&#39;grey60&#39;)
   lines(fit$z,type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
   lines(fit$posteriorMean)
@@ -827,13 +861,13 @@ ebnm_penalized_compound_known_g = function(x,s,w,grid,z_init = NULL,opt_method =
 <h3>Init <span class="math inline">\(z\)</span> at data <span
 class="math inline">\(y\)</span>.</h3>
 <pre class="r"><code>fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = y,opt_method = &#39;L-BFGS-B&#39;)</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;known prior, init z at y&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="init-z-at-0." class="section level3">
 <h3>Init <span class="math inline">\(z\)</span> at 0.</h3>
 <pre class="r"><code>fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = double(n),opt_method = &#39;L-BFGS-B&#39;)</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;known prior, init z at 0&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -878,7 +912,7 @@ plot(grid,fit$w,ylab=&#39;w hat&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>fit$opt_res$value</code></pre>
 <pre><code>[1] 408.2915</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;estimate prior, init z at y&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="init-at-0" class="section level3">
@@ -888,7 +922,7 @@ plot(grid,fit$w,ylab=&#39;w hat&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>fit$opt_res$value</code></pre>
 <pre><code>[1] 408.6266</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda)</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;estimate prior, init z at 0&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="ash-fit" class="section level3">
