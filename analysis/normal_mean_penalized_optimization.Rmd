@@ -147,8 +147,8 @@ ebnm_penalized_compound_known_g = function(x,s,w,grid,z_init = NULL,opt_method =
 ```
 
 ```{r}
-ploter = function(fit,y,lambda){
-  plot(y,main='known prior',col='grey80')
+ploter = function(fit,y,lambda,main='known prior'){
+  plot(y,main=main,col='grey80')
   lines(lambda,col='grey60')
   lines(fit$z,type='p',pch=20,col='grey80')
   lines(fit$posteriorMean)
@@ -163,7 +163,7 @@ fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = y,opt_method
 ```
 
 ```{r}
-ploter(fit,y,lambda)
+ploter(fit,y,lambda,main='known prior, init z at y')
 ```
 
 
@@ -174,7 +174,7 @@ fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = double(n),op
 ```
 
 ```{r}
-ploter(fit,y,lambda)
+ploter(fit,y,lambda,main='known prior, init z at 0')
 ```
 
 ## Estimate prior
@@ -225,7 +225,7 @@ fit$opt_res$value
 
 
 ```{r}
-ploter(fit,y,lambda)
+ploter(fit,y,lambda,main='estimate prior, init z at y')
 ```
 
 ### init at 0
@@ -237,7 +237,7 @@ fit$opt_res$value
 ```
 
 ```{r}
-ploter(fit,y,lambda)
+ploter(fit,y,lambda,main='estimate prior, init z at 0')
 ```
 
 ### ash fit
