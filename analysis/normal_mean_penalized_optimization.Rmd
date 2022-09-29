@@ -76,7 +76,7 @@ For the inversion method implementation and illustration, see [here](normal_mean
 #   fit.ash$result$PosteriorMean
 # }
 
-source("code/poisson_mean/pois_mean_penalized.R")
+source("code/normal_mean_model_utils.R")
 ```
 
 generate data, and get grid by running ash
