@@ -59,12 +59,12 @@ lg_vec = function(x,w,s2){
 
 plot_lg = function(x,w,s2){
   plot(x,lg_vec(x,w,s2),type='l',xlab='x',ylab='log(g)',
-       main=paste('w=(',paste(w,collapse = ", "),'); s2=(',paste(s2,collapse = ", "),')',sep=''))
+       main=paste('w=(',paste(w,collapse = ", "),'); s2=(',paste(round(s2,2),collapse = ", "),')',sep=''))
 }
 
 plot_lg_d2 = function(x,w,s2){
   plot(x,lg_d2_vec(x,w,s2),type='l',xlab='x',ylab="(log g)''",
-       main=paste('w=(',paste(w,collapse = ", "),'); s2=(',paste(s2,collapse = ", "),')',sep=''))
+       main=paste('w=(',paste(w,collapse = ", "),'); s2=(',paste(round(s2,2),collapse = ", "),')',sep=''))
 }
 ```
 
@@ -86,7 +86,7 @@ plot_lg_d2(x,w,s2)
 ```
 
 
-```{r}
+```{r,eval=F}
 #'softmax
 softmax = function(a){
   exp(a-max(a))/sum(exp(a-max(a)))
