@@ -127,14 +127,14 @@ S = function(x,s,w,grid){
   K = length(w)
   #s = sqrt(exp(-x))
   g = normalmix(pi=w,mean=rep(0,K),sd=grid)
-  return(ashr:::calc_pm())
+  #return(ashr:::calc_pm())
   fit.ash = ashr::ash(x,s,g=g,fixg=T)
   fit.ash$result$PosteriorMean
 }
 
 #'@title inverse operator of S
 #'@describeIn S^{-1}(theta) returns the z such that S(z) = theta
-S_inv = function(theta,s,w,grid,z_range,n_search_intval=100){
+S_inv = function(theta,s,w,grid,z_range){
   #zs = seq(z_range[1],z_range[2],length.out = n_search_intval)
   #theta_vec = S(zs,s,w,grid)
   obj = function(z,theta,s,w,grid){
@@ -143,10 +143,11 @@ S_inv = function(theta,s,w,grid,z_range,n_search_intval=100){
   n = length(theta)
   z_out = double(n)
   for(j in 1:n){
+    #print(j)
     if(theta[j]>=0){
       z_out[j] = uniroot(obj,c(theta[j],z_range[2]),theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
     }else{
-      z_out[j] = uniroot(obj,c(z_range[1],theta[j]),theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'downX')$root
+      z_out[j] = uniroot(obj,c(z_range[1],theta[j]),theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
     }
 
   }

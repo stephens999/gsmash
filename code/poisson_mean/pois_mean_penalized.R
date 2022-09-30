@@ -1,3 +1,4 @@
+source("code/normal_mean_model_utils.R")
 #'@title Poisson mean problem via penalized form
 
 pois_mean_penalized_optim = function(x,
