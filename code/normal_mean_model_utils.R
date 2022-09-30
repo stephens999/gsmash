@@ -11,6 +11,10 @@ l_nm = function(x,s,w,grid){
 #'@return a n by K matrix of normal density
 nm_density = function(x,s,grid){
   K = length(grid)
+  n = length(x)
+  if(length(s)==1){
+    s = rep(s,n)
+  }
   sdmat = sqrt(outer(s^2,grid^2,FUN="+"))
   return(stats::dnorm(outer(x,rep(1,K),FUN="*")/sdmat)/sdmat)
 }
@@ -46,11 +50,17 @@ f_nm_d2_z = function(x,s,w,grid){
 
 #'@return a vector of derivative dl_nm/dz, length n
 l_nm_d1_z = function(x,s,w,grid){
+  if(length(s)==1){
+    s = rep(s,length(x))
+  }
   return(f_nm_d1_z(x,s,w,grid)/f_nm(x,s,w,grid))
 }
 
 #'@return a vector of second derivative d^2l_nm/dz^2, length n
 l_nm_d2_z = function(x,s,w,grid){
+  if(length(s)==1){
+    s = rep(s,length(x))
+  }
   temp = f_nm(x,s,w,grid)
   return(f_nm_d2_z(x,s,w,grid)/temp - (f_nm_d1_z(x,s,w,grid)/temp)^2)
 }
