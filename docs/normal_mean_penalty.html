@@ -15,7 +15,7 @@
 
 <title>Normal Mean problem Penalty</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
@@ -37,6 +37,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
@@ -156,11 +158,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -344,7 +350,13 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -385,7 +397,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-06-06
+<strong>Last updated:</strong> 2022-09-30
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -516,13 +528,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrong06b638b">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeaa4d90d325b29d6718e2f506d4ab8b97ac222b7atargetblankaa4d90da">
 <span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>Repository version:</strong> 06b638b
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/aa4d90d325b29d6718e2f506d4ab8b97ac222b7a" target="_blank">aa4d90d</a>
 </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrong06b638b"
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeaa4d90d325b29d6718e2f506d4ab8b97ac222b7atargetblankaa4d90da"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -531,7 +545,8 @@ and connecting the code version to the results is critical for
 reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version 06b638b.
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/aa4d90d325b29d6718e2f506d4ab8b97ac222b7a" target="_blank">aa4d90d</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -546,12 +561,12 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  analysis/normal_mean_penalized_optimization.Rmd
-    Untracked:  analysis/poisson_mean_loglik_expansion.Rmd
-    Untracked:  analysis/poisson_mean_loglik_expansion_optim.Rmd
+Unstaged changes:
+    Modified:   analysis/log_gmm_concave_ratio.Rmd
+    Modified:   code/normal_mean_model_utils.R
 
 </code></pre>
 <p>
@@ -602,7 +617,41 @@ Message
 Rmd
 </td>
 <td>
-06b638b
+<a href="https://github.com/DongyueXie/gsmash/blob/aa4d90d325b29d6718e2f506d4ab8b97ac222b7a/analysis/normal_mean_penalty.Rmd" target="_blank">aa4d90d</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-30
+</td>
+<td>
+add hess
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/86c651bc554ae229c929eaf3fd786428af22fefb/docs/normal_mean_penalty.html" target="_blank">86c651b</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/06b638bf9713b7127f94b260bf4b43df57db602c/analysis/normal_mean_penalty.Rmd" target="_blank">06b638b</a>
 </td>
 <td>
 Dongyue Xie
@@ -623,149 +672,165 @@ Publish the initial files for myproject
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>The normal mean penalty term evaluated at <span
-class="math inline">\(S(\cdot)\)</span>, the posterior mean operator,
-is</p>
-<p><span class="math display">\[c(\theta) = \rho(S(\theta)) =
+<p>What do the penalties <span
+class="math inline">\(\rho_{g,s^2}(\theta)\)</span> and <span
+class="math inline">\(c_{g,s^2}(\theta) =
+\rho_{g,s^2}(S_{g,s^2}(\theta))\)</span> look like?</p>
+<p>The first one is the original penalty and we’ll need inversion <span
+class="math inline">\(S^{-1}(\cdot)\)</span> to evaluate it; the second
+one is the compound penalty.</p>
+<p><span class="math display">\[\rho_{g,s^2}(\theta) =
+\rho_{g,s^2}(S_{g,s^2}(S^{-1}_{g,s^2}(\theta))) =
+c_{g,s^2}(S^{-1}_{g,s^2}(\theta))\]</span></p>
+<p><span class="math display">\[c_{g,s^2}(\theta) =
+\rho_{g,s^2}(S_{g,s^2}(\theta)) =
 -l_{NM}(\theta;g,s^2)-\frac{(\theta-S_{g,s}(\theta))^2}{2s^2}\]</span></p>
-<p>To evaluate <span class="math inline">\(\rho(\theta)\)</span>, we
+<p>(To evaluate <span class="math inline">\(\rho(\theta)\)</span>, we
 find <span class="math inline">\(z\)</span> such that <span
 class="math inline">\(S(z) = \theta\)</span> then <span
-class="math inline">\(\rho(\theta) = \rho(S(z))\)</span>.</p>
-<pre class="r"><code>#&#39;density of log g(x)
-#&#39;x is a scalar
-lg = function(x,w,s2){
-  return(log(sum(w*dnorm(x,0,sd=sqrt(s2)))))
-}
+class="math inline">\(\rho(\theta) = c(z)\)</span>.)</p>
+<p>We also evaluate the second derivative of the penalties:</p>
+<p>For the compound penalty <span class="math inline">\(c(\theta) =
+-l(\theta) - \frac{s^2(l&#39;(\theta))^2}{2}\)</span></p>
+<p><span class="math display">\[c&#39;(\theta) = -l&#39;(\theta) -
+s^2l&#39;(\theta)l&#39;&#39;(\theta)\]</span></p>
+<p><span class="math display">\[c&#39;&#39;(\theta) =
+-l&#39;&#39;(\theta) -
+s^2(l&#39;&#39;(\theta)^2+l&#39;&#39;&#39;(\theta)l&#39;(\theta))\]</span></p>
+<p>For the penalty <span
+class="math inline">\(\rho(\theta)\)</span>:</p>
+<p><span class="math display">\[\rho_{g,s^2}&#39;(\theta) =
+\frac{S^{-1}_{g,s^2}(\theta)-\theta}{s^2}\]</span></p>
+<p><span class="math display">\[\rho_{g,s^2}&#39;&#39;(\theta) =
+\frac{1}{s^2}\left(\frac{1}{1+s^2l&#39;&#39;_{nm}(S^{-1}_{g,s^2}(\theta))}-1\right)
+=
+\frac{-l&#39;&#39;_{nm}(S^{-1}_{g,s^2}(\theta))}{1+s^2l&#39;&#39;_{nm}(S^{-1}_{g,s^2}(\theta))}\]</span></p>
+<p><span class="math display">\[\rho&#39;&#39;(S(\theta)) =
+-l&#39;&#39;(\theta)/S&#39;(\theta).\]</span></p>
+<p><span class="math display">\[S(\theta) = \theta +
+s^2l_{NM}&#39;(\theta)\]</span></p>
+<p><span class="math display">\[S&#39;(\theta) = 1 +
+s^2l_{NM}&#39;&#39;(\theta)\]</span></p>
+<p><span class="math display">\[\rho&#39;&#39;(S(\theta)) =
+-l&#39;&#39;(\theta)/S&#39;(\theta) =
+-l&#39;&#39;(\theta)/(1+s^2l&#39;&#39;(\theta)).\]</span></p>
+<pre class="r"><code>source(&#39;code/normal_mean_model_utils.R&#39;)
 
-#&#39;density of log g(x)
-#&#39;x is a vector
-lg_vec = function(x,w,s2){
-  n = length(x)
-  out = rep(0,n)
-  for(i in 1:n){
-    out[i] = lg(x[i],w,s2)
-  }
-  return(out)
-}</code></pre>
-<pre class="r"><code>library(ashr)
-library(ebnm)
-#g = normalmix(pi = c(0,w),mean=rep(0,K+1),sd = c(0,sqrt(s2)))
+# nm = function(z,g,s){
+#   fit = ash(z,s,g = g,fixg = T)
+#   return(list(l_nm = fit$loglik, pm=fit$result$PosteriorMean))
+# }
+# 
+# penalty = function(theta,g,s){
+#   temp = nm(theta,g,s)
+#   return(-temp$l_nm - (theta-temp$pm)^2/2/s^2)
+# }
+# 
+# penalty_vec = function(x,g,s){
+#   n = length(x)
+#   out = rep(0,n)
+#   for(i in 1:n){
+#     out[i] = penalty(x[i],g,s)
+#   }
+#   return(out)
+# }
+# 
+# 
+# 
+# 
+# #&#39;posterior mean operator
+# S = function(z,g,s){
+#   pw = log(g$pi)+dnorm(z,mean=0,sd=sqrt(s^2+g$sd^2),log=TRUE)
+#   pw = pw - max(pw)
+#   pw = exp(pw)/sum(exp(pw))
+#   pm = z/(1+s^2/g$sd^2)
+#   return(sum(pw*pm))
+# }
+ 
+# #&#39;Solve S(z) = theta for a given theta
+# #&#39;@param theta 
+# #&#39;@param g a normalmix object with weights pi and sd
+# #&#39;@param s known standard error
+# inv_S = function(theta,g,s=1){
+#   eqn = function(z,theta,g,s){
+#     S(z,g,s) - theta
+#   }
+#   if(theta==0){
+#     sol = 0
+#   }else if(theta&gt;0){
+#     sol = uniroot(eqn,interval=c(0,theta/min(1/(1+s^2/g$sd^2))),theta=theta,g=g,s=s)$root
+#   }else{
+#     sol = uniroot(eqn,interval=c(theta/min(1/(1+s^2/g$sd^2)),0),theta=theta,g=g,s=s)$root
+#   }
+#   return(sol)
+# }
+# 
+# inv_S_vec = function(x,g,s=1){
+#   n = length(x)
+#   out = c()
+#   for(i in 1:n){
+#     out[i] = inv_S(x[i],g,s)
+#   }
+#   out
+# }
 
 
-nm = function(z,g,s){
-  fit = ash(z,s,g = g,fixg = T)
-  return(list(l_nm = fit$loglik, pm=fit$result$PosteriorMean))
-}
+plot_penalty = function(x,s=1,w,grid){
 
-penalty = function(theta,g,s){
-  temp = nm(theta,g,s)
-  return(-temp$l_nm - (theta-temp$pm)^2/2/s^2)
-}
-
-penalty_vec = function(x,g,s){
-  n = length(x)
-  out = rep(0,n)
-  for(i in 1:n){
-    out[i] = penalty(x[i],g,s)
-  }
-  return(out)
-}
-
-
-
-
-#&#39;posterior mean operator
-S = function(z,g,s){
-  pw = log(g$pi)+dnorm(z,mean=0,sd=sqrt(s^2+g$sd^2),log=TRUE)
-  pw = pw - max(pw)
-  pw = exp(pw)/sum(exp(pw))
-  pm = z/(1+s^2/g$sd^2)
-  return(sum(pw*pm))
-}
-
-#&#39;Solve S(z) = theta for a given theta
-#&#39;@param theta 
-#&#39;@param g a normalmix object with weights pi and sd
-#&#39;@param s known standard error
-inv_S = function(theta,g,s=1){
-  eqn = function(z,theta,g,s){
-    S(z,g,s) - theta
-  }
-  if(theta==0){
-    sol = 0
-  }else if(theta&gt;0){
-    sol = uniroot(eqn,interval=c(0,theta/min(1/(1+s^2/g$sd^2))),theta=theta,g=g,s=s)$root
-  }else{
-    sol = uniroot(eqn,interval=c(theta/min(1/(1+s^2/g$sd^2)),0),theta=theta,g=g,s=s)$root
-  }
-  return(sol)
-}
-
-inv_S_vec = function(x,g,s=1){
-  n = length(x)
-  out = c()
-  for(i in 1:n){
-    out[i] = inv_S(x[i],g,s)
-  }
-  out
-}
-
-
-plot_penalty = function(x,g,s=1){
-  
-  
   # plot compound penalty
-  compound_penalty = penalty_vec(x,g,s)
-  z = inv_S_vec(x,g,s)
-  original_penalty = penalty_vec(z,g,s)
+  compound_penalty = nm_penalty_compound(x,s,w,grid)
+  original_penalty = nm_penalty(x,s,w,grid)
   
   plot(x,compound_penalty,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;penalty&#39;,ylim=range(c(compound_penalty,original_penalty)),
-       main=paste(&#39;w=(&#39;,paste(g$pi,collapse = &quot;, &quot;),&#39;); sd=(&#39;,paste(g$sd,collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
+       main=paste(&#39;w=(&#39;,paste(w,collapse = &quot;, &quot;),&#39;); sd=(&#39;,paste(grid,collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
   lines(x,original_penalty,col=&#39;blue&#39;,lty=2)
   legend(&#39;bottomright&#39;,c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,&#39;blue&#39;))
+}
+
+plot_penalty_hess = function(x,s=1,w,grid){
+
+  # plot compound penalty
+  compound_penalty = nm_penalty_compound_hess(x,s,w,grid)
+  original_penalty = nm_penalty_hess(x,s,w,grid)
+  
+  plot(x,compound_penalty,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;2nd derivative of penalty&#39;,ylim=range(c(compound_penalty,original_penalty)),
+       main=paste(&#39;w=(&#39;,paste(w,collapse = &quot;, &quot;),&#39;); sd=(&#39;,paste(grid,collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
+  lines(x,original_penalty,col=&#39;blue&#39;,lty=2)
+  legend(&#39;topright&#39;,c(expression(rho^&quot;&#39;&#39;&quot;*(S(theta))),expression(rho^&quot;&#39;&#39;&quot;*(theta))),lty=c(1,2),col=c(1,&#39;blue&#39;))
 }</code></pre>
-<pre class="r"><code>x = seq(-10,10,length.out = 101)
-g = normalmix(pi = c(0.9,0.1),mean=rep(0,2),sd = c(0.1,2))
-plot_penalty(x,g)</code></pre>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+s = rep(1,n)
+w = c(0.9,0.1)
+grid=c(0.01,2)
+plot_penalty(x,s,w,grid)</code></pre>
+<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_penalty_hess(x,s,w,grid)</code></pre>
+<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>w = c(0.5,0.5)
+grid=c(0.01,2)
+plot_penalty(x,s,w,grid)</code></pre>
 <p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>x = seq(-10,10,length.out = 101)
-g = normalmix(pi = c(0.5,0.5),mean=rep(0,2),sd = c(0.1,2))
-plot_penalty(x,g)</code></pre>
+<pre class="r"><code>plot_penalty_hess(x,s,w,grid)</code></pre>
+<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>w = c(0.1,0.9)
+grid=c(0.01,2)
+plot_penalty(x,s,w,grid)</code></pre>
 <p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>x = seq(-30,30,length.out = 101)
-g = normalmix(pi = c(0.1,0.9),mean=rep(0,2),sd = c(0.1,2))
-plot_penalty(x,g)</code></pre>
-<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>x = seq(-10,10,length.out = 101)
-g = normalmix(pi = c(0.9,0.1),mean=rep(0,2),sd = c(1,2))
-plot_penalty(x,g)</code></pre>
-<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>x = seq(-20,20,length.out = 101)
-g = normalmix(pi = c(0.1,0.9),mean=rep(0,2),sd = c(1,2))
-plot_penalty(x,g)</code></pre>
-<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>x = seq(-5,5,length.out = 101)
-g = normalmix(pi = c(0.9,0.1),mean=rep(0,2),sd = c(0.1,0.2))
-plot_penalty(x,g)</code></pre>
-<p>Scale mixture of 19 normal distributions.</p>
+<pre class="r"><code>plot_penalty_hess(x,s,w,grid)</code></pre>
+<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#&#39;softmax
 softmax = function(a){
   exp(a-max(a))/sum(exp(a-max(a)))
 }
 s2 = exp(seq(-8,5,by=log(2)))
 w = softmax(log(1/s2))
-round(w,2)</code></pre>
-<pre><code> [1] 0.50 0.25 0.13 0.06 0.03 0.02 0.01 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
-[16] 0.00 0.00 0.00 0.00</code></pre>
-<pre class="r"><code>round(s2,2)</code></pre>
-<pre><code> [1]  0.00  0.00  0.00  0.00  0.01  0.01  0.02  0.04  0.09  0.17  0.34  0.69
-[13]  1.37  2.75  5.50 10.99 21.98 43.97 87.94</code></pre>
-<pre class="r"><code>K = length(w)
+round(w,2)
+round(s2,2)
+K = length(w)
 g = normalmix(pi = w,mean=rep(0,K),sd = sqrt(s2))
 x = seq(-10,10,length.out = 101)
-plot_penalty(x,g)</code></pre>
-<p><img src="figure/normal_mean_penalty.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+plot_penalty(x,w,s,sqrt(s2))</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -775,41 +840,39 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.0 (2022-04-22)
-Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Big Sur/Monterey 10.16
+<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22000)
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ebnm_1.0-9      ashr_2.2-54     workflowr_1.7.0
+[1] ashr_2.2-54     workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8.3      horseshoe_0.2.0   invgamma_1.1      lattice_0.20-45  
- [5] getPass_0.2-2     ps_1.7.0          assertthat_0.2.1  rprojroot_2.0.3  
- [9] digest_0.6.29     utf8_1.2.2        truncnorm_1.0-8   R6_2.5.1         
-[13] evaluate_0.15     highr_0.9         httr_1.4.2        ggplot2_3.3.5    
-[17] pillar_1.7.0      rlang_1.0.2       rstudioapi_0.13   irlba_2.3.5      
-[21] whisker_0.4       callr_3.7.0       jquerylib_0.1.4   Matrix_1.4-1     
-[25] rmarkdown_2.13    splines_4.2.0     stringr_1.4.0     munsell_0.5.0    
-[29] mixsqp_0.3-47     compiler_4.2.0    httpuv_1.6.5      xfun_0.30        
-[33] pkgconfig_2.0.3   SQUAREM_2021.1    htmltools_0.5.2   tidyselect_1.1.2 
-[37] tibble_3.1.6      fansi_1.0.3       crayon_1.5.1      dplyr_1.0.8      
-[41] later_1.3.0       grid_4.2.0        jsonlite_1.8.0    gtable_0.3.0     
-[45] lifecycle_1.0.1   DBI_1.1.2         git2r_0.30.1      magrittr_2.0.3   
-[49] scales_1.2.0      cli_3.3.0         stringi_1.7.6     fs_1.5.2         
-[53] promises_1.2.0.1  bslib_0.3.1       ellipsis_0.3.2    generics_0.1.2   
-[57] vctrs_0.4.1       trust_0.1-8       tools_4.2.0       glue_1.6.2       
-[61] purrr_0.3.4       processx_3.5.3    fastmap_1.1.0     yaml_2.3.5       
-[65] colorspace_2.0-3  deconvolveR_1.2-1 knitr_1.38        sass_0.4.1       </code></pre>
+ [1] Rcpp_1.0.9       highr_0.9        compiler_4.2.1   pillar_1.8.1    
+ [5] bslib_0.4.0      later_1.3.0      git2r_0.30.1     jquerylib_0.1.4 
+ [9] tools_4.2.1      getPass_0.2-2    digest_0.6.29    lattice_0.20-45 
+[13] jsonlite_1.8.0   evaluate_0.16    tibble_3.1.8     lifecycle_1.0.2 
+[17] pkgconfig_2.0.3  rlang_1.0.5      Matrix_1.4-1     cli_3.3.0       
+[21] rstudioapi_0.14  yaml_2.3.5       xfun_0.32        fastmap_1.1.0   
+[25] invgamma_1.1     httr_1.4.4       stringr_1.4.1    knitr_1.40      
+[29] fs_1.5.2         vctrs_0.4.1      sass_0.4.2       grid_4.2.1      
+[33] rprojroot_2.0.3  glue_1.6.2       R6_2.5.1         processx_3.7.0  
+[37] fansi_1.0.3      rmarkdown_2.16   mixsqp_0.3-43    irlba_2.3.5     
+[41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
+[45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.5     utf8_1.2.2      
+[49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
 </div>
 </div>
 
