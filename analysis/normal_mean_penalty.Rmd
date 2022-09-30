@@ -9,151 +9,155 @@ editor_options:
 
 ## Introduction
 
-The normal mean penalty term evaluated at $S(\cdot)$, the posterior mean operator, is 
+What do the penalties $\rho_{g,s^2}(\theta)$ and $c_{g,s^2}(\theta) = \rho_{g,s^2}(S_{g,s^2}(\theta))$  look like? 
 
-\[c(\theta) = \rho(S(\theta)) = -l_{NM}(\theta;g,s^2)-\frac{(\theta-S_{g,s}(\theta))^2}{2s^2}\]
+The first one is the original penalty and we'll need inversion $S^{-1}(\cdot)$ to evaluate it; the second one is the compound penalty.
 
-To evaluate $\rho(\theta)$, we find $z$ such that $S(z) = \theta$ then $\rho(\theta) = \rho(S(z))$.
+\[\rho_{g,s^2}(\theta) = \rho_{g,s^2}(S_{g,s^2}(S^{-1}_{g,s^2}(\theta))) = c_{g,s^2}(S^{-1}_{g,s^2}(\theta))\]
+
+\[c_{g,s^2}(\theta) = \rho_{g,s^2}(S_{g,s^2}(\theta)) = -l_{NM}(\theta;g,s^2)-\frac{(\theta-S_{g,s}(\theta))^2}{2s^2}\]
+
+(To evaluate $\rho(\theta)$, we find $z$ such that $S(z) = \theta$ then $\rho(\theta) = c(z)$.)
+
+We also evaluate the second derivative of the penalties:
+
+For the compound penalty $c(\theta) = -l(\theta) - \frac{s^2(l'(\theta))^2}{2}$
+
+\[c'(\theta) = -l'(\theta) - s^2l'(\theta)l''(\theta)\]
+
+\[c''(\theta) = -l''(\theta) - s^2(l''(\theta)^2+l'''(\theta)l'(\theta))\]
+
+For the penalty $\rho(\theta)$:
+
+\[\rho_{g,s^2}'(\theta) = \frac{S^{-1}_{g,s^2}(\theta)-\theta}{s^2}\]
+
+\[\rho_{g,s^2}''(\theta) = \frac{1}{s^2}\left(\frac{1}{1+s^2l''_{nm}(S^{-1}_{g,s^2}(\theta))}-1\right) = \frac{-l''_{nm}(S^{-1}_{g,s^2}(\theta))}{1+s^2l''_{nm}(S^{-1}_{g,s^2}(\theta))}\]
+
+\[\rho''(S(\theta)) = -l''(\theta)/S'(\theta).\]
+
+\[S(\theta) = \theta + s^2l_{NM}'(\theta)\]
+
+\[S'(\theta) = 1 + s^2l_{NM}''(\theta)\]
+
+\[\rho''(S(\theta)) = -l''(\theta)/S'(\theta) = -l''(\theta)/(1+s^2l''(\theta)).\]
+
+
 
 ```{r}
-#'density of log g(x)
-#'x is a scalar
-lg = function(x,w,s2){
-  return(log(sum(w*dnorm(x,0,sd=sqrt(s2)))))
-}
+source('code/normal_mean_model_utils.R')
 
-#'density of log g(x)
-#'x is a vector
-lg_vec = function(x,w,s2){
-  n = length(x)
-  out = rep(0,n)
-  for(i in 1:n){
-    out[i] = lg(x[i],w,s2)
-  }
-  return(out)
-}
-```
-
-```{r}
-library(ashr)
-library(ebnm)
-#g = normalmix(pi = c(0,w),mean=rep(0,K+1),sd = c(0,sqrt(s2)))
-
-
-nm = function(z,g,s){
-  fit = ash(z,s,g = g,fixg = T)
-  return(list(l_nm = fit$loglik, pm=fit$result$PosteriorMean))
-}
-
-penalty = function(theta,g,s){
-  temp = nm(theta,g,s)
-  return(-temp$l_nm - (theta-temp$pm)^2/2/s^2)
-}
-
-penalty_vec = function(x,g,s){
-  n = length(x)
-  out = rep(0,n)
-  for(i in 1:n){
-    out[i] = penalty(x[i],g,s)
-  }
-  return(out)
-}
-
-
-
-
-#'posterior mean operator
-S = function(z,g,s){
-  pw = log(g$pi)+dnorm(z,mean=0,sd=sqrt(s^2+g$sd^2),log=TRUE)
-  pw = pw - max(pw)
-  pw = exp(pw)/sum(exp(pw))
-  pm = z/(1+s^2/g$sd^2)
-  return(sum(pw*pm))
-}
-
-#'Solve S(z) = theta for a given theta
-#'@param theta 
-#'@param g a normalmix object with weights pi and sd
-#'@param s known standard error
-inv_S = function(theta,g,s=1){
-  eqn = function(z,theta,g,s){
-    S(z,g,s) - theta
-  }
-  if(theta==0){
-    sol = 0
-  }else if(theta>0){
-    sol = uniroot(eqn,interval=c(0,theta/min(1/(1+s^2/g$sd^2))),theta=theta,g=g,s=s)$root
-  }else{
-    sol = uniroot(eqn,interval=c(theta/min(1/(1+s^2/g$sd^2)),0),theta=theta,g=g,s=s)$root
-  }
-  return(sol)
-}
-
-inv_S_vec = function(x,g,s=1){
-  n = length(x)
-  out = c()
-  for(i in 1:n){
-    out[i] = inv_S(x[i],g,s)
-  }
-  out
-}
+# nm = function(z,g,s){
+#   fit = ash(z,s,g = g,fixg = T)
+#   return(list(l_nm = fit$loglik, pm=fit$result$PosteriorMean))
+# }
+# 
+# penalty = function(theta,g,s){
+#   temp = nm(theta,g,s)
+#   return(-temp$l_nm - (theta-temp$pm)^2/2/s^2)
+# }
+# 
+# penalty_vec = function(x,g,s){
+#   n = length(x)
+#   out = rep(0,n)
+#   for(i in 1:n){
+#     out[i] = penalty(x[i],g,s)
+#   }
+#   return(out)
+# }
+# 
+# 
+# 
+# 
+# #'posterior mean operator
+# S = function(z,g,s){
+#   pw = log(g$pi)+dnorm(z,mean=0,sd=sqrt(s^2+g$sd^2),log=TRUE)
+#   pw = pw - max(pw)
+#   pw = exp(pw)/sum(exp(pw))
+#   pm = z/(1+s^2/g$sd^2)
+#   return(sum(pw*pm))
+# }
+ 
+# #'Solve S(z) = theta for a given theta
+# #'@param theta 
+# #'@param g a normalmix object with weights pi and sd
+# #'@param s known standard error
+# inv_S = function(theta,g,s=1){
+#   eqn = function(z,theta,g,s){
+#     S(z,g,s) - theta
+#   }
+#   if(theta==0){
+#     sol = 0
+#   }else if(theta>0){
+#     sol = uniroot(eqn,interval=c(0,theta/min(1/(1+s^2/g$sd^2))),theta=theta,g=g,s=s)$root
+#   }else{
+#     sol = uniroot(eqn,interval=c(theta/min(1/(1+s^2/g$sd^2)),0),theta=theta,g=g,s=s)$root
+#   }
+#   return(sol)
+# }
+# 
+# inv_S_vec = function(x,g,s=1){
+#   n = length(x)
+#   out = c()
+#   for(i in 1:n){
+#     out[i] = inv_S(x[i],g,s)
+#   }
+#   out
+# }
 
 
-plot_penalty = function(x,g,s=1){
-  
-  
+plot_penalty = function(x,s=1,w,grid){
+
   # plot compound penalty
-  compound_penalty = penalty_vec(x,g,s)
-  z = inv_S_vec(x,g,s)
-  original_penalty = penalty_vec(z,g,s)
+  compound_penalty = nm_penalty_compound(x,s,w,grid)
+  original_penalty = nm_penalty(x,s,w,grid)
   
   plot(x,compound_penalty,type='l',xlab='theta',ylab='penalty',ylim=range(c(compound_penalty,original_penalty)),
-       main=paste('w=(',paste(g$pi,collapse = ", "),'); sd=(',paste(g$sd,collapse = ", "),')',sep=''))
+       main=paste('w=(',paste(w,collapse = ", "),'); sd=(',paste(grid,collapse = ", "),')',sep=''))
   lines(x,original_penalty,col='blue',lty=2)
   legend('bottomright',c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,'blue'))
 }
 
+plot_penalty_hess = function(x,s=1,w,grid){
+
+  # plot compound penalty
+  compound_penalty = nm_penalty_compound_hess(x,s,w,grid)
+  original_penalty = nm_penalty_hess(x,s,w,grid)
+  
+  plot(x,compound_penalty,type='l',xlab='theta',ylab='2nd derivative of penalty',ylim=range(c(compound_penalty,original_penalty)),
+       main=paste('w=(',paste(w,collapse = ", "),'); sd=(',paste(grid,collapse = ", "),')',sep=''))
+  lines(x,original_penalty,col='blue',lty=2)
+  legend('topright',c(expression(rho^"''"*(S(theta))),expression(rho^"''"*(theta))),lty=c(1,2),col=c(1,'blue'))
+}
+
 ```
 
 ```{r}
-x = seq(-10,10,length.out = 101)
-g = normalmix(pi = c(0.9,0.1),mean=rep(0,2),sd = c(0.1,2))
-plot_penalty(x,g)
+n = 101
+x = seq(-10,10,length.out = n)
+s = rep(1,n)
+w = c(0.9,0.1)
+grid=c(0.01,2)
+plot_penalty(x,s,w,grid)
+plot_penalty_hess(x,s,w,grid)
 ```
 
 ```{r}
-x = seq(-10,10,length.out = 101)
-g = normalmix(pi = c(0.5,0.5),mean=rep(0,2),sd = c(0.1,2))
-plot_penalty(x,g)
+w = c(0.5,0.5)
+grid=c(0.01,2)
+plot_penalty(x,s,w,grid)
+plot_penalty_hess(x,s,w,grid)
 ```
 
 ```{r}
-x = seq(-30,30,length.out = 101)
-g = normalmix(pi = c(0.1,0.9),mean=rep(0,2),sd = c(0.1,2))
-plot_penalty(x,g)
+w = c(0.1,0.9)
+grid=c(0.01,2)
+plot_penalty(x,s,w,grid)
+plot_penalty_hess(x,s,w,grid)
 ```
 
-```{r}
-x = seq(-10,10,length.out = 101)
-g = normalmix(pi = c(0.9,0.1),mean=rep(0,2),sd = c(1,2))
-plot_penalty(x,g)
-```
 
-```{r}
-x = seq(-20,20,length.out = 101)
-g = normalmix(pi = c(0.1,0.9),mean=rep(0,2),sd = c(1,2))
-plot_penalty(x,g)
-```
 
-```{r,eval=FALSE}
-x = seq(-5,5,length.out = 101)
-g = normalmix(pi = c(0.9,0.1),mean=rep(0,2),sd = c(0.1,0.2))
-plot_penalty(x,g)
-```
-
-Scale mixture of 19 normal distributions.
-
-```{r}
+```{r,eval=F}
 #'softmax
 softmax = function(a){
   exp(a-max(a))/sum(exp(a-max(a)))
@@ -165,6 +169,6 @@ round(s2,2)
 K = length(w)
 g = normalmix(pi = w,mean=rep(0,K),sd = sqrt(s2))
 x = seq(-10,10,length.out = 101)
-plot_penalty(x,g)
+plot_penalty(x,w,s,sqrt(s2))
 ```
 
