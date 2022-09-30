@@ -17,7 +17,8 @@ editor_options:
   + [log density of normal mixture, variance ratio](log_gmm_concave_ratio.html)
 * [log density of laplace mixture](log_lmm_concave.html)
 * [normal mean penalty plots](normal_mean_penalty.html)
-* [Solve normal mean problem using optimization](normal_mean_penalized_optimization.html)
+* [Solve normal mean problem using optimization - compund penalty](normal_mean_penalized_optimization.html)
+* [Solve normal mean problem using optimization - inversion method](normal_mean_penalized_optimization_inversion.html)
 
 
 
