@@ -398,7 +398,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-09-28
+<strong>Last updated:</strong> 2022-09-29
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -529,15 +529,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreebb07d433033d445e47aad267dc3f099407ff260dtargetblankbb07d43a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec7c5d5706728dd5f382495527fc5667eeb36ffb6targetblankc7c5d57a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/bb07d433033d445e47aad267dc3f099407ff260d" target="_blank">bb07d43</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/c7c5d5706728dd5f382495527fc5667eeb36ffb6" target="_blank">c7c5d57</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreebb07d433033d445e47aad267dc3f099407ff260dtargetblankbb07d43a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec7c5d5706728dd5f382495527fc5667eeb36ffb6targetblankc7c5d57a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +547,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/bb07d433033d445e47aad267dc3f099407ff260d" target="_blank">bb07d43</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/c7c5d5706728dd5f382495527fc5667eeb36ffb6" target="_blank">c7c5d57</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -567,6 +567,11 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/normal_mean_penalized_optimization_inversion.Rmd
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+    Modified:   code/normal_mean_model_utils.R
+    Modified:   code/poisson_mean/pois_mean_penalized.R
 
 </code></pre>
 <p>
@@ -613,6 +618,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/c7c5d5706728dd5f382495527fc5667eeb36ffb6/analysis/normal_mean_penalized_optimization.Rmd" target="_blank">c7c5d57</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-29
+</td>
+<td>
+add gradient
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/b127423063b67978e69f4ef546dac0aa3ba40b0f/analysis/normal_mean_penalized_optimization.Rmd" target="_blank">b127423</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-28
+</td>
+<td>
+fix path to code
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/f193c4c678b0550e007b52cbd0c146e834df884d/docs/normal_mean_penalized_optimization.html" target="_blank">f193c4c</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -788,7 +844,7 @@ href="normal_mean_penalized_optimization_inversion.html">here</a></p>
 #   fit.ash$result$PosteriorMean
 # }
 
-source(&quot;code/poisson_mean/pois_mean_penalized.R&quot;)</code></pre>
+source(&quot;code/normal_mean_model_utils.R&quot;)</code></pre>
 <p>generate data, and get grid by running ash</p>
 <pre class="r"><code>set.seed(12345)
 n = 200
@@ -796,7 +852,7 @@ w0 = 0.9
 lambda = c(rep(0,round(n*w0)),rep(10,n-round(n*w0)))
 w_true = c(w0,1-w0)
 grid_true = c(0.01,7)
-s = 1
+s = rep(1,n)
 y = rnorm(n,lambda,s)
 library(ashr)
 fit.ash = ashr::ash(y,s,mixcompdist = &#39;normal&#39;)
@@ -886,6 +942,21 @@ f_obj = function(theta,y,s,grid){
   return(res)
 }
 
+#&#39;objective function
+#&#39;@param theta (mu_bar,w)
+#&#39;@param grid prior sds
+f_obj_grad = function(theta,y,s,grid){
+  n = length(y)
+  a = theta[-(1:n)]
+  w = softmax(a)
+  z = theta[1:n]
+  
+  grad_z = (1+s^2*l_nm_d2_z(z,s,w,grid))*(z-y)/s^2
+  grad_a = colSums((s^2*l_nm_d1_z(z,s,w,grid)-y+z)*l_nm_d2_za(z,s,a,grid) - l_nm_d1_a(z,s,a,grid) - s^2*l_nm_d1_z(z,s,w,grid)*l_nm_d2_za(z,s,a,grid))
+
+  return(c(grad_z,c(grad_a)))
+}
+
 ebnm_penalized_compound = function(x,s,grid,z_init = NULL,w_init=NULL,opt_method = &#39;L-BFGS-B&#39;){
   n = length(x)
   K = length(grid)
@@ -898,7 +969,9 @@ ebnm_penalized_compound = function(x,s,grid,z_init = NULL,w_init=NULL,opt_method
   if(is.null(z_init)){
     z_init = x
   }
-  out = optim(c(z_init,w_init),f_obj,method=opt_method,
+  out = optim(c(z_init,w_init),fn=f_obj,
+              #gr=f_obj_grad,
+              method=opt_method,
               y=y,grid=grid,s=s)
   z = out$par[1:n]
   w = softmax(out$par[-(1:n)])
@@ -925,8 +998,9 @@ plot(grid,fit$w,ylab=&#39;w hat&#39;)</code></pre>
 <pre class="r"><code>ploter(fit,y,lambda,main=&#39;estimate prior, init z at 0&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="ash-fit" class="section level3">
-<h3>ash fit</h3>
+</div>
+<div id="ash-fit" class="section level2">
+<h2>ash fit</h2>
 <pre class="r"><code>fit.ash = ash(y,s,mixcompdist = &#39;normal&#39;,pointmass=FALSE,prior=&#39;uniform&#39;,mixsd=grid)
 plot(y,main=&#39;ash fit&#39;,col=&#39;grey80&#39;)
 lines(lambda,col=&#39;grey60&#39;)
@@ -975,7 +1049,6 @@ loaded via a namespace (and not attached):
 [41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
 [45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.5     utf8_1.2.2      
 [49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
-</div>
 </div>
 </div>
 
