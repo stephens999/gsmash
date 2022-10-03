@@ -529,15 +529,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed0df914a41d718d321c3ff4f1f9060448210c191targetblankd0df914a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3458de57fc346569f231caf9a2593758ae9c0ed9targetblank3458de5a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/d0df914a41d718d321c3ff4f1f9060448210c191" target="_blank">d0df914</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/3458de57fc346569f231caf9a2593758ae9c0ed9" target="_blank">3458de5</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed0df914a41d718d321c3ff4f1f9060448210c191targetblankd0df914a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3458de57fc346569f231caf9a2593758ae9c0ed9targetblank3458de5a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +547,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/d0df914a41d718d321c3ff4f1f9060448210c191" target="_blank">d0df914</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/3458de57fc346569f231caf9a2593758ae9c0ed9" target="_blank">3458de5</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -620,6 +620,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3458de57fc346569f231caf9a2593758ae9c0ed9/analysis/normal_mean_penalty_for_glm.Rmd" target="_blank">3458de5</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+wflow_publish("analysis/normal_mean_penalty_for_glm.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/39243c063545e415958318013815224958ec11e7/docs/normal_mean_penalty_for_glm.html" target="_blank">39243c0</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/d0df914a41d718d321c3ff4f1f9060448210c191/analysis/normal_mean_penalty_for_glm.Rmd" target="_blank">d0df914</a>
 </td>
 <td>
@@ -677,8 +711,8 @@ wflow_publish("analysis/normal_mean_penalty_for_glm.Rmd")
 <h2>Introduction</h2>
 <p><span class="math display">\[\begin{equation}
 \begin{split}
-        \rho(\theta;g)= \min_{q:\E_q=\theta}
-&amp;\frac{1}{s^2(\theta)}\Var(q) + D(q||g) + \frac{1}{2}\log2\pi
+        \rho(\theta;g)= \min_{q:E_q=\theta}
+&amp;\frac{1}{s^2(\theta)}Var(q) + D(q||g) + \frac{1}{2}\log2\pi
 s^2(\theta).
 \end{split}
 \end{equation}\]</span></p>
@@ -691,6 +725,8 @@ class="math display">\[\begin{equation}
     \rho(\theta;g) = \rho_{g,s^2(\theta)}(S_{g,s^2(\theta)}(z)).
 \end{equation}\]</span></p>
 <p>I use <code>pracma::grad</code> for calculating the gradient.</p>
+<p>Consider the Poisson case where <span class="math inline">\(s^2 =
+e^{-\theta}\)</span></p>
 <pre class="r"><code>source(&#39;code/normal_mean_model_utils.R&#39;)
 pois_penalty = function(theta,w,grid){
   s = sqrt(exp(-theta))
@@ -712,6 +748,13 @@ pois_penalty_hess = function(theta,w,grid){
   }
   return(out)
 }</code></pre>
+</div>
+<div id="penalty-plots" class="section level1">
+<h1>Penalty plots</h1>
+<div id="w-c0.90.1" class="section level2">
+<h2>w = c(0.9,0.1)</h2>
+<div id="grid-c0.012" class="section level3">
+<h3>grid = c(0.01,2)</h3>
 <pre class="r"><code>theta = seq(-5,5,length.out = 501)
 w = c(0.9,0.1)
 grid = c(0.01,2)
@@ -720,6 +763,9 @@ plot(theta,pois_penalty(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty&#39;)
 plot(theta,pois_penalty_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty gradient&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#plot(theta,pois_penalty_hess(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty hessian&#39;)</code></pre>
+</div>
+<div id="grid-c0.013" class="section level3">
+<h3>grid = c(0.01,3)</h3>
 <pre class="r"><code>theta = seq(-5,5,length.out = 501)
 w = c(0.9,0.1)
 grid = c(0.01,3)
@@ -728,6 +774,9 @@ plot(theta,pois_penalty(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty&#39;)
 plot(theta,pois_penalty_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty gradient&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#plot(theta,pois_penalty_hess(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty hessian&#39;)</code></pre>
+</div>
+<div id="grid-c0.014" class="section level3">
+<h3>grid = c(0.01,4)</h3>
 <pre class="r"><code>theta = seq(-5,5,length.out = 501)
 w = c(0.9,0.1)
 grid = c(0.01,4)
@@ -736,6 +785,9 @@ plot(theta,pois_penalty(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty&#39;)
 plot(theta,pois_penalty_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty gradient&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#plot(theta,pois_penalty_hess(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty hessian&#39;)</code></pre>
+</div>
+<div id="grid-c0.015" class="section level3">
+<h3>grid = c(0.01,5)</h3>
 <pre class="r"><code>theta = seq(-5,5,length.out = 501)
 w = c(0.9,0.1)
 grid = c(0.01,5)
@@ -744,6 +796,12 @@ plot(theta,pois_penalty(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty&#39;)
 plot(theta,pois_penalty_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty gradient&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#plot(theta,pois_penalty_hess(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty hessian&#39;)</code></pre>
+</div>
+</div>
+<div id="w-c0.990.01" class="section level2">
+<h2>w = c(0.99,0.01)</h2>
+<div id="grid-c0.012-1" class="section level3">
+<h3>grid = c(0.01,2)</h3>
 <pre class="r"><code>theta = seq(-3,3,length.out = 501)
 w = c(0.99,0.01)
 grid = c(0.01,2)
@@ -752,6 +810,12 @@ plot(theta,pois_penalty(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty&#39;)
 plot(theta,pois_penalty_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty gradient&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#plot(theta,pois_penalty_hess(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty hessian&#39;)</code></pre>
+</div>
+</div>
+<div id="w-c0.50.5" class="section level2">
+<h2>w = c(0.5,0.5)</h2>
+<div id="grid-c0.012-2" class="section level3">
+<h3>grid = c(0.01,2)</h3>
 <pre class="r"><code>theta = seq(-3,3,length.out = 501)
 w = c(0.5,0.5)
 grid = c(0.01,2)
@@ -760,9 +824,13 @@ plot(theta,pois_penalty(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty&#39;)
 plot(theta,pois_penalty_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty gradient&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>#plo</code></pre>
-<p>What does <span
+</div>
+</div>
+</div>
+<div id="what-does-s-1_gs2thetatheta-look-like" class="section level1">
+<h1>What does <span
 class="math inline">\(S^{-1}_{g,s^2(\theta)}(\theta)\)</span> look
-like?</p>
+like?</h1>
 <pre class="r"><code>par(mfrow=c(1,1))
 theta = seq(-2,4,length.out = 501)
 w = c(0.9,0.1)
