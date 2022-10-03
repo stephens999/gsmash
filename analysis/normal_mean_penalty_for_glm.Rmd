@@ -11,7 +11,7 @@ editor_options:
 
 \begin{equation}
 \begin{split}
-        \rho(\theta;g)= \min_{q:\E_q=\theta} &\frac{1}{s^2(\theta)}\Var(q) + D(q||g) + \frac{1}{2}\log2\pi s^2(\theta).
+        \rho(\theta;g)= \min_{q:E_q=\theta} &\frac{1}{s^2(\theta)}Var(q) + D(q||g) + \frac{1}{2}\log2\pi s^2(\theta).
 \end{split}
 \end{equation}
 
@@ -21,6 +21,8 @@ The inversion $S^{-1}_{g,s^2(\theta)}(\theta)$ finds the $z$ such that $S_{g,s^2
 \end{equation}
 
 I use `pracma::grad` for calculating the gradient.
+
+Consider the Poisson case where $s^2 = e^{-\theta}$
 
 ```{r}
 source('code/normal_mean_model_utils.R')
@@ -46,6 +48,12 @@ pois_penalty_hess = function(theta,w,grid){
 }
 ```
 
+# Penalty plots
+
+## w = c(0.9,0.1)
+
+### grid = c(0.01,2)
+
 ```{r}
 theta = seq(-5,5,length.out = 501)
 w = c(0.9,0.1)
@@ -55,6 +63,8 @@ plot(theta,pois_penalty(theta,w,grid),type='l',ylab='penalty')
 plot(theta,pois_penalty_grad(theta,w,grid),type='l',ylab='penalty gradient')
 #plot(theta,pois_penalty_hess(theta,w,grid),type='l',ylab='penalty hessian')
 ```
+
+### grid = c(0.01,3)
 
 ```{r}
 theta = seq(-5,5,length.out = 501)
@@ -66,6 +76,7 @@ plot(theta,pois_penalty_grad(theta,w,grid),type='l',ylab='penalty gradient')
 #plot(theta,pois_penalty_hess(theta,w,grid),type='l',ylab='penalty hessian')
 ```
 
+### grid = c(0.01,4)
 
 ```{r}
 theta = seq(-5,5,length.out = 501)
@@ -77,6 +88,8 @@ plot(theta,pois_penalty_grad(theta,w,grid),type='l',ylab='penalty gradient')
 #plot(theta,pois_penalty_hess(theta,w,grid),type='l',ylab='penalty hessian')
 ```
 
+### grid = c(0.01,5)
+
 ```{r}
 theta = seq(-5,5,length.out = 501)
 w = c(0.9,0.1)
@@ -86,6 +99,10 @@ plot(theta,pois_penalty(theta,w,grid),type='l',ylab='penalty')
 plot(theta,pois_penalty_grad(theta,w,grid),type='l',ylab='penalty gradient')
 #plot(theta,pois_penalty_hess(theta,w,grid),type='l',ylab='penalty hessian')
 ```
+
+## w = c(0.99,0.01)
+
+### grid = c(0.01,2)
 
 ```{r}
 theta = seq(-3,3,length.out = 501)
@@ -97,6 +114,9 @@ plot(theta,pois_penalty_grad(theta,w,grid),type='l',ylab='penalty gradient')
 #plot(theta,pois_penalty_hess(theta,w,grid),type='l',ylab='penalty hessian')
 ```
 
+## w = c(0.5,0.5)
+
+### grid = c(0.01,2)
 
 ```{r}
 theta = seq(-3,3,length.out = 501)
@@ -108,7 +128,7 @@ plot(theta,pois_penalty_grad(theta,w,grid),type='l',ylab='penalty gradient')
 #plo
 ```
 
-What does $S^{-1}_{g,s^2(\theta)}(\theta)$ look like?
+# What does $S^{-1}_{g,s^2(\theta)}(\theta)$ look like?
 
 ```{r}
 par(mfrow=c(1,1))
