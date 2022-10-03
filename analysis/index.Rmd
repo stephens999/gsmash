@@ -19,7 +19,7 @@ editor_options:
 * [normal mean penalty plots](normal_mean_penalty.html)
 * [Solve normal mean problem using optimization - compund penalty](normal_mean_penalized_optimization.html)
 * [Solve normal mean problem using optimization - inversion method](normal_mean_penalized_optimization_inversion.html)
-
+* [normal mean penalty plots, when $s^2$ depends on posterior mean](normal_mean_penalty_for_glm.html)
 
 
 ## Poisson mean 
