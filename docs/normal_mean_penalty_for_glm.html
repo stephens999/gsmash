@@ -398,7 +398,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-10-03
+<strong>Last updated:</strong> 2022-10-04
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -529,15 +529,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3458de57fc346569f231caf9a2593758ae9c0ed9targetblank3458de5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3e1b6d04a576eb467a55268e39c0c7cdc79e0388targetblank3e1b6d0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/3458de57fc346569f231caf9a2593758ae9c0ed9" target="_blank">3458de5</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/3e1b6d04a576eb467a55268e39c0c7cdc79e0388" target="_blank">3e1b6d0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3458de57fc346569f231caf9a2593758ae9c0ed9targetblank3458de5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3e1b6d04a576eb467a55268e39c0c7cdc79e0388targetblank3e1b6d0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +547,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/3458de57fc346569f231caf9a2593758ae9c0ed9" target="_blank">3458de5</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/3e1b6d04a576eb467a55268e39c0c7cdc79e0388" target="_blank">3e1b6d0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -615,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3e1b6d04a576eb467a55268e39c0c7cdc79e0388/analysis/normal_mean_penalty_for_glm.Rmd" target="_blank">3e1b6d0</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-04
+</td>
+<td>
+wflow_publish("analysis/normal_mean_penalty_for_glm.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/a3680caa4f3c97e08decebc880d422ec0f862eab/docs/normal_mean_penalty_for_glm.html" target="_blank">a3680ca</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -847,6 +881,48 @@ w = c(0.5,0.5)
 grid = c(0.01,2)
 plot(theta,S_inv(theta,sqrt(exp(-theta)),w,grid,z_range = c(-30,5)),type=&#39;l&#39;,ylab=&#39;z&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="remove-frac12log2pi-s2-in-penalty" class="section level1">
+<h1>Remove <span class="math inline">\(\frac{1}{2}\log2\pi s^2\)</span>
+in penalty</h1>
+<p><span class="math display">\[\begin{equation}
+\begin{split}
+        \rho(\theta;g)= \min_{q:E_q=\theta}
+&amp;\frac{1}{s^2(\theta)}Var(q) + D(q||g).
+\end{split}
+\end{equation}\]</span></p>
+<pre class="r"><code>pois_penalty2 = function(theta,w,grid){
+  s = sqrt(exp(-theta))
+  return(nm_penalty(theta,s,w,grid)-log(2*pi*s^2)/2)
+}
+pois_penalty2_grad = function(theta,w,grid){
+  n = length(theta)
+  out = c()
+  for(i in 1:n){
+    out[i] = pracma::grad(pois_penalty2,theta[i],heps=0.1,w=w,grid=grid)
+  }
+  return(out)
+}
+pois_penalty2_hess = function(theta,w,grid){
+  n = length(theta)
+  out = c()
+  for(i in 1:n){
+    out[i] = pracma::grad(pois_penalty2_grad,theta[i],heps=0.1,w=w,grid=grid)
+  }
+  return(out)
+}</code></pre>
+<p>Compare the two:</p>
+<pre class="r"><code>theta = seq(-5,5,length.out = 501)
+w = c(0.9,0.1)
+grid = c(0.01,2)
+par(mfrow=c(1,2))
+plot(theta,pois_penalty(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty&#39;)
+plot(theta,pois_penalty2(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty, remove log term&#39;)</code></pre>
+<p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#plot(theta,pois_penalty_hess(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty hessian&#39;)
+plot(theta,pois_penalty_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty grad&#39;)
+plot(theta,pois_penalty2_grad(theta,w,grid),type=&#39;l&#39;,ylab=&#39;penalty grad, remove log term&#39;)</code></pre>
+<p><img src="figure/normal_mean_penalty_for_glm.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
