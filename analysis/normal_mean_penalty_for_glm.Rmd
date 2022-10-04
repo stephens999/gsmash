@@ -151,3 +151,51 @@ w = c(0.5,0.5)
 grid = c(0.01,2)
 plot(theta,S_inv(theta,sqrt(exp(-theta)),w,grid,z_range = c(-30,5)),type='l',ylab='z')
 ```
+
+# Remove $\frac{1}{2}\log2\pi s^2$ in penalty
+
+
+\begin{equation}
+\begin{split}
+        \rho(\theta;g)= \min_{q:E_q=\theta} &\frac{1}{s^2(\theta)}Var(q) + D(q||g).
+\end{split}
+\end{equation}
+
+
+```{r}
+pois_penalty2 = function(theta,w,grid){
+  s = sqrt(exp(-theta))
+  return(nm_penalty(theta,s,w,grid)-log(2*pi*s^2)/2)
+}
+pois_penalty2_grad = function(theta,w,grid){
+  n = length(theta)
+  out = c()
+  for(i in 1:n){
+    out[i] = pracma::grad(pois_penalty2,theta[i],heps=0.1,w=w,grid=grid)
+  }
+  return(out)
+}
+pois_penalty2_hess = function(theta,w,grid){
+  n = length(theta)
+  out = c()
+  for(i in 1:n){
+    out[i] = pracma::grad(pois_penalty2_grad,theta[i],heps=0.1,w=w,grid=grid)
+  }
+  return(out)
+}
+```
+
+
+Compare the two:
+
+```{r}
+theta = seq(-5,5,length.out = 501)
+w = c(0.9,0.1)
+grid = c(0.01,2)
+par(mfrow=c(1,2))
+plot(theta,pois_penalty(theta,w,grid),type='l',ylab='penalty')
+plot(theta,pois_penalty2(theta,w,grid),type='l',ylab='penalty, remove log term')
+#plot(theta,pois_penalty_hess(theta,w,grid),type='l',ylab='penalty hessian')
+plot(theta,pois_penalty_grad(theta,w,grid),type='l',ylab='penalty grad')
+plot(theta,pois_penalty2_grad(theta,w,grid),type='l',ylab='penalty grad, remove log term')
+```
