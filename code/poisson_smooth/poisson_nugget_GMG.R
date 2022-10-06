@@ -4,6 +4,7 @@ poisson_nugget_glm_GMG = function(X,y,
                                    sa2 = NULL,
                                    beta.init = NULL,
                                    w = NULL,
+                                  nugget = TRUE,
                                    sigma2 = NULL,
                                    control = list(),
                                   printevery = 10){
@@ -28,10 +29,18 @@ poisson_nugget_glm_GMG = function(X,y,
     m = beta.init
   }
 
-  if(is.null(sigma2)){
-    r = drop(log(y+1) - X %*% m)
-    sigma2 = c(var(r))
+  if(nugget){
+    if(is.null(sigma2)){
+      r = drop(log(y+1) - X %*% m)
+      sigma2 = c(var(r))
+    }
+    e = rep(0,n)
+    d = rep(1,n)
+  }else{
+    e = rep(0,n)
+    d = rep(0,n)
   }
+
 
   if(is.null(w)){
     w = rep(1,K)/K
@@ -42,36 +51,42 @@ poisson_nugget_glm_GMG = function(X,y,
   X2 = X^2
   obj = c(-Inf)
 
-  v = rep(0.1,p)
-  e = rep(0,n)
-  d = rep(1,n)
+  v = rep(0.001,p)
+
+
 
   for(iter in 1:control$max.iter){
     # update m, v
     m = update_m(X,y,v,e,d,Phi,Sa2,X2,m)
     v = update_v(X,y,m,e,d,Phi,Sa2,X2,v)
     # update e,d
-    e = update_e(X,y,m,v,d,sigma2,X2,e)
-    d = update_d(X,y,m,v,e,sigma2,X2,d)
+    if(nugget){
+      e = update_e(X,y,m,v,d,sigma2,X2,e)
+      d = update_d(X,y,m,v,e,sigma2,X2,d)
+    }
+
     # update gamma
     W = matrix(w,nrow=p,ncol=K,byrow=TRUE)
-    Phi = log(W) - matrix(m^2+v,nrow=p,ncol=K,byrow=FALSE)/2/Sa2
+    Phi = log(W) - log(Sa2)/2-matrix(m^2+v,nrow=p,ncol=K,byrow=FALSE)/2/Sa2
     Phi = Phi - c(apply(Phi,1,max))
     Phi = exp(Phi)
     Phi = Phi/c(rowSums(Phi))
-    Phi = pmax(Phi,1e-15)
+    Phi = pmax(Phi,sqrt(.Machine$double.eps))
     # update w,sigma2
-    if(control$update.sigma2){
-      sigma2 = mean(e^2+d)
+    if(nugget){
+      if(control$update.sigma2){
+        sigma2 = mean(e^2+d)
+      }
     }
+
     if(control$update.pi){
       w = colMeans(Phi)
-      w = pmax(w,1e-15)
+      w = pmax(w,sqrt(.Machine$double.eps))
     }
 
 
     # calc obj
-    obj[iter+1] = calc_obj_GMG(X,y,m,v,e,d,Phi,w,sigma2,Sa2,X2)
+    obj[iter+1] = calc_obj_GMG(X,y,m,v,e,d,Phi,w,sigma2,Sa2,X2,nugget)
     if(iter%%printevery==0){
       print(sprintf("At iter %1.0f, ELBO=%.3f",iter,obj[iter+1]))
     }
@@ -86,13 +101,18 @@ poisson_nugget_glm_GMG = function(X,y,
 
 }
 
-calc_obj_GMG = function(X,y,m,v,e,d,Phi,w,sigma2,Sa2,X2){
+calc_obj_GMG = function(X,y,m,v,e,d,Phi,w,sigma2,Sa2,X2,nugget){
   n = length(y)
   p = dim(X)[2]
   K = length(w)
   W = matrix(w,nrow=p,ncol=K,byrow=TRUE)
   a = get_a(Phi,Sa2)
-  val = t(y)%*%X%*%m + t(y)%*%e - sum(exp(X%*%m+X2%*%v/2+e+d/2)) + sum(Phi*(log(W)-log(Sa2)/2)) - sum(a*m^2)/2-sum(a*v)/2 - n*log(sigma2)/2 - (sum(e^2)+sum(d))/2/sigma2 + sum(log(v))/2 + sum(log(d))/2 - sum(Phi*log(Phi))
+  if(nugget){
+    val = t(y)%*%X%*%m + t(y)%*%e - sum(exp(X%*%m+X2%*%v/2+e+d/2)) + sum(Phi*(log(W)-log(Sa2)/2)) - sum(a*m^2)/2-sum(a*v)/2 - n*log(sigma2)/2 - (sum(e^2)+sum(d))/2/sigma2 + sum(log(v))/2 + sum(log(d))/2 - sum(Phi*log(Phi))
+  }else{
+    val = t(y)%*%X%*%m  - sum(exp(X%*%m+X2%*%v/2)) + sum(Phi*(log(W)-log(Sa2)/2)) - sum(a*m^2)/2-sum(a*v)/2  + sum(log(v))/2 - sum(Phi*log(Phi))
+  }
+
   return(drop(val))
 }
 

@@ -1,3 +1,5 @@
+library(ashr)
+
 #'log marginal likelihood of normal mean model
 #'@param x data vector of length n
 #'@param s standard error
@@ -48,6 +50,12 @@ f_nm_d2_z = function(x,s,w,grid){
   return(c((nm_density(x,s,grid)*(x^2/vmat^2-1/vmat))%*%w))
 }
 
+#'@return a vector of third derivative d^3f/dz^3, length n
+f_nm_d3_z = function(x,s,w,grid){
+  vmat = outer(s^2,grid^2,FUN="+")
+  return(c((nm_density(x,s,grid)*(3*x/vmat^2-x^3/vmat^3))%*%w))
+}
+
 #'@return a vector of derivative dl_nm/dz, length n
 l_nm_d1_z = function(x,s,w,grid){
   if(length(s)==1){
@@ -63,6 +71,15 @@ l_nm_d2_z = function(x,s,w,grid){
   }
   temp = f_nm(x,s,w,grid)
   return(f_nm_d2_z(x,s,w,grid)/temp - (f_nm_d1_z(x,s,w,grid)/temp)^2)
+}
+
+#'@return a vector of third derivative d^3l_nm/dz^3, length n
+l_nm_d3_z = function(x,s,w,grid){
+  if(length(s)==1){
+    s = rep(s,length(x))
+  }
+  temp = f_nm(x,s,w,grid)
+  return(f_nm_d3_z(x,s,w,grid)/temp - 3*f_nm_d1_z(x,s,w,grid)*f_nm_d2_z(x,s,w,grid)/temp^2 +2*(f_nm_d1_z(x,s,w,grid)/temp)^3)
 }
 
 #'@return a vector of derivative df_nm/ds2, length n
@@ -143,10 +160,9 @@ S = function(x,s,w,grid){
 }
 
 #'@title inverse operator of S
-#'@describeIn S^{-1}(theta) returns the z such that S(z) = theta
-S_inv = function(theta,s,w,grid,z_range){
-  #zs = seq(z_range[1],z_range[2],length.out = n_search_intval)
-  #theta_vec = S(zs,s,w,grid)
+#'@description  S^{-1}(theta) returns the z such that S(z) = theta
+S_inv = function(theta,s,w,grid,z_range=NULL){
+
   obj = function(z,theta,s,w,grid){
     return(z+s^2*l_nm_d1_z(z,s,w,grid)-theta)
   }
@@ -155,11 +171,57 @@ S_inv = function(theta,s,w,grid,z_range){
   for(j in 1:n){
     #print(j)
     if(theta[j]>=0){
-      z_out[j] = uniroot(obj,c(theta[j],z_range[2]),theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
+      z_out[j] = uniroot(obj,c(theta[j],z_range[2]),
+                         theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
     }else{
-      z_out[j] = uniroot(obj,c(z_range[1],theta[j]),theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
+      z_out[j] = uniroot(obj,c(z_range[1],theta[j]),
+                         theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
     }
 
   }
   z_out
+}
+
+#'@title compound penalty function of ebnm
+nm_penalty_compound = function(theta,s,w,grid){
+  return(-l_nm(theta,s,w,grid) - (theta-S(theta,s,w,grid))^2/2/s^2)
+}
+#'@title gradient of compound penalty function
+#'@description -l'(theta) - s^2l'(theta)l''(theta)
+nm_penalty_compound_grad = function(theta,s,w,grid){
+  return(-l_nm_d1_z(theta,s,w,grid) - s^2*l_nm_d1_z(theta,s,w,grid)*l_nm_d2_z(theta,s,w,grid))
+}
+#'@title hessian of compound penalty function
+#'@description -l''(theta) - s^2(l''(theta)^2+l'''(theta)l'(theta))
+nm_penalty_compound_hess = function(theta,s,w,grid){
+  return(-l_nm_d2_z(theta,s,w,grid) - s^2*(l_nm_d2_z(theta,s,w,grid)^2+l_nm_d3_z(theta,s,w,grid)*l_nm_d1_z(theta,s,w,grid)))
+}
+
+#'@title penalty function of ebnm
+nm_penalty = function(theta,s,w,grid,z_range=NULL){
+  if(is.null(z_range)){
+    z_range = range(theta) + c(-1,1)
+  }
+  z = S_inv(theta,s,w,grid,z_range)
+  original_penalty = nm_penalty_compound(z,s,w,grid)
+  return(original_penalty)
+}
+
+#'@title gradient of penalty function of ebnm
+nm_penalty_grad = function(theta,s,w,grid,z_range=NULL){
+  if(is.null(z_range)){
+    z_range = range(theta) + c(-1,1)
+  }
+  z = S_inv(theta,s,w,grid,z_range)
+  return((z-theta)/s^2)
+}
+
+#'@title hessian of penalty function of ebnm
+nm_penalty_hess = function(theta,s,w,grid,z_range=NULL){
+  if(is.null(z_range)){
+    z_range = range(theta) + c(-1,1)
+  }
+  z = S_inv(theta,s,w,grid,z_range)
+  temp = l_nm_d2_z(z,s,w,grid)
+  return(-temp/(1+s^2*temp))
 }
