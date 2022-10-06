@@ -1,0 +1,63 @@
+---
+title: "normal mean penalty for glm, simplified"
+author: "Dongyue Xie"
+date: "2022-10-03"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+The optimization problem is 
+
+\[\min h(\theta) = -l(\theta)+ \rho_g(\theta),\]
+
+where 
+
+\[\rho_g(\theta) = -l_{NM}(T(\theta,g);g,s^2(\theta))-\frac{(\theta-T(\theta;g))^2}{2s^2(\theta)}-\frac{1}{2}\log 2\pi s^2(\theta).\]
+
+$T(\theta;g)$ is the inversion of posterior mean operator.
+
+Consider the Poisson case where $s^2 = e^{-\theta}$.
+
+```{r}
+source('code/normal_mean_model_utils.R')
+pois_penalty = function(theta,w,grid){
+  z_range = range(theta) + c(-10,10)
+  s = sqrt(exp(-theta))
+  z = S_inv(theta,s,w,grid,z_range)
+  return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+}
+plot_pois_penalty = function(theta,w,grid){
+  plot(x,pois_penalty(theta,w,grid),col='blue',lty=2,type='l',xlab='theta',ylab='penalty',
+       main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
+  #legend('bottomright',c(expression(rho(theta))),lty=c(2),col=c('blue'))
+}
+```
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-3.5,5,length.out = n)
+s = rep(1,n)
+w = c(0.9,0.1)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,c(0,gg))
+  abline(v=0,lty=3)
+}
+```
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-3.5,5,length.out = n)
+s = rep(1,n)
+w = c(0.5,0.5)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,c(0,gg))
+  abline(v=0,lty=3)
+}
+```
