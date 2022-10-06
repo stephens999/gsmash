@@ -112,7 +112,7 @@ plot_penalty = function(x,s=1,w,grid){
   original_penalty = nm_penalty(x,s,w,grid)
   
   plot(x,compound_penalty,type='l',xlab='theta',ylab='penalty',ylim=range(c(compound_penalty,original_penalty)),
-       main=paste('w=(',paste(w,collapse = ", "),'); sd=(',paste(grid,collapse = ", "),')',sep=''))
+       main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
   lines(x,original_penalty,col='blue',lty=2)
   legend('bottomright',c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,'blue'))
 }
@@ -124,37 +124,65 @@ plot_penalty_hess = function(x,s=1,w,grid){
   original_penalty = nm_penalty_hess(x,s,w,grid)
   
   plot(x,compound_penalty,type='l',xlab='theta',ylab='2nd derivative of penalty',ylim=range(c(compound_penalty,original_penalty)),
-       main=paste('w=(',paste(w,collapse = ", "),'); sd=(',paste(grid,collapse = ", "),')',sep=''))
+       main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
   lines(x,original_penalty,col='blue',lty=2)
   legend('topright',c(expression(rho^"''"*(S(theta))),expression(rho^"''"*(theta))),lty=c(1,2),col=c(1,'blue'))
 }
 
 ```
 
-```{r}
+```{r,fig.height=12,fig.width=12}
 n = 101
 x = seq(-10,10,length.out = n)
 s = rep(1,n)
 w = c(0.9,0.1)
-grid=c(0.01,2)
-plot_penalty(x,s,w,grid)
-plot_penalty_hess(x,s,w,grid)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_penalty(x,s,w,c(0,gg))
+}
+
+for(gg in grid_list){
+  plot_penalty_hess(x,s,w,c(0,gg))
+}
+
 ```
 
-```{r}
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+s = rep(1,n)
 w = c(0.5,0.5)
-grid=c(0.01,2)
-plot_penalty(x,s,w,grid)
-plot_penalty_hess(x,s,w,grid)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_penalty(x,s,w,c(0,gg))
+}
+
+for(gg in grid_list){
+  plot_penalty_hess(x,s,w,c(0,gg))
+}
+
 ```
 
-```{r}
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+s = rep(1,n)
 w = c(0.1,0.9)
-grid=c(0.01,2)
-plot_penalty(x,s,w,grid)
-plot_penalty_hess(x,s,w,grid)
-```
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_penalty(x,s,w,c(0,gg))
+}
 
+for(gg in grid_list){
+  plot_penalty_hess(x,s,w,c(0,gg))
+}
+
+```
 
 
 ```{r,eval=F}
