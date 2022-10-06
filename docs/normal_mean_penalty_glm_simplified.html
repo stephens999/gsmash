@@ -525,15 +525,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree190e6a808103ae9ea12940b4318a2dcfaee8e280targetblank190e6a8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef6c62e472bcf84ca8650a23877807b26446f18f9targetblankf6c62e4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/190e6a808103ae9ea12940b4318a2dcfaee8e280" target="_blank">190e6a8</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/f6c62e472bcf84ca8650a23877807b26446f18f9" target="_blank">f6c62e4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree190e6a808103ae9ea12940b4318a2dcfaee8e280targetblank190e6a8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef6c62e472bcf84ca8650a23877807b26446f18f9targetblankf6c62e4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -543,7 +543,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/190e6a808103ae9ea12940b4318a2dcfaee8e280" target="_blank">190e6a8</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/f6c62e472bcf84ca8650a23877807b26446f18f9" target="_blank">f6c62e4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -612,6 +612,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/f6c62e472bcf84ca8650a23877807b26446f18f9/analysis/normal_mean_penalty_glm_simplified.Rmd" target="_blank">f6c62e4</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+<td>
+wflow_publish("analysis/normal_mean_penalty_glm_simplified.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/38ae96f06c89e123ac4d0fc5874e768ef760b8e0/docs/normal_mean_penalty_glm_simplified.html" target="_blank">38ae96f</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/190e6a808103ae9ea12940b4318a2dcfaee8e280/analysis/normal_mean_penalty_glm_simplified.Rmd" target="_blank">190e6a8</a>
 </td>
 <td>
@@ -642,8 +676,10 @@ wflow_publish("analysis/normal_mean_penalty_glm_simplified.Rmd")
 2\pi s^2(\theta).\]</span></p>
 <p><span class="math inline">\(T(\theta;g)\)</span> is the inversion of
 posterior mean operator.</p>
-<p>Consider the Poisson case where <span class="math inline">\(s^2 =
-e^{-\theta}\)</span>.</p>
+</div>
+<div id="poisson" class="section level2">
+<h2>Poisson</h2>
+<p><span class="math inline">\(s^2 = e^{-\theta}\)</span></p>
 <pre class="r"><code>source(&#39;code/normal_mean_model_utils.R&#39;)
 pois_penalty = function(theta,w,grid){
   z_range = range(theta) + c(-10,10)
@@ -667,6 +703,43 @@ for(gg in grid_list){
   abline(v=0,lty=3)
 }</code></pre>
 <p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-2-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/38ae96f06c89e123ac4d0fc5874e768ef760b8e0/docs/figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-2-1.png" target="_blank">38ae96f</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>n = 101
 x = seq(-3.5,5,length.out = n)
 s = rep(1,n)
@@ -678,6 +751,70 @@ for(gg in grid_list){
   abline(v=0,lty=3)
 }</code></pre>
 <p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/38ae96f06c89e123ac4d0fc5874e768ef760b8e0/docs/figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-3-1.png" target="_blank">38ae96f</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>binom_penalty = function(theta,w,grid,bn){
+  z_range = range(theta) + c(-10,10)
+  s = sqrt((1+exp(theta))^2/bn/exp(theta))
+  z = S_inv(theta,s,w,grid,z_range)
+  return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+}
+plot_binom_penalty = function(theta,w,grid,bn){
+  plot(x,pois_penalty(theta,w,grid),col=&#39;blue&#39;,lty=2,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;penalty&#39;,
+       main=paste(&#39;w=(&#39;,paste(w,collapse = &quot;, &quot;),&#39;); grid=(&#39;,paste(grid,collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
+  #legend(&#39;bottomright&#39;,c(expression(rho(theta))),lty=c(2),col=c(&#39;blue&#39;))
+}</code></pre>
+</div>
+<div id="binomial" class="section level2">
+<h2>Binomial</h2>
+<p><span class="math inline">\(s^2 =
+\frac{(1+e^\theta)^2}{ne^\theta}\)</span></p>
+<pre class="r"><code>n = 101
+x = seq(-3.5,5,length.out = n)
+s = rep(1,n)
+w = c(0.9,0.1)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,c(0,gg),10)
+  abline(v=0,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
