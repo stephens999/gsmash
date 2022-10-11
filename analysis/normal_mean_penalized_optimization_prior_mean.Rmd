@@ -197,12 +197,14 @@ ebnm_penalized_inversion = function(x,s,grid,theta_init = NULL,
                  s=s,
                  grid=grid,
                  z_range=z_range,
-                 method = opt_method)
+                 method = opt_method,
+              control=list(maxit=1000,trace=1))
   
-  return(list(posteriorMean = out$par[1:n],w = softmax(out$par[(n+1):(n+K)]),mu=out$par[n+K+1],opt_res = out))
+  return(list(posteriorMean = out$par[1:n],a = out$par[(n+1):(n+K)] ,w = softmax(out$par[(n+1):(n+K)]),mu=out$par[n+K+1],opt_res = out))
 }
 ```
 
+### init posterior mean at 0
 
 ```{r}
 fit = ebnm_penalized_inversion(y,s,grid,opt_method = 'L-BFGS-B')
@@ -216,4 +218,38 @@ fit$opt_res$value
 ploter(fit,y,lambda,main='inversion method')
 ```
 
+Take a look at the gradient.
 
+```{r}
+plot(f_obj_grad(c(fit$posteriorMean,fit$a,fit$mu),y,s,grid,c(-10,10)))
+```
+
+It seems that the gradient is not close to 0 enough...may need to change initialization or convergence criteria.
+
+### init posterior mean at true ones
+
+```{r}
+fit = ebnm_penalized_inversion(y,s,grid,theta_init = fit.ash$result$PosteriorMean,opt_method = 'L-BFGS-B')
+round(fit$w,3)
+fit$mu
+fit$opt_res$value
+```
+
+
+```{r}
+ploter(fit,y,lambda,main='inversion method')
+```
+
+### init posterior mean at observation
+
+```{r}
+fit = ebnm_penalized_inversion(y,s,grid,theta_init = y,opt_method = 'L-BFGS-B')
+round(fit$w,3)
+fit$mu
+fit$opt_res$value
+```
+
+
+```{r}
+ploter(fit,y,lambda,main='inversion method')
+```
