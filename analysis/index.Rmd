@@ -19,8 +19,9 @@ editor_options:
 * [normal mean penalty plots](normal_mean_penalty.html)
 * [Solve normal mean problem using optimization - compund penalty](normal_mean_penalized_optimization.html)
 * [Solve normal mean problem using optimization - inversion method](normal_mean_penalized_optimization_inversion.html)
+* [Solve normal mean problem using optimization - also estimate prior mean](normal_mean_penalized_optimization_prior_mean.html)
 * [normal mean penalty plots, when $s^2$ depends on posterior mean](normal_mean_penalty_for_glm.html)
-* [normal mean penalty plots, when $s^2$ depends on posterior mean, new version](normal_mean_penalty_glm_simplified.html)
+* [normal mean penalty plots, when $s^2$ depends on posterior mean, penalty exlcuding $log(2\pi s^2)/2$ ](normal_mean_penalty_glm_simplified.html)
 
 
 ## Poisson mean 
