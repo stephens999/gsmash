@@ -529,15 +529,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee3a9d3c182eef8407aa78ebbc5963fca7345a188targetblanke3a9d3ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree979e6544e347a9e3351c3033a132e1c5d0b704d3targetblank979e654a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/e3a9d3c182eef8407aa78ebbc5963fca7345a188" target="_blank">e3a9d3c</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/979e6544e347a9e3351c3033a132e1c5d0b704d3" target="_blank">979e654</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee3a9d3c182eef8407aa78ebbc5963fca7345a188targetblanke3a9d3ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree979e6544e347a9e3351c3033a132e1c5d0b704d3targetblank979e654a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +547,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/e3a9d3c182eef8407aa78ebbc5963fca7345a188" target="_blank">e3a9d3c</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/979e6544e347a9e3351c3033a132e1c5d0b704d3" target="_blank">979e654</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -619,6 +619,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/979e6544e347a9e3351c3033a132e1c5d0b704d3/analysis/normal_mean_penalized_optimization_prior_mean.Rmd" target="_blank">979e654</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-11
+</td>
+<td>
+wflow_publish("analysis/normal_mean_penalized_optimization_prior_mean.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/3bfad05d11d1d755e33acb44916adf0072ff2b61/docs/normal_mean_penalized_optimization_prior_mean.html" target="_blank">3bfad05</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -840,20 +874,164 @@ ebnm_penalized_inversion = function(x,s,grid,theta_init = NULL,
                  s=s,
                  grid=grid,
                  z_range=z_range,
-                 method = opt_method)
+                 method = opt_method,
+              control=list(maxit=1000,trace=1))
   
-  return(list(posteriorMean = out$par[1:n],w = softmax(out$par[(n+1):(n+K)]),mu=out$par[n+K+1],opt_res = out))
+  return(list(posteriorMean = out$par[1:n],a = out$par[(n+1):(n+K)] ,w = softmax(out$par[(n+1):(n+K)]),mu=out$par[n+K+1],opt_res = out))
 }</code></pre>
-<pre class="r"><code>fit = ebnm_penalized_inversion(y,s,grid,opt_method = &#39;L-BFGS-B&#39;)
-round(fit$w,3)</code></pre>
-<pre><code> [1] 0.278 0.212 0.153 0.075 0.021 0.004 0.001 0.000 0.000 0.000 0.000 0.256
+<div id="init-posterior-mean-at-0" class="section level3">
+<h3>init posterior mean at 0</h3>
+<pre class="r"><code>fit = ebnm_penalized_inversion(y,s,grid,opt_method = &#39;L-BFGS-B&#39;)</code></pre>
+<pre><code>iter   10 value 916.791551
+iter   20 value 680.289814
+iter   30 value 676.275302
+iter   40 value 674.754978
+iter   50 value 674.164319
+iter   60 value 673.936203
+iter   70 value 673.813463
+iter   80 value 673.701252
+iter   90 value 673.574599
+iter  100 value 673.513587
+iter  110 value 673.482799
+iter  120 value 673.460379
+iter  130 value 673.441826
+iter  140 value 673.430328
+iter  150 value 673.420092
+iter  160 value 673.412990
+iter  170 value 673.405236
+iter  180 value 673.403300
+iter  190 value 673.401169
+iter  200 value 673.398705
+iter  210 value 673.395894
+iter  220 value 673.393414
+iter  230 value 673.389377
+iter  240 value 673.384472
+iter  250 value 673.379168
+iter  260 value 673.374583
+iter  270 value 673.370725
+iter  280 value 673.368396
+iter  290 value 673.367189
+iter  300 value 673.366888
+iter  310 value 673.366488
+iter  320 value 673.366221
+iter  330 value 673.365556
+iter  340 value 673.364958
+iter  350 value 673.364795
+iter  360 value 673.363563
+iter  370 value 673.362471
+iter  380 value 673.361861
+iter  390 value 673.361754
+final  value 673.361715 
+converged</code></pre>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0.745 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.000 0.255
 [13] 0.000 0.000 0.000 0.000 0.000 0.000</code></pre>
 <pre class="r"><code>fit$mu</code></pre>
-<pre><code>[1] 0.2759867</code></pre>
+<pre><code>[1] 0.2723038</code></pre>
 <pre class="r"><code>fit$opt_res$value</code></pre>
-<pre><code>[1] 673.5074</code></pre>
+<pre><code>[1] 673.3617</code></pre>
 <pre class="r"><code>ploter(fit,y,lambda,main=&#39;inversion method&#39;)</code></pre>
 <p><img src="figure/normal_mean_penalized_optimization_prior_mean.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Take a look at the gradient.</p>
+<pre class="r"><code>plot(f_obj_grad(c(fit$posteriorMean,fit$a,fit$mu),y,s,grid,c(-10,10)))</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization_prior_mean.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>It seems that the gradient is not close to 0 enough…may need to
+change initialization or convergence criteria.</p>
+</div>
+<div id="init-posterior-mean-at-true-ones" class="section level3">
+<h3>init posterior mean at true ones</h3>
+<pre class="r"><code>fit = ebnm_penalized_inversion(y,s,grid,theta_init = fit.ash$result$PosteriorMean,opt_method = &#39;L-BFGS-B&#39;)</code></pre>
+<pre><code>iter   10 value 604.772606
+iter   20 value 597.279634
+iter   30 value 593.797933
+iter   40 value 592.623186
+iter   50 value 592.229877
+iter   60 value 592.171496
+iter   70 value 592.134525
+iter   80 value 592.090706
+iter   90 value 592.078472
+iter  100 value 592.072828
+iter  110 value 592.070486
+iter  120 value 592.067446
+iter  130 value 592.065486
+iter  140 value 592.061779
+iter  150 value 592.059573
+iter  160 value 592.058335
+iter  170 value 592.056998
+iter  180 value 592.054891
+iter  190 value 592.053641
+iter  200 value 592.052267
+iter  210 value 592.051554
+final  value 592.051373 
+converged</code></pre>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0.386 0.246 0.154 0.062 0.012 0.001 0.000 0.000 0.000 0.000 0.000 0.000
+[13] 0.000 0.000 0.138 0.000 0.000 0.000</code></pre>
+<pre class="r"><code>fit$mu</code></pre>
+<pre><code>[1] 0.1262144</code></pre>
+<pre class="r"><code>fit$opt_res$value</code></pre>
+<pre><code>[1] 592.0514</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;inversion method&#39;)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization_prior_mean.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="init-posterior-mean-at-observation" class="section level3">
+<h3>init posterior mean at observation</h3>
+<pre class="r"><code>fit = ebnm_penalized_inversion(y,s,grid,theta_init = y,opt_method = &#39;L-BFGS-B&#39;)</code></pre>
+<pre><code>iter   10 value 601.432580
+iter   20 value 596.081624
+iter   30 value 594.038387
+iter   40 value 593.499864
+iter   50 value 592.965981
+iter   60 value 592.712260
+iter   70 value 592.543050
+iter   80 value 592.384290
+iter   90 value 592.338211
+iter  100 value 592.226144
+iter  110 value 592.192770
+iter  120 value 592.152542
+iter  130 value 592.127855
+iter  140 value 592.118878
+iter  150 value 592.112448
+iter  160 value 592.108004
+iter  170 value 592.103310
+iter  180 value 592.095447
+iter  190 value 592.087116
+iter  200 value 592.083100
+iter  210 value 592.078801
+iter  220 value 592.070539
+iter  230 value 592.065541
+iter  240 value 592.062380
+iter  250 value 592.060465
+iter  260 value 592.059115
+iter  270 value 592.058448
+iter  280 value 592.058086
+iter  290 value 592.057721
+iter  300 value 592.057549
+iter  310 value 592.057196
+iter  320 value 592.056769
+iter  330 value 592.056502
+iter  340 value 592.056145
+iter  350 value 592.055410
+iter  360 value 592.055007
+iter  370 value 592.054478
+iter  380 value 592.053732
+iter  390 value 592.053054
+iter  400 value 592.052602
+iter  410 value 592.052068
+iter  420 value 592.051450
+iter  430 value 592.051120
+iter  440 value 592.051011
+final  value 592.050997 
+converged</code></pre>
+<pre class="r"><code>round(fit$w,3)</code></pre>
+<pre><code> [1] 0.262 0.292 0.239 0.069 0.001 0.000 0.000 0.000 0.000 0.000 0.000 0.000
+[13] 0.000 0.000 0.138 0.000 0.000 0.000</code></pre>
+<pre class="r"><code>fit$mu</code></pre>
+<pre><code>[1] 0.1261618</code></pre>
+<pre class="r"><code>fit$opt_res$value</code></pre>
+<pre><code>[1] 592.051</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;inversion method&#39;)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization_prior_mean.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -896,6 +1074,7 @@ loaded via a namespace (and not attached):
 [41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
 [45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.5     utf8_1.2.2      
 [49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
+</div>
 </div>
 </div>
 
