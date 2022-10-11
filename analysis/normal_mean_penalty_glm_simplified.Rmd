@@ -40,8 +40,7 @@ plot_pois_penalty = function(theta,w,grid){
 
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-3.5,5,length.out = n)
-s = rep(1,n)
+x = seq(-3,5,length.out = n)
 w = c(0.9,0.1)
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
@@ -53,7 +52,7 @@ for(gg in grid_list){
 
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-3.5,5,length.out = n)
+x = seq(-3,5,length.out = n)
 s = rep(1,n)
 w = c(0.5,0.5)
 par(mfrow=c(2,2))
@@ -85,7 +84,7 @@ $s^2 = \frac{(1+e^\theta)^2}{ne^\theta}$
 
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-3.5,5,length.out = n)
+x = seq(-3,5,length.out = n)
 s = rep(1,n)
 w = c(0.9,0.1)
 par(mfrow=c(2,2))
