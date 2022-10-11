@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dongyue Xie" />
+
+<meta name="date" content="2022-10-10" />
+
+<title>normal mean penalized optimization, estimate prior mean</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gsmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">normal mean penalized optimization,
+estimate prior mean</h1>
+<h4 class="author">Dongyue Xie</h4>
+<h4 class="date">2022-10-10</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-10-11
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>gsmash/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee3a9d3c182eef8407aa78ebbc5963fca7345a188targetblanke3a9d3ca">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/e3a9d3c182eef8407aa78ebbc5963fca7345a188" target="_blank">e3a9d3c</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee3a9d3c182eef8407aa78ebbc5963fca7345a188targetblanke3a9d3ca"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/e3a9d3c182eef8407aa78ebbc5963fca7345a188" target="_blank">e3a9d3c</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/.ipynb_checkpoints/
+    Untracked:  analysis/symbolic_diff_python.ipynb
+
+Unstaged changes:
+    Modified:   analysis/normal_mean_penalty_glm_simplified.Rmd
+    Modified:   code/normal_mean_model_utils.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/normal_mean_penalized_optimization_prior_mean.Rmd</code>)
+and HTML
+(<code>docs/normal_mean_penalized_optimization_prior_mean.html</code>)
+files. If you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e3a9d3c182eef8407aa78ebbc5963fca7345a188/analysis/normal_mean_penalized_optimization_prior_mean.Rmd" target="_blank">e3a9d3c</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-11
+</td>
+<td>
+wflow_publish("analysis/normal_mean_penalized_optimization_prior_mean.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Add support for prior mean, <span class="math inline">\(g=\sum_k\pi_k
+N(\mu,\sigma^2_k)\)</span>.</p>
+<p>See the <a href="normal_mean_penalized_optimization.html">previous
+one</a> for the case with <span
+class="math inline">\(\mu=0\)</span>.</p>
+<pre class="r"><code>source(&quot;code/normal_mean_model_utils.R&quot;)</code></pre>
+<pre class="r"><code>set.seed(12345)
+n = 300
+w0 = 0.9
+lambda = c(rep(0,round(n*w0)),rep(10,n-round(n*w0)))
+w_true = c(w0,1-w0)
+grid_true = c(0.01,7)
+s = rep(1,n)
+y = rnorm(n,lambda,s)
+library(ashr)
+fit.ash = ashr::ash(y,s,mixcompdist = &#39;normal&#39;,mode=&#39;estimate&#39;)
+#grid = exp(seq(log(s/100),log(sqrt(max(abs(y^2-s^2)))),by=log(sqrt(2))))
+#fit.ash = S(y,s,w_true,grid_true)
+#plot(fit.ash$fitted_g$sd,fit.ash$fitted_g$pi)
+grid = fit.ash$fitted_g$sd
+K = length(grid)</code></pre>
+<pre class="r"><code>ploter = function(fit,y,lambda,main=&#39;known prior&#39;){
+  plot(y,main=main,col=&#39;grey80&#39;)
+  lines(lambda,col=&#39;grey60&#39;)
+  lines(fit$z,type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
+  lines(fit$posteriorMean)
+  legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;z&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c(&#39;grey80&#39;,&#39;grey80&#39;,&#39;grey60&#39;,1))
+}</code></pre>
+</div>
+<div id="ash-fit" class="section level2">
+<h2>ash fit</h2>
+<pre class="r"><code>fit.ash = ash(y,s,mixcompdist = &#39;normal&#39;,pointmass=F,prior=&#39;uniform&#39;,mixsd=grid,mode=&#39;estimate&#39;)
+plot(y,main=&#39;ash fit&#39;,col=&#39;grey80&#39;)
+lines(lambda,col=&#39;grey60&#39;)
+lines(fit.ash$result$PosteriorMean)
+legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;ash posteriorMean&#39;),pch=c(1,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization_prior_mean.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit.ash$fitted_g</code></pre>
+<pre><code>$pi
+ [1] 0.1640290 0.6978145 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+ [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+[15] 0.1381564 0.0000000 0.0000000 0.0000000
+
+$mean
+ [1] 0.1263976 0.1263976 0.1263976 0.1263976 0.1263976 0.1263976 0.1263976
+ [8] 0.1263976 0.1263976 0.1263976 0.1263976 0.1263976 0.1263976 0.1263976
+[15] 0.1263976 0.1263976 0.1263976 0.1263976
+
+$sd
+ [1]  0.00000000  0.08925154  0.12622074  0.17850309  0.25244149  0.35700617
+ [7]  0.50488297  0.71401235  1.00976595  1.42802470  2.01953189  2.85604939
+[13]  4.03906379  5.71209879  8.07812757 11.42419757 16.15625515 22.84839515
+
+attr(,&quot;class&quot;)
+[1] &quot;normalmix&quot;
+attr(,&quot;row.names&quot;)
+ [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18</code></pre>
+</div>
+<div id="compound-method" class="section level2">
+<h2>Compound method</h2>
+<pre class="r"><code>#&#39;objective function
+#&#39;@param theta (z,w,mu)
+#&#39;@param grid prior sds
+f_obj = function(theta,y,s,grid){
+  n = length(y)
+  K = length(grid)
+  w = softmax(theta[(n+1):(n+K)])
+  z = theta[1:n]
+  mu = theta[n+K+1]
+  
+  res = sum((y-z-s^2*l_nm_d1_z(z,s,w,mu,grid))^2/2/s^2 - l_nm(z,s,w,mu,grid) - s^2*(l_nm_d1_z(z,s,w,mu,grid))^2/2)
+
+  return(res)
+}
+
+#&#39;objective function
+#&#39;@param theta (mu_bar,w,mu)
+#&#39;@param grid prior sds
+f_obj_grad = function(theta,y,s,grid){
+  n = length(y)
+  K = length(grid)
+  a = theta[(n+1):(n+K)]
+  w = softmax(a)
+  z = theta[1:n]
+  mu = theta[n+K+1]
+  
+  grad_z = (1+s^2*l_nm_d2_z(z,s,w,mu,grid))*(z-y)/s^2
+  grad_a = colSums((s^2*l_nm_d1_z(z,s,w,mu,grid)-y+z)*l_nm_d2_za(z,s,a,mu,grid) - l_nm_d1_a(z,s,a,mu,grid) - s^2*l_nm_d1_z(z,s,w,mu,grid)*l_nm_d2_za(z,s,a,mu,grid))
+  grad_mu = sum(-(l_nm_d2_zmu(z,s,w,mu,grid)*(y-z)+l_nm_d1_mu(z,s,w,mu,grid)))
+
+  return(c(grad_z,c(grad_a),grad_mu))
+}
+
+ebnm_penalized_compound = function(x,s,grid,z_init = NULL,
+                                   w_init=NULL,mu_init = 0,opt_method = &#39;L-BFGS-B&#39;){
+  n = length(x)
+  K = length(grid)
+  if(is.null(w_init)){
+    w_init = rep(1/K,K)
+  }
+  if(length(s)==1){
+    s = rep(s,n)
+  }
+  if(is.null(z_init)){
+    z_init = x
+  }
+  if(is.null(mu_init)){
+    mu_init = 0
+  }
+  out = optim(c(z_init,w_init,mu_init),
+              fn=f_obj,
+              gr=f_obj_grad,
+              method=opt_method,
+              y=y,grid=grid,s=s)
+  z = out$par[1:n]
+  a = out$par[(n+1):(n+K)]
+  w = softmax(a)
+  mu = out$par[n+K+1]
+  posteriorMean = S(z,s,w,mu,grid)
+  return(list(z=z,w=w,mu=mu,a=a,posteriorMean=posteriorMean,opt_res = out))
+}</code></pre>
+<pre class="r"><code>fit = ebnm_penalized_compound(y,s,grid,opt_method = &#39;L-BFGS-B&#39;)
+fit$w</code></pre>
+<pre><code> [1] 5.155791e-01 2.256561e-01 9.944183e-02 2.011789e-02 9.931201e-04
+ [6] 4.664628e-06 6.655961e-10 1.023420e-15 9.242831e-24 2.485051e-33
+[11] 5.681738e-42 1.445639e-46 1.007825e-41 1.776286e-22 1.382073e-01
+[16] 8.434859e-15 1.731358e-29 8.259892e-41</code></pre>
+<pre class="r"><code>fit$mu</code></pre>
+<pre><code>[1] 0.1259986</code></pre>
+<pre class="r"><code>fit$opt_res$value</code></pre>
+<pre><code>[1] 592.05</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;compound penalty&#39;)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization_prior_mean.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="inversion-method" class="section level2">
+<h2>inversion method</h2>
+<pre class="r"><code>#&#39;objective function
+#&#39;@param theta (theta,w,mu)
+#&#39;@param grid prior sds
+f_obj = function(params,y,s,grid,z_range){
+  n = length(y)
+  K = length(grid)
+  w = softmax(params[(n+1):(n+K)])
+  theta = params[1:n]
+  mu = params[n+K+1]
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  return(sum((y-theta)^2/2/s^2 - l_nm(z,s,w,mu,grid)-(z-theta)^2/2/s^2))
+}
+
+
+#&#39;objective function
+#&#39;@param theta (theta,w,mu)
+#&#39;@param grid prior sds
+f_obj_grad = function(params,y,s,grid,z_range){
+  n = length(y)
+  K = length(grid)
+  a = params[(n+1):(n+K)]
+  w = softmax(a)
+  theta = params[1:n]
+  mu = params[n+K+1]
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  grad_theta = (z-y)/s^2
+  grad_a = -colSums(l_nm_d1_a(z,s,a,mu,grid))
+  grad_mu = -sum(l_nm_d1_mu(z,s,w,mu,grid))
+  return(c(grad_theta,c(grad_a),grad_mu))
+}
+
+
+ebnm_penalized_inversion = function(x,s,grid,theta_init = NULL,
+                                    w_init=NULL,mu_init=NULL,z_range=NULL,opt_method = &#39;L-BFGS-B&#39;){
+  n = length(x)
+  K = length(grid)
+  if(is.null(w_init)){
+    w_init = rep(1/K,K)
+  }
+  if(length(s)==1){
+    s = rep(s,n)
+  }
+  if(is.null(theta_init)){
+    theta_init = rep(0,n)
+  }
+  if(is.null(z_range)){
+    z_range = range(x) + c(-1,1)
+  }
+  if(is.null(mu_init)){
+    mu_init = 0
+  }
+  params = c(theta_init,w_init,mu_init)
+  out = optim(params,
+                   fn=f_obj,
+                   gr = f_obj_grad,
+                 y=x,
+                 s=s,
+                 grid=grid,
+                 z_range=z_range,
+                 method = opt_method)
+  
+  return(list(posteriorMean = out$par[1:n],w = softmax(out$par[(n+1):(n+K)]),mu=out$par[n+K+1],opt_res = out))
+}</code></pre>
+<pre class="r"><code>fit = ebnm_penalized_inversion(y,s,grid,opt_method = &#39;L-BFGS-B&#39;)
+round(fit$w,3)</code></pre>
+<pre><code> [1] 0.278 0.212 0.153 0.075 0.021 0.004 0.001 0.000 0.000 0.000 0.000 0.256
+[13] 0.000 0.000 0.000 0.000 0.000 0.000</code></pre>
+<pre class="r"><code>fit$mu</code></pre>
+<pre><code>[1] 0.2759867</code></pre>
+<pre class="r"><code>fit$opt_res$value</code></pre>
+<pre><code>[1] 673.5074</code></pre>
+<pre class="r"><code>ploter(fit,y,lambda,main=&#39;inversion method&#39;)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization_prior_mean.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23 ucrt)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 22621)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.utf8 
+[2] LC_CTYPE=English_United States.utf8   
+[3] LC_MONETARY=English_United States.utf8
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.utf8    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ashr_2.2-54     workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9       highr_0.9        compiler_4.2.1   pillar_1.8.1    
+ [5] bslib_0.4.0      later_1.3.0      git2r_0.30.1     jquerylib_0.1.4 
+ [9] tools_4.2.1      getPass_0.2-2    digest_0.6.29    lattice_0.20-45 
+[13] jsonlite_1.8.0   evaluate_0.16    tibble_3.1.8     lifecycle_1.0.2 
+[17] pkgconfig_2.0.3  rlang_1.0.5      Matrix_1.4-1     cli_3.3.0       
+[21] rstudioapi_0.14  yaml_2.3.5       xfun_0.32        fastmap_1.1.0   
+[25] invgamma_1.1     httr_1.4.4       stringr_1.4.1    knitr_1.40      
+[29] fs_1.5.2         vctrs_0.4.1      sass_0.4.2       grid_4.2.1      
+[33] rprojroot_2.0.3  glue_1.6.2       R6_2.5.1         processx_3.7.0  
+[37] fansi_1.0.3      rmarkdown_2.16   mixsqp_0.3-47    irlba_2.3.5     
+[41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
+[45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.5     utf8_1.2.2      
+[49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
