@@ -1,0 +1,171 @@
+---
+title: "Poisson mean penalized - inversion method"
+author: "DongyueXie"
+date: "2022-10-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Define the inversion function, $z(\theta):=T(\theta;g)$, such that $\theta = S_g(T(\theta;g),s^2(\theta))$. Then the optimization problem is 
+\begin{equation}
+    \min_{\theta,g} h(\theta,g) = -l(\theta)  -l_{\text{NM}}(T(\theta;g);g,s^2(\theta)) - \frac{(\theta-T(\theta;g))^2}{2s^2(\theta)}- \frac{1}{2}\log 2\pi s^2(\theta).
+\end{equation}
+
+
+```{r}
+set.seed(12345)
+n = 200
+w = 0.2
+mu = c(rep(1,n*(1-w)),rnorm(n*w,1,2))
+lambda = exp(mu)
+x = rpois(n,lambda)
+plot(x,main='',col='grey80',pch=20)
+lines(lambda,col='grey50')
+legend('topleft',c('data','true mean'),pch=c(20,NA),lty=c(NA,1),col=c('grey80','grey50'))
+```
+
+
+```{r}
+library(ashr)
+fitash = ash_pois(x,link='log')
+fitash$fitted_g
+plot(x,col='grey80',main='ash pois fit')
+lines(lambda,col='grey80')
+lines(fitash$result$PosteriorMean,col=4)
+legend('topleft',c('data','true mean','ash pm'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey80',4))
+
+plot(log(x),col='grey80',main='ash pois fit, log space',ylim=range(c(log(lambda),log(fitash$result$PosteriorMean),log(x+1))))
+lines(log(lambda),col='grey80')
+lines(log(fitash$result$PosteriorMean),col=4)
+legend('topleft',c('log(x)','true mu','ash pm'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey80',4))
+```
+
+
+## Known prior
+
+```{r}
+source("code/normal_mean_model_utils.R")
+f_obj_known_g = function(theta,y,w,mu,grid,z_range){
+  s = sqrt(exp(-theta))
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  return(sum(-y*theta+exp(theta)-l_nm(z,s,w,mu,grid)-(theta-z)^2/2/s^2-log(2*pi*s^2)/2))
+}
+
+#'@return derivative of l_nm(z(theta);g,s^2(theta)) w.r.t theta
+l_nm_d1_theta = function(z,theta,s,w,mu,grid){
+  l_nm_d1_z(z,s,w,mu,grid)*z_d1_theta(z,theta,s,w,mu,grid) + l_nm_d1_s2(z,s,w,mu,grid)*(-exp(-theta))
+}
+
+z_d1_theta = function(z,theta,s,w,mu,grid){
+  numerator = 1-(-exp(-theta))*l_nm_d1_z(z,s,w,mu,grid) - exp(-theta)*(-exp(-theta))*l_nm_d2_zs2(z,s,w,mu,grid)
+  denominator = 1 + exp(-theta)*l_nm_d2_z(z,s,w,mu,grid)
+  return(numerator/denominator)
+}
+
+f_obj_grad_known_g = function(theta,y,w,mu,grid,z_range){
+  s=sqrt(exp(-theta))
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  exp(theta)-y-l_nm_d1_theta(z,theta,s,w,mu,grid) - (2*s^2*(theta-z)*(1-z_d1_theta(z,theta,s,w,mu,grid))-(-exp(-theta))*(theta-z)^2)/2/s^4 - (-exp(-theta))/2/s^2
+}
+```
+
+```{r}
+w = c(0.8,0.2)
+mu = 1
+grid = c(0,2)
+theta_init= log(x+1)
+fit = optim(theta_init,f_obj_known_g,f_obj_grad_known_g,method = 'L-BFGS-B',y=x,w=w,mu=mu,grid=grid,z_range=c(-10,10),control=list(trace=1))
+
+
+
+plot(x,col='grey80',main='known prior')
+lines(lambda,col='grey80')
+lines(exp(fit$par),col=4)
+legend('topleft',c('data','true mean','posteriormean'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey80',4))
+
+plot(log(x),col='grey80',main='known prior, log space',ylim=range(c(log(lambda),fit$par,log(x+1))))
+lines(log(lambda),col='grey80')
+lines(fit$par,col=4)
+legend('topleft',c('log(x)','true mu','posteriormean'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey80',4))
+```
+
+
+## UnKnown prior
+
+```{r}
+#'@param params (theta,w,mu)
+f_obj = function(params,y,grid,z_range){
+  n = length(y)
+  K = length(grid)
+  theta = params[1:n]
+  a = params[(n+1):(n+K)]
+  w = softmax(a)
+  mu = params[n+K+1]
+  s = sqrt(exp(-theta))
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  return(sum(-y*theta+exp(theta)-l_nm(z,s,w,mu,grid)-(theta-z)^2/2/s^2-log(2*pi*s^2)/2))
+}
+
+#'@return derivative of l_nm(z(theta);g,s^2(theta)) w.r.t theta
+l_nm_d1_g = function(z,theta,s,a,mu,grid){
+  w=softmax(a)
+  l_nm_d1_z(z,s,w,mu,grid)*z_d1_g(z,theta,s,a,mu,grid) + cbind(l_nm_d1_a(z,s,a,mu,grid),l_nm_d1_mu(z,s,w,mu,grid))
+}
+
+z_d1_g = function(z,theta,s,a,mu,grid){
+  w=softmax(a)
+  n_a = -s^2*(l_nm_d2_za(z,s,a,mu,grid))
+  d_a = 1+s^2*l_nm_d2_z(z,s,w,mu,grid) 
+  n_mu = -s^2*l_nm_d2_zmu(z,s,w,mu,grid)
+  d_mu = 1+d_a
+  return(cbind(n_a/d_a,n_mu/d_mu))
+}
+
+f_obj_grad=function(params,y,grid,z_range){
+  n = length(y)
+  K = length(grid)
+  theta = params[1:n]
+  a = params[(n+1):(n+K)]
+  w = softmax(a)
+  mu = params[n+K+1]
+  s = sqrt(exp(-theta))
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  grad_theta = exp(theta)-y-l_nm_d1_theta(z,theta,s,w,mu,grid) - (2*s^2*(theta-z)*(1-z_d1_theta(z,theta,s,w,mu,grid))-(-exp(-theta))*(theta-z)^2)/2/s^4 - (-exp(-theta))/2/s^2
+  grad_g = colSums(-l_nm_d1_g(z,theta,s,a,mu,grid) - 2*(z-theta)*z_d1_g(z,theta,s,a,mu,grid)/2/s^2)
+  return(c(grad_theta,grad_g))
+}
+
+```
+
+```{r}
+grid = c(0,1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+K = length(grid)
+w_init = rep(1/K,K)
+mu_init = 0
+
+params_init= c(log(x+1),w_init,mu_init)
+fit = optim(params_init,f_obj,f_obj_grad,method = 'L-BFGS-B',y=x,grid=grid,z_range=c(-10,10),control=list(trace=1,maxit=1000))
+
+round(softmax(fit$par[(n+1):(n+K)]),3)
+fit$par[n+K+1]
+```
+
+```{r}
+plot(x,col='grey80',main='estimate prior')
+lines(lambda,col='grey80')
+lines(exp(fit$par[1:n]),col=4)
+legend('topleft',c('data','true mean','posteriormean'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey80',4))
+
+plot(log(x),col='grey80',main='estimate prior,log space',ylim=range(c(log(lambda),fit$par[1:n],log(x+1))))
+lines(log(lambda),col='grey80')
+lines(fit$par[1:n],col=4)
+legend('topleft',c('log(x)','true mu','posteriormean'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey80',4))
+```
+
+```{r}
+which(fit$par[1:n]<0)
+which(x==0)
+```
