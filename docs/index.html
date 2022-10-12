@@ -13,7 +13,7 @@
 
 <title>hOMEPAGe</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
@@ -190,8 +190,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -199,16 +199,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -317,7 +310,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-10-11
+<strong>Last updated:</strong> 2022-10-12
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -364,15 +357,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree41da4548e88f59a9405b4bec6eb47b58d489f07dtargetblank41da454a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree04490832ffeea393dd54b0a6be7f28490d85d152targetblank0449083a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/41da4548e88f59a9405b4bec6eb47b58d489f07d" target="_blank">41da454</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/04490832ffeea393dd54b0a6be7f28490d85d152" target="_blank">0449083</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree41da4548e88f59a9405b4bec6eb47b58d489f07dtargetblank41da454a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree04490832ffeea393dd54b0a6be7f28490d85d152targetblank0449083a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -382,7 +375,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/41da4548e88f59a9405b4bec6eb47b58d489f07d" target="_blank">41da454</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/04490832ffeea393dd54b0a6be7f28490d85d152" target="_blank">0449083</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -397,16 +390,11 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  analysis/.ipynb_checkpoints/
-    Untracked:  analysis/symbolic_diff_python.ipynb
-
 Unstaged changes:
-    Modified:   analysis/normal_mean_penalty_glm_simplified.Rmd
     Modified:   code/normal_mean_model_utils.R
+    Modified:   code/poisson_mean/pois_mean_GMGM.R
 
 </code></pre>
 <p>
@@ -451,6 +439,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/04490832ffeea393dd54b0a6be7f28490d85d152/analysis/index.Rmd" target="_blank">0449083</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-12
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/d82d96032fca0f15cf80a90b53aa14f230719924/docs/index.html" target="_blank">d82d960</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -761,15 +783,20 @@ s^2)/2\)</span></a></li>
 </div>
 <div id="poisson-mean" class="section level2">
 <h2>Poisson mean</h2>
+<div id="penalized" class="section level3">
+<h3>Penalized</h3>
 <ul>
-<li><a href="pois_mean_penalized.html">Poisson mean penalized
-form</a></li>
+<li><a href="pois_mean_penalized.html">Poisson mean penalized form,
+compound</a></li>
+<li><a href="pois_mean_penalized_inversion.html">Poisson mean penalized
+form, inversion</a></li>
 <li><a href="neg_binom_mean_lower_bound.html">NB JJ lower bound</a></li>
 <li><a href="neg_binom_mean_polya_gamma.html">NB PG
 augmentation</a></li>
 <li><a href="pois_mean_log1exp.html">Poisson mean <span
 class="math inline">\(log(1+exp(\cdot))\)</span> link</a></li>
 </ul>
+</div>
 </div>
 
 
