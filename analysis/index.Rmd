@@ -26,7 +26,8 @@ editor_options:
 
 ## Poisson mean 
 
-
+* [Poisson mean, ash prior, Gaussian posterior]()
+* [Poisson mean, ash prior, Gaussian Mixture posterior]()
 * [NB JJ lower bound](neg_binom_mean_lower_bound.html)
 * [NB PG augmentation](neg_binom_mean_polya_gamma.html)
 * [Poisson mean $log(1+exp(\cdot))$ link](pois_mean_log1exp.html)
@@ -35,3 +36,10 @@ editor_options:
 
 * [Poisson mean penalized form, compound](pois_mean_penalized.html)
 * [Poisson mean penalized form, inversion](pois_mean_penalized_inversion.html)
+
+## Poisson smoothing nugget 
+
+
+
+
+
