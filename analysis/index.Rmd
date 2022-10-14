@@ -39,7 +39,7 @@ editor_options:
 
 ## Poisson smoothing nugget 
 
-
+* [The two step procedure for smoothing overdispersed count data](poisson_nugget_two_step.html)
 
 
 
