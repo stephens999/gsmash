@@ -21,7 +21,7 @@
 #'\deqn{x_i\sim Poisson(\exp(\mu_i)),}
 #'\deqn{\mu_i\sim \sum_k N(\beta,\sigma_k^2).}
 
-source("/code/poisson_mean/pois_mean_GG.R")
+source("code/poisson_mean/pois_mean_GG.R")
 
 pois_mean_GMGM = function(x,
                           w = NULL,
