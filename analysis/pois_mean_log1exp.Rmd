@@ -25,29 +25,42 @@ Using the lower bound in Seeger and Bouchard(2012), we can perform inference by 
 source('code/poisson_mean/pois_mean_log1exp.R')
 ```
 
-Generate data
+```{r}
+rmse = function(x,y){sqrt(mean((x-y)^2))}
+```
 
 ```{r}
 set.seed(12345)
 n = 1000
 w = 0.2
-lambda = c(rep(0.1,n*(1-w)),rep(10,n*w))
+mu = c(rep(6,n*0.9),rnorm(n*0.1,6,2))
+lambda = log(1+exp(mu))
 x = rpois(n,lambda)
 plot(x,main='',col='grey80',pch=20)
 lines(lambda,col='grey50')
 legend('topleft',c('data','true mean'),pch=c(20,NA),lty=c(NA,1),col=c('grey80','grey50'))
 ```
 
-
-## point-laplace prior, mean = estimate
+We initialize $\tilde\mu$ at $x$. (init from a contant won't work)
 
 ```{r,warning=FALSE}
-out = pois_mean_log1exp(x,maxiter = 300,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+out = pois_mean_log1exp(x,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
 plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
 
-plot(x,main='',col='grey80',pch=20)
-lines(log(1+exp(out$m)),col=4)
+
+```{r}
+plot(x,main='data space',col='grey80',pch=20)
+lines(lambda,col='grey50')
+lines(log(1+exp(out$posteriorMean)),col=4)
 legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+plot(log(exp(x)-1),main='latent space',col='grey80',pch=20,ylim = range(c(x,mu,out$posteriorMean)))
+lines(log(exp(lambda)-1),col='grey50')
+lines(out$posteriorMean,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
 ```
 
 ```{r}
@@ -55,86 +68,32 @@ out$kappa
 out$ebnm_res$fitted_g
 ```
 
-## point-laplace prior, mean = 0
+```{r}
+rmse(out$posteriorMean,mu)
+```
 
-```{r,warning=FALSE}
-out = pois_mean_log1exp(x,maxiter = 300,ebnm_params=list(mode=0,prior_family='point_laplace'))
-plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+We now change the largest observation so that it changes the $s$ in EBNM problem.
 
-plot(x,main='',col='grey80',pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```{r}
+max_x = c(20,30,40,50,60,70,80,90,100,200)
+
+n_iters = c()
+errors = c()
+
+for(ll in max_x){
+  kapa = 0.25+0.17*ll
+  out = pois_mean_log1exp(x,maxiter = 10000,ebnm_params=list(mode='estimate',prior_family='point_laplace'),kapa=kapa)
+  n_iters = c(n_iters,length(out$obj_value))
+  errors = c(errors,rmse(mu,out$posteriorMean))
+  plot(log(exp(x)-1),main='latent space',col='grey80',pch=20,ylim = range(c(x,mu,out$posteriorMean)))
+  lines(log(exp(lambda)-1),col='grey50')
+  lines(out$posteriorMean,col=4)
+  legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+}
 ```
 
 ```{r}
-out$kappa
-out$ebnm_res$fitted_g
-```
-
-## ash prior, mean = estimate
-
-```{r}
-out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode='estimate',prior_family='normal_scale_mixture'))
-plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
-
-plot(x,main='',col='grey80',pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
-```
-
-
-```{r}
-out$ebnm_res$fitted_g
-```
-
-
-## ash prior, mean = 0
-
-```{r}
-out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family='normal_scale_mixture'))
-plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
-
-plot(x,main='',col='grey80',pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
-```
-
-
-```{r}
-out$ebnm_res$fitted_g
-```
-
-
-## Point normal prior, mean = estimate
-
-```{r,warning=FALSE}
-out = pois_mean_log1exp(x,maxiter = 100,ebnm_params=list(mode='estimate',prior_family='point_normal'))
-plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
-
-plot(x,main='',col='grey80',pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
-```
-
-```{r}
-out$kappa
-out$ebnm_res$fitted_g
-```
-
-Why ELBO is not increasing in this case?
-
-## Point normal prior, mean = 0
-
-```{r,warning=FALSE}
-out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family='point_normal'))
-plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
-
-plot(x,main='',col='grey80',pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend('topleft',c('data','true mean','estimated mean'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
-```
-
-```{r}
-out$ebnm_res$fitted_g
+plot(max_x,n_iters,type='b')
+plot(max_x,errors,type='b')
 ```
 
