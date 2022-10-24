@@ -15,7 +15,7 @@
 
 <title>Poisson mean with log(1+exp(x)) link function</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
@@ -195,8 +195,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -204,16 +204,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -398,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-09-13
+<strong>Last updated:</strong> 2022-10-24
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -529,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree877f4fa00be92511af3dbe5ec3291c79cf463a19targetblank877f4faa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee391e29ba23e35836681f6d97b1f4bcb5e665f19targetblanke391e29a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/877f4fa00be92511af3dbe5ec3291c79cf463a19" target="_blank">877f4fa</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/e391e29ba23e35836681f6d97b1f4bcb5e665f19" target="_blank">e391e29</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree877f4fa00be92511af3dbe5ec3291c79cf463a19targetblank877f4faa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee391e29ba23e35836681f6d97b1f4bcb5e665f19targetblanke391e29a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/877f4fa00be92511af3dbe5ec3291c79cf463a19" target="_blank">877f4fa</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/e391e29ba23e35836681f6d97b1f4bcb5e665f19" target="_blank">e391e29</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -565,14 +558,11 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  code/poisson_mean/neg_binom_mean_polya_gamma.R
-    Untracked:  code/poisson_mean/pois_mean_GG.R
-    Untracked:  code/poisson_mean/pois_mean_GG_opt.R
-    Untracked:  code/poisson_mean/pois_mean_GMG.R
-    Untracked:  code/poisson_mean/pois_mean_GMGM.R
-    Untracked:  code/poisson_mean/pois_mean_penalized.R
-    Untracked:  code/poisson_mean/test_example.R
+Unstaged changes:
+    Modified:   code/poisson_mean/pois_mean_log1exp.R
+    Modified:   code/poisson_mean/pois_mean_penalized_compound.R
+    Modified:   code/poisson_mean/pois_mean_penalized_inversion.R
+    Modified:   code/poisson_mean/test_example.R
 
 </code></pre>
 <p>
@@ -618,6 +608,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e391e29ba23e35836681f6d97b1f4bcb5e665f19/analysis/pois_mean_log1exp.Rmd" target="_blank">e391e29</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-24
+</td>
+<td>
+wflow_publish("analysis/pois_mean_log1exp.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/655918bdb1ba7d3108bbd0b6377a4b42185a1638/docs/pois_mean_log1exp.html" target="_blank">655918b</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -723,174 +747,244 @@ wflow_publish("analysis/pois_mean_log1exp.Rmd")
 <p>Using the lower bound in Seeger and Bouchard(2012), we can perform
 inference by iteratively fitting EBNM problem.</p>
 <pre class="r"><code>source(&#39;code/poisson_mean/pois_mean_log1exp.R&#39;)</code></pre>
-<p>Generate data</p>
+<pre class="r"><code>rmse = function(x,y){sqrt(mean((x-y)^2))}</code></pre>
 <pre class="r"><code>set.seed(12345)
 n = 1000
 w = 0.2
-lambda = c(rep(0.1,n*(1-w)),rep(10,n*w))
+mu = c(rep(6,n*0.9),rnorm(n*0.1,6,2))
+lambda = log(1+exp(mu))
 x = rpois(n,lambda)
 plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
 lines(lambda,col=&#39;grey50&#39;)
 legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;),pch=c(20,NA),lty=c(NA,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;))</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="point-laplace-prior-mean-estimate" class="section level2">
-<h2>point-laplace prior, mean = estimate</h2>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 300,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;point_laplace&#39;))
-plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out$kappa</code></pre>
-<pre><code>[1] 3.82</code></pre>
-<pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
-<pre><code>$pi
-[1] 0.7912412 0.2087588
-
-$mean
-[1] -1.82694 -1.82694
-
-$scale
-[1]  0.00000 10.49169
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/0275a5f56c21ffbc3384c941d4054da6d2b92d3f/docs/figure/pois_mean_log1exp.Rmd/unnamed-chunk-3-1.png" target="_blank">0275a5f</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9a320ec9f63ba874326c349229a02100678dacec/docs/figure/pois_mean_log1exp.Rmd/unnamed-chunk-3-1.png" target="_blank">9a320ec</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="point-laplace-prior-mean-0" class="section level2">
-<h2>point-laplace prior, mean = 0</h2>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 300,ebnm_params=list(mode=0,prior_family=&#39;point_laplace&#39;))
+</div>
+<p>We initialize <span class="math inline">\(\tilde\mu\)</span> at <span
+class="math inline">\(x\)</span>. (init from a contant won’t work)</p>
+<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 1000,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;point_laplace&#39;))
 plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(x,main=&#39;data space&#39;,col=&#39;grey80&#39;,pch=20)
+lines(lambda,col=&#39;grey50&#39;)
+lines(log(1+exp(out$posteriorMean)),col=4)
+legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/0275a5f56c21ffbc3384c941d4054da6d2b92d3f/docs/figure/pois_mean_log1exp.Rmd/unnamed-chunk-5-1.png" target="_blank">0275a5f</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9a320ec9f63ba874326c349229a02100678dacec/docs/figure/pois_mean_log1exp.Rmd/unnamed-chunk-5-1.png" target="_blank">9a320ec</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot(log(exp(x)-1),main=&#39;latent space&#39;,col=&#39;grey80&#39;,pch=20,ylim = range(c(x,mu,out$posteriorMean)))
+lines(log(exp(lambda)-1),col=&#39;grey50&#39;)
+lines(out$posteriorMean,col=4)
+legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true latent&#39;,&#39;estimated latent&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>out$kappa</code></pre>
-<pre><code>[1] 3.82</code></pre>
+<pre><code>[1] 2.97</code></pre>
 <pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
 <pre><code>$pi
-[1] 0.7989592 0.2010408
+[1] 0.8873331 0.1126669
 
 $mean
-[1] 0 0
+[1] 6.129491 6.129491
 
 $scale
-[1] 0.000000 8.740808
+[1] 0.000000 2.898155
 
 attr(,&quot;class&quot;)
 [1] &quot;laplacemix&quot;
 attr(,&quot;row.names&quot;)
 [1] 1 2</code></pre>
-</div>
-<div id="ash-prior-mean-estimate" class="section level2">
-<h2>ash prior, mean = estimate</h2>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;normal_scale_mixture&#39;))
-plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
-<pre><code>$pi
- [1] 0.7953421 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
- [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.2046579 0.0000000 0.0000000
+<pre class="r"><code>rmse(out$posteriorMean,mu)</code></pre>
+<pre><code>[1] 1.172633</code></pre>
+<p>We now change the largest observation so that it changes the <span
+class="math inline">\(s\)</span> in EBNM problem.</p>
+<pre class="r"><code>max_x = c(20,30,40,50,60,70,80,90,100,200)
 
-$mean
- [1] -1.871933 -1.871933 -1.871933 -1.871933 -1.871933 -1.871933 -1.871933
- [8] -1.871933 -1.871933 -1.871933 -1.871933 -1.871933 -1.871933 -1.871933
+n_iters = c()
+errors = c()
 
-$sd
- [1]  0.0000000  0.4546730  0.7594128  1.1130414  1.5568932  2.1318559
- [7]  2.8880045  3.8902237  5.2241508  7.0036246  9.3804497 12.5573663
-[13] 16.8053519 22.4867372
-
-attr(,&quot;class&quot;)
-[1] &quot;normalmix&quot;
-attr(,&quot;row.names&quot;)
- [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14</code></pre>
-</div>
-<div id="ash-prior-mean-0" class="section level2">
-<h2>ash prior, mean = 0</h2>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family=&#39;normal_scale_mixture&#39;))
-plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
+for(ll in max_x){
+  kapa = 0.25+0.17*ll
+  out = pois_mean_log1exp(x,maxiter = 10000,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;point_laplace&#39;),kapa=kapa)
+  n_iters = c(n_iters,length(out$obj_value))
+  errors = c(errors,rmse(mu,out$posteriorMean))
+  plot(log(exp(x)-1),main=&#39;latent space&#39;,col=&#39;grey80&#39;,pch=20,ylim = range(c(x,mu,out$posteriorMean)))
+  lines(log(exp(lambda)-1),col=&#39;grey50&#39;)
+  lines(out$posteriorMean,col=4)
+  legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true latent&#39;,&#39;estimated latent&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))
+}</code></pre>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9a320ec9f63ba874326c349229a02100678dacec/docs/figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-1.png" target="_blank">9a320ec</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
-<pre><code>$pi
- [1] 0.8024817 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
- [8] 0.0000000 0.0000000 0.0000000 0.1975183 0.0000000 0.0000000 0.0000000
-
-$mean
- [1] 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-
-$sd
- [1]  0.0000000  0.4546730  0.7594128  1.1130414  1.5568932  2.1318559
- [7]  2.8880045  3.8902237  5.2241508  7.0036246  9.3804497 12.5573663
-[13] 16.8053519 22.4867372
-
-attr(,&quot;class&quot;)
-[1] &quot;normalmix&quot;
-attr(,&quot;row.names&quot;)
- [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9a320ec9f63ba874326c349229a02100678dacec/docs/figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-2.png" target="_blank">9a320ec</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-13
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="point-normal-prior-mean-estimate" class="section level2">
-<h2>Point normal prior, mean = estimate</h2>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 100,ebnm_params=list(mode=&#39;estimate&#39;,prior_family=&#39;point_normal&#39;))
-plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out$kappa</code></pre>
-<pre><code>[1] 3.82</code></pre>
-<pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
-<pre><code>$pi
-[1] 5.096152e-10 1.000000e+00
-
-$mean
-[1] 0.1558144 0.1558144
-
-$sd
-[1] 0.000000 3.161129
-
-attr(,&quot;class&quot;)
-[1] &quot;normalmix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-<p>Why ELBO is not increasing in this case?</p>
 </div>
-<div id="point-normal-prior-mean-0" class="section level2">
-<h2>Point normal prior, mean = 0</h2>
-<pre class="r"><code>out = pois_mean_log1exp(x,maxiter = 500,ebnm_params=list(mode=0,prior_family=&#39;point_normal&#39;))
-plot(out$obj,type=&#39;l&#39;,ylab=&#39;ELBO&#39;,xlab=&#39;iteration&#39;)</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(x,main=&#39;&#39;,col=&#39;grey80&#39;,pch=20)
-lines(log(1+exp(out$m)),col=4)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(20,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey50&#39;,4))</code></pre>
-<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>out$ebnm_res$fitted_g</code></pre>
-<pre><code>$pi
-[1] 0.8025787 0.1974213
-
-$mean
-[1] 0 0
-
-$sd
-[1] 0.000000 9.455385
-
-attr(,&quot;class&quot;)
-[1] &quot;normalmix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-9-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(max_x,n_iters,type=&#39;b&#39;)</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(max_x,errors,type=&#39;b&#39;)</code></pre>
+<p><img src="figure/pois_mean_log1exp.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -900,18 +994,19 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.1 (2022-06-23 ucrt)
-Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 22000)
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.04.5 LTS
 
 Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
 
 locale:
-[1] LC_COLLATE=English_United States.utf8 
-[2] LC_CTYPE=English_United States.utf8   
-[3] LC_MONETARY=English_United States.utf8
-[4] LC_NUMERIC=C                          
-[5] LC_TIME=English_United States.utf8    
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
@@ -920,23 +1015,23 @@ other attached packages:
 [1] ebnm_1.0-9      workflowr_1.7.0
 
 loaded via a namespace (and not attached):
- [1] tidyselect_1.1.2  xfun_0.32         bslib_0.4.0       ashr_2.2-54      
- [5] purrr_0.3.4       splines_4.2.1     lattice_0.20-45   colorspace_2.0-3 
- [9] vctrs_0.4.1       generics_0.1.3    htmltools_0.5.3   yaml_2.3.5       
-[13] utf8_1.2.2        rlang_1.0.5       mixsqp_0.3-43     jquerylib_0.1.4  
-[17] later_1.3.0       pillar_1.8.1      glue_1.6.2        trust_0.1-8      
-[21] lifecycle_1.0.2   stringr_1.4.1     munsell_0.5.0     gtable_0.3.1     
-[25] evaluate_0.16     knitr_1.40        callr_3.7.2       fastmap_1.1.0    
-[29] httpuv_1.6.5      ps_1.7.1          invgamma_1.1      irlba_2.3.5      
-[33] fansi_1.0.3       highr_0.9         Rcpp_1.0.9        scales_1.2.1     
-[37] promises_1.2.0.1  cachem_1.0.6      horseshoe_0.2.0   jsonlite_1.8.0   
-[41] truncnorm_1.0-8   fs_1.5.2          deconvolveR_1.2-1 ggplot2_3.3.6    
-[45] digest_0.6.29     stringi_1.7.8     processx_3.7.0    dplyr_1.0.10     
-[49] getPass_0.2-2     rprojroot_2.0.3   grid_4.2.1        cli_3.3.0        
-[53] tools_4.2.1       magrittr_2.0.3    sass_0.4.2        tibble_3.1.8     
-[57] whisker_0.4       pkgconfig_2.0.3   Matrix_1.4-1      SQUAREM_2021.1   
-[61] rmarkdown_2.16    httr_1.4.4        rstudioapi_0.14   R6_2.5.1         
-[65] git2r_0.30.1      compiler_4.2.1   </code></pre>
+ [1] tidyselect_1.2.0  xfun_0.33         bslib_0.4.0       ashr_2.2-54      
+ [5] splines_4.2.1     lattice_0.20-45   colorspace_2.0-3  vctrs_0.4.2      
+ [9] generics_0.1.3    htmltools_0.5.3   yaml_2.3.5        utf8_1.2.2       
+[13] rlang_1.0.6       mixsqp_0.3-43     jquerylib_0.1.4   later_1.3.0      
+[17] pillar_1.8.1      glue_1.6.2        trust_0.1-8       lifecycle_1.0.3  
+[21] stringr_1.4.1     munsell_0.5.0     gtable_0.3.1      evaluate_0.17    
+[25] knitr_1.40        callr_3.7.2       fastmap_1.1.0     httpuv_1.6.6     
+[29] ps_1.7.1          invgamma_1.1      irlba_2.3.5.1     fansi_1.0.3      
+[33] highr_0.9         Rcpp_1.0.9        scales_1.2.1      promises_1.2.0.1 
+[37] cachem_1.0.6      horseshoe_0.2.0   jsonlite_1.8.2    truncnorm_1.0-8  
+[41] fs_1.5.2          deconvolveR_1.2-1 ggplot2_3.3.6     digest_0.6.29    
+[45] stringi_1.7.8     processx_3.7.0    dplyr_1.0.10      getPass_0.2-2    
+[49] rprojroot_2.0.3   grid_4.2.1        cli_3.4.1         tools_4.2.1      
+[53] magrittr_2.0.3    sass_0.4.2        tibble_3.1.8      whisker_0.4      
+[57] pkgconfig_2.0.3   Matrix_1.5-1      SQUAREM_2021.1    rmarkdown_2.17   
+[61] httr_1.4.4        rstudioapi_0.14   R6_2.5.1          git2r_0.30.1     
+[65] compiler_4.2.1   </code></pre>
 </div>
 </div>
 
