@@ -17,7 +17,7 @@
 #'\deqn{x_i\sim Poisson(\log(1+\exp(\mu_i))),}
 #'\deqn{\mu_i\sim g(\cdot).}
 library(ebnm)
-pois_mean_log1exp = function(x,ebnm_params = NULL,tol=1e-5,maxiter=100){
+pois_mean_log1exp = function(x,ebnm_params = NULL,tol=1e-5,maxiter=1e3){
   n = length(x)
   kapa = 0.25+0.17*max(x)
   pseudo_s = sqrt(1/kapa)
@@ -52,14 +52,14 @@ pois_mean_log1exp = function(x,ebnm_params = NULL,tol=1e-5,maxiter=100){
 
     # calc objective function
     obj[iter+1] = -sum(nll(x,mu_tilde)+nll_d1(x,mu_tilde)*(m-mu_tilde)+kapa/2*(m^2+v+mu_tilde^2-2*m*mu_tilde))+H
-    if(abs(obj[iter+1]-obj[iter])<tol){
+    if((obj[iter+1]-obj[iter])<tol){
       obj = obj[1:(iter+1)]
       break
     }
     # update mu_tilde
     mu_tilde = m
   }
-  return(list(m=m,v=v,obj=obj,ebnm_res=res,kappa=kapa))
+  return(list(posteriorMean=m,posteriorVar=v,obj_value=obj,ebnm_res=res,kappa=kapa))
 }
 
 nll = function(x,mu){
@@ -73,8 +73,8 @@ nll_d1 = function(x,mu){
 }
 
 ebnm_params_default = function(){
-  return(list(prior_family='point_normal',
-              mode=0,
+  return(list(prior_family='point_laplace',
+              mode='estimate',
               scale = "estimate",
               g_init = NULL,
               fix_g = FALSE,

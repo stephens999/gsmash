@@ -1,5 +1,9 @@
 #'@title Solve Negative Binomial mean problem by polya-gamma augmentation
 #'@param x data vector
+#'@param r NB binomial paramter r
+#'@param ebnm_params a list of ebnm parameters
+#'@param est_r whether estimate r. For Poisson data, set it to False.
+#'@param update_r_every if estimate r, how often to update it
 #'@param maxiter max number of iterations
 #'@param tol tolerance for stopping the updates
 #'@return a list of
@@ -8,10 +12,13 @@
 #'  \item{obj:}{objective function values}
 #'  \item{ebnm_res:}{fitted object from `ebnm`}
 #'  @example
-#'  n = 10000
+#'
+#'  n = 100
 #'  mu = rnorm(n)
-#'  x = rpois(n,exp(mu))
-#'  pois_mean_log1exp(x)
+#'  p = exp(mu)/(1+exp(mu))
+#'  r = 10
+#'  x = rnbinom(n,r,1-p)
+#'  nb_mean_polya_gamma(x,r=r)
 #'@details The problem is
 #'\deqn{x_i\sim Poisson(\log(1+\exp(\mu_i))),}
 #'\deqn{\mu_i\sim g(\cdot).}
@@ -20,10 +27,10 @@
 #'
 library(ebnm)
 nb_mean_polya_gamma = function(x,
-                               r = 1e5,
+                               r = 1e3,
                                ebnm_params = NULL,
                                tol=1e-5,
-                               maxiter=100,
+                               maxiter=1000,
                                est_r = FALSE,
                                update_r_every=1,
                                m_init = NULL,
@@ -43,10 +50,10 @@ nb_mean_polya_gamma = function(x,
   }
 
   if(is.null(m_init)){
-    m = rep(0,n)
+    m = log(x/r+1)
   }
   if(is.null(v_init)){
-    v = rep(1,n)
+    v = rep(1/n,n)
   }
 
   if(is.null(r)){
@@ -91,8 +98,15 @@ nb_mean_polya_gamma = function(x,
   if(iter==maxiter){
     message('Not converged - Increase number of iterations.')
   }
-  p = 1/(1+exp(-m))
-  return(list(m=m,v=v,r=r,obj=obj,ebnm_res=res,p=p,mean_est = r*p/(1-p),r_trace=r_trace))
+  return(list(posteriorMean=m,
+              posteriorVar=v,
+              r=r,
+              obj_value=obj,
+              ebnm_res=res,
+              p=1/(1+exp(-m)),
+              poisson_mean_est = r*exp(m),
+              poisson_log_mean_est = log(r) + m,
+              r_trace=r_trace))
 }
 
 neg_binom_mean_pg_obj = function(x,m,v,r,H_mu){
@@ -128,8 +142,8 @@ Fr_d1 = function(r,x,m,v,delta){
 }
 
 ebnm_params_default = function(){
-  return(list(prior_family='point_normal',
-              mode=0,
+  return(list(prior_family='point_laplace',
+              mode='estimate',
               scale = "estimate",
               g_init = NULL,
               fix_g = FALSE,

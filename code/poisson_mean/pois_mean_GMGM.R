@@ -1,35 +1,39 @@
 #'@title Solve Gaussian approximation to Poisson mean problem
 #'@description Gaussian Mixture prior, Gaussian Mixture posterior in Poisson mean problem.
 #'@param x data vector
-#'@param beta prior mean
-#'@param sigma2 prior variance
+#'@param s scaling vector
+#'@param w prior weights
+#'@param prior_mean prior mean
+#'@param sigma2k prior variance
+#'@param point_mass whether put a point-mass in the prior
 #'@param optim_method optimization method in `optim` function
 #'@param maxiter max number of iterations
 #'@param tol tolerance for stopping the updates
 #'@return a list of
-#'  \item{m:}{posterior mean}
-#'  \item{v:}{posterior variance}
-#'  \item{obj:}{objective function values}
-#'  \item{beta:}{prior mean}
-#'  \item{sigma2:}{prior variance}
+#'  \item{posteriorMean:}{posterior mean}
+#'  \item{posterior2nd_moment:}{posterior second moment}
+#'  \item{obj_value:}{objective function values}
+#'  \item{priorMean:}{prior mean}
 #'  @example
 #'  n = 10000
 #'  mu = rnorm(n)
 #'  x = rpois(n,exp(mu))
-#'  pois_mean_GG(x)
+#'  pois_mean_GMGM(x)
 #'@details The problem is
 #'\deqn{x_i\sim Poisson(\exp(\mu_i)),}
-#'\deqn{\mu_i\sim \sum_k N(\beta,\sigma_k^2).}
+#'\deqn{\mu_i\sim \sum_k w_k N(\beta,\sigma_k^2).}
 
 source("code/poisson_mean/pois_mean_GG.R")
 
 pois_mean_GMGM = function(x,
+                          s=NULL,
                           w = NULL,
-                          beta = NULL,
+                          prior_mean = NULL,
                           sigma2k=NULL,
+                          point_mass = TRUE,
                           optim_method = 'BFGS',
-                          maxiter = 100,
-                          tol = 1e-3){
+                          maxiter = 1000,
+                          tol = 1e-5){
   if(is.null(sigma2k)){
 
     ## how to choose grid in this case?
@@ -40,12 +44,20 @@ pois_mean_GMGM = function(x,
   K = length(sigma2k)
   n = length(x)
 
+  if(is.null(s)){
+    s = 1
+  }
+  if(length(s)==1){
+    s = rep(s,n)
+  }
+
   # init prior mean,
-  if(is.null(beta)){
+  if(is.null(prior_mean)){
     beta = log(sum(x)/n)
     est_beta = TRUE
   }else{
     est_beta = FALSE
+    beta = prior_mean
   }
 
 
@@ -56,10 +68,17 @@ pois_mean_GMGM = function(x,
 
   # init prior weights
   if(is.null(w)){
-    w = rep(1/K,K)
+    if(point_mass){
+      w0 = 1/(K+1)
+      w= rep(1/(K+1),K)
+    }else{
+      w= rep(1/K,K)
+      w0 = NULL
+    }
   }
 
   qz = matrix(0,nrow=n,ncol=K)
+  qz0 = rep(0,n)
 
   obj = rep(0,maxiter+1)
   obj[1] = -Inf
@@ -71,31 +90,47 @@ pois_mean_GMGM = function(x,
     ## this can be paralleled?
     for(i in 1:n){
       for (k in 1:K) {
-        temp = pois_mean_GG1(x[i],beta,sigma2k[k],optim_method,M[i,k],V[i,k])
+        temp = pois_mean_GG1(x[i],s[i],beta,sigma2k[k],optim_method,M[i,k],V[i,k])
         M[i,k] = temp$m
         V[i,k] = temp$v
       }
     }
 
+
     # update posterior weights
 
     qz = X*M-exp(M+V/2)+matrix(log(w),nrow=n,ncol=K,byrow=T)-log(Sigma2k)/2-(M^2+V-2*M*beta+beta^2)/Sigma2k/2 + log(V)/2
+    if(point_mass){
+      qz0 = x*beta - exp(beta) + log(w0)
+      qz = cbind(qz0,qz)
+    }
     qz = qz - apply(qz,1,max)
     qz = exp(qz)
     qz = qz/rowSums(qz)
     qz = pmax(qz,1e-15)
 
+    if(point_mass){
+      qz0 = qz[,1]
+      qz = qz[,-1]
+    }
+
     # update prior
 
     if(est_beta){
-      beta = sum(M*qz/Sigma2k)/sum(qz/Sigma2k)
+      if(point_mass){
+        beta = optimize_prior_mean_point_mass(beta,x,s,M,qz,qz0,Sigma2k,optim_method)
+      }else{
+        beta = sum(M*qz/Sigma2k)/sum(qz/Sigma2k)
+      }
     }
 
     w = colMeans(qz)
     w = pmax(w, 1e-8)
+    w0 = mean(qz0)
+    w0 = pmax(w0,1e-8)
 
 
-    obj[iter+1] = pois_mean_GMGM_obj(X,M,V,w,beta,Sigma2k,qz)
+    obj[iter+1] = pois_mean_GMGM_obj(X,x,s,M,V,w,beta,Sigma2k,qz,point_mass,w0,qz0)
     if((obj[iter+1] - obj[iter])<tol){
       obj = obj[1:(iter+1)]
       break
@@ -103,19 +138,52 @@ pois_mean_GMGM = function(x,
 
   }
 
-  return(list(m=rowSums(qz*M),M=M,V=V,obj=obj,w=w,qz=qz,beta=beta))
+  if(point_mass){
+    return(list(posteriorMean=rowSums(qz*M) + qz0*beta,posterior2nd_moment= rowSums(qz*(M^2+V)) + qz0*beta^2,priorMean=beta,w=w,w0=w0,M=M,V=V,obj_value=obj,qz=qz,qz0=qz0))
+  }else{
+    return(list(posteriorMean=rowSums(qz*M),posterior2nd_moment= rowSums(qz*(M^2+V)),M=M,V=V,obj_value=obj,w=w,qz=qz,priorMean=beta))
+  }
+
+
 
 }
 
-pois_mean_GMGM_obj = function(X,M,V,w,beta,Sigma2k,qz){
+pois_mean_GMGM_obj = function(X,x,s,M,V,w,beta,Sigma2k,qz,point_mass,w0,qz0){
   n = dim(X)[1]
   K = length(w)
   lW = matrix(log(w),nrow=n,ncol=K,byrow=T)
-  return(sum(qz*(X*M-exp(M+V/2)+lW-log(Sigma2k)/2-(M^2+V-2*M*beta+beta^2)/2/Sigma2k-log(qz)+log(V)/2)))
+  if(point_mass){
+    return(sum(qz*(X*M-s*exp(M+V/2)+lW-log(Sigma2k)/2-(M^2+V-2*M*beta+beta^2)/2/Sigma2k-log(qz)+log(V)/2)) + sum(qz0*(x*beta-s*exp(beta)))+sum(qz0*log(w0))-sum(qz0*log(qz0)))
+  }else{
+    return(sum(qz*(X*M-s*exp(M+V/2)+lW-log(Sigma2k)/2-(M^2+V-2*M*beta+beta^2)/2/Sigma2k-log(qz)+log(V)/2)))
+  }
+
 }
 
+optimize_prior_mean_point_mass = function(beta_init,x,s,M,qz,qz0,Sigma2k,optim_method){
+  opt = optim(beta_init,
+              fn = optimize_prior_mean_point_mass_obj,
+              gr = optimize_prior_mean_point_mass_obj_gradient,
+              x=x,
+              s=s,
+              M=M,
+              Sigma2k=Sigma2k,
+              qz=qz,
+              qz0=qz0,
+              method = optim_method)
 
+  return(opt$par)
+}
 
+optimize_prior_mean_point_mass_obj = function(beta,x,s,M,qz,qz0,Sigma2k){
+  val = sum(qz0*(x*beta-s*exp(beta))) + beta*sum(qz/Sigma2k*M) - sum(qz/Sigma2k)/2*beta^2
+  return(-val)
+}
+
+optimize_prior_mean_point_mass_obj_gradient = function(beta,x,s,M,qz,qz0,Sigma2k){
+  val = sum(qz0*x) -sum(qz0*s)*exp(beta) + sum(qz/Sigma2k*M) - sum(qz/Sigma2k)*beta
+  return(-val)
+}
 
 
 

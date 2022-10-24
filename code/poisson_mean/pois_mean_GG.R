@@ -1,17 +1,19 @@
 #'@title Solve Gaussian approximation to Poisson mean problem
 #'@description Gaussian prior, Gaussian posterior in Poisson mean problem.
 #'@param x data vector
-#'@param beta prior mean
-#'@param sigma2 prior variance
+#'@param s scaling vector
+#'@param w prior weights
+#'@param prior_mean prior mean
+#'@param prior_var prior variance
 #'@param optim_method optimization method in `optim` function
 #'@param maxiter max number of iterations
 #'@param tol tolerance for stopping the updates
 #'@return a list of
-#'  \item{m:}{posterior mean}
-#'  \item{v:}{posterior variance}
-#'  \item{obj:}{objective function values}
-#'  \item{beta:}{prior mean}
-#'  \item{sigma2:}{prior variance}
+#'  \item{posteriorMean:}{posterior mean}
+#'  \item{posteriorVar:}{posterior variance}
+#'  \item{obj_value:}{objective function values}
+#'  \item{prior_mean:}{prior mean}
+#'  \item{prior_var:}{prior variance}
 #'  @example
 #'  n = 10000
 #'  mu = rnorm(n)
@@ -22,29 +24,37 @@
 #'\deqn{\mu_i\sim N(\beta,\sigma^2).}
 
 pois_mean_GG = function(x,
-                        beta = NULL,
-                        sigma2=NULL,
+                        s = NULL,
+                        prior_mean = NULL,
+                        prior_var=NULL,
                         optim_method = 'BFGS',
                         maxiter = 100,
-                        tol = 1e-3){
+                        tol = 1e-5){
 
   # init the posterior mean and variance?
   n = length(x)
   m = log(x+0.1)
   v = rep(1,n)
-
+  if(is.null(s)){
+    s = 1
+  }
+  if(length(s)==1){
+    s = rep(s,n)
+  }
   #
-  if(is.null(beta) | is.null(sigma2)){
+  if(is.null(prior_mean) | is.null(prior_var)){
 
-    if(is.null(beta)){
+    if(is.null(prior_mean)){
       est_beta = TRUE
     }else{
       est_beta = FALSE
+      beta = prior_mean
     }
-    if(is.null(sigma2)){
+    if(is.null(prior_var)){
       est_sigma2=TRUE
     }else{
       est_sigma2 = FALSE
+      sigma2=prior_var
     }
 
     obj = rep(0,maxiter+1)
@@ -57,11 +67,11 @@ pois_mean_GG = function(x,
         sigma2 = mean(m^2+v-2*m*beta+beta^2)
       }
       for(i in 1:n){
-        temp = pois_mean_GG1(x[i],beta,sigma2,optim_method,m[i],v[i])
+        temp = pois_mean_GG1(x[i],s[i],beta,sigma2,optim_method,m[i],v[i])
         m[i] = temp$m
         v[i] = temp$v
       }
-      obj[iter+1] = pois_mean_GG_obj(x,beta,sigma2,m,v)
+      obj[iter+1] = pois_mean_GG_obj(x,s,beta,sigma2,m,v)
       if((obj[iter+1] - obj[iter])<tol){
         obj = obj[1:(iter+1)]
         break
@@ -69,31 +79,32 @@ pois_mean_GG = function(x,
     }
 
   }else{
-
+    beta = prior_mean
+    sigma2 = prior_var
     for(i in 1:n){
-      temp = pois_mean_GG1(x[i],beta,sigma2,optim_method,m[i],v[i])
+      temp = pois_mean_GG1(x[i],s[i],prior_mean,prior_var,optim_method,m[i],v[i])
       m[i] = temp$m
       v[i] = temp$v
     }
 
-    obj = pois_mean_GG_obj(x,beta,sigma2,m,v)
+    obj = pois_mean_GG_obj(x,s,prior_mean,prior_var,m,v)
 
   }
 
-  return(list(m=m,beta=beta,sigma2=sigma2,v=v,obj=obj))
+  return(list(posteriorMean=m,priorMean=beta,priorVar=sigma2,posteriorVar=v,obj_value=obj))
 
 }
 
 
-pois_mean_GG_obj = function(x,beta,sigma2,m,v){
-  return(sum(x*m-exp(m+v/2)-log(sigma2)/2-(m^2+v-2*m*beta+beta^2)/2/sigma2+log(v)/2))
+pois_mean_GG_obj = function(x,s,beta,sigma2,m,v){
+  return(sum(x*m-s*exp(m+v/2)-log(sigma2)/2-(m^2+v-2*m*beta+beta^2)/2/sigma2+log(v)/2))
 }
 
 #'@param x a data point
 #'@param beta prior mean
 #'@param sigma2 prior variance
 #'@param optim_method optimization method in `optim` function
-pois_mean_GG1 = function(x,
+pois_mean_GG1 = function(x,s,
                             beta,
                             sigma2,
                             optim_method = 'BFGS',
@@ -116,6 +127,7 @@ pois_mean_GG1 = function(x,
               fn = pois_mean_GG1_obj,
               gr = pois_mean_GG1_obj_gradient,
               x=x,
+              s=s,
               beta=beta,
               sigma2=sigma2,
               method = optim_method)
@@ -124,14 +136,14 @@ pois_mean_GG1 = function(x,
 }
 
 #'calculate objective function
-pois_mean_GG1_obj = function(theta,x,beta,sigma2){
-  return(-(x*theta[1]-exp(theta[1]+exp(theta[2])/2)-(theta[1]^2+exp(theta[2])-2*theta[1]*beta)/2/sigma2+log(exp(theta[2]))/2))
+pois_mean_GG1_obj = function(theta,x,s,beta,sigma2){
+  return(-(x*theta[1]-s*exp(theta[1]+exp(theta[2])/2)-(theta[1]^2+exp(theta[2])-2*theta[1]*beta)/2/sigma2+log(exp(theta[2]))/2))
 }
 
 #'calculate gradient vector
-pois_mean_GG1_obj_gradient = function(theta,x,beta,sigma2){
-  g1 = -(x-exp(theta[1]+exp(theta[2])/2)-theta[1]/sigma2+beta/sigma2)
-  g2 = -(-exp(theta[2])/2*exp(theta[1]+exp(theta[2])/2) - exp(theta[2])/2/sigma2 + 1/2)
+pois_mean_GG1_obj_gradient = function(theta,x,s,beta,sigma2){
+  g1 = -(x-s*exp(theta[1]+exp(theta[2])/2)-theta[1]/sigma2+beta/sigma2)
+  g2 = -(-exp(theta[2])/2*s*exp(theta[1]+exp(theta[2])/2) - exp(theta[2])/2/sigma2 + 1/2)
   return(c(g1,g2))
 }
 

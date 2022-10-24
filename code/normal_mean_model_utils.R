@@ -178,6 +178,32 @@ l_nm_d2_zmu = function(x,s,w,mu,grid){
   return(f_nm_d2_zmu(x,s,w,mu,grid)/temp-f_nm_d1_z(x,s,w,mu,grid)*f_nm_d1_mu(x,s,w,mu,grid)/temp^2)
 }
 
+#'@return derivative of l_nm(z(theta);g,s^2(theta)) w.r.t theta
+l_nm_d1_theta = function(z,theta,s,w,mu,grid){
+  l_nm_d1_z(z,s,w,mu,grid)*z_d1_theta(z,theta,s,w,mu,grid) + l_nm_d1_s2(z,s,w,mu,grid)*(-exp(-theta))
+}
+
+z_d1_theta = function(z,theta,s,w,mu,grid){
+  numerator = 1-(-exp(-theta))*l_nm_d1_z(z,s,w,mu,grid) - exp(-theta)*(-exp(-theta))*l_nm_d2_zs2(z,s,w,mu,grid)
+  denominator = 1 + exp(-theta)*l_nm_d2_z(z,s,w,mu,grid)
+  return(numerator/denominator)
+}
+
+#'@return derivative of l_nm(z(theta);g,s^2(theta)) w.r.t prior (a,mu)
+l_nm_d1_g = function(z,theta,s,a,mu,grid){
+  w=softmax(a)
+  l_nm_d1_z(z,s,w,mu,grid)*z_d1_g(z,theta,s,a,mu,grid) + cbind(l_nm_d1_a(z,s,a,mu,grid),l_nm_d1_mu(z,s,w,mu,grid))
+}
+
+z_d1_g = function(z,theta,s,a,mu,grid){
+  w=softmax(a)
+  n_a = -s^2*(l_nm_d2_za(z,s,a,mu,grid))
+  d_a = 1+s^2*l_nm_d2_z(z,s,w,mu,grid)
+  n_mu = -s^2*l_nm_d2_zmu(z,s,w,mu,grid)
+  d_mu = 1+d_a
+  return(cbind(n_a/d_a,n_mu/d_mu))
+}
+
 softmax = function(a){
   exp(a-max(a))/sum(exp(a-max(a)))
 }

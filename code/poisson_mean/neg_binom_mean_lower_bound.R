@@ -1,9 +1,13 @@
 #'@title Solve Negative Binomial mean problem by Jaakkola Jordan bound
 #'@param x data vector
+#'@param r NB binomial paramter r
+#'@param ebnm_params a list of ebnm parameters
+#'@param est_r whether estimate r. For Poisson data, set it to False.
+#'@param update_r_every if estimate r, how often to update it
 #'@param maxiter max number of iterations
 #'@param tol tolerance for stopping the updates
 #'@return a list of
-#'  \item{m:}{posterior mean}
+#'  \item{posteriorMean:}{posterior mean}
 #'  \item{v:}{posterior variance}
 #'  \item{obj:}{objective function values}
 #'  \item{ebnm_res:}{fitted object from `ebnm`}
@@ -11,7 +15,7 @@
 #'  n = 10000
 #'  mu = rnorm(n)
 #'  x = rpois(n,exp(mu))
-#'  pois_mean_log1exp(x)
+#'  nb_mean_lower_bound(x)
 #'@details The problem is
 #'\deqn{x_i\sim Poisson(\log(1+\exp(\mu_i))),}
 #'\deqn{\mu_i\sim g(\cdot).}
@@ -43,10 +47,10 @@ nb_mean_lower_bound = function(x,
   }
 
   if(is.null(m_init)){
-    m = rep(0,n)
+    m = log(x/r+1)
   }
   if(is.null(v_init)){
-    v = rep(1,n)
+    v = rep(1/n,n)
   }
 
   if(is.null(r)){
@@ -92,7 +96,15 @@ nb_mean_lower_bound = function(x,
     message('Not converged - Increase number of iterations.')
   }
   p = 1/(1+exp(-m))
-  return(list(m=m,v=v,r=r,obj=obj,ebnm_res=res,p=p,mean_est = r*p/(1-p),r_trace=r_trace))
+  return(list(posteriorMean=m,
+              posteriorVar=v,
+              r=r,
+              obj_value=obj,
+              ebnm_res=res,
+              p=1/(1+exp(-m)),
+              poisson_mean_est = r*exp(m),
+              poisson_log_mean_est = log(r) + m,
+              r_trace=r_trace))
 }
 
 neg_binom_mean_lb_obj = function(x,m,v,r,xi,H_mu){
@@ -131,8 +143,8 @@ Fr_lb_d1 = function(r,x,m,v,delta){
 
 
 ebnm_params_default = function(){
-  return(list(prior_family='point_normal',
-              mode=0,
+  return(list(prior_family='point_laplace',
+              mode='estimate',
               scale = "estimate",
               g_init = NULL,
               fix_g = FALSE,
