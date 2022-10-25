@@ -17,12 +17,15 @@
 #'\deqn{x_i\sim Poisson(\log(1+\exp(\mu_i))),}
 #'\deqn{\mu_i\sim g(\cdot).}
 library(ebnm)
-pois_mean_log1exp = function(x,ebnm_params = NULL,tol=1e-5,maxiter=1e3){
+pois_mean_log1exp = function(x,ebnm_params = NULL,tol=1e-5,maxiter=1e3,kapa = NULL){
   n = length(x)
-  kapa = 0.25+0.17*max(x)
+  if(is.null(kapa)){
+    kapa = 0.25+0.17*max(x)
+  }
+
   pseudo_s = sqrt(1/kapa)
 
-  mu_tilde = 0
+  mu_tilde = x
   obj = rep(0,maxiter+1)
   obj[1] = -Inf
   if(is.null(ebnm_params)){
@@ -50,16 +53,32 @@ pois_mean_log1exp = function(x,ebnm_params = NULL,tol=1e-5,maxiter=1e3){
     # get Elog(g/q)
     H = res$log_likelihood + sum(log(2*pi*pseudo_s^2)/2)+sum((pseudo_x^2-2*pseudo_x*m+m^2+v)/pseudo_s^2/2)
 
+    # update mu_tilde
+    mu_tilde = m
+
     # calc objective function
     obj[iter+1] = -sum(nll(x,mu_tilde)+nll_d1(x,mu_tilde)*(m-mu_tilde)+kapa/2*(m^2+v+mu_tilde^2-2*m*mu_tilde))+H
     if((obj[iter+1]-obj[iter])<tol){
       obj = obj[1:(iter+1)]
       break
     }
-    # update mu_tilde
-    mu_tilde = m
+
   }
   return(list(posteriorMean=m,posteriorVar=v,obj_value=obj,ebnm_res=res,kappa=kapa))
+}
+
+log1exp = function(x){
+  # log(1+exp(40)) == 40 is TRUE
+  # log(1+exp(-40)) == 0 is TRUE
+  if(x<40){
+    if(x>-40){
+      return(log(1+exp(x)))
+    }else{
+      return(0)
+    }
+  }else{
+    return(x)
+  }
 }
 
 nll = function(x,mu){
@@ -68,7 +87,7 @@ nll = function(x,mu){
 
 nll_d1 = function(x,mu){
   n = exp(mu)*(log(1+exp(mu))-x)
-  d = (1+exp(mu))*log((1+exp(mu)))
+  d = (1+exp(mu))*log(1+exp(mu))
   return(n/d)
 }
 

@@ -31,17 +31,10 @@ pois_mean_GMGM = function(x,
                           prior_mean = NULL,
                           sigma2k=NULL,
                           point_mass = TRUE,
-                          optim_method = 'BFGS',
+                          optim_method = 'L-BFGS-B',
                           maxiter = 1000,
                           tol = 1e-5){
-  if(is.null(sigma2k)){
 
-    ## how to choose grid in this case?
-
-    #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
-    sigma2k = c(1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
-  }
-  K = length(sigma2k)
   n = length(x)
 
   if(is.null(s)){
@@ -60,9 +53,19 @@ pois_mean_GMGM = function(x,
     beta = prior_mean
   }
 
+  if(is.null(sigma2k)){
+
+    ## how to choose grid in this case?
+    ## use ebnm method
+    sigma2k = ebnm:::default_smn_scale(log(x/s+1),sqrt(1/(x/s+1)),mode=beta)[-1]
+    #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    #sigma2k = c(1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+  }
+  K = length(sigma2k)
+
 
   M = matrix(0,nrow=n,ncol=K)
-  V = matrix(1,nrow=n,ncol=K)
+  V = matrix(1/n,nrow=n,ncol=K)
   Sigma2k = matrix(sigma2k,nrow=n,ncol=K,byrow=T)
   X = matrix(x,nrow=n,ncol=K,byrow=F)
 
@@ -85,25 +88,38 @@ pois_mean_GMGM = function(x,
 
   for(iter in 1:maxiter){
 
-    # update posterior mean, variances
+    # #update posterior mean, variances
+    # # this can be paralleled?
+    # # this is too slow, need a vectorized version
+    # for(i in 1:n){
+    #   for (k in 1:K) {
+    #     temp = pois_mean_GG1(x[i],s[i],beta,sigma2k[k],optim_method,M[i,k],V[i,k])
+    #     M[i,k] = temp$m
+    #     V[i,k] = temp$v
+    #   }
+    # }
 
-    ## this can be paralleled?
-    for(i in 1:n){
-      for (k in 1:K) {
-        temp = pois_mean_GG1(x[i],s[i],beta,sigma2k[k],optim_method,M[i,k],V[i,k])
-        M[i,k] = temp$m
-        V[i,k] = temp$v
-      }
+    # for each K, solve a vectorized version
+    for(k in 1:K){
+      opt = optim(c(M[,k],log(V[,k])),
+                  fn = pois_mean_GG_opt_obj,
+                  gr = pois_mean_GG_opt_obj_gradient,
+                  x=x,
+                  s=s,
+                  beta=beta,
+                  sigma2=sigma2k[k],
+                  n=n,
+                  method = optim_method)
+      M[,k] = opt$par[1:n]
+      V[,k] = exp(opt$par[(n+1):(2*n)])
     }
-
-
     # update posterior weights
-
-    qz = X*M-exp(M+V/2)+matrix(log(w),nrow=n,ncol=K,byrow=T)-log(Sigma2k)/2-(M^2+V-2*M*beta+beta^2)/Sigma2k/2 + log(V)/2
+    qz = X*M-s*exp(M+V/2)+matrix(log(w),nrow=n,ncol=K,byrow=T)-log(Sigma2k)/2-(M^2+V-2*M*beta+beta^2)/Sigma2k/2 + log(V)/2
     if(point_mass){
       qz0 = x*beta - exp(beta) + log(w0)
       qz = cbind(qz0,qz)
     }
+    #browser()
     qz = qz - apply(qz,1,max)
     qz = exp(qz)
     qz = qz/rowSums(qz)

@@ -208,69 +208,129 @@ softmax = function(a){
   exp(a-max(a))/sum(exp(a-max(a)))
 }
 
+#' #'posterior mean operator
+#' S = function(x,s,w,mu,grid){
+#'   K = length(w)
+#'   g = normalmix(pi=w,mean=rep(mu,K),sd=grid)
+#'   fit.ash = ashr::ash(x,s,g=g,fixg=T)
+#'   fit.ash$result$PosteriorMean
+#' }
+#'
+#' #'posterior mean operator
+#' S2 = function(x,s,w,mu,grid){
+#'   lW = matrix(log(w),nrow=length(x),ncol=length(grid),byrow=T)
+#'   pw = lW+dnorm(x,mean=mu,sd=outer(s^2,grid^2,FUN='+'),log=TRUE)
+#'   pw = pw - apply(pw,1,max)
+#'   pw = exp(pw)/rowSums(exp(pw))
+#'   temp  = outer(s^2,grid^2,FUN='/')
+#'   pm = x/(1+temp) + mu/(1+1/temp)
+#'   return(rowSums(pw*pm))
+#' }
+
 #'posterior mean operator
 S = function(x,s,w,mu,grid){
-  K = length(w)
-  g = normalmix(pi=w,mean=rep(mu,K),sd=grid)
-  fit.ash = ashr::ash(x,s,g=g,fixg=T)
-  fit.ash$result$PosteriorMean
+  return(x+s^2*l_nm_d1_z(x,s,w,mu,grid))
 }
 
-#'@title inverse operator of S
-#'@description  S^{-1}(theta) returns the z such that S(z) = theta
-S_inv = function(theta,s,w,mu,grid,z_range=NULL){
-
-  obj = function(z,theta,s,w,mu,grid){
-    return(z+s^2*l_nm_d1_z(z,s,w,mu,grid)-theta)
-  }
-  n = length(theta)
-  z_out = double(n)
-  for(j in 1:n){
-    #print(j)
-    if(theta[j]>=0){
-      # z_out[j] = uniroot(obj,c(theta[j],theta[j]/median(1/(1+s[j]^2/grid^2))),
-      #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
-      z_out[j] = uniroot(obj,c(theta[j],z_range[2]),
-                         theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
-    }else{
-      # z_out[j] = uniroot(obj,c(theta[j]/median(1/(1+s[j]^2/grid^2)),theta[j]),
-      #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
-      z_out[j] = uniroot(obj,c(z_range[1],theta[j]),
-                         theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
-    }
-
-  }
-  z_out
+S_inv_obj = function(z,theta,s,w,mu,grid){
+  return(z+s^2*l_nm_d1_z(z,s,w,mu,grid)-theta)
 }
 
-#'@title inverse operator of S, parallel version using mclapply
-#'@description  S^{-1}(theta) returns the z such that S(z) = theta
+# S_inv_obj = function(t=0,y,theta,s,w,mu,grid,parms=NULL){
+#   return(y+s^2*l_nm_d1_z(y,s,w,mu,grid)-theta)
+# }
 
-library(parallel)
-S_inv_parallel = function(theta,s,w,mu,grid,z_range=NULL){
+library(rootSolve)
 
-  obj = function(z,theta,s,w,mu,grid){
-    return(z+s^2*l_nm_d1_z(z,s,w,mu,grid)-theta)
-  }
+# x = rnorm(1000)
+# s = rep(1,1000)
+# sigma2k = c(0.1,0.2,1,2,3)
+# K = length(sigma2k)
+# w = rep(1/K,K)
+# mu0=0
+# theta = S(x,s,w,mu0,sigma2k)
+# S_inv_obj_jac(x,theta,s,w,mu0,sigma2k)
+# S_inv2(theta,s,w,mu0,sigma2k)
 
-  f = function(i,theta,s,w,mu,grid,z_range){
-    if(theta[i]>=0){
-      return(uniroot(obj,c(theta[i],z_range[2]),
-                         theta=theta[i],s=s[i],w=w,grid=grid,mu=mu,extendInt = 'upX')$root)
-    }else{
-     return(uniroot(obj,c(z_range[1],theta[i]),
-                         theta=theta[i],s=s[i],w=w,grid=grid,mu=mu,extendInt = 'upX')$root)
-    }
-  }
-
-  if(is.null(z_range)){
-    z_range = range(theta) + c(-5,5)
-  }
-
-  n = length(theta)
-  z_out = simplify2array(mclapply(1:n,f,theta=theta,s=s,w=w,mu=mu,grid=grid,z_range=z_range,mc.cores = 10))
-  z_out
+S_inv_obj_jac = function(z,theta,s,w,mu,grid){
+  return(rbind(1+s^2*l_nm_d2_z(z,s,w,mu,grid)))
 }
+
+S_inv = function(theta,s,w,mu,grid){
+  sol = multiroot(S_inv_obj,start = theta,
+                  #jacfunc=S_inv_obj_jac,
+                  jactype = 'bandint',
+                  bandup=0,banddown=0,
+                  theta=theta,s=s,w=w,mu=mu,grid=grid)
+  return(sol$root)
+}
+
+# S_inv3 = function(theta,s,w,mu,grid){
+#   temp_obj = function(z,theta,s,w,mu,grid){
+#     return(sum(z^2/2+s^2*l_nm(z,s,w,mu,grid)-z*theta))
+#   }
+#   opt = optim(theta,temp_obj,gr = S_inv_obj,theta=theta,s=s,w=w,mu=mu,grid=grid,method = 'L-BFGS-B',control = list(fnscale=-1))
+#   return(opt)
+# }
+
+###############
+##########S_inv using uniroot in a for loop. Slow
+##############
+#' #'@title inverse operator of S
+#' #'@description  S^{-1}(theta) returns the z such that S(z) = theta
+#' S_inv = function(theta,s,w,mu,grid,z_range=NULL){
+#'
+#'   obj = function(z,theta,s,w,mu,grid){
+#'     return(z+s^2*l_nm_d1_z(z,s,w,mu,grid)-theta)
+#'   }
+#'   n = length(theta)
+#'   z_out = double(n)
+#'   for(j in 1:n){
+#'     #print(j)
+#'     if(theta[j]>=0){
+#'       # z_out[j] = uniroot(obj,c(theta[j],theta[j]/median(1/(1+s[j]^2/grid^2))),
+#'       #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
+#'       z_out[j] = uniroot(obj,c(theta[j],z_range[2]),
+#'                          theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
+#'     }else{
+#'       # z_out[j] = uniroot(obj,c(theta[j]/median(1/(1+s[j]^2/grid^2)),theta[j]),
+#'       #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
+#'       z_out[j] = uniroot(obj,c(z_range[1],theta[j]),
+#'                          theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
+#'     }
+#'
+#'   }
+#'   z_out
+#' }
+#'
+#' #'@title inverse operator of S, parallel version using mclapply
+#' #'@description  S^{-1}(theta) returns the z such that S(z) = theta
+#'
+#' library(parallel)
+#' S_inv_parallel = function(theta,s,w,mu,grid,z_range=NULL){
+#'
+#'   obj = function(z,theta,s,w,mu,grid){
+#'     return(z+s^2*l_nm_d1_z(z,s,w,mu,grid)-theta)
+#'   }
+#'
+#'   f = function(i,theta,s,w,mu,grid,z_range){
+#'     if(theta[i]>=0){
+#'       return(uniroot(obj,c(theta[i],z_range[2]),
+#'                          theta=theta[i],s=s[i],w=w,grid=grid,mu=mu,extendInt = 'upX')$root)
+#'     }else{
+#'      return(uniroot(obj,c(z_range[1],theta[i]),
+#'                          theta=theta[i],s=s[i],w=w,grid=grid,mu=mu,extendInt = 'upX')$root)
+#'     }
+#'   }
+#'
+#'   if(is.null(z_range)){
+#'     z_range = range(theta) + c(-5,5)
+#'   }
+#'
+#'   n = length(theta)
+#'   z_out = simplify2array(mclapply(1:n,f,theta=theta,s=s,w=w,mu=mu,grid=grid,z_range=z_range,mc.cores = 10))
+#'   z_out
+#' }
 
 #'@title compound penalty function of ebnm
 nm_penalty_compound = function(theta,s,w,mu,grid){

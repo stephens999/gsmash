@@ -1,3 +1,4 @@
+
 set.seed(12345)
 n = 1000
 w = 0.2
@@ -56,6 +57,12 @@ x = rpois(n,exp(mu))
 plot(mu,col='grey80')
 plot(x,col='grey80')
 #
+
+temp = pois_mean_penalized_inversion(x)
+plot(mu,col='grey80')
+lines(temp$posteriorMean)
+
+temp = pois_mean_penalized_compound(x)
 
 temp = ash_pois(x,link='log')
 plot(mu,col='grey80')

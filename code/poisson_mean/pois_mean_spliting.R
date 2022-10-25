@@ -1,6 +1,6 @@
 
-
-pois_mean_split = function(x,s=NULL,sigma2 = NULL,tol=1e-5,maxiter=1e3,ebnm_params=NULL,optim_method ='BFGS'){
+source("code/poisson_mean/pois_mean_GG.R")
+pois_mean_split = function(x,s=NULL,sigma2 = NULL,tol=1e-5,maxiter=1e3,ebnm_params=NULL,optim_method ='L-BFGS-B'){
   n = length(x)
   obj = rep(0,maxiter+1)
   obj[1] = -Inf
@@ -29,12 +29,25 @@ pois_mean_split = function(x,s=NULL,sigma2 = NULL,tol=1e-5,maxiter=1e3,ebnm_para
   }
   for (iter in 1:maxiter) {
 
-    # VGA
-    for(i in 1:n){
-      temp = pois_mean_GG1(x[i],s[i],b_pm[i],sigma2,optim_method,mu_pm[i],mu_pv[i])
-      mu_pm[i] = temp$m
-      mu_pv[i] = temp$v
-    }
+    # # VGA
+    # for(i in 1:n){
+    #   temp = pois_mean_GG1(x[i],s[i],b_pm[i],sigma2,optim_method,mu_pm[i],mu_pv[i])
+    #   mu_pm[i] = temp$m
+    #   mu_pv[i] = temp$v
+    # }
+
+    opt = optim(c(mu_pm,log(mu_pv)),
+                fn = pois_mean_GG_opt_obj,
+                gr = pois_mean_GG_opt_obj_gradient,
+                x=x,
+                s=s,
+                beta=b_pm,
+                sigma2=sigma2,
+                n=n,
+                method = optim_method)
+    mu_pm = opt$par[1:n]
+    mu_pv = exp(opt$par[(n+1):(2*n)])
+
     # EBNM
     res = ebnm(mu_pm,sqrt(sigma2),
                mode=ebnm_params$mode,

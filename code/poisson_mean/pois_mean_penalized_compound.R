@@ -1,3 +1,4 @@
+source("code/normal_mean_model_utils.R")
 #'@title Solve poisson penalized problem via compound method
 #'@description Formulate Poisson mean problem as likelihood + penalty
 #'@param x data vector
@@ -25,17 +26,10 @@ pois_mean_penalized_compound = function(x,
                                          w = NULL,
                                          prior_mean = NULL,
                                          sigma2k=NULL,
-                                         maxiter = 1000){
+                                         maxiter = 100,
+                                        verbose=FALSE,
+                                        tol=1e-4){
   n = length(x)
-
-  if(is.null(sigma2k)){
-
-    ## how to choose grid in this case?
-
-    #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
-    sigma2k = c(0,1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
-  }
-  K = length(sigma2k)
 
   # init prior mean,
   if(is.null(prior_mean)){
@@ -44,31 +38,39 @@ pois_mean_penalized_compound = function(x,
     beta = prior_mean
   }
 
+  if(is.null(sigma2k)){
+    ## how to choose grid in this case?
+    sigma2k = ebnm:::default_smn_scale(log(x+1),sqrt(1/(x+1)),mode=beta)
+    #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    #sigma2k = c(0,1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+  }
+  K = length(sigma2k)
+
   if(is.null(w)){
     w = rep(1/K,K)
   }
 
   z_init = log(1+x)
-  local_opts = list( "algorithm" = "NLOPT_LD_MMA","xtol_rel" = 1.0e-7 )
-  fit = nloptr(c(z_init,-z_init,w,beta),
+  local_opts = list( "algorithm" = "NLOPT_LD_LBFGS","xtol_rel" = tol)
+  out = nloptr(c(z_init,-z_init,w,beta),
                eval_f=h_obj,
                eval_grad_f=h_obj_grad,
                eval_g_eq=h_cstr,
                eval_jac_g_eq=h_cstr_grad,
                opts = list("algorithm"="NLOPT_LD_AUGLAG",
                            "local_opts" = local_opts,
-                           print_level=0,
-                           maxeval = 500,
-                           xtol_rel = 1e-4),
+                           "print_level"=verbose,
+                           "maxeval" = maxiter,
+                           "xtol_rel" = tol),
                y=x,grid=sigma2k)
 
   z_hat = out$solution[1:n]
   s_hat = sqrt(exp(out$solution[(n+1):(2*n)]))
   w_hat = softmax(out$solution[(2*n+1):(2*n+K)])
   mu_hat = out$solution[(2*n+K+1)]
-  m = S(z_hat,s_hat,w_hat,mu_hat,grid)
+  m = S(z_hat,s_hat,w_hat,mu_hat,sigma2k)
 
-  return(list(posteriorMean = m, w = w_hat, priorMean = mu_hat, nloptr_fit = fit,z=z_hat))
+  return(list(posteriorMean = m, w = w_hat, priorMean = mu_hat, nloptr_fit = out,z=z_hat,sigma2k=sigma2k))
 
 
 }
