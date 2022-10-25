@@ -1,0 +1,169 @@
+---
+title: "nb approx poisson"
+author: "DongyueXie"
+date: "2022-06-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In NB approximation to Poisson data, $p = sigmoid(b)$. The approximated Poisson mean is $rp/(1-p) = re^b$.
+
+We try different $r$ and see how results change with $r$.
+
+## latent mu mean 0
+
+```{r}
+rmse = function(x,y){sqrt(mean((x-y)^2))}
+source("code/poisson_mean/neg_binom_mean_lower_bound.R")
+
+set.seed(12345)
+n = 1000
+mu = c(rep(0,n*0.9),rnorm(n*0.1,0,1))
+lambda = exp(mu)
+x = rpois(n,lambda)
+plot(x,main='',col='grey80',pch=20)
+lines(lambda,col='grey50')
+legend('topleft',c('data','true mean'),pch=c(20,NA),lty=c(NA,1),col=c('grey80','grey50'))
+```
+
+
+```{r}
+out = nb_mean_lower_bound(x,r=10,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=100,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=1000,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=10000,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=100000,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+## latent mu mean 3
+
+```{r}
+rmse = function(x,y){sqrt(mean((x-y)^2))}
+source("code/poisson_mean/neg_binom_mean_lower_bound.R")
+
+set.seed(12345)
+n = 1000
+mu = c(rep(3,n*0.9),rnorm(n*0.1,3,1))
+lambda = exp(mu)
+x = rpois(n,lambda)
+plot(x,main='',col='grey80',pch=20)
+lines(lambda,col='grey50')
+legend('topleft',c('data','true mean'),pch=c(20,NA),lty=c(NA,1),col=c('grey80','grey50'))
+```
+
+
+```{r}
+out = nb_mean_lower_bound(x,r=10,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=100,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=1000,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=10000,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
+```{r}
+out = nb_mean_lower_bound(x,r=100000,maxiter = 1000,ebnm_params=list(mode='estimate',prior_family='point_laplace'))
+plot(out$obj,type='l',ylab='ELBO',xlab='iteration')
+```
+
+```{r}
+plot(log(x),main='latent space',col='grey80',pch=20,ylim = range(c(mu,out$poisson_log_mean_est)))
+lines(mu,col='grey50')
+lines(out$poisson_log_mean_est,col=4)
+legend('topleft',c('data','true latent','estimated latent'),pch=c(20,NA,NA),lty=c(NA,1,1),col=c('grey80','grey50',4))
+```
+
