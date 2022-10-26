@@ -239,6 +239,7 @@ S_exp = function(x,s,w,mu,grid){
   if(length(s)==1){
     s = rep(s,n)
   }
+  w = pmax(w,1e-8)
   lW = matrix(log(w),nrow=n,ncol=K,byrow=T)
   sdmat = sqrt(outer(s^2,grid^2,FUN="+"))
   pw = lW+dnorm(outer(x,rep(1,K),FUN="*"),mu,sdmat,log=TRUE)
@@ -247,6 +248,7 @@ S_exp = function(x,s,w,mu,grid){
   pv = 1/outer(1/s^2,1/grid^2,FUN='+')
   temp  = outer(s^2,grid^2,FUN='/')
   pm = x/(1+temp) + mu/(1+1/temp)
+  #browser()
   return(rowSums(pw*exp(pm+pv/2)))
 }
 

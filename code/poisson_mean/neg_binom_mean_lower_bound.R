@@ -24,7 +24,7 @@
 #'
 library(ebnm)
 nb_mean_lower_bound = function(x,
-                               r = 1e5,
+                               r = 1e2,
                                ebnm_params = NULL,
                                tol=1e-5,
                                maxiter=1000,
@@ -96,15 +96,27 @@ nb_mean_lower_bound = function(x,
     message('Not converged - Increase number of iterations.')
   }
   p = 1/(1+exp(-m))
-  return(list(posteriorMean=m,
-              posteriorVar=v,
-              r=r,
+
+
+
+
+  return(list(posterior = list(posteriorMean_latent = m,
+                               posteriorVar_latent = v,
+                               posteriorMean_mean = r*S_exp(pseudo_x,pseudo_s,res$fitted_g$pi,res$fitted_g$mean[1],res$fitted_g[[3]]),
+                               posteriorMean_log_mean = log(r)+m),
+              fitted_g = res$fitted_g,
               obj_value=obj,
-              ebnm_res=res,
-              p=1/(1+exp(-m)),
-              poisson_mean_est = r*exp(m),
-              poisson_log_mean_est = log(r) + m,
-              r_trace=r_trace))
+              fit = res))
+
+  # return(list(posteriorMean=m,
+  #             posteriorVar=v,
+  #             r=r,
+  #             obj_value=obj,
+  #             ebnm_res=res,
+  #             p=1/(1+exp(-m)),
+  #             poisson_mean_est = r*exp(m),
+  #             poisson_log_mean_est = log(r) + m,
+  #             r_trace=r_trace))
 }
 
 neg_binom_mean_lb_obj = function(x,m,v,r,xi,H_mu){
