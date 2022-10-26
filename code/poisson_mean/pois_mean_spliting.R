@@ -1,6 +1,11 @@
 
 source("code/poisson_mean/pois_mean_GG.R")
-pois_mean_split = function(x,s=NULL,sigma2 = NULL,tol=1e-5,maxiter=1e3,ebnm_params=NULL,optim_method ='L-BFGS-B'){
+pois_mean_split = function(x,s=NULL,
+                           sigma2 = NULL,
+                           tol=1e-5,
+                           maxiter=1e3,
+                           ebnm_params=NULL,
+                           optim_method ='L-BFGS-B'){
   n = length(x)
   obj = rep(0,maxiter+1)
   obj[1] = -Inf
@@ -72,7 +77,20 @@ pois_mean_split = function(x,s=NULL,sigma2 = NULL,tol=1e-5,maxiter=1e3,ebnm_para
     }
 
   }
-  return(list(posteriorMean = mu_pm,posteriorVar = mu_pv,sigma2=sigma2,ebnm_res=res,obj_value=obj))
+  return(list(posterior = list(posteriorMean_latent_mu = mu_pm,
+                               posteriorMean_latent_b = b_pm,
+                               posteriorVar_latent_mu = mu_pv,
+                               posteriorVar_latent_b = b_pv,
+                               posteriorMean_mean = exp(mu_pm + mu_pv/2)),
+              fitted_g = list(sigma2=sigma2,g_b = res$fitted_g),
+              obj_value=obj,
+              fit = res))
+
+  # return(list(posteriorMean = mu_pm,
+  #             posteriorVar = mu_pv,
+  #             sigma2=sigma2,
+  #             ebnm_res=res,
+  #             obj_value=obj))
 
 }
 

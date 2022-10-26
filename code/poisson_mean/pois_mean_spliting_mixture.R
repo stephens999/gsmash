@@ -2,7 +2,7 @@
 
 source("code/poisson_mean/pois_mean_GMGM.R")
 pois_mean_split_mixture = function(x,s=NULL,
-                                   sigma2k = NULL,
+                                   mixsd = NULL,
                                    w=NULL,
                                    tol=1e-5,maxiter=1e3,
                                    ebnm_params=NULL,
@@ -26,15 +26,17 @@ pois_mean_split_mixture = function(x,s=NULL,
     s = rep(s,n)
   }
 
-  if(is.null(sigma2k)){
+  if(is.null(mixsd)){
 
     ## how to choose grid in this case?
-    #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
-    sigma2k = ebnm:::default_smn_scale(log(x/s+1),sqrt(1/(x/s+1)),mode=beta)[-1]
+    #mixsd = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    sigma2k = (ebnm:::default_smn_scale(log(x/s+1),sqrt(1/(x/s+1)),mode=log(sum(x)/sum(s)))[-1])^2
     if(min(sigma2k)>1e-4){
       sigma2k =c(1e-4,sigma2k)
     }
-    #sigma2k = c(1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    #mixsd = c(1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+  }else{
+    sigma2k = mixsd^2
   }
   K = length(sigma2k)
 
@@ -114,7 +116,17 @@ pois_mean_split_mixture = function(x,s=NULL,
     }
 
   }
-  return(list(posteriorMean_mu=rowSums(qz*M),posterior2nd_moment= rowSums(qz*(M^2+V)),M=M,V=V,obj_value=obj,w=w,qz=qz,posteriorMean_b=b_pm,ebnm_res = res))
+
+  return(list(posterior = list(posteriorMean_latent_mu = rowSums(qz*M),
+                               posteriorMean_latent_b = b_pm,
+                               posterior2nd_moment_latent_mu = rowSums(qz*(M^2+V)),
+                               posteriorVar_latent_b = b_pv,
+                               posteriorMean_mean = rowSums(qz*exp(M + V/2))),
+              fitted_g = list(g_mu = list(weight=w,var=sigma2k),g_b = res$fitted_g),
+              obj_value=obj,
+              fit = list(ebnm_fit=res,M=M,V=V,qz=qz)))
+
+  #return(list(posteriorMean_mu=rowSums(qz*M),posterior2nd_moment= rowSums(qz*(M^2+V)),M=M,V=V,obj_value=obj,w=w,qz=qz,posteriorMean_b=b_pm,ebnm_res = res))
 
 }
 

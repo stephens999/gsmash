@@ -29,7 +29,7 @@ pois_mean_GMGM = function(x,
                           s=NULL,
                           w = NULL,
                           prior_mean = NULL,
-                          sigma2k=NULL,
+                          mixsd=NULL,
                           point_mass = TRUE,
                           optim_method = 'L-BFGS-B',
                           maxiter = 1000,
@@ -46,20 +46,22 @@ pois_mean_GMGM = function(x,
 
   # init prior mean,
   if(is.null(prior_mean)){
-    beta = log(sum(x)/n)
+    beta = log(sum(x)/sum(s))
     est_beta = TRUE
   }else{
     est_beta = FALSE
     beta = prior_mean
   }
 
-  if(is.null(sigma2k)){
+  if(is.null(mixsd)){
 
     ## how to choose grid in this case?
     ## use ebnm method
-    sigma2k = ebnm:::default_smn_scale(log(x/s+1),sqrt(1/(x/s+1)),mode=beta)[-1]
+    sigma2k = (ebnm:::default_smn_scale(log(x/s+1),sqrt(1/(x/s+1)),mode=beta)[-1])^2
     #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
     #sigma2k = c(1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+  }else{
+    sigma2k = mixsd^2
   }
   K = length(sigma2k)
 
@@ -76,7 +78,14 @@ pois_mean_GMGM = function(x,
       w= rep(1/(K+1),K)
     }else{
       w= rep(1/K,K)
-      w0 = NULL
+      w0 = 0
+    }
+  }else{
+    if(point_mass){
+      w0=w[1]
+      w= w[-1]
+    }else{
+      w0=0
     }
   }
 
@@ -154,11 +163,18 @@ pois_mean_GMGM = function(x,
 
   }
 
-  if(point_mass){
-    return(list(posteriorMean=rowSums(qz*M) + qz0*beta,posterior2nd_moment= rowSums(qz*(M^2+V)) + qz0*beta^2,priorMean=beta,w=w,w0=w0,M=M,V=V,obj_value=obj,qz=qz,qz0=qz0))
-  }else{
-    return(list(posteriorMean=rowSums(qz*M),posterior2nd_moment= rowSums(qz*(M^2+V)),M=M,V=V,obj_value=obj,w=w,qz=qz,priorMean=beta))
-  }
+  return(list(posterior = list(posteriorMean_latent = rowSums(qz*M) + qz0*beta,
+                               posterior2nd_moment_latent = rowSums(qz*(M^2+V)) + qz0*beta^2,
+                               posteriorMean_mean = rowSums(qz*exp(M + V/2))+ qz0*exp(beta)),
+              fitted_g = list(weight = c(w0,w),mean=beta,var=c(0,sigma2k)),
+              obj_value=obj,
+              fit = list(M=M,V=V,qz=qz,qz0=qz0)))
+
+  # if(point_mass){
+  #   return(list(posteriorMean=rowSums(qz*M) + qz0*beta,posterior2nd_moment= rowSums(qz*(M^2+V)) + qz0*beta^2,priorMean=beta,w=w,w0=w0,M=M,V=V,obj_value=obj,qz=qz,qz0=qz0))
+  # }else{
+  #   return(list(posteriorMean=rowSums(qz*M),posterior2nd_moment= rowSums(qz*(M^2+V)),M=M,V=V,obj_value=obj,w=w,qz=qz,priorMean=beta))
+  # }
 
 
 

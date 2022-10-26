@@ -112,7 +112,13 @@ pois_mean_GG = function(x,
 
   }
 
-  return(list(posteriorMean=m,priorMean=beta,priorVar=sigma2,posteriorVar=v,obj_value=obj))
+  return(list(posterior = list(posteriorMean_latent = m,
+                               posteriorVar_latent = v,
+                               posteriorMean_mean = exp(m + v/2)),
+              fitted_g = list(mean = beta, var=sigma2),
+              obj_value=obj))
+
+  #return(list(posteriorMean=m,priorMean=beta,priorVar=sigma2,posteriorVar=v,obj_value=obj))
 
 }
 

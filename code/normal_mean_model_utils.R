@@ -232,6 +232,29 @@ S = function(x,s,w,mu,grid){
   return(x+s^2*l_nm_d1_z(x,s,w,mu,grid))
 }
 
+#'posterior mean of exp(mu) operator
+S_exp = function(x,s,w,mu,grid){
+  n = length(x)
+  K= length(grid)
+  if(length(s)==1){
+    s = rep(s,n)
+  }
+  lW = matrix(log(w),nrow=n,ncol=K,byrow=T)
+  sdmat = sqrt(outer(s^2,grid^2,FUN="+"))
+  pw = lW+dnorm(outer(x,rep(1,K),FUN="*"),mu,sdmat,log=TRUE)
+  pw = pw - apply(pw,1,max)
+  pw = exp(pw)/rowSums(exp(pw))
+  pv = 1/outer(1/s^2,1/grid^2,FUN='+')
+  temp  = outer(s^2,grid^2,FUN='/')
+  pm = x/(1+temp) + mu/(1+1/temp)
+  return(rowSums(pw*exp(pm+pv/2)))
+}
+
+#'posterior var operator
+PV = function(x,s,w,mu,grid){
+  return(1+s^2*l_nm_d2_z(x,s,w,mu,grid))
+}
+
 S_inv_obj = function(z,theta,s,w,mu,grid){
   return(z+s^2*l_nm_d1_z(z,s,w,mu,grid)-theta)
 }

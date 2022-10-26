@@ -25,7 +25,7 @@ source("code/normal_mean_model_utils.R")
 pois_mean_penalized_inversion = function(x,
                                          w = NULL,
                                          prior_mean = NULL,
-                                         sigma2k=NULL,
+                                         mixsd=NULL,
                                          optim_method = 'L-BFGS-B',
                                          maxiter = 1000,
                                          verbose=FALSE){
@@ -39,13 +39,13 @@ pois_mean_penalized_inversion = function(x,
   }else{
     beta = prior_mean
   }
-  if(is.null(sigma2k)){
+  if(is.null(mixsd)){
     ## how to choose grid in this case?
-    sigma2k = ebnm:::default_smn_scale(log(x+1),sqrt(1/(x+1)),mode=beta)
-    #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
-    #sigma2k = c(0,1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    mixsd = ebnm:::default_smn_scale(log(x+1),sqrt(1/(x+1)),mode=beta)
+    #mixsd = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    #mixsd = c(0,1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
   }
-  K = length(sigma2k)
+  K = length(mixsd)
 
 
 
@@ -53,9 +53,20 @@ pois_mean_penalized_inversion = function(x,
     w = rep(1/K,K)
   }
 
-  fit = optim(c(log(x+1),w,beta),f_obj,f_obj_grad,method = optim_method,y=x,grid=sigma2k,control=list(trace=verbose,maxit=maxiter))
+  fit = optim(c(log(x+1),w,beta),f_obj,f_obj_grad,method = optim_method,y=x,grid=mixsd,control=list(trace=verbose,maxit=maxiter))
 
-  return(list(posteriorMean = fit$par[1:n], w = softmax(fit$par[(n+1):(n+K)]), priorMean = fit$par[n+K+1], optim_fit = fit,sigma2k=sigma2k))
+  m = fit$par[1:n]
+  w_hat = softmax(fit$par[(n+1):(n+K)])
+  mu_hat = fit$par[n+K+1]
+  s_hat = sqrt(exp(-m))
+  z_hat = S_inv(m,s_hat,w_hat,mu_hat,mixsd)
+  return(list(posterior = list(posteriorMean_latent = m,
+                               posteriorVar_latent = PV(z_hat,s_hat,w_hat,mu_hat,mixsd),
+                               posteriorMean_mean = S_exp(z_hat,s_hat,w_hat,mu_hat,mixsd)),
+              fitted_g = list(weight = w_hat,mean = mu_hat,sd = mixsd),
+              fit =list(z=z_hat,s=s_hat,optim_fit = fit)))
+
+  #return(list(posteriorMean = fit$par[1:n], w = softmax(fit$par[(n+1):(n+K)]), priorMean = fit$par[n+K+1], optim_fit = fit,sigma2k=sigma2k))
 
 
 }

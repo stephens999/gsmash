@@ -25,7 +25,7 @@ library(nloptr)
 pois_mean_penalized_compound = function(x,
                                          w = NULL,
                                          prior_mean = NULL,
-                                         sigma2k=NULL,
+                                         mixsd=NULL,
                                          maxiter = 100,
                                         verbose=FALSE,
                                         tol=1e-4){
@@ -38,13 +38,13 @@ pois_mean_penalized_compound = function(x,
     beta = prior_mean
   }
 
-  if(is.null(sigma2k)){
+  if(is.null(mixsd)){
     ## how to choose grid in this case?
-    sigma2k = ebnm:::default_smn_scale(log(x+1),sqrt(1/(x+1)),mode=beta)
-    #sigma2k = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
-    #sigma2k = c(0,1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    mixsd = ebnm:::default_smn_scale(log(x+1),sqrt(1/(x+1)),mode=beta)
+    #mixsd = c(1e-10,1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
+    #mixsd = c(0,1e-3, 1e-2, 1e-1, 0.16, 0.32, 0.64, 1, 2, 4, 8, 16)
   }
-  K = length(sigma2k)
+  K = length(mixsd)
 
   if(is.null(w)){
     w = rep(1/K,K)
@@ -62,15 +62,26 @@ pois_mean_penalized_compound = function(x,
                            "print_level"=verbose,
                            "maxeval" = maxiter,
                            "xtol_rel" = tol),
-               y=x,grid=sigma2k)
+               y=x,grid=mixsd)
 
   z_hat = out$solution[1:n]
   s_hat = sqrt(exp(out$solution[(n+1):(2*n)]))
   w_hat = softmax(out$solution[(2*n+1):(2*n+K)])
   mu_hat = out$solution[(2*n+K+1)]
-  m = S(z_hat,s_hat,w_hat,mu_hat,sigma2k)
+  m = S(z_hat,s_hat,w_hat,mu_hat,mixsd)
 
-  return(list(posteriorMean = m, w = w_hat, priorMean = mu_hat, nloptr_fit = out,z=z_hat,sigma2k=sigma2k))
+  return(list(posterior = list(posteriorMean_latent = m,
+                               posteriorVar_latent = PV(z_hat,s_hat,w_hat,mu_hat,mixsd),
+                               posteriorMean_mean = S_exp(z_hat,s_hat,w_hat,mu_hat,mixsd)),
+              fitted_g = list(weight = w_hat,mean = mu_hat,sd = mixsd),
+              fit =list(z=z_hat,s=s_hat,nloptr_fit = out)))
+
+  # return(list(posteriorMean = m,
+  #             w = w_hat,
+  #             priorMean = mu_hat,
+  #             nloptr_fit = out,
+  #             z=z_hat,
+  #             sigma2k=sigma2k))
 
 
 }
