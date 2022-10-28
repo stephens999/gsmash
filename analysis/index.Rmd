@@ -30,6 +30,7 @@ editor_options:
 * [Poisson mean, ash prior, Gaussian Mixture posterior]()
 * [NB JJ lower bound](neg_binom_mean_lower_bound.html)
 * [NB PG augmentation](neg_binom_mean_polya_gamma.html)
+* [NB approxiamation to Poisson](nb_approx_poisson.html)
 * [Poisson mean $log(1+exp(\cdot))$ link](pois_mean_log1exp.html)
 
 ### Penalized
