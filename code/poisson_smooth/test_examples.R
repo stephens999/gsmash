@@ -16,7 +16,7 @@
 # fit.smash = smashr::smash.poiss(y)
 #
 # lines(fit.smash)
-#
+
 
 
 # Simulate a data set.
