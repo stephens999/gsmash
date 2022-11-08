@@ -1,0 +1,39 @@
+---
+title: "log link benchmarking of Poisson means"
+author: "DongyueXie"
+date: "2022-11-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+We compare the methods with log-link on estimating the latent $\mu$ under the following simulation settings. We generate $n=1000$ samples from $y_j\sim \Poi(\exp(\mu_j))$, and $\mu_j$ are generated under the following different data-generating distributions
+
+\begin{itemize}
+    \item[1.] $\mu_j \sim \pi_0\delta_0 + \pi_1N(0,2)$.
+    \item[2.] $\mu_j \sim \pi_0\delta_3 + \pi_1N(3,2)$.
+    \item[3.] $\mu_j \sim \pi_0\delta_5 + \pi_1N(5,2)$.
+\end{itemize}
+
+```{r}
+library(vebpm)
+out = readRDS('/project2/mstephens/dongyue/poisson_mean/log_link50_n_1000_priormean_0_priorvar1_2.rds')
+```
+
+```{r}
+mse_all = c()
+for(i in 1:length(out$output)){
+  mse_all = rbind(mse_all,out$output[[i]]$MSE_mean)
+}
+mse_mle = apply((out$sim_data$X-out$sim_data$Mean)^2,1,mean)
+mse_mean = apply(mse_all,2,mean,na.rm=T)
+mse_sd = apply(mse_all,2,sd,na.rm=T)
+order_idx = order(mse_mean)
+res = cbind(mse_mean[order_idx],mse_sd[order_idx])
+colnames(res) = c('mean','sd')
+knitr::kable(res)
+boxplot(mse_all)
+```
+
