@@ -9,31 +9,138 @@ editor_options:
 
 ## Introduction
 
-We compare the methods with log-link on estimating the latent $\mu$ under the following simulation settings. We generate $n=1000$ samples from $y_j\sim \Poi(\exp(\mu_j))$, and $\mu_j$ are generated under the following different data-generating distributions
-
-\begin{itemize}
-    \item[1.] $\mu_j \sim \pi_0\delta_0 + \pi_1N(0,2)$.
-    \item[2.] $\mu_j \sim \pi_0\delta_3 + \pi_1N(3,2)$.
-    \item[3.] $\mu_j \sim \pi_0\delta_5 + \pi_1N(5,2)$.
-\end{itemize}
+We compare the methods with log-link on estimating the latent $\mu$ under the following simulation settings. We generate $n=1000$ samples from $y_j\sim \Poi(\exp(\mu_j))$, and $\mu_j$ are generated under the following different data-generating distributions. Each simulation was repeated for 50 times.
 
 ```{r}
 library(vebpm)
-out = readRDS('/project2/mstephens/dongyue/poisson_mean/log_link50_n_1000_priormean_0_priorvar1_2.rds')
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+## $\mu_j \sim \pi_0\delta_0 + \pi_1N(0,2)$.
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link50_n_1000_priormean_0_priorvar1_2.rds')
 ```
 
 ```{r}
-mse_all = c()
-for(i in 1:length(out$output)){
-  mse_all = rbind(mse_all,out$output[[i]]$MSE_mean)
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
+
+```{r}
+plot(out$sim_data$log_Mean[1,],col='grey80',main='log_mean',ylab='')
+plot(out$sim_data$Mean[1,],col='grey80',main='log_mean',ylab='')
+```
+
+## $\mu_j \sim \pi_0\delta_3 + \pi_1N(3,2)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link50_n_1000_priormean_3_priorvar1_2.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+```
+
+## $\mu_j \sim \pi_0\delta_5 + \pi_1N(5,2)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link50_n_1000_priormean_5_priorvar1_2.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('nb_lb','nb_pg'))
+get_summary_mean_log(out,rm_method = c('nb_lb','nb_pg'))
+```
+
+
+## Why NB method performs bad?
+
+Its performance is getting worse as x getting larger.
+
+I set $r = 2*max(y)$. So sometimes $r$ is of order $10^5$, which is too large. We see from the results that setting $r$ large likely let veb algorithm get stuck at local optimum.
+
+Let see 4 examples when NB methods perform worst of itself.
+
+```{r}
+par(mfrow=(c(2,2)))
+for(i in c(1,21,23,24)){
+  plot(out$sim_data$log_Mean[i,],col='grey80')
+lines(out$output[[i]]$fitted_model$nb_lb$posterior$mean_log)
 }
-mse_mle = apply((out$sim_data$X-out$sim_data$Mean)^2,1,mean)
-mse_mean = apply(mse_all,2,mean,na.rm=T)
-mse_sd = apply(mse_all,2,sd,na.rm=T)
-order_idx = order(mse_mean)
-res = cbind(mse_mean[order_idx],mse_sd[order_idx])
-colnames(res) = c('mean','sd')
-knitr::kable(res)
-boxplot(mse_all)
+```
+
+The corresponding $r$ are 
+
+```{r}
+for(i in c(1,21,23,24)){
+  print(2*(max(out$sim_data$X[i,])))
+}
+```
+
+Let's reduce $r$ to 1000 for the 1st simulation and see it improves
+
+```{r}
+for(i in c(1,21,23,24)){
+  temp = nb_mean_lower_bound(out$sim_data$X[i,],r=1000)
+ plot(out$sim_data$log_Mean[i,],col='grey80')
+lines(temp$posterior$mean_log)
+print(mse(out$sim_data$log_Mean[i,],temp$posterior$mean_log))
+}
+```
+
+Further reduce $r$ to 100
+
+```{r}
+for(i in c(1,21,23,24)){
+  temp = nb_mean_lower_bound(out$sim_data$X[i,],r=100)
+ plot(out$sim_data$log_Mean[i,],col='grey80')
+lines(temp$posterior$mean_log)
+print(mse(out$sim_data$log_Mean[i,],temp$posterior$mean_log))
+}
+```
+
+
+It seems that setting $r=1000$ is slightly better than $100$, but both are significantly better than $r\sim10^5$. 
+
+## What happend to inversion penalization method?
+
+Its performance is getting worse as x getting larger.
+
+It seems that it has some convergence issues here. The estimated prior weights are still at the uniform initialization stage.
+
+```{r}
+out$output[[1]]$fitted_model$penalty_inversion$fitted_g
+```
+
+Check the gradient of posterior mean
+
+```{r}
+plot(vebpm:::f_obj_grad(out$output[[1]]$fitted_model$penalty_inversion$fit$optim_fit$par,out$sim_data$X[1,],out$output[[1]]$fitted_model$penalty_inversion$fitted_g$sd)[1:1000],ylab='gradient')
+```
+
+Check the gradient of prior weight
+
+```{r}
+plot(vebpm:::f_obj_grad(out$output[[1]]$fitted_model$penalty_inversion$fit$optim_fit$par,out$sim_data$X[1,],out$output[[1]]$fitted_model$penalty_inversion$fitted_g$sd)[1001:1032],ylab='gradient')
+```
+
+Check the gradient of prior mean
+
+```{r}
+plot(vebpm:::f_obj_grad(out$output[[1]]$fitted_model$penalty_inversion$fit$optim_fit$par,out$sim_data$X[1,],out$output[[1]]$fitted_model$penalty_inversion$fitted_g$sd)[1033],ylab='gradient')
+```
+
+It's not converging! Because the LBFGSB in `optim` uses relative tol(tol*f_value) for monitoring the convergence and the f_value is too large so iterations stop before convergence.
+
+Need to increase number of iterations. 
+
+```{r,eval=FALSE}
+temp= pois_mean_penalized_inversion(out$sim_data$X[1,],tol=1e-10)
+temp$fitted_g$weight
+mse(temp$posterior$mean,out$sim_data$Mean[1,])
 ```
 

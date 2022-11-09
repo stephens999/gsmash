@@ -1,0 +1,52 @@
+---
+title: "exp prior benchmark"
+author: "DongyueXie"
+date: "2022-11-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(vebpm)
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+
+## $\lambda_j \sim \Exp(1)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior50_n_1000_mean_1.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
+
+
+## $\lambda_j \sim \Exp(0.5)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior50_n_1000_mean_2.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
+
+## $\lambda_j \sim \Exp(0.1)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior50_n_1000_mean_10.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+```

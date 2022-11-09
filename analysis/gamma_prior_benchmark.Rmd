@@ -1,0 +1,40 @@
+---
+title: "gamma prior benchmark"
+author: "DongyueXie"
+date: "2022-11-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(vebpm)
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+
+## $\lambda_j \sim \pi_0\Gamma(2,2) + \pi_1\Gamma(10,2)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/gamma_prior50_n_1000_mean1_mean5.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
+
+## $\lambda_j \sim \pi_0\Gamma(10,2) + \pi_1\Gamma(30,2)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/gamma_prior50_n_1000_mean5_mean15.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```

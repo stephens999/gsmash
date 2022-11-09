@@ -1,0 +1,51 @@
+---
+title: "t prior benchmark"
+author: "DongyueXie"
+date: "2022-11-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(vebpm)
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+## $\lambda_j \sim \pi_0\delta_1 + \pi_1(2+|t_3|)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior50_n_1000_df_3_delta_1.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
+
+## $\lambda_j \sim \pi_0\delta_2 + \pi_1(4+|t_3|)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior50_n_1000_df_3_delta_2.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
+
+
+## $\lambda_j \sim \pi_0\delta_5 + \pi_1(10+|t_3|)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior50_n_1000_df_3_delta_5.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
