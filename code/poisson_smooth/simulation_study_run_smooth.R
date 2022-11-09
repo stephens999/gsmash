@@ -19,3 +19,19 @@ for(snr in snr_list){
     saveRDS(out,file=paste(output_path,smooth_func,n_simu,'_n_',n,'_snr_',snr,'_count_size_',count_size,'.rds',sep=''))
   }
 }
+
+
+out <- readRDS("~/Documents/projPhD/gsmash/output/poisson_smooth_simulation/bumps30_n_512_snr_3_count_size_100.rds")
+
+plot(out$sim_data$X[1,],col='grey80')
+lines(exp(out$sim_data$b),col='grey60')
+lines(out$output[[1]]$fitted_model$smash$posterior$mean_smooth,col='2')
+lines(out$output[[1]]$fitted_model$split_ndwt$posterior$mean_smooth,col='2')
+lines(out$output[[1]]$fitted_model$smash_two_step$posterior$mean_smooth,col='2')
+
+
+temp = smashrgen:::pois_smooth_split(out$sim_data$X[1,],Eb_init = out$sim_data$X[1,],wave_trans = 'dwt',sigma2_init = 0.1,est_sigma2 = F)
+plot(out$sim_data$X[1,],col='grey80')
+lines(exp(out$sim_data$b),col='grey60')
+lines(temp$posterior$mean_smooth,col=4)
+temp$fitted_g

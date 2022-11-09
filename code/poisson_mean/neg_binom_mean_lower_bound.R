@@ -24,7 +24,7 @@
 #'
 library(ebnm)
 nb_mean_lower_bound = function(x,
-                               r = 1e2,
+                               r = 1e3,
                                ebnm_params = NULL,
                                tol=1e-5,
                                maxiter=1000,
