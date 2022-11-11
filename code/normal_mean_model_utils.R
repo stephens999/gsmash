@@ -208,14 +208,14 @@ softmax = function(a){
   exp(a-max(a))/sum(exp(a-max(a)))
 }
 
-#' #'posterior mean operator
-#' S = function(x,s,w,mu,grid){
-#'   K = length(w)
-#'   g = normalmix(pi=w,mean=rep(mu,K),sd=grid)
-#'   fit.ash = ashr::ash(x,s,g=g,fixg=T)
-#'   fit.ash$result$PosteriorMean
-#' }
-#'
+#'posterior mean operator
+S = function(x,s,w,mu,grid){
+  K = length(w)
+  g = ashr::normalmix(pi=w,mean=rep(mu,K),sd=grid)
+  fit.ash = ashr::ash(x,s,g=g,fixg=T)
+  fit.ash$result$PosteriorMean
+}
+
 #' #'posterior mean operator
 #' S2 = function(x,s,w,mu,grid){
 #'   lW = matrix(log(w),nrow=length(x),ncol=length(grid),byrow=T)
@@ -227,10 +227,10 @@ softmax = function(a){
 #'   return(rowSums(pw*pm))
 #' }
 
-#'posterior mean operator
-S = function(x,s,w,mu,grid){
-  return(x+s^2*l_nm_d1_z(x,s,w,mu,grid))
-}
+#' #'posterior mean operator
+#' S = function(x,s,w,mu,grid){
+#'   return(x+s^2*l_nm_d1_z(x,s,w,mu,grid))
+#' }
 
 #'posterior mean of exp(mu) operator
 S_exp = function(x,s,w,mu,grid){
@@ -281,14 +281,14 @@ S_inv_obj_jac = function(z,theta,s,w,mu,grid){
   return(rbind(1+s^2*l_nm_d2_z(z,s,w,mu,grid)))
 }
 
-S_inv = function(theta,s,w,mu,grid){
-  sol = multiroot(S_inv_obj,start = theta,
-                  #jacfunc=S_inv_obj_jac,
-                  jactype = 'bandint',
-                  bandup=0,banddown=0,
-                  theta=theta,s=s,w=w,mu=mu,grid=grid)
-  return(sol$root)
-}
+# S_inv = function(theta,s,w,mu,grid){
+#   sol = multiroot(S_inv_obj,start = theta,
+#                   #jacfunc=S_inv_obj_jac,
+#                   jactype = 'bandint',
+#                   bandup=0,banddown=0,
+#                   theta=theta,s=s,w=w,mu=mu,grid=grid)
+#   return(sol$root)
+# }
 
 # S_inv3 = function(theta,s,w,mu,grid){
 #   temp_obj = function(z,theta,s,w,mu,grid){
@@ -298,36 +298,33 @@ S_inv = function(theta,s,w,mu,grid){
 #   return(opt)
 # }
 
-###############
-##########S_inv using uniroot in a for loop. Slow
-##############
-#' #'@title inverse operator of S
-#' #'@description  S^{-1}(theta) returns the z such that S(z) = theta
-#' S_inv = function(theta,s,w,mu,grid,z_range=NULL){
-#'
-#'   obj = function(z,theta,s,w,mu,grid){
-#'     return(z+s^2*l_nm_d1_z(z,s,w,mu,grid)-theta)
-#'   }
-#'   n = length(theta)
-#'   z_out = double(n)
-#'   for(j in 1:n){
-#'     #print(j)
-#'     if(theta[j]>=0){
-#'       # z_out[j] = uniroot(obj,c(theta[j],theta[j]/median(1/(1+s[j]^2/grid^2))),
-#'       #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
-#'       z_out[j] = uniroot(obj,c(theta[j],z_range[2]),
-#'                          theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
-#'     }else{
-#'       # z_out[j] = uniroot(obj,c(theta[j]/median(1/(1+s[j]^2/grid^2)),theta[j]),
-#'       #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
-#'       z_out[j] = uniroot(obj,c(z_range[1],theta[j]),
-#'                          theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
-#'     }
-#'
-#'   }
-#'   z_out
-#' }
-#'
+#########################S_inv using uniroot in a for loop. Slow###############'@title inverse operator of S
+#'@description  S^{-1}(theta) returns the z such that S(z) = theta
+S_inv = function(theta,s,w,mu,grid,z_range=NULL){
+
+  obj = function(z,theta,s,w,mu,grid){
+    return(S(z,s,w,mu,grid)-theta)
+  }
+  n = length(theta)
+  z_out = double(n)
+  for(j in 1:n){
+    #print(j)
+    if(theta[j]>=0){
+      # z_out[j] = uniroot(obj,c(theta[j],theta[j]/median(1/(1+s[j]^2/grid^2))),
+      #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
+      z_out[j] = uniroot(obj,c(theta[j],z_range[2]),
+                         theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
+    }else{
+      # z_out[j] = uniroot(obj,c(theta[j]/median(1/(1+s[j]^2/grid^2)),theta[j]),
+      #                    theta=theta[j],s=s[j],w=w,grid=grid,extendInt = 'upX')$root
+      z_out[j] = uniroot(obj,c(z_range[1],theta[j]),
+                         theta=theta[j],s=s[j],w=w,grid=grid,mu=mu,extendInt = 'upX')$root
+    }
+
+  }
+  z_out
+}
+
 #' #'@title inverse operator of S, parallel version using mclapply
 #' #'@description  S^{-1}(theta) returns the z such that S(z) = theta
 #'

@@ -1,3 +1,35 @@
+get_summary_elbo = function(out,rm_method = c( "nb_lb","nb_pg","ash_pois_log")){
+  elbo_list = lapply(out$output,function(x){
+    lapply(x$fitted_model,function(z){
+      if('elbo'%in%names(z)){
+        return(z$elbo)
+      }else if('loglik'%in%names(z)){
+        return(z$loglik)
+      }else if('log_likelihood'%in%names(z)){
+        return(z$log_likelihood)
+      }else{
+        return(NA)
+      }
+    })
+  })
+  elbo_list = do.call(rbind,lapply(elbo_list,unlist))
+
+  method_names = colnames(elbo_list)
+  if(!is.null(rm_method)){
+    rm_idx = match(rm_method,method_names)
+    elbo_list = elbo_list[,-rm_idx]
+  }
+
+  elbo_mean = apply(elbo_list,2,mean,na.rm=T)
+  elbo_sd = apply(elbo_list,2,sd,na.rm=T)
+  order_idx = order(elbo_mean,decreasing = T)
+  res = cbind(elbo_mean[order_idx],elbo_sd[order_idx])
+  colnames(res) = c('mean','sd')
+  print(knitr::kable(round(res,3)))
+
+
+}
+
 get_summary_mean = function(out,rm_method = NULL){
   mse_all = c()
   for(i in 1:length(out$output)){
@@ -32,7 +64,7 @@ get_summary_mean = function(out,rm_method = NULL){
                      color = "red"))
 }
 
-get_summary_mean_log = function(out,rm_method = NULL){
+get_summary_mean_log = function(out,rm_method = NULL,rm_x0 = TRUE){
   mse_all = c()
   for(i in 1:length(out$output)){
     mse_all = rbind(mse_all,out$output[[i]]$MSE_log_mean)
@@ -48,20 +80,34 @@ get_summary_mean_log = function(out,rm_method = NULL){
   res = cbind(mse_mean[order_idx],mse_sd[order_idx])
   colnames(res) = c('mean','sd')
   print(knitr::kable(round(res,3)))
-  # datax = reshape2::melt(mse_all,varnames =c('simu','methods'),value.name = 'mse_log_mean')
-  # print(datax %>%
-  #         ggplot(aes(x=methods, y=mse_log_mean)) +
-  #         geom_boxplot()+
-  #         coord_flip())
 
-  #relative to mle mse
-  mse_mle = apply((log(out$sim_data$X+1)-out$sim_data$log_Mean)^2,1,mean)
-  mse_relative = mse_all/mse_mle
-  datax = reshape2::melt(mse_relative,varnames =c('simu','methods'),value.name = 'mse_relative_to_mle')
+  datax = reshape2::melt(mse_all,varnames =c('simu','methods'),value.name = 'mse_log_mean')
   print(datax %>%
-          ggplot(aes(x=methods, y=mse_relative_to_mle)) +
+          ggplot(aes(x=methods, y=mse_log_mean)) +
           geom_boxplot()+
-          coord_flip()+
-          geom_hline(yintercept = 1, linetype="dashed",
-                     color = "red"))
+          coord_flip())
+
+  # #relative to mle mse
+  # if(rm_x0){
+  #   mse_mle = apply((log(out$sim_data$X+1)-out$sim_data$log_Mean)^2,1,mean)
+  #   mse_relative = mse_all/mse_mle
+  #   datax = reshape2::melt(mse_relative,varnames =c('simu','methods'),value.name = 'mse_relative_to_mle')
+  #   print(datax %>%
+  #           ggplot(aes(x=methods, y=mse_relative_to_mle)) +
+  #           geom_boxplot()+
+  #           coord_flip()+
+  #           geom_hline(yintercept = 1, linetype="dashed",
+  #                      color = "red"))
+  # }else{
+  #   mse_mle = apply((log(out$sim_data$X+1)-out$sim_data$log_Mean)^2,1,mean)
+  #   mse_relative = mse_all/mse_mle
+  #   datax = reshape2::melt(mse_relative,varnames =c('simu','methods'),value.name = 'mse_relative_to_mle')
+  #   print(datax %>%
+  #           ggplot(aes(x=methods, y=mse_relative_to_mle)) +
+  #           geom_boxplot()+
+  #           coord_flip()+
+  #           geom_hline(yintercept = 1, linetype="dashed",
+  #                      color = "red"))
+  # }
+
 }
