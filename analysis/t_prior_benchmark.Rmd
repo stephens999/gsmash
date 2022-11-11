@@ -19,7 +19,7 @@ source('code/poisson_mean/simulation_summary.R')
 ## $\lambda_j \sim \pi_0\delta_1 + \pi_1(2+|t_3|)$
 
 ```{r}
-out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior50_n_1000_df_3_delta_1.rds')
+out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior31_n_1000_df_3_delta_1.rds')
 ```
 
 ```{r}
@@ -35,7 +35,7 @@ out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior50_n_1000_df_3
 
 ```{r}
 get_summary_mean(out)
-get_summary_mean_log(out,rm_method = 'ash_pois_log')
+get_summary_mean_log(out)
 ```
 
 
@@ -47,5 +47,5 @@ out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior50_n_1000_df_3
 
 ```{r}
 get_summary_mean(out)
-get_summary_mean_log(out,rm_method = 'ash_pois_log')
+get_summary_mean_log(out)
 ```
