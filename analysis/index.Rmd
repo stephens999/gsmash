@@ -38,6 +38,13 @@ editor_options:
 * [Poisson mean penalized form, compound](pois_mean_penalized.html)
 * [Poisson mean penalized form, inversion](pois_mean_penalized_inversion.html)
 
+### Benchmarking
+
+* [log link](log_link_benchmark_revised.html)
+* [exp prior](exp_prior_benchmark.html)
+* [gamma prior](gamma_prior_benchmark.html)
+* [t prior](t_prior_benchmark_revise.html)
+
 ## Poisson smoothing nugget 
 
 * [The two step procedure for smoothing overdispersed count data](poisson_nugget_two_step.html)
