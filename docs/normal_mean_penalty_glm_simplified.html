@@ -15,7 +15,7 @@
 
 <title>normal mean penalty for glm, simplified</title>
 
-<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
@@ -158,11 +158,15 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark it active
-  menuAnchor.tab('show');
-
-  // if it's got a parent navbar menu mark it active as well
-  menuAnchor.closest('li.dropdown').addClass('active');
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -191,8 +195,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before {
-  content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -200,16 +204,9 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "&#xe258;";
-  border: none;
-}
-
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "";
+  content: "\e258";
   font-family: 'Glyphicons Halflings';
-  display: inline-block;
-  padding: 10px;
-  border-right: 1px solid #ddd;
+  border: none;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -394,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-10-06
+<strong>Last updated:</strong> 2022-11-11
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -525,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef6c62e472bcf84ca8650a23877807b26446f18f9targetblankf6c62e4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree5a7799a438592cefcd7562a41a15a6d18c92aadctargetblank5a7799aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/f6c62e472bcf84ca8650a23877807b26446f18f9" target="_blank">f6c62e4</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/5a7799a438592cefcd7562a41a15a6d18c92aadc" target="_blank">5a7799a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef6c62e472bcf84ca8650a23877807b26446f18f9targetblankf6c62e4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree5a7799a438592cefcd7562a41a15a6d18c92aadctargetblank5a7799aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -543,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/f6c62e472bcf84ca8650a23877807b26446f18f9" target="_blank">f6c62e4</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/5a7799a438592cefcd7562a41a15a6d18c92aadc" target="_blank">5a7799a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -558,9 +555,22 @@ were generated:
 </p>
 <pre><code>
 Ignored files:
-    Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    data/poisson_mean_simulation/
+
+Untracked files:
+    Untracked:  analysis/log_link_benchmark_revised.Rmd
+    Untracked:  analysis/poisson_mean_penalized_fail.Rmd
+    Untracked:  analysis/t_prior_benchmark_revise.Rmd
+    Untracked:  output/poisson_mean_simulation/
+    Untracked:  output/poisson_smooth_simulation/
+
+Unstaged changes:
+    Modified:   analysis/exp_prior_benchmark.Rmd
+    Modified:   analysis/gamma_prior_benchmark.Rmd
+    Modified:   code/normal_mean_model_utils.R
+    Modified:   code/poisson_mean/simulation_summary.R
 
 </code></pre>
 <p>
@@ -607,6 +617,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/5a7799a438592cefcd7562a41a15a6d18c92aadc/analysis/normal_mean_penalty_glm_simplified.Rmd" target="_blank">5a7799a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-11
+</td>
+<td>
+wflow_publish("analysis/normal_mean_penalty_glm_simplified.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/6c2a5d72b69f6302d27afceb292c09df2d29cbc0/analysis/normal_mean_penalty_glm_simplified.Rmd" target="_blank">6c2a5d7</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-11
+</td>
+<td>
+misc
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/38913fc0546c898ebf6355c884400a55dbc9a556/docs/normal_mean_penalty_glm_simplified.html" target="_blank">38913fc</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -681,26 +742,40 @@ posterior mean operator.</p>
 <h2>Poisson</h2>
 <p><span class="math inline">\(s^2 = e^{-\theta}\)</span></p>
 <pre class="r"><code>source(&#39;code/normal_mean_model_utils.R&#39;)
-pois_penalty = function(theta,w,grid){
-  z_range = range(theta) + c(-10,10)
+# revised one allow more extreme observations
+pois_penalty = function(theta,w,mu,grid){
+  z_range = range(theta) + c(-100,100)
   s = sqrt(exp(-theta))
-  z = S_inv(theta,s,w,grid,z_range)
-  return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  data = ashr::set_data(z,s)
+  g = normalmix(pi=w,mean=rep(mu,length(w)),sd = grid)
+  #z = vebpm:::S_inv(theta,s,w,mu,grid)
+  return(-calc_vloglik(g,data) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
 }
-plot_pois_penalty = function(theta,w,grid){
-  plot(x,pois_penalty(theta,w,grid),col=&#39;blue&#39;,lty=2,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;penalty&#39;,
+# pois_penalty = function(theta,w,mu,grid){
+#   z_range = range(theta) + c(-100,100)
+#   s = sqrt(exp(-theta))
+#   z = S_inv(theta,s,w,mu,grid,z_range)
+#   #z = vebpm:::S_inv(theta,s,w,mu,grid)
+#   return(-l_nm(z,s,w,mu,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+# }
+plot_pois_penalty = function(theta,w,mu,grid){
+  plot(x,pois_penalty(theta,w,mu,grid),col=&#39;blue&#39;,lty=2,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;penalty&#39;,
        main=paste(&#39;w=(&#39;,paste(w,collapse = &quot;, &quot;),&#39;); grid=(&#39;,paste(grid,collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
   #legend(&#39;bottomright&#39;,c(expression(rho(theta))),lty=c(2),col=c(&#39;blue&#39;))
 }</code></pre>
+</div>
+<div id="w-c0.90.1-mu-0" class="section level2">
+<h2>w = c(0.9,0.1), mu = 0</h2>
 <pre class="r"><code>n = 101
-x = seq(-3.5,5,length.out = n)
-s = rep(1,n)
+x = seq(-10,10,length.out = n)
+mu = 0
 w = c(0.9,0.1)
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
 for(gg in grid_list){
-  plot_pois_penalty(x,w,c(0,gg))
-  abline(v=0,lty=3)
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
 }</code></pre>
 <p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-2-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
@@ -740,15 +815,18 @@ Dongyue Xie
 </table>
 </div>
 </div>
+</div>
+<div id="w-c0.90.1-mu-3" class="section level2">
+<h2>w = c(0.9,0.1), mu = 3</h2>
 <pre class="r"><code>n = 101
-x = seq(-3.5,5,length.out = n)
-s = rep(1,n)
-w = c(0.5,0.5)
+x = seq(-10,10,length.out = n)
+mu = 3
+w = c(0.9,0.1)
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
 for(gg in grid_list){
-  plot_pois_penalty(x,w,c(0,gg))
-  abline(v=0,lty=3)
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
 }</code></pre>
 <p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
@@ -788,33 +866,195 @@ Dongyue Xie
 </table>
 </div>
 </div>
-<pre class="r"><code>binom_penalty = function(theta,w,grid,bn){
-  z_range = range(theta) + c(-10,10)
-  s = sqrt((1+exp(theta))^2/bn/exp(theta))
-  z = S_inv(theta,s,w,grid,z_range)
-  return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
-}
-plot_binom_penalty = function(theta,w,grid,bn){
-  plot(x,pois_penalty(theta,w,grid),col=&#39;blue&#39;,lty=2,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;penalty&#39;,
-       main=paste(&#39;w=(&#39;,paste(w,collapse = &quot;, &quot;),&#39;); grid=(&#39;,paste(grid,collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
-  #legend(&#39;bottomright&#39;,c(expression(rho(theta))),lty=c(2),col=c(&#39;blue&#39;))
-}</code></pre>
 </div>
-<div id="binomial" class="section level2">
-<h2>Binomial</h2>
-<p><span class="math inline">\(s^2 =
-\frac{(1+e^\theta)^2}{ne^\theta}\)</span></p>
+<div id="w-c0.50.5-mu-0" class="section level2">
+<h2>w = c(0.5,0.5), mu = 0</h2>
 <pre class="r"><code>n = 101
-x = seq(-3.5,5,length.out = n)
-s = rep(1,n)
-w = c(0.9,0.1)
+x = seq(-10,10,length.out = n)
+mu = 0
+w = c(0.5,0.5)
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
 for(gg in grid_list){
-  plot_binom_penalty(x,w,c(0,gg),10)
-  abline(v=0,lty=3)
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="w-c0.50.5-mu-3" class="section level2">
+<h2>w = c(0.5,0.5), mu = 3</h2>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+mu = 3
+w = c(0.5,0.5)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
 }</code></pre>
 <p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/38913fc0546c898ebf6355c884400a55dbc9a556/docs/figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-5-1.png" target="_blank">38913fc</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="w-c0.10.9-mu-0" class="section level2">
+<h2>w = c(0.1,0.9), mu = 0</h2>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+mu = 0
+w = c(0.1,0.9)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="w-c0.10.9-mu-3" class="section level2">
+<h2>w = c(0.1,0.9), mu = 3</h2>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+mu = 3
+w = c(0.1,0.9)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-7-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="w-c0.010.09-mu-0" class="section level2">
+<h2>w = c(0.01,0.09), mu = 0</h2>
+<pre class="r"><code>n = 101
+x = seq(-20,10,length.out = n)
+mu = 0
+w = c(0.01,0.99)
+par(mfrow=c(2,2))
+grid_list=c(10,20,50,100)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-8-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="w-c0.010.09-mu-3" class="section level2">
+<h2>w = c(0.01,0.09), mu = 3</h2>
+<pre class="r"><code>n = 101
+x = seq(-20,10,length.out = n)
+mu = 3
+w = c(0.01,0.99)
+par(mfrow=c(2,2))
+grid_list=c(10,20,50,100)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-9-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="binomial" class="section level2">
+<h2>Binomial</h2>
+<pre class="r"><code>binom_penalty = function(theta,w,mu,grid,bn){
+   z_range = range(theta) + c(-100,100)
+  s = sqrt((1+exp(theta))^2/bn/exp(theta))
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  data = ashr::set_data(z,s)
+  g = normalmix(pi=w,mean=rep(mu,length(w)),sd = grid)
+  #z = vebpm:::S_inv(theta,s,w,mu,grid)
+  return(-calc_vloglik(g,data) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+  
+  # z_range = range(theta) + c(-10,10)
+  # s = sqrt((1+exp(theta))^2/bn/exp(theta))
+  # z = S_inv(theta,s,w,grid,z_range)
+  # return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+}
+plot_binom_penalty = function(theta,w,mu,grid,bn){
+  plot(x,pois_penalty(theta,w,mu,grid),col=&#39;blue&#39;,lty=2,type=&#39;l&#39;,xlab=&#39;theta&#39;,ylab=&#39;penalty&#39;,
+       main=paste(&#39;w=(&#39;,paste(w,collapse = &quot;, &quot;),&#39;); grid=(&#39;,paste(grid,collapse = &quot;, &quot;),&#39;)&#39;,sep=&#39;&#39;))
+  #legend(&#39;bottomright&#39;,c(expression(rho(theta))),lty=c(2),col=c(&#39;blue&#39;))
+}</code></pre>
+<p><span class="math inline">\(s^2 =
+\frac{(1+e^\theta)^2}{ne^\theta}\)</span></p>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+w = c(0.9,0.1)
+mu = 0
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+w = c(0.9,0.1)
+mu = 3
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-12-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+w = c(0.1,0.9)
+mu = 3
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-13-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>n = 101
+x = seq(-10,10,length.out = n)
+w = c(0.1,0.9)
+mu = 3
+par(mfrow=c(2,2))
+grid_list=c(5,10,20,100)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
+}</code></pre>
+<p><img src="figure/normal_mean_penalty_glm_simplified.Rmd/unnamed-chunk-14-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -824,38 +1064,40 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.0 (2022-04-22)
-Platform: x86_64-apple-darwin17.0 (64-bit)
-Running under: macOS Big Sur/Monterey 10.16
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 20.04.5 LTS
 
 Matrix products: default
-BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
-LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
+LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
 
 locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+ [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
+ [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
+ [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
+[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ashr_2.2-54     workflowr_1.7.0
+[1] rootSolve_1.8.2.3 ashr_2.2-54       workflowr_1.7.0  
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.8.3     highr_0.9        bslib_0.3.1      compiler_4.2.0  
- [5] pillar_1.7.0     later_1.3.0      git2r_0.30.1     jquerylib_0.1.4 
- [9] tools_4.2.0      getPass_0.2-2    digest_0.6.29    lattice_0.20-45 
-[13] jsonlite_1.8.0   evaluate_0.15    tibble_3.1.6     lifecycle_1.0.1 
-[17] pkgconfig_2.0.3  rlang_1.0.2      Matrix_1.4-1     cli_3.3.0       
-[21] rstudioapi_0.13  yaml_2.3.5       xfun_0.30        fastmap_1.1.0   
-[25] invgamma_1.1     httr_1.4.2       stringr_1.4.0    knitr_1.38      
-[29] sass_0.4.1       fs_1.5.2         vctrs_0.4.1      grid_4.2.0      
-[33] rprojroot_2.0.3  glue_1.6.2       R6_2.5.1         processx_3.5.3  
-[37] fansi_1.0.3      rmarkdown_2.13   mixsqp_0.3-47    irlba_2.3.5     
-[41] callr_3.7.0      magrittr_2.0.3   whisker_0.4      ps_1.7.0        
-[45] promises_1.2.0.1 htmltools_0.5.2  ellipsis_0.3.2   httpuv_1.6.5    
-[49] utf8_1.2.2       stringi_1.7.6    truncnorm_1.0-8  SQUAREM_2021.1  
-[53] crayon_1.5.1    </code></pre>
+ [1] Rcpp_1.0.9       highr_0.9        compiler_4.2.1   pillar_1.8.1    
+ [5] bslib_0.4.0      later_1.3.0      git2r_0.30.1     jquerylib_0.1.4 
+ [9] tools_4.2.1      getPass_0.2-2    digest_0.6.29    lattice_0.20-45 
+[13] jsonlite_1.8.2   evaluate_0.17    tibble_3.1.8     lifecycle_1.0.3 
+[17] pkgconfig_2.0.3  rlang_1.0.6      Matrix_1.5-1     cli_3.4.1       
+[21] rstudioapi_0.14  yaml_2.3.5       xfun_0.33        fastmap_1.1.0   
+[25] invgamma_1.1     httr_1.4.4       stringr_1.4.1    knitr_1.40      
+[29] fs_1.5.2         vctrs_0.4.2      sass_0.4.2       grid_4.2.1      
+[33] rprojroot_2.0.3  glue_1.6.2       R6_2.5.1         processx_3.7.0  
+[37] fansi_1.0.3      rmarkdown_2.17   mixsqp_0.3-43    irlba_2.3.5.1   
+[41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
+[45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.6     utf8_1.2.2      
+[49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
 </div>
 </div>
 
