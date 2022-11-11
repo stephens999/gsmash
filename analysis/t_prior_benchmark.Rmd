@@ -9,6 +9,10 @@ editor_options:
 
 ## Introduction
 
+Generated $n=1000$ observations from \[y_i\sim Poisson(\lambda_i),\lambda_i\sim g(\cdot).\]
+
+Look at MSE of $\hat\lambda$ and estimate of $\log\lambda$.
+
 ```{r}
 library(vebpm)
 library(ggplot2)
