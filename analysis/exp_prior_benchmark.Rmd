@@ -9,6 +9,10 @@ editor_options:
 
 ## Introduction
 
+Generated $n=1000$ observations from \[y_i\sim Poisson(\lambda_i),\lambda_i\sim g(\cdot).\]
+
+Look at MSE of $\hat\lambda$ and estimate of $\log\lambda$.
+
 ```{r}
 library(vebpm)
 library(ggplot2)
@@ -20,11 +24,11 @@ source('code/poisson_mean/simulation_summary.R')
 ## $\lambda_j \sim \Exp(1)$
 
 ```{r}
-out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior50_n_1000_mean_1.rds')
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior31_n_1000_mean_1.rds')
 ```
 
 ```{r}
-get_summary_mean(out)
+get_summary_mean(out,rm_method = 'ash_pois_log')
 get_summary_mean_log(out,rm_method = 'ash_pois_log')
 ```
 
@@ -32,21 +36,78 @@ get_summary_mean_log(out,rm_method = 'ash_pois_log')
 ## $\lambda_j \sim \Exp(0.5)$
 
 ```{r}
-out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior50_n_1000_mean_2.rds')
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior31_n_1000_mean_2.rds')
 ```
 
 ```{r}
-get_summary_mean(out)
+get_summary_mean(out,rm_method = 'ash_pois_log')
 get_summary_mean_log(out,rm_method = 'ash_pois_log')
 ```
 
 ## $\lambda_j \sim \Exp(0.1)$
 
 ```{r}
-out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior50_n_1000_mean_10.rds')
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior31_n_1000_mean_10.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = 'ash_pois_log')
+get_summary_mean_log(out,rm_method = 'ash_pois_log')
+```
+
+remove nb-lb
+
+```{r}
+get_summary_mean(out,rm_method = c('nb_lb','ash_pois_log'))
+```
+
+## $\lambda_j \sim \Exp(0.01)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior31_n_1000_mean_100.rds')
 ```
 
 ```{r}
 get_summary_mean(out)
 get_summary_mean_log(out)
 ```
+
+
+```{r}
+  mse_all = c()
+  for(i in 1:length(out$output)){
+    mse_all = rbind(mse_all,out$output[[i]]$MSE_mean)
+  }
+```
+
+```{r}
+mse_all[,10]
+```
+
+
+```{r}
+x = out$sim_data$X[2,]
+plot(x,col='grey80')
+lines(out$output[[2]]$fitted_model$penalty_inversion$posterior$mean)
+
+which(x==0)
+which(out$output[[2]]$fitted_model$penalty_inversion$posterior$mean>=1000)
+```
+
+
+```{r}
+temp = pois_mean_penalized_inversion(x)
+```
+
+```{r}
+temp$posterior$mean_log[which(x==0)]
+```
+
+```{r}
+temp$fit$z[which(x==0)]
+```
+
+
+
+
+
