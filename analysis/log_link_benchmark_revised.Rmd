@@ -1,0 +1,65 @@
+---
+title: "log link benchmark revised"
+author: "DongyueXie"
+date: "2022-11-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+See [previous](log_link_benchmarking.html) for an initial benchmarking results.
+
+Fixed NB methods by reducing $r$ to 1000 or 100.
+
+Fixed inversion convergence issue by 1. add const term to objective; 2. reduce the reltol
+
+Fixed log1pexp so it can deal with large value.
+
+Fixed VGA_optimize so that it does not give "LBFGSB needs finite fn value" warning, by skipping it.
+
+Generated $n=1000$ observations from \[y_i\sim Poisson(\exp(\mu_i),\mu_i\sim g(\cdot).\]
+
+Look at MSE of $\hat\mu$ and estimate of $\exp\mu$.
+
+```{r}
+library(vebpm)
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+## $\mu_j \sim \pi_0\delta_0 + \pi_1N(0,2)$.
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link31_n_1000_priormean_0_priorvar1_2.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('ash_pois_log', 'GMGM_pointmass'))
+get_summary_mean_log(out,rm_method = c('ash_pois_log', 'GMGM_pointmass'))
+```
+
+
+## $\mu_j \sim \pi_0\delta_3 + \pi_1N(3,2)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link31_n_1000_priormean_3_priorvar1_2.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('ash_pois_log', 'GMGM_pointmass'))
+get_summary_mean_log(out,rm_method = c('ash_pois_log', 'GMGM_pointmass'))
+```
+
+## $\mu_j \sim \pi_0\delta_5 + \pi_1N(5,2)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link31_n_1000_priormean_5_priorvar1_2.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('ash_pois_log', 'GMGM_pointmass'))
+get_summary_mean_log(out,rm_method = c('ash_pois_log', 'GMGM_pointmass'))
+```
