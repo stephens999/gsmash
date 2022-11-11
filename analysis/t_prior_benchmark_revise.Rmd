@@ -1,0 +1,90 @@
+---
+title: "t prior benchmark revised"
+author: "DongyueXie"
+date: "2022-11-10"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(vebpm)
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+Generated $n=1000$ observations from \[y_i\sim Poisson(\lambda_i),\lambda_i\sim g(\cdot).\]
+
+Look at MSE of $\hat\lambda$ and estimate of $\log\lambda$.
+
+See [here](t_prior_benchmark.html) for full results. 
+
+Note that nb_lb and nb_pg are equivalent and I set r=1000 for the former and r=100 for the latter for comparisons.
+
+## $\lambda_j \sim \pi_0\delta_1 + \pi_1(2+|t_3|)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior31_n_1000_df_3_delta_1.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('ash_pois_log',"ebpm_exp_mixture",'GMGM_pointmass'))
+get_summary_mean_log(out,rm_method = c('ash_pois_log',"ebpm_exp_mixture",'GMGM_pointmass'))
+```
+
+## $\lambda_j \sim \pi_0\delta_2 + \pi_1(4+|t_3|)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior31_n_1000_df_3_delta_2.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('ash_pois_log',"ebpm_exp_mixture",'GMGM_pointmass'))
+get_summary_mean_log(out,rm_method = c('ash_pois_log',"ebpm_exp_mixture",'GMGM_pointmass'))
+```
+
+## $\lambda_j \sim \pi_0\delta_5 + \pi_1(10+|t_3|)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/t_prior31_n_1000_df_3_delta_5.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('ash_pois_log',"ebpm_exp_mixture",'GMGM_pointmass'))
+get_summary_mean_log(out,rm_method = c('ash_pois_log',"ebpm_exp_mixture",'GMGM_pointmass'))
+```
+
+```{r}
+  mse_all = c()
+  for(i in 1:length(out$output)){
+    mse_all = rbind(mse_all,out$output[[i]]$MSE_mean)
+  }
+```
+
+```{r}
+mse_all[,10]
+```
+
+```{r}
+x = out$sim_data$X[1,]
+plot(x,col='grey80')
+lines(out$output[[1]]$fitted_model$penalty_inversion$posterior$mean)
+```
+
+
+```{r}
+which(x==0)
+which(out$output[[1]]$fitted_model$penalty_inversion$posterior$mean>=30)
+```
+
+So those extreme large estimates correspond to $x=0$.
+
+
+
+
+
+
+
