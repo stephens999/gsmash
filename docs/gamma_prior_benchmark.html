@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-11-09
+<strong>Last updated:</strong> 2022-11-11
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef1690094c30a316a0614d0e15ff8bb398ac32897targetblankf169009a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree58f4b28575c6d486e96ab5ccaa47faca52df1c12targetblank58f4b28a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/f1690094c30a316a0614d0e15ff8bb398ac32897" target="_blank">f169009</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/58f4b28575c6d486e96ab5ccaa47faca52df1c12" target="_blank">58f4b28</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreef1690094c30a316a0614d0e15ff8bb398ac32897targetblankf169009a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree58f4b28575c6d486e96ab5ccaa47faca52df1c12targetblank58f4b28a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/f1690094c30a316a0614d0e15ff8bb398ac32897" target="_blank">f169009</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/58f4b28575c6d486e96ab5ccaa47faca52df1c12" target="_blank">58f4b28</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -559,13 +559,14 @@ Ignored files:
     Ignored:    data/poisson_mean_simulation/
 
 Untracked files:
-    Untracked:  code/poisson_mean/simulation_summary.R
+    Untracked:  analysis/poisson_mean_penalized_fail.Rmd
     Untracked:  output/poisson_mean_simulation/
     Untracked:  output/poisson_smooth_simulation/
 
 Unstaged changes:
-    Modified:   code/poisson_mean/neg_binom_mean_lower_bound.R
-    Modified:   code/poisson_smooth/simulation_study_run_smooth.R
+    Modified:   analysis/exp_prior_benchmark.Rmd
+    Modified:   code/normal_mean_model_utils.R
+    Modified:   code/poisson_mean/simulation_summary.R
 
 </code></pre>
 <p>
@@ -616,6 +617,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/58f4b28575c6d486e96ab5ccaa47faca52df1c12/analysis/gamma_prior_benchmark.Rmd" target="_blank">58f4b28</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-11
+</td>
+<td>
+wflow_publish("analysis/gamma_prior_benchmark.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/447417a7aa1133dbbbdc09670e6616aa3a9770b1/docs/gamma_prior_benchmark.html" target="_blank">447417a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/f1690094c30a316a0614d0e15ff8bb398ac32897/analysis/gamma_prior_benchmark.Rmd" target="_blank">f169009</a>
 </td>
 <td>
@@ -638,6 +673,11 @@ wflow_publish(c("analysis/log_link_benchmarking.Rmd",
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
+<p>Generated <span class="math inline">\(n=1000\)</span> observations
+from <span class="math display">\[y_i\sim
+Poisson(\lambda_i),\lambda_i\sim g(\cdot).\]</span></p>
+<p>Look at MSE of <span class="math inline">\(\hat\lambda\)</span> and
+estimate of <span class="math inline">\(\log\lambda\)</span>.</p>
 <pre class="r"><code>library(vebpm)
 library(ggplot2)
 library(tidyverse)</code></pre>
@@ -654,96 +694,280 @@ library(tidyverse)</code></pre>
 <div id="lambda_j-sim-pi_0gamma22-pi_1gamma102" class="section level2">
 <h2><span class="math inline">\(\lambda_j \sim \pi_0\Gamma(2,2) +
 \pi_1\Gamma(10,2)\)</span></h2>
-<pre class="r"><code>out = readRDS(&#39;output/poisson_mean_simulation/poisson_mean/gamma_prior50_n_1000_mean1_mean5.rds&#39;)</code></pre>
-<pre class="r"><code>get_summary_mean(out)</code></pre>
+<pre class="r"><code>out = readRDS(&#39;output/poisson_mean_simulation/poisson_mean/gamma_prior31_n_1000_mean1_mean5.rds&#39;)</code></pre>
+<pre class="r"><code>get_summary_mean(out,rm_method = &#39;GMG&#39;)</code></pre>
 <pre><code>
 
 |                  |  mean|    sd|
 |:-----------------|-----:|-----:|
-|ash_pois_identity | 1.169| 0.104|
-|ebpm_gamma        | 1.195| 0.102|
-|ebpm_exp_mixture  | 1.214| 0.107|
-|GG                | 1.259| 0.115|
-|GMGM              | 1.261| 0.114|
-|penalty_inversion | 1.261| 0.113|
-|split             | 1.261| 0.116|
-|split_mixture     | 1.262| 0.115|
-|penalty_compound  | 1.268| 0.112|
-|log1exp           | 1.482| 0.132|
-|ash_pois_log      | 1.904| 0.225|
-|GMGM_pointmass    | 1.992| 0.177|
-|GMG               | 2.208| 0.196|
-|nb_lb             | 2.840| 0.442|
-|nb_pg             | 2.842| 0.442|</code></pre>
-<pre><code>Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
+|ash_pois_identity | 1.165| 0.099|
+|ebpm_gamma        | 1.189| 0.099|
+|ebpm_exp_mixture  | 1.210| 0.106|
+|GG                | 1.257| 0.115|
+|split             | 1.257| 0.115|
+|penalty_inversion | 1.259| 0.114|
+|penalty_compound  | 1.268| 0.109|
+|GMGM              | 1.277| 0.119|
+|split_mixture     | 1.277| 0.119|
+|log1exp           | 1.471| 0.129|
+|ash_pois_log      | 1.884| 0.227|
+|GMGM_pointmass    | 2.043| 0.182|
+|nb_pg             | 3.387| 0.269|
+|nb_lb             | 3.387| 0.269|</code></pre>
 <p><img src="figure/gamma_prior_benchmark.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>get_summary_mean_log(out,rm_method = &#39;ash_pois_log&#39;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/447417a7aa1133dbbbdc09670e6616aa3a9770b1/docs/figure/gamma_prior_benchmark.Rmd/unnamed-chunk-3-1.png" target="_blank">447417a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>get_summary_mean_log(out,rm_method = &#39;GMG&#39;)</code></pre>
 <pre><code>
 
 |                  |  mean|    sd|
 |:-----------------|-----:|-----:|
-|GG                | 0.495| 0.024|
-|GMGM              | 0.496| 0.025|
-|split             | 0.497| 0.023|
-|split_mixture     | 0.497| 0.024|
-|penalty_inversion | 0.500| 0.027|
-|penalty_compound  | 0.506| 0.039|
-|ash_pois_identity | 0.538| 0.024|
-|ebpm_exp_mixture  | 0.552| 0.034|
-|ebpm_gamma        | 0.568| 0.051|
-|log1exp           | 0.705| 0.039|
-|GMGM_pointmass    | 0.841| 0.052|
-|nb_pg             | 1.130| 0.143|
-|nb_lb             | 1.130| 0.143|
-|GMG               | 1.159| 0.073|</code></pre>
-<pre><code>Warning: Removed 3 rows containing non-finite values (stat_boxplot).</code></pre>
+|GG                | 0.492| 0.026|
+|split             | 0.492| 0.026|
+|penalty_inversion | 0.493| 0.028|
+|split_mixture     | 0.498| 0.027|
+|GMGM              | 0.498| 0.027|
+|penalty_compound  | 0.501| 0.040|
+|ash_pois_identity | 0.537| 0.026|
+|ebpm_exp_mixture  | 0.546| 0.032|
+|ebpm_gamma        | 0.561| 0.048|
+|log1exp           | 0.701| 0.041|
+|GMGM_pointmass    | 0.821| 0.057|
+|nb_pg             | 1.300| 0.061|
+|nb_lb             | 1.300| 0.061|
+|ash_pois_log      | 8.126| 0.363|</code></pre>
 <p><img src="figure/gamma_prior_benchmark.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/447417a7aa1133dbbbdc09670e6616aa3a9770b1/docs/figure/gamma_prior_benchmark.Rmd/unnamed-chunk-3-2.png" target="_blank">447417a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="lambda_j-sim-pi_0gamma102-pi_1gamma302" class="section level2">
 <h2><span class="math inline">\(\lambda_j \sim \pi_0\Gamma(10,2) +
 \pi_1\Gamma(30,2)\)</span></h2>
-<pre class="r"><code>out = readRDS(&#39;output/poisson_mean_simulation/poisson_mean/gamma_prior50_n_1000_mean5_mean15.rds&#39;)</code></pre>
-<pre class="r"><code>get_summary_mean(out)</code></pre>
+<pre class="r"><code>out = readRDS(&#39;output/poisson_mean_simulation/poisson_mean/gamma_prior31_n_1000_mean5_mean15.rds&#39;)</code></pre>
+<pre class="r"><code>get_summary_mean(out,rm_method = c(&#39;nb_lb&#39;,&#39;GMG&#39;))</code></pre>
 <pre><code>
 
 |                  |  mean|    sd|
 |:-----------------|-----:|-----:|
-|ash_pois_identity | 4.541| 0.374|
-|ash_pois_log      | 4.648| 0.363|
-|GMGM              | 5.033| 0.378|
-|split_mixture     | 5.034| 0.378|
-|GG                | 5.047| 0.373|
-|split             | 5.047| 0.373|
-|penalty_compound  | 5.049| 0.374|
-|penalty_inversion | 5.123| 0.388|
-|ebpm_gamma        | 5.149| 0.363|
-|ebpm_exp_mixture  | 5.593| 0.376|
-|log1exp           | 5.899| 0.609|
-|nb_lb             | 6.476| 0.625|
-|nb_pg             | 6.477| 0.625|
-|GMGM_pointmass    | 6.540| 0.519|
-|GMG               | 8.770| 0.741|</code></pre>
+|ash_pois_identity | 4.468| 0.356|
+|ash_pois_log      | 4.578| 0.350|
+|penalty_inversion | 4.963| 0.366|
+|GG                | 4.965| 0.362|
+|split             | 4.965| 0.362|
+|penalty_compound  | 4.966| 0.364|
+|split_mixture     | 4.984| 0.380|
+|GMGM              | 4.985| 0.380|
+|ebpm_gamma        | 5.070| 0.351|
+|ebpm_exp_mixture  | 5.511| 0.366|
+|log1exp           | 5.827| 0.611|
+|GMGM_pointmass    | 6.497| 0.526|
+|nb_pg             | 8.114| 0.769|</code></pre>
 <p><img src="figure/gamma_prior_benchmark.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>get_summary_mean_log(out,rm_method = &#39;ash_pois_log&#39;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/447417a7aa1133dbbbdc09670e6616aa3a9770b1/docs/figure/gamma_prior_benchmark.Rmd/unnamed-chunk-5-1.png" target="_blank">447417a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>get_summary_mean_log(out,rm_method = c(&#39;log1exp&#39;,&#39;GMG&#39;))</code></pre>
 <pre><code>
 
 |                  |  mean|    sd|
 |:-----------------|-----:|-----:|
+|ash_pois_log      | 0.093| 0.005|
 |ash_pois_identity | 0.094| 0.006|
+|GG                | 0.095| 0.005|
+|split             | 0.095| 0.005|
+|penalty_compound  | 0.096| 0.005|
+|penalty_inversion | 0.096| 0.005|
 |GMGM              | 0.096| 0.005|
 |split_mixture     | 0.096| 0.005|
-|GG                | 0.096| 0.005|
-|split             | 0.096| 0.005|
-|penalty_compound  | 0.097| 0.005|
-|penalty_inversion | 0.106| 0.011|
-|ebpm_gamma        | 0.111| 0.006|
-|GMGM_pointmass    | 0.120| 0.008|
-|nb_lb             | 0.128| 0.011|
-|nb_pg             | 0.128| 0.011|
-|GMG               | 0.196| 0.012|
-|ebpm_exp_mixture  | 0.228| 0.017|
-|log1exp           | 0.286| 0.047|</code></pre>
+|ebpm_gamma        | 0.109| 0.006|
+|GMGM_pointmass    | 0.120| 0.007|
+|nb_pg             | 0.160| 0.011|
+|ebpm_exp_mixture  | 0.226| 0.016|
+|nb_lb             | 0.320| 0.013|</code></pre>
 <p><img src="figure/gamma_prior_benchmark.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/447417a7aa1133dbbbdc09670e6616aa3a9770b1/docs/figure/gamma_prior_benchmark.Rmd/unnamed-chunk-5-2.png" target="_blank">447417a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="lambda_j-sim-pi_0delta_0.1-pi_1delta_10"
+class="section level2">
+<h2><span class="math inline">\(\lambda_j \sim \pi_0\delta_{0.1} +
+\pi_1\delta_{10}\)</span></h2>
+<pre class="r"><code>out = readRDS(&#39;output/poisson_mean_simulation/poisson_mean/gamma_prior31_n_1000_mean01_mean10.rds&#39;)</code></pre>
+<pre class="r"><code>get_summary_mean(out,rm_method = c(&#39;nb_lb&#39;,&#39;GMG&#39;))</code></pre>
+<pre><code>
+
+|                  |  mean|    sd|
+|:-----------------|-----:|-----:|
+|ash_pois_identity | 0.963| 0.195|
+|ebpm_exp_mixture  | 1.635| 0.183|
+|log1exp           | 1.662| 0.193|
+|ebpm_gamma        | 1.937| 0.213|
+|ash_pois_log      | 1.989| 0.334|
+|split             | 2.074| 0.228|
+|GG                | 2.074| 0.228|
+|GMGM              | 2.145| 0.223|
+|split_mixture     | 2.145| 0.223|
+|GMGM_pointmass    | 2.146| 0.229|
+|penalty_compound  | 2.175| 0.247|
+|penalty_inversion | 2.267| 0.253|
+|nb_pg             | 2.849| 0.423|</code></pre>
+<p><img src="figure/gamma_prior_benchmark.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>get_summary_mean_log(out,rm_method = c(&#39;nb_lb&#39;,&#39;log1exp&#39;,&#39;GMG&#39;,&#39;ebpm_gamma&#39;))</code></pre>
+<pre><code>
+
+|                  |  mean|    sd|
+|:-----------------|-----:|-----:|
+|ash_pois_identity | 0.270| 0.035|
+|penalty_compound  | 0.345| 0.166|
+|split_mixture     | 0.368| 0.055|
+|GMGM              | 0.368| 0.055|
+|penalty_inversion | 0.725| 0.154|
+|nb_pg             | 0.775| 0.206|
+|split             | 0.910| 0.170|
+|GG                | 0.910| 0.170|
+|GMGM_pointmass    | 0.992| 0.080|
+|ebpm_exp_mixture  | 1.072| 0.121|
+|ash_pois_log      | 3.966| 0.093|</code></pre>
+<p><img src="figure/gamma_prior_benchmark.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -773,7 +997,7 @@ attached base packages:
 other attached packages:
  [1] forcats_0.5.2   stringr_1.4.1   dplyr_1.0.10    purrr_0.3.5    
  [5] readr_2.1.3     tidyr_1.2.1     tibble_3.1.8    tidyverse_1.3.2
- [9] ggplot2_3.3.6   vebpm_0.1.6     workflowr_1.7.0
+ [9] ggplot2_3.3.6   vebpm_0.1.8     workflowr_1.7.0
 
 loaded via a namespace (and not attached):
  [1] matrixStats_0.62.0  fs_1.5.2            lubridate_1.9.0    
