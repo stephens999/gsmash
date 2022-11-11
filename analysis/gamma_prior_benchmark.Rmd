@@ -9,6 +9,10 @@ editor_options:
 
 ## Introduction
 
+Generated $n=1000$ observations from \[y_i\sim Poisson(\lambda_i),\lambda_i\sim g(\cdot).\]
+
+Look at MSE of $\hat\lambda$ and estimate of $\log\lambda$.
+
 ```{r}
 library(vebpm)
 library(ggplot2)
@@ -20,21 +24,32 @@ source('code/poisson_mean/simulation_summary.R')
 ## $\lambda_j \sim \pi_0\Gamma(2,2) + \pi_1\Gamma(10,2)$
 
 ```{r}
-out = readRDS('output/poisson_mean_simulation/poisson_mean/gamma_prior50_n_1000_mean1_mean5.rds')
+out = readRDS('output/poisson_mean_simulation/poisson_mean/gamma_prior31_n_1000_mean1_mean5.rds')
 ```
 
 ```{r}
-get_summary_mean(out)
-get_summary_mean_log(out,rm_method = 'ash_pois_log')
+get_summary_mean(out,rm_method = 'GMG')
+get_summary_mean_log(out,rm_method = 'GMG')
 ```
 
 ## $\lambda_j \sim \pi_0\Gamma(10,2) + \pi_1\Gamma(30,2)$
 
 ```{r}
-out = readRDS('output/poisson_mean_simulation/poisson_mean/gamma_prior50_n_1000_mean5_mean15.rds')
+out = readRDS('output/poisson_mean_simulation/poisson_mean/gamma_prior31_n_1000_mean5_mean15.rds')
 ```
 
 ```{r}
-get_summary_mean(out)
-get_summary_mean_log(out,rm_method = 'ash_pois_log')
+get_summary_mean(out,rm_method = c('nb_lb','GMG'))
+get_summary_mean_log(out,rm_method = c('log1exp','GMG'))
+```
+
+## $\lambda_j \sim \pi_0\delta_{0.1} + \pi_1\delta_{10}$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/gamma_prior31_n_1000_mean01_mean10.rds')
+```
+
+```{r}
+get_summary_mean(out,rm_method = c('nb_lb','GMG'))
+get_summary_mean_log(out,rm_method = c('nb_lb','log1exp','GMG','ebpm_gamma'))
 ```
