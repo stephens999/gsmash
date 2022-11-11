@@ -25,73 +25,227 @@ $s^2 = e^{-\theta}$
 
 ```{r}
 source('code/normal_mean_model_utils.R')
-pois_penalty = function(theta,w,grid){
-  z_range = range(theta) + c(-10,10)
+# revised one allow more extreme observations
+pois_penalty = function(theta,w,mu,grid){
+  z_range = range(theta) + c(-100,100)
   s = sqrt(exp(-theta))
-  z = S_inv(theta,s,w,grid,z_range)
-  return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  data = ashr::set_data(z,s)
+  g = normalmix(pi=w,mean=rep(mu,length(w)),sd = grid)
+  #z = vebpm:::S_inv(theta,s,w,mu,grid)
+  return(-calc_vloglik(g,data) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
 }
-plot_pois_penalty = function(theta,w,grid){
-  plot(x,pois_penalty(theta,w,grid),col='blue',lty=2,type='l',xlab='theta',ylab='penalty',
+# pois_penalty = function(theta,w,mu,grid){
+#   z_range = range(theta) + c(-100,100)
+#   s = sqrt(exp(-theta))
+#   z = S_inv(theta,s,w,mu,grid,z_range)
+#   #z = vebpm:::S_inv(theta,s,w,mu,grid)
+#   return(-l_nm(z,s,w,mu,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+# }
+plot_pois_penalty = function(theta,w,mu,grid){
+  plot(x,pois_penalty(theta,w,mu,grid),col='blue',lty=2,type='l',xlab='theta',ylab='penalty',
        main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
   #legend('bottomright',c(expression(rho(theta))),lty=c(2),col=c('blue'))
 }
 ```
-
+ 
+## w = c(0.9,0.1), mu = 0
+ 
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-3,5,length.out = n)
+x = seq(-10,10,length.out = n)
+mu = 0
 w = c(0.9,0.1)
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
 for(gg in grid_list){
-  plot_pois_penalty(x,w,c(0,gg))
-  abline(v=0,lty=3)
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
 }
 ```
 
+## w = c(0.9,0.1), mu = 3
+
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-3,5,length.out = n)
-s = rep(1,n)
+x = seq(-10,10,length.out = n)
+mu = 3
+w = c(0.9,0.1)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}
+```
+
+## w = c(0.5,0.5), mu = 0
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+mu = 0
 w = c(0.5,0.5)
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
 for(gg in grid_list){
-  plot_pois_penalty(x,w,c(0,gg))
-  abline(v=0,lty=3)
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
 }
 ```
 
+## w = c(0.5,0.5), mu = 3
 
-```{r}
-binom_penalty = function(theta,w,grid,bn){
-  z_range = range(theta) + c(-10,10)
-  s = sqrt((1+exp(theta))^2/bn/exp(theta))
-  z = S_inv(theta,s,w,grid,z_range)
-  return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+mu = 3
+w = c(0.5,0.5)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
 }
-plot_binom_penalty = function(theta,w,grid,bn){
-  plot(x,pois_penalty(theta,w,grid),col='blue',lty=2,type='l',xlab='theta',ylab='penalty',
-       main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
-  #legend('bottomright',c(expression(rho(theta))),lty=c(2),col=c('blue'))
+```
+
+## w = c(0.1,0.9), mu = 0
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+mu = 0
+w = c(0.1,0.9)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}
+```
+
+## w = c(0.1,0.9), mu = 3
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+mu = 3
+w = c(0.1,0.9)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}
+```
+
+## w = c(0.01,0.09), mu = 0
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-20,10,length.out = n)
+mu = 0
+w = c(0.01,0.99)
+par(mfrow=c(2,2))
+grid_list=c(10,20,50,100)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
+}
+```
+
+## w = c(0.01,0.09), mu = 3
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-20,10,length.out = n)
+mu = 3
+w = c(0.01,0.99)
+par(mfrow=c(2,2))
+grid_list=c(10,20,50,100)
+for(gg in grid_list){
+  plot_pois_penalty(x,w,mu,c(0,gg))
+  abline(v=mu,lty=3)
 }
 ```
 
 ## Binomial
 
+```{r}
+binom_penalty = function(theta,w,mu,grid,bn){
+   z_range = range(theta) + c(-100,100)
+  s = sqrt((1+exp(theta))^2/bn/exp(theta))
+  z = S_inv(theta,s,w,mu,grid,z_range)
+  data = ashr::set_data(z,s)
+  g = normalmix(pi=w,mean=rep(mu,length(w)),sd = grid)
+  #z = vebpm:::S_inv(theta,s,w,mu,grid)
+  return(-calc_vloglik(g,data) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+  
+  # z_range = range(theta) + c(-10,10)
+  # s = sqrt((1+exp(theta))^2/bn/exp(theta))
+  # z = S_inv(theta,s,w,grid,z_range)
+  # return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
+}
+plot_binom_penalty = function(theta,w,mu,grid,bn){
+  plot(x,pois_penalty(theta,w,mu,grid),col='blue',lty=2,type='l',xlab='theta',ylab='penalty',
+       main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
+  #legend('bottomright',c(expression(rho(theta))),lty=c(2),col=c('blue'))
+}
+```
+
 $s^2 = \frac{(1+e^\theta)^2}{ne^\theta}$
 
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-3,5,length.out = n)
-s = rep(1,n)
+x = seq(-10,10,length.out = n)
 w = c(0.9,0.1)
+mu = 0
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
 for(gg in grid_list){
-  plot_binom_penalty(x,w,c(0,gg),10)
-  abline(v=0,lty=3)
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
 }
 ```
 
+
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+w = c(0.9,0.1)
+mu = 3
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
+}
+```
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+w = c(0.1,0.9)
+mu = 3
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
+}
+```
+
+
+```{r,fig.height=12,fig.width=12}
+n = 101
+x = seq(-10,10,length.out = n)
+w = c(0.1,0.9)
+mu = 3
+par(mfrow=c(2,2))
+grid_list=c(5,10,20,100)
+for(gg in grid_list){
+  plot_binom_penalty(x,w,mu,c(0,gg),10)
+  abline(v=mu,lty=3)
+}
+```
