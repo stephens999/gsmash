@@ -1,0 +1,70 @@
+---
+title: "exp prior with runtime"
+author: "DongyueXie"
+date: "2022-11-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Generated $n=1000$ observations from \[y_i\sim Poisson(\lambda_i),\lambda_i\sim Exponential(rate).\]
+
+Look at MSE of $\hat\lambda$ and estimate of $\log\lambda$, and run time in seconds.
+
+```{r}
+library(vebpm)
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+## $\lambda_j \sim \Exp(1)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior32_n_1000_mean_1.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+get_summary_runtime(out)
+```
+
+
+## $\lambda_j \sim \Exp(0.5)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior32_n_1000_mean_2.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+get_summary_runtime(out)
+```
+
+## $\lambda_j \sim \Exp(0.1)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/exp_prior32_n_1000_mean_10.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+get_summary_runtime(out)
+```
+
+## $\lambda_j 0.8\delta_0 + 0.2\sim \Exp(0.1)$
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/point_exp_prior32_n_1000_mean10.rds')
+```
+
+```{r}
+get_summary_mean(out)
+#get_summary_mean_log(out)
+get_summary_runtime(out,include_log_res = FALSE)
+```
