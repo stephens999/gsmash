@@ -1,0 +1,69 @@
+---
+title: "log prior runtime"
+author: "DongyueXie"
+date: "2022-11-15"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Generated $n=1000$ observations from \[y_i\sim Poisson(\exp(\mu_i)),\mu_i\sim g(\cdot).\]
+
+Look at MSE of $\hat\mu$ and estimate of $\exp\mu$, and runtime.
+
+```{r}
+library(vebpm)
+library(ggplot2)
+library(tidyverse)
+source('code/poisson_mean/simulation_summary.R')
+```
+
+## $\mu_j \sim N(0,2)$.
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link32_n_1000_priormean_0_priorvar1_2_priorw_0.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+get_summary_runtime(out)
+```
+
+## $\mu_j \sim N(0,5)$.
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link32_n_1000_priormean_5_priorvar1_2_priorw_0.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+get_summary_runtime(out)
+```
+
+## $\mu_j \sim 0.8\delta_0 + 0.2N(0,2)$.
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link32_n_1000_priormean_0_priorvar1_2_priorw_8.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+get_summary_runtime(out)
+```
+
+## $\mu_j \sim 0.8\delta_5 + 0.2N(5,2)$.
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/log_link32_n_1000_priormean_5_priorvar1_2_priorw_8.rds')
+```
+
+```{r}
+get_summary_mean(out)
+get_summary_mean_log(out)
+get_summary_runtime(out)
+```
