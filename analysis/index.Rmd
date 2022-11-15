@@ -47,8 +47,8 @@ editor_options:
 
 With Run time Comparison:
 
-*[exp prior with runtime](exp_prior_runtime.html)
-*[log prior with runtime](log_prior_runtime.html)
+* [exp prior with runtime](exp_prior_runtime.html)
+* [log prior with runtime](log_prior_runtime.html)
 
 ## Poisson smoothing nugget 
 
