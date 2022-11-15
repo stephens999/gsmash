@@ -45,6 +45,11 @@ editor_options:
 * [gamma prior](gamma_prior_benchmark.html)
 * [t prior](t_prior_benchmark_revise.html)
 
+With Run time Comparison:
+
+*[exp prior with runtime](exp_prior_runtime.html)
+*[log prior with runtime](log_prior_runtime.html)
+
 ## Poisson smoothing nugget 
 
 * [The two step procedure for smoothing overdispersed count data](poisson_nugget_two_step.html)
