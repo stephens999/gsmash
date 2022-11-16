@@ -1,0 +1,33 @@
+---
+title: "The log term in penalty"
+author: "DongyueXie"
+date: "2022-11-10"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+
+There is a log term in the $\rho_g(\theta)$: 
+
+\[\rho_g(\theta) = -l_{NM}(T(\theta,g);g,s^2(\theta))-\frac{(\theta-T(\theta;g))^2}{2s^2(\theta)}-\frac{1}{2}\log 2\pi s^2(\theta).\]
+
+We have shown that if we include $-\frac{1}{2}\log 2\pi s^2(\theta)$ in the $\rho_g(\theta)$, then $\rho_g(\theta)$ is not really a penalty term, or at least not one that penalize the posterior mean towards prior mean. See [with](normal_mean_penalty_glm_simplified.html) and [without](remove_log_in penalty.html) the log term in the Poisson case for comparisons.
+
+Why this is the case?
+
+Because in our formulation, we took a second order Taylor series expansion of the log-likelihood around posterior mean. Then we put the quadratic term into the $\rho_g(\theta)$. So at least there's a part of $\rho_g(\theta)$ that belongs to the log-likelihood. The log term is from evaluating $KL(q||g)$ where $q(b) = g*N(z;b,s^2)/c(z)$.
+
+In normal case the log term in likelihood and the one in "penalty" cancels out so there's no such log term in the objective function.
+
+If we remove the log term from $\rho_g(\theta)$ and call the new penalty as $\tilde\rho_g(\theta)$ then the objective is 
+
+$$-l(\theta) - \frac{1}{2}\log s^2(\theta) + \tilde\rho_g(\theta).$$
+
+
+We note that $s^2(\theta)$ is the observed fisher information at $\theta$ so the new objective can be regarded as penalized (log-likelihood and log-information)?
+
+
+
