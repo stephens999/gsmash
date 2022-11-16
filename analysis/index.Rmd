@@ -22,6 +22,7 @@ editor_options:
 * [Solve normal mean problem using optimization - also estimate prior mean](normal_mean_penalized_optimization_prior_mean.html)
 * [normal mean penalty plots, when $s^2$ depends on posterior mean](normal_mean_penalty_glm_simplified.html)
 * [normal mean penalty plots, when $s^2$ depends on posterior mean, penalty exlcuding $log(2\pi s^2)/2$ ](remove_log_in penalty.html)
+* [where is the log term from in the penalty](log_term_in_penalty.html)
 
 
 ## Poisson mean 
@@ -31,7 +32,7 @@ editor_options:
 * [NB JJ lower bound](neg_binom_mean_lower_bound.html)
 * [NB PG augmentation](neg_binom_mean_polya_gamma.html)
 * [NB approxiamation to Poisson](nb_approx_poisson.html)
-* [Poisson mean $log(1+exp(\cdot))$ link](pois_mean_log1exp.html)
+* [Poisson mean $\log(1+\exp(\cdot))$ link](pois_mean_log1exp.html)
 
 ### Penalized
 
