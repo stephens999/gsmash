@@ -1,3 +1,64 @@
+get_summary_runtime = function(out,rm_method = NULL,include_log_res = TRUE){
+  runtime = c()
+  for(i in 1:length(out$output)){
+    runtime = rbind(runtime,out$output[[i]]$run_times)
+  }
+  method_names = colnames(runtime)
+  if(!is.null(rm_method)){
+    rm_idx = match(rm_method,method_names)
+    runtime = runtime[,-rm_idx]
+  }
+  runtime_mean = apply(runtime,2,median,na.rm=T)
+  runtime_sd = apply(runtime,2,sd,na.rm=T)
+  order_idx = order(runtime_mean)
+  res = cbind(runtime_mean[order_idx],runtime_sd[order_idx])
+  colnames(res) = c('median','sd')
+  print(knitr::kable(round(res,3)))
+
+
+
+  # plot runtime vs mse
+
+  mse_all = c()
+  for(i in 1:length(out$output)){
+    mse_all = rbind(mse_all,out$output[[i]]$MSE_mean)
+  }
+  method_names = colnames(mse_all)
+  if(!is.null(rm_method)){
+    rm_idx = match(rm_method,method_names)
+    mse_all = mse_all[,-rm_idx]
+    method_names = method_names[-rm_idx]
+  }
+  n_method = length(method_names)
+  mse_mle = apply((out$sim_data$X-out$sim_data$Mean)^2,1,mean)
+  mse_relative = mse_all/mse_mle
+  mse_mean = apply(mse_relative,2,mean,na.rm=T)
+  #mse_sd = apply(mse_all,2,sd,na.rm=T)
+
+  plot(runtime_mean,mse_mean,xlab='run time',ylab='mse relative to mle',pch = 1:n_method,col=1:n_method, main='mean estimation')
+  legend('topright',method_names,pch=1:n_method,col=1:n_method)
+  abline(h=1,lty=2,col='grey80')
+
+  if(include_log_res){
+    # plot runtime vs mse_log
+    mse_all = c()
+    for(i in 1:length(out$output)){
+      mse_all = rbind(mse_all,out$output[[i]]$MSE_log_mean)
+    }
+    method_names = colnames(mse_all)
+    if(!is.null(rm_method)){
+      rm_idx = match(rm_method,method_names)
+      mse_all = mse_all[,-rm_idx]
+    }
+    mse_mean = apply(mse_all,2,mean,na.rm=T)
+    mse_sd = apply(mse_all,2,sd,na.rm=T)
+    plot(runtime_mean,mse_mean,xlab='run time',ylab='mse',pch = 1:n_method,col=1:n_method, main='log mean estimation')
+    legend('topright',method_names,pch=1:n_method,col=1:n_method)
+  }
+
+
+}
+
 get_summary_elbo = function(out,rm_method = c( "nb_lb","nb_pg","ash_pois_log")){
   elbo_list = lapply(out$output,function(x){
     lapply(x$fitted_model,function(z){
