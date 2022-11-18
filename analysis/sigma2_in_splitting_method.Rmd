@@ -1,0 +1,111 @@
+---
+title: "sigma2 in splitting method"
+author: "DongyueXie"
+date: "2022-11-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In some cases when we see that [splitting and GG are very similar in terms of MSE.](exp_prior_runtime.html).
+
+```{r}
+out = readRDS('output/poisson_mean_simulation/poisson_mean/point_exp_prior32_n_1000_mean10.rds')
+```
+
+Why?
+
+```{r}
+out$output[[1]]$fitted_model$GG$fitted_g
+```
+
+```{r}
+out$output[[1]]$fitted_model$split$fitted_g
+```
+
+```{r}
+out$output[[2]]$fitted_model$GG$fitted_g
+```
+
+```{r}
+out$output[[2]]$fitted_model$split$fitted_g
+```
+
+Because the fitted priors are the same!
+
+In the splitting method  we let 
+
+$$y\sim p(\mu),\mu|b\sim N(b,\sigma^2),b\sim g(\cdot)$$
+
+There are two extreme cases: 1. if $\sigma2=0$ then this is equivalent to $\mu\sim g()$; 2. if $g(\cdot) = \delta_\beta$, then this is equivalent to $\mu\sim N(\beta,\sigma^2)$.
+
+
+
+What if we fix $sigma2$ at a small value?
+
+```{r}
+library(vebpm)
+fit = pois_mean_split(out$sim_data$X[1,],sigma2=0.01,est_sigma2 = FALSE)
+```
+
+```{r}
+fit$fitted_g
+```
+
+```{r}
+plot(out$sim_data$X[1,],col='grey80')
+lines(fit$posterior$mean)
+```
+
+```{r}
+plot(out$sim_data$Mean[1,],col='grey80')
+lines(fit$posterior$mean)
+```
+
+This is due to I initialize $\bar b$ at 0 and $\sigma^2$ is small so $\bar\mu$ would be small, unless for those 5 large values as seen in the plot.
+
+How about changing the init for $\bar b$?
+
+Let's init it at true values. But true log_mean have $-Inf$ values...
+
+```{r,warning=FALSE}
+temp = out$sim_data$log_Mean[1,]
+temp[temp==-Inf] = -10
+fit = pois_mean_split(out$sim_data$X[1,],sigma2=0.01,est_sigma2 = FALSE,b_pm_init = temp,ebnm_params = list(prior_family='normal_scale_mixture'))
+```
+
+```{r}
+fit$fitted_g
+```
+
+```{r}
+plot(out$sim_data$X[1,],col='grey80')
+lines(fit$posterior$mean)
+```
+
+```{r}
+plot(out$sim_data$Mean[1,],col='grey80')
+lines(fit$posterior$mean)
+```
+
+
+Initialize at ash output:
+```{r,warning=FALSE}
+fit = pois_mean_split(out$sim_data$X[1,],sigma2=0.01,est_sigma2 = FALSE,b_pm_init =out$output[[1]]$fitted_model$ash_pois_identity$posterior$mean_log,ebnm_params = list(prior_family='normal_scale_mixture'))
+```
+
+```{r}
+fit$fitted_g
+```
+
+```{r}
+plot(out$sim_data$X[1,],col='grey80')
+lines(fit$posterior$mean)
+```
+
+```{r}
+plot(out$sim_data$Mean[1,],col='grey80')
+lines(fit$posterior$mean)
+```
