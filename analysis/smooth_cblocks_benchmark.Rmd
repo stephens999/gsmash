@@ -1,0 +1,147 @@
+---
+title: "Smoothing Poisson clipped block function benchmark"
+author: "DongyueXie"
+date: "2022-11-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this analysis we look at the results from generating data as 
+
+$$y_i\sim Poisson(\exp(\mu_i+\epsilon_i)),\epsilon_i\sim N(0,\sigma^2).$$
+The $\mu$ is smooth and has block structures as follows:
+
+```{r}
+library(tidyverse)
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/cblocks30_n_1024_snr_1_count_size_3.rds')
+plot(out$sim_data$b,type='l',ylab='')
+```
+
+We set $n=1024$, repeat 30 times, and count size $=max(\exp(b))\in \{3,10,100\}$, and $snr = var(b)/\sigma^2\in \{1,3\}$.
+
+
+```{r}
+source('code/poisson_smooth/simulation_summary_smooth.R')
+```
+
+## count size = 3
+
+### snr = 1
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/cblocks30_n_1024_snr_1_count_size_3.rds')
+```
+
+```{r}
+get_mse_mean(out)
+get_runtime(out)
+```
+
+```{r}
+for(method in names(out$output[[1]]$mse_smooth)){
+  plot_all_curves(out,method=method)
+}
+
+```
+
+
+### snr = 3
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/cblocks30_n_1024_snr_3_count_size_3.rds')
+```
+
+```{r}
+get_mse_mean(out)
+get_runtime(out)
+```
+
+```{r}
+for(method in names(out$output[[1]]$mse_smooth)){
+  plot_all_curves(out,method=method)
+}
+
+```
+
+
+## count size = 10
+
+### snr = 1
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/cblocks30_n_1024_snr_1_count_size_10.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+get_runtime(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+```
+
+```{r}
+for(method in names(out$output[[1]]$mse_smooth)){
+  plot_all_curves(out,method=method)
+}
+
+```
+
+
+### snr = 3
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/cblocks30_n_1024_snr_3_count_size_10.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+get_runtime(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+```
+
+```{r}
+for(method in names(out$output[[1]]$mse_smooth)){
+  plot_all_curves(out,method=method)
+}
+
+```
+
+
+## count size = 100
+
+### snr = 1
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/cblocks30_n_1024_snr_1_count_size_100.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+get_runtime(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+```
+
+```{r}
+for(method in names(out$output[[1]]$mse_smooth)){
+  plot_all_curves(out,method=method)
+}
+
+```
+
+### snr = 3
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/cblocks30_n_1024_snr_3_count_size_100.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+get_runtime(out,rm_method = c('smash','vst_nug_top','vst_nug','vst_smooth'))
+```
+
+```{r}
+for(method in names(out$output[[1]]$mse_smooth)){
+  plot_all_curves(out,method=method)
+}
+
+```
+
