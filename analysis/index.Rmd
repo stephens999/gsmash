@@ -57,6 +57,14 @@ With Run time Comparison:
 
 ### Bechmarking smoothing methods
 
+Clean version:
+
+I picked up some methods that are performing better and reduce the plot size for better illustration.
+
+* [Angles](smooth_angles_benchmark_simplified.html)
+* [simple blocks](smooth_sblocks_benchmark_simplified.html)
+* [spike](smooth_spike_benchmark_simplified.html)
+
 First Run:
 
 * [heavisine](smooth_heavi_benchmark.html)
