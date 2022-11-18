@@ -55,6 +55,22 @@ With Run time Comparison:
 
 * [The two step procedure for smoothing overdispersed count data](poisson_nugget_two_step.html)
 
+### Bechmarking smoothing methods
+
+First Run:
+
+* [heavisine](smooth_heavi_benchmark.html)
+* [blocks](smooth_blocks_benchmark.html)
+
+Second Run:
+
+* [Angles](smooth_angles_benchmark.html)
+* [Bursts](smooth_bursts_benchmark.html)
+* [heavisine](smooth_heavisine_benchmark.html)
+* [simple blocks](smooth_sblocks_benchmark.html)
+* [clipped blocks](smooth_cblocks_benchmark.html)
+* [Spike](smooth_spike_benchmark.html)
+
 
 ## Binomial 
 
