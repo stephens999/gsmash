@@ -1,0 +1,299 @@
+---
+title: "Overdispersed splitting method dealing with NB data"
+author: "DongyueXie"
+date: "2022-11-21"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+# Introduction
+
+We simulate mean parameter $\lambda$ from $\pi_0\delta_0 + \pi_1Exp(0.1)$.
+
+Then generate data using a NB distribution $NB(r,p)$. Then $r(1-p)/p = \lambda$ so $p = r/(r+\lambda)$. The variance is $r(1-p)/p^2 = \lambda + \lambda^2/r$.
+
+What's the corresponding $\sigma^2$ in $Poisson(\exp(\mu+\sigma^2))$?
+
+Since $\exp(\mu+\sigma2/2)=\lambda$, we have $\mu = \log\lambda - \sigma^2/2$. Then by matching the variance of NB and the Poisson model, we solve $(\exp(\sigma^2)-1)\exp(2\mu+\sigma^2) = \lambda^2/r$ and we have $\sigma^2 = \log(1+1/r)$. The smaller the $r$, the larger oversidpersion.
+
+```{r}
+library(vebpm)
+```
+
+## r = 10
+
+### first run
+
+```{r}
+set.seed(12345)
+n = 3000
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+r = 10
+y = rnbinom(n,r,mu  = lambda)
+```
+
+```{r}
+sigma2 = log(1+1/r)
+sigma2
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### second run
+
+```{r}
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### third run
+
+```{r}
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+
+## r = 5
+
+### first run
+
+```{r}
+set.seed(12345)
+n = 3000
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+r = 5
+y = rnbinom(n,r,mu  = lambda)
+```
+
+```{r}
+sigma2 = log(1+1/r)
+sigma2
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### second run
+
+```{r}
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### third run
+
+```{r}
+
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+## r = 50
+
+### first run
+
+```{r}
+set.seed(12345)
+n = 3000
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+r = 50
+y = rnbinom(n,r,mu  = lambda)
+```
+
+```{r}
+sigma2 = log(1+1/r)
+sigma2
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### second run
+
+```{r}
+
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### third run
+
+```{r}
+
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+## r = 500
+
+### first run
+
+```{r}
+set.seed(12345)
+n = 3000
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+r = 500
+y = rnbinom(n,r,mu  = lambda)
+```
+
+```{r}
+sigma2 = log(1+1/r)
+sigma2
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### second run
+
+```{r}
+
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
+
+
+### third run
+
+```{r}
+
+lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
+
+y = rnbinom(n,r,mu  = lambda)
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(lambda,col='grey80')
+lines(fit$posterior$mean)
+
+fit$fitted_g
+```
