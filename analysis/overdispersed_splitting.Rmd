@@ -1,0 +1,237 @@
+---
+title: "Overdispersed splitting method"
+author: "DongyueXie"
+date: "2022-11-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+# Generate data from Splitting model
+
+We simulate data from the following model,
+
+$$y_i\sim Poisson(\exp(\mu_i)),\mu_i|b_i\sim N(b_i,\sigma^2), b_i\sim \pi_0\delta_0 + \pi_1\ N(0,2).$$
+And Run splitting method with fixed and known $\sigma^2$.
+
+```{r}
+library(vebpm)
+```
+
+## $\sigma^2 = 0.1$
+
+### first run
+
+```{r}
+set.seed(12345)
+n = 3000
+prior_mean = 0
+b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
+sigma2 = 0.1
+mu = rnorm(n,b,sigma2)
+y = rpois(n,exp(mu))
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+estimate $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+### second run
+
+```{r}
+n = 3000
+prior_mean = 0
+b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
+sigma2 = 0.1
+mu = rnorm(n,b,sigma2)
+y = rpois(n,exp(mu))
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+estimate $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+
+### third run
+
+```{r}
+n = 3000
+prior_mean = 0
+b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
+sigma2 = 0.1
+mu = rnorm(n,b,sigma2)
+y = rpois(n,exp(mu))
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+estimate $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+
+## $\sigma^2 = 0.5$
+
+### first run
+
+```{r}
+set.seed(12345)
+n = 3000
+prior_mean = 0
+b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
+sigma2 = 0.5
+mu = rnorm(n,b,sigma2)
+y = rpois(n,exp(mu))
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+estimate $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+
+### second run
+
+```{r}
+n = 3000
+prior_mean = 0
+b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
+sigma2 = 0.5
+mu = rnorm(n,b,sigma2)
+y = rpois(n,exp(mu))
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+estimate $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+
+### third run
+
+```{r}
+n = 3000
+prior_mean = 0
+b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
+sigma2 = 0.5
+mu = rnorm(n,b,sigma2)
+y = rpois(n,exp(mu))
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+estimate $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+
+### set prior mean to 5
+
+```{r}
+set.seed(12345)
+n = 3000
+prior_mean = 5
+b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
+sigma2 = 0.5
+mu = rnorm(n,b,sigma2)
+y = rpois(n,exp(mu))
+```
+
+fix $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+estimate $\sigma2$
+
+```{r}
+fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
+fit$elbo
+plot(b,col='grey80')
+lines(fit$posterior$mean_b)
+```
+
+
+
