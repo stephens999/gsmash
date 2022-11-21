@@ -51,6 +51,11 @@ With Run time Comparison:
 * [exp prior with runtime](exp_prior_runtime.html)
 * [log prior with runtime](log_prior_runtime.html)
 
+### Overdispersed model
+
+* [generate data from splitting model](overdispersed_splitting.html)
+* [generate data from negative binomial model](overdispersed_splitting_nb.html)
+
 ## Poisson smoothing 
 
 * [The two step procedure for smoothing overdispersed count data](poisson_nugget_two_step.html)
