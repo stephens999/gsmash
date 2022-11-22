@@ -84,6 +84,11 @@ Second Run:
 * [clipped blocks](smooth_cblocks_benchmark.html)
 * [Spike](smooth_spike_benchmark.html)
 
+### Details
+
+* [low count smooth ndwt](splitting_method_low_count_smoothing.html)
+
+
 
 ## Binomial 
 
