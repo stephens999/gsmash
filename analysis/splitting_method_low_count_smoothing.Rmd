@@ -1,0 +1,55 @@
+---
+title: "splitting method in low count smoothing"
+author: "DongyueXie"
+date: "2022-11-21"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Update: Some observations. 
+
+When fixing $\sigma^2$ at truth, dwt can find the highest peak and second highest peak, when initializing at true $\mu$. But ndwt always over-smooth the curve to constant. Maybe ndwt has a stronger smooth effect than dwt? One resaon is that the ndwt curve is always below the points so the points are always shunk towards smaller values.
+
+
+
+
+
+It seems that the splitting method may over-smooth the low count sequence.
+
+We load the results from Spike function with small count size.
+
+```{r}
+library(smashrgen)
+out = readRDS('output/poisson_smooth_simulation/poisson_smooth/spike30_n_1024_snr_1_count_size_3.rds')
+```
+
+We start with fixing the nugget effect at truth.
+
+We initialize the $\bar\mu$ at the true $\mu$.
+
+```{r,warning=F}
+i = 4
+x = out$sim_data$X[i,]
+fit = pois_smooth_split(x,wave_trans = 'dwt',sigma2_init = out$sim_data$sigma2,est_sigma2 = F,Emu_init = log(out$sim_data$latentX[i,]),maxiter = 10,plot_updates = T)
+plot(x,col='grey80')
+lines(exp(out$sim_data$b),col='grey80')
+lines(fit$posterior$mean_smooth)
+```
+
+```{r,warning=F}
+i = 4
+x = out$sim_data$X[i,]
+fit = pois_smooth_split(x,wave_trans = 'ndwt',sigma2_init = out$sim_data$sigma2,est_sigma2 = F,Emu_init = log(out$sim_data$latentX[i,]),maxiter = 10,plot_updates = T)
+plot(x,col='grey80')
+lines(exp(out$sim_data$b),col='grey80')
+lines(fit$posterior$mean_smooth)
+```
+
+
+
+
+
+
