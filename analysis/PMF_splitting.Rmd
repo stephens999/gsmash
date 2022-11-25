@@ -1,0 +1,49 @@
+---
+title: "Poisson Matrix Factorization splitting approach example"
+author: "DongyueXie"
+date: "2022-11-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Fitted Model is 
+
+\[y_{ij}\sim Poisson(s_{ij}\exp(\sum_{k=1}^Kl_{ik}f_{kj})),\]
+
+where $s_{ij}=l_{0i}f_{0j}$ is the background frequency.
+
+```{r}
+source('code/poisson_STM/splitting_PMF.R')
+```
+
+```{r}
+set.seed(12345)
+N = 100
+p = 50
+K = 2
+Ftrue = matrix(0,nrow=p,ncol=K)
+Ftrue[1:20,1] = 1
+Ftrue[21:40,2] = 1
+Ltrue = matrix(rnorm(N*K), ncol=K)
+
+l0 = runif(N,1,2)
+f0 = runif(p,1,2)
+S0 = tcrossprod(l0,f0)
+
+Lambda = S0*exp(tcrossprod(Ltrue,Ftrue))
+
+Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
+
+fit = splitting_PMF(Y,S0)
+plot(fit$obj,type='l',ylab = 'ELBO')
+fit$fit_flash$nfactors
+
+plot(fit$fit_flash$fitted_values,tcrossprod(Ltrue,Ftrue),xlab='fitted',ylab='true',col='grey80')
+abline(a=0,b=1)
+
+plot(fit$fit_flash$ldf$f[,1])
+plot(fit$fit_flash$ldf$f[,2])
+```
