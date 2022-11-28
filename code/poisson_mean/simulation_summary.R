@@ -1,4 +1,4 @@
-get_summary_runtime = function(out,rm_method = NULL,include_log_res = TRUE){
+get_summary_runtime = function(out,rm_method = NULL,include_log_res = TRUE,log_runtime = TRUE){
   runtime = c()
   for(i in 1:length(out$output)){
     runtime = rbind(runtime,out$output[[i]]$run_times)
@@ -35,9 +35,16 @@ get_summary_runtime = function(out,rm_method = NULL,include_log_res = TRUE){
   mse_mean = apply(mse_relative,2,mean,na.rm=T)
   #mse_sd = apply(mse_all,2,sd,na.rm=T)
 
-  plot(runtime_mean,mse_mean,xlab='run time',ylab='mse relative to mle',pch = 1:n_method,col=1:n_method, main='mean estimation')
-  legend('topright',method_names,pch=1:n_method,col=1:n_method)
-  abline(h=1,lty=2,col='grey80')
+  if(log_runtime){
+    plot(log2(runtime_mean),mse_mean,xlab='run time(log2)',ylab='mse relative to mle',pch = 1:n_method,col=1:n_method, main='mean estimation')
+    legend('topright',method_names,pch=1:n_method,col=1:n_method)
+    abline(h=1,lty=2,col='grey80')
+  }else{
+    plot(runtime_mean,mse_mean,xlab='run time',ylab='mse relative to mle',pch = 1:n_method,col=1:n_method, main='mean estimation')
+    legend('topright',method_names,pch=1:n_method,col=1:n_method)
+    abline(h=1,lty=2,col='grey80')
+  }
+
 
   if(include_log_res){
     # plot runtime vs mse_log
@@ -52,8 +59,14 @@ get_summary_runtime = function(out,rm_method = NULL,include_log_res = TRUE){
     }
     mse_mean = apply(mse_all,2,mean,na.rm=T)
     mse_sd = apply(mse_all,2,sd,na.rm=T)
-    plot(runtime_mean,mse_mean,xlab='run time',ylab='mse',pch = 1:n_method,col=1:n_method, main='log mean estimation')
-    legend('topright',method_names,pch=1:n_method,col=1:n_method)
+    if(log_runtime){
+      plot(log2(runtime_mean),mse_mean,xlab='run time(log2)',ylab='mse',pch = 1:n_method,col=1:n_method, main='log mean estimation')
+      legend('topright',method_names,pch=1:n_method,col=1:n_method)
+    }else{
+      plot(runtime_mean,mse_mean,xlab='run time',ylab='mse',pch = 1:n_method,col=1:n_method, main='log mean estimation')
+      legend('topright',method_names,pch=1:n_method,col=1:n_method)
+    }
+
   }
 
 
