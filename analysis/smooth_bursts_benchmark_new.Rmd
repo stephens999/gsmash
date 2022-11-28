@@ -1,0 +1,150 @@
+---
+title: "smooth burst benchmark"
+author: "DongyueXie"
+date: "2022-11-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In this analysis we look at the results from generating data as 
+
+$$y_i\sim Poisson(\exp(b_i+\epsilon_i)),\epsilon_i\sim N(0,\sigma^2).$$
+The $\exp(b)$ is smooth and has block structures as follows:
+
+```{r}
+library(tidyverse)
+out = readRDS('output/poisson_smooth_simulation/new_simu/bursts30_n_1024_snr_1_count_size_3.rds')
+plot(exp(out$sim_data$b),type='l',ylab='')
+```
+
+We set $n=1024$, repeat 30 times, and count size $=max(\exp(b))\in \{3,10,100\}$, and $snr = var(b)/\sigma^2\in \{1,3\}$.
+
+
+```{r}
+source('code/poisson_smooth/simulation_summary_smooth.R')
+```
+
+
+```{r}
+all_methods = names(out$output[[1]]$mse_smooth)
+include_methods = c('vst_smooth','lik_exp_logx_nug_top','lik_exp_logx_smooth','split_smashpoi_ndwt','split_smashpoi_dwt','smash_two_step_hetero','smash')
+rm_methods = all_methods[!(all_methods%in%include_methods)]
+```
+
+
+## count size = 3
+
+### snr = 1
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/new_simu/bursts30_n_1024_snr_1_count_size_3.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = rm_methods)
+get_runtime(out,rm_method = rm_methods)
+```
+
+```{r}
+for(method in include_methods){
+  plot_all_curves(out,method=method)
+}
+```
+
+### snr = 3
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/new_simu/bursts30_n_1024_snr_3_count_size_3.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = rm_methods)
+get_runtime(out,rm_method = rm_methods)
+```
+
+```{r}
+for(method in include_methods){
+  plot_all_curves(out,method=method)
+}
+```
+
+
+## count size = 10
+
+### snr = 1
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/new_simu/bursts30_n_1024_snr_1_count_size_10.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = rm_methods)
+get_runtime(out,rm_method = rm_methods)
+```
+
+
+```{r}
+for(method in include_methods){
+  plot_all_curves(out,method=method)
+}
+```
+
+
+### snr = 3
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/new_simu/bursts30_n_1024_snr_3_count_size_10.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = rm_methods)
+get_runtime(out,rm_method = rm_methods)
+```
+
+```{r}
+for(method in include_methods){
+  plot_all_curves(out,method=method)
+}
+```
+
+
+## count size = 100
+
+### snr = 1
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/new_simu/bursts30_n_1024_snr_1_count_size_100.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = rm_methods)
+get_runtime(out,rm_method = rm_methods)
+```
+
+
+```{r}
+for(method in include_methods){
+  plot_all_curves(out,method=method)
+}
+```
+
+
+### snr = 3
+
+```{r}
+out = readRDS('output/poisson_smooth_simulation/new_simu/bursts30_n_1024_snr_3_count_size_100.rds')
+```
+
+```{r}
+get_mse_mean(out,rm_method = rm_methods)
+get_runtime(out,rm_method = rm_methods)
+```
+
+```{r}
+for(method in include_methods){
+  plot_all_curves(out,method=method)
+}
+```
