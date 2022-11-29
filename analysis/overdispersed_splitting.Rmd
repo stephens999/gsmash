@@ -16,222 +16,93 @@ And Run splitting method with fixed and known $\sigma^2$.
 
 ```{r}
 library(vebpm)
+library(ashr)
+```
+
+```{r}
+simu_func = function(n_simu=10,n,sigma2,prior_mean=0,w=0.8,prior_var = 2,seed = 12345,n_plot = 3){
+  mse_b = c()
+  mse_exp_b = c()
+  for(i in 1:n_simu){
+    b = c(rep(prior_mean,round(n*w)) , rnorm(round(n*(1-w)),prior_mean,sqrt(prior_var)))
+    mu = rnorm(n,b,sigma2)
+    y = rpois(n,exp(mu))
+    fit_ash = ash_pois(y)
+    fit_split_ash_init = pois_mean_split(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = fit_ash$result$PosteriorMean)
+    fit_split_logx = pois_mean_split(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = NULL)
+    mse_b = rbind(mse_b,c(mse(log(fit_ash$result$PosteriorMean),(b)),
+                          mse(fit_split_ash_init$posterior$mean_b,b),
+                          mse(fit_split_logx$posterior$mean_b,b)))
+    mse_exp_b = rbind(mse_exp_b,c(mse(fit_ash$result$PosteriorMean,exp(b)),
+                                  mse(fit_split_ash_init$posterior$mean_exp_b,exp(b)),
+                                  mse(fit_split_logx$posterior$mean_exp_b,exp(b))))
+    
+    colnames(mse_b) = c('ash','split ash init','split logx init')
+    colnames(mse_exp_b) = c('ash','split ash init','split logx init')
+    if(i<=n_plot){
+      par(mfrow=c(3,1))
+      plot(b,col='grey80',ylab='b',main='ash')
+      lines(log(fit_ash$result$PosteriorMean))
+      plot(b,col='grey80',ylab='b',main='splitting ash init')
+      lines(fit_split_ash_init$posterior$mean_b)
+      plot(b,col='grey80',ylab='b',main='splitting logx init')
+      lines(fit_split_logx$posterior$mean_b)
+    }
+    
+  }
+  return(list(mse_b = mse_b,mse_exp_b = mse_exp_b))
+  
+}
+```
+
+# prior mean = 0
+
+## $\sigma^2 = 0.5$
+
+```{r,warning=F}
+res1 = simu_func(n_simu = 10,n=1000,sigma2=0.5,n_plot = 10)
+colMeans(res1$mse_exp_b)
+colMeans(res1$mse_b)
+```
+
+## $\sigma^2 = 1$
+
+```{r,warning=F}
+res1 = simu_func(n_simu = 10,n=1000,sigma2=1,n_plot = 10)
+colMeans(res1$mse_exp_b)
+colMeans(res1$mse_b)
 ```
 
 ## $\sigma^2 = 0.1$
 
-### first run
-
-```{r}
-set.seed(12345)
-n = 3000
-prior_mean = 0
-b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
-sigma2 = 0.1
-mu = rnorm(n,b,sigma2)
-y = rpois(n,exp(mu))
+```{r,warning=F}
+res1 = simu_func(n_simu = 10,n=1000,sigma2=0.1,n_plot = 10)
+colMeans(res1$mse_exp_b)
+colMeans(res1$mse_b)
 ```
 
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-estimate $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-### second run
-
-```{r}
-n = 3000
-prior_mean = 0
-b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
-sigma2 = 0.1
-mu = rnorm(n,b,sigma2)
-y = rpois(n,exp(mu))
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-estimate $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-
-### third run
-
-```{r}
-n = 3000
-prior_mean = 0
-b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
-sigma2 = 0.1
-mu = rnorm(n,b,sigma2)
-y = rpois(n,exp(mu))
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-estimate $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
+# prior mean = 5
 
 ## $\sigma^2 = 0.5$
 
-### first run
-
-```{r}
-set.seed(12345)
-n = 3000
-prior_mean = 0
-b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
-sigma2 = 0.5
-mu = rnorm(n,b,sigma2)
-y = rpois(n,exp(mu))
+```{r,warning=F}
+res1 = simu_func(n_simu = 10,n=1000,sigma2=0.5,n_plot = 10,prior_mean = 5)
+colMeans(res1$mse_exp_b)
+colMeans(res1$mse_b)
 ```
 
-fix $\sigma2$
+## $\sigma^2 = 1$
 
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
+```{r,warning=F}
+res1 = simu_func(n_simu = 10,n=1000,sigma2=1,n_plot = 10,prior_mean = 5)
+colMeans(res1$mse_exp_b)
+colMeans(res1$mse_b)
 ```
 
-estimate $\sigma2$
+## $\sigma^2 = 0.1$
 
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
+```{r,warning=F}
+res1 = simu_func(n_simu = 10,n=1000,sigma2=0.1,n_plot = 10,prior_mean = 5)
+colMeans(res1$mse_exp_b)
+colMeans(res1$mse_b)
 ```
-
-
-### second run
-
-```{r}
-n = 3000
-prior_mean = 0
-b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
-sigma2 = 0.5
-mu = rnorm(n,b,sigma2)
-y = rpois(n,exp(mu))
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-estimate $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-
-### third run
-
-```{r}
-n = 3000
-prior_mean = 0
-b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
-sigma2 = 0.5
-mu = rnorm(n,b,sigma2)
-y = rpois(n,exp(mu))
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-estimate $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-
-### set prior mean to 5
-
-```{r}
-set.seed(12345)
-n = 3000
-prior_mean = 5
-b = c(rep(prior_mean,n*0.8) , rnorm(n*0.2,prior_mean,sqrt(2)))
-sigma2 = 0.5
-mu = rnorm(n,b,sigma2)
-y = rpois(n,exp(mu))
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-estimate $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = T,mu_pm_init = log(y+1))
-fit$elbo
-plot(b,col='grey80')
-lines(fit$posterior$mean_b)
-```
-
-
-
