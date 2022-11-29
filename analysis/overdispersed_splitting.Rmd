@@ -21,6 +21,7 @@ library(ashr)
 
 ```{r}
 simu_func = function(n_simu=10,n,sigma2,prior_mean=0,w=0.8,prior_var = 2,seed = 12345,n_plot = 3){
+  set.seed(seed)
   mse_b = c()
   mse_exp_b = c()
   for(i in 1:n_simu){
@@ -59,7 +60,7 @@ simu_func = function(n_simu=10,n,sigma2,prior_mean=0,w=0.8,prior_var = 2,seed = 
 
 ## $\sigma^2 = 0.5$
 
-```{r,warning=F}
+```{r,warning=F,fig.width=4,fig.height=6}
 res1 = simu_func(n_simu = 10,n=1000,sigma2=0.5,n_plot = 10)
 colMeans(res1$mse_exp_b)
 colMeans(res1$mse_b)
@@ -67,7 +68,7 @@ colMeans(res1$mse_b)
 
 ## $\sigma^2 = 1$
 
-```{r,warning=F}
+```{r,warning=F,fig.width=4,fig.height=6}
 res1 = simu_func(n_simu = 10,n=1000,sigma2=1,n_plot = 10)
 colMeans(res1$mse_exp_b)
 colMeans(res1$mse_b)
@@ -75,7 +76,7 @@ colMeans(res1$mse_b)
 
 ## $\sigma^2 = 0.1$
 
-```{r,warning=F}
+```{r,warning=F,fig.width=4,fig.height=6}
 res1 = simu_func(n_simu = 10,n=1000,sigma2=0.1,n_plot = 10)
 colMeans(res1$mse_exp_b)
 colMeans(res1$mse_b)
@@ -85,7 +86,7 @@ colMeans(res1$mse_b)
 
 ## $\sigma^2 = 0.5$
 
-```{r,warning=F}
+```{r,warning=F,fig.width=4,fig.height=6}
 res1 = simu_func(n_simu = 10,n=1000,sigma2=0.5,n_plot = 10,prior_mean = 5)
 colMeans(res1$mse_exp_b)
 colMeans(res1$mse_b)
@@ -93,7 +94,7 @@ colMeans(res1$mse_b)
 
 ## $\sigma^2 = 1$
 
-```{r,warning=F}
+```{r,warning=F,fig.width=4,fig.height=6}
 res1 = simu_func(n_simu = 10,n=1000,sigma2=1,n_plot = 10,prior_mean = 5)
 colMeans(res1$mse_exp_b)
 colMeans(res1$mse_b)
@@ -101,7 +102,7 @@ colMeans(res1$mse_b)
 
 ## $\sigma^2 = 0.1$
 
-```{r,warning=F}
+```{r,warning=F,fig.width=4,fig.height=6}
 res1 = simu_func(n_simu = 10,n=1000,sigma2=0.1,n_plot = 10,prior_mean = 5)
 colMeans(res1$mse_exp_b)
 colMeans(res1$mse_b)
