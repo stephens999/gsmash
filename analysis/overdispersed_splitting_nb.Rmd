@@ -19,281 +19,76 @@ Since $\exp(\mu+\sigma2/2)=\lambda$, we have $\mu = \log\lambda - \sigma^2/2$. T
 
 ```{r}
 library(vebpm)
+library(ashr)
+```
+
+```{r}
+simu_func = function(n_simu=10,n,r,prior_rate=0.1,w=0.8,seed = 12345,n_plot = 3){
+  set.seed(seed)
+  mse_mean = c()
+  mse_non0_mean = c()
+  sigma2 = log(1+1/r)
+  
+  for(i in 1:n_simu){
+    lambda = c(rep(0,round(n*w)) , rexp(round(n*(1-w)),prior_rate))
+    non0_idx = which(lambda!=0)
+    y = rnbinom(n,r,mu  = lambda)
+    fit_ash = ash_pois(y)
+    fit_split_ash_init = pois_mean_split(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = fit_ash$result$PosteriorMean,tol=1e-3)
+    #fit_split_logx = pois_mean_split(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = NULL)
+    # mse_b = rbind(mse_b,c(mse(log(fit_ash$result$PosteriorMean),(b)),
+    #                       mse(fit_split_ash_init$posterior$mean_b,b),
+    #                       mse(fit_split_logx$posterior$mean_b,b)))
+    mse_mean = rbind(mse_mean,c(mse(fit_ash$result$PosteriorMean,lambda),
+                                  mse(fit_split_ash_init$posterior$mean_exp_b,lambda),
+                                 mse(exp(fit_split_ash_init$posterior$mean_b),lambda)))
+    mse_non0_mean = rbind(mse_non0_mean,c(mse(fit_ash$result$PosteriorMean[non0_idx],lambda[non0_idx]),
+                              mse(fit_split_ash_init$posterior$mean_exp_b[non0_idx],lambda[non0_idx]),
+                              mse(exp(fit_split_ash_init$posterior$mean_b[non0_idx]),lambda[non0_idx])))
+
+    colnames(mse_mean) = c('ash','split','split exp(b_pm)')
+    colnames(mse_non0_mean) = c('ash','split','split exp(b_pm)')
+    if(i<=n_plot){
+      par(mfrow=c(3,1))
+      plot(lambda,col='grey80',ylab='lambda',main='ash')
+      lines(fit_ash$result$PosteriorMean)
+      plot(lambda,col='grey80',ylab='lambda',main='splitting ')
+      lines(fit_split_ash_init$posterior$mean_exp_b)
+      plot(lambda,col='grey80',ylab='lambda',main='splitting, exp(b_pm)')
+      lines(exp(fit_split_ash_init$posterior$mean_b))
+    }
+    
+  }
+  return(list(mse_mean = mse_mean,mse_non0_mean = mse_non0_mean,sigma2=sigma2))
+  
+}
 ```
 
 ## r = 10
 
-### first run
-
-```{r}
-set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 10
-y = rnbinom(n,r,mu  = lambda)
+```{r,warning=F,fig.width=4,fig.height=6}
+res = simu_func(n_simu=10,n=1000,r = 10,n_plot = 10)
+colMeans(res$mse_mean)
+colMeans(res$mse_non0_mean)
 ```
-
-```{r}
-sigma2 = log(1+1/r)
-sigma2
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-### second run
-
-```{r}
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-### third run
-
-```{r}
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
 
 ## r = 5
 
-### first run
-
-```{r}
-set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 5
-y = rnbinom(n,r,mu  = lambda)
+```{r,warning=F,fig.width=4,fig.height=6}
+res = simu_func(n_simu=10,n=1000,r = 5,n_plot = 10)
 ```
 
-```{r}
-sigma2 = log(1+1/r)
-sigma2
-```
+## r = 1
 
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-### second run
-
-```{r}
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-### third run
-
-```{r}
-
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
+```{r,warning=F,fig.width=4,fig.height=6}
+res = simu_func(n_simu=10,n=1000,r = 1,n_plot = 10)
 ```
 
 ## r = 50
 
-### first run
-
-```{r}
-set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 50
-y = rnbinom(n,r,mu  = lambda)
-```
-
-```{r}
-sigma2 = log(1+1/r)
-sigma2
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
+```{r,warning=F,fig.width=4,fig.height=6}
+res = simu_func(n_simu=10,n=1000,r = 50,n_plot = 10)
 ```
 
 
-### second run
 
-```{r}
-
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-### third run
-
-```{r}
-
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-## r = 500
-
-### first run
-
-```{r}
-set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 500
-y = rnbinom(n,r,mu  = lambda)
-```
-
-```{r}
-sigma2 = log(1+1/r)
-sigma2
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-### second run
-
-```{r}
-
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
-
-
-### third run
-
-```{r}
-
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)
-```
-
-fix $\sigma2$
-
-```{r}
-fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo
-plot(lambda,col='grey80')
-lines(fit$posterior$mean)
-
-fit$fitted_g
-```
