@@ -391,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-11-21
+<strong>Last updated:</strong> 2022-11-29
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree03048eec5d7e1ff1425bc862390c85154c63e39btargetblank03048eea">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree9dc12d0c05ed09c546e6168a1f28787a6cdbfe7dtargetblank9dc12d0a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/03048eec5d7e1ff1425bc862390c85154c63e39b" target="_blank">03048ee</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/9dc12d0c05ed09c546e6168a1f28787a6cdbfe7d" target="_blank">9dc12d0</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree03048eec5d7e1ff1425bc862390c85154c63e39btargetblank03048eea"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree9dc12d0c05ed09c546e6168a1f28787a6cdbfe7dtargetblank9dc12d0a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/03048eec5d7e1ff1425bc862390c85154c63e39b" target="_blank">03048ee</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/9dc12d0c05ed09c546e6168a1f28787a6cdbfe7d" target="_blank">9dc12d0</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,6 +566,7 @@ Untracked files:
 
 Unstaged changes:
     Modified:   analysis/normal_mean_penalty_glm_simplified.Rmd
+    Modified:   analysis/trendfiltering.ipynb
     Modified:   code/poisson_mean/simulation_summary.R
 
 </code></pre>
@@ -618,6 +619,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9dc12d0c05ed09c546e6168a1f28787a6cdbfe7d/analysis/overdispersed_splitting_nb.Rmd" target="_blank">9dc12d0</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+<td>
+wflow_publish("analysis/overdispersed_splitting_nb.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/94d73ace0661542bad9b8ba6ca85c3f9b36ddccc/docs/overdispersed_splitting_nb.html" target="_blank">94d73ac</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/03048eec5d7e1ff1425bc862390c85154c63e39b/analysis/overdispersed_splitting_nb.Rmd" target="_blank">03048ee</a>
 </td>
 <td>
@@ -658,416 +693,148 @@ Then by matching the variance of NB and the Poisson model, we solve
 \lambda^2/r\)</span> and we have <span class="math inline">\(\sigma^2 =
 \log(1+1/r)\)</span>. The smaller the <span
 class="math inline">\(r\)</span>, the larger oversidpersion.</p>
-<pre class="r"><code>library(vebpm)</code></pre>
+<pre class="r"><code>library(vebpm)
+library(ashr)</code></pre>
+<pre class="r"><code>simu_func = function(n_simu=10,n,r,prior_rate=0.1,w=0.8,seed = 12345,n_plot = 3){
+  set.seed(seed)
+  mse_mean = c()
+  mse_non0_mean = c()
+  sigma2 = log(1+1/r)
+  
+  for(i in 1:n_simu){
+    lambda = c(rep(0,round(n*w)) , rexp(round(n*(1-w)),prior_rate))
+    non0_idx = which(lambda!=0)
+    y = rnbinom(n,r,mu  = lambda)
+    fit_ash = ash_pois(y)
+    fit_split_ash_init = pois_mean_split(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = fit_ash$result$PosteriorMean,tol=1e-3)
+    #fit_split_logx = pois_mean_split(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = NULL)
+    # mse_b = rbind(mse_b,c(mse(log(fit_ash$result$PosteriorMean),(b)),
+    #                       mse(fit_split_ash_init$posterior$mean_b,b),
+    #                       mse(fit_split_logx$posterior$mean_b,b)))
+    mse_mean = rbind(mse_mean,c(mse(fit_ash$result$PosteriorMean,lambda),
+                                  mse(fit_split_ash_init$posterior$mean_exp_b,lambda),
+                                 mse(exp(fit_split_ash_init$posterior$mean_b),lambda)))
+    mse_non0_mean = rbind(mse_non0_mean,c(mse(fit_ash$result$PosteriorMean[non0_idx],lambda[non0_idx]),
+                              mse(fit_split_ash_init$posterior$mean_exp_b[non0_idx],lambda[non0_idx]),
+                              mse(exp(fit_split_ash_init$posterior$mean_b[non0_idx]),lambda[non0_idx])))
+
+    colnames(mse_mean) = c(&#39;ash&#39;,&#39;split&#39;,&#39;split exp(b_pm)&#39;)
+    colnames(mse_non0_mean) = c(&#39;ash&#39;,&#39;split&#39;,&#39;split exp(b_pm)&#39;)
+    if(i&lt;=n_plot){
+      par(mfrow=c(3,1))
+      plot(lambda,col=&#39;grey80&#39;,ylab=&#39;lambda&#39;,main=&#39;ash&#39;)
+      lines(fit_ash$result$PosteriorMean)
+      plot(lambda,col=&#39;grey80&#39;,ylab=&#39;lambda&#39;,main=&#39;splitting &#39;)
+      lines(fit_split_ash_init$posterior$mean_exp_b)
+      plot(lambda,col=&#39;grey80&#39;,ylab=&#39;lambda&#39;,main=&#39;splitting, exp(b_pm)&#39;)
+      lines(exp(fit_split_ash_init$posterior$mean_b))
+    }
+    
+  }
+  return(list(mse_mean = mse_mean,mse_non0_mean = mse_non0_mean,sigma2=sigma2))
+  
+}</code></pre>
 <div id="r-10" class="section level2">
 <h2>r = 10</h2>
-<div id="first-run" class="section level3">
-<h3>first run</h3>
-<pre class="r"><code>set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 10
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<pre class="r"><code>sigma2 = log(1+1/r)
-sigma2</code></pre>
-<pre><code>[1] 0.09531018</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo</code></pre>
-<pre><code>[1] -7394.922</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.09531018
-
-$g_b
-$pi
-[1] 0.8402475 0.1597525
-
-$mean
-[1] -2.315816 -2.315816
-
-$scale
-[1] 0.000000 4.057725
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-</div>
-<div id="second-run" class="section level3">
-<h3>second run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo</code></pre>
-<pre><code>[1] -7463.391</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.09531018
-
-$g_b
-$pi
-[1] 0.8344718 0.1655282
-
-$mean
-[1] -2.403966 -2.403966
-
-$scale
-[1] 0.000000 4.176129
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-</div>
-<div id="third-run" class="section level3">
-<h3>third run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo</code></pre>
-<pre><code>[1] -7394.452</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.09531018
-
-$g_b
-$pi
-[1] 0.8412745 0.1587255
-
-$mean
-[1] -2.332336 -2.332336
-
-$scale
-[1] 0.000000 4.137975
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-</div>
+<pre class="r"><code>res = simu_func(n_simu=10,n=1000,r = 10,n_plot = 10)</code></pre>
+<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-1.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-2.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-3.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-4.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-5.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-6.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-7.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-8.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-9.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-3-10.png" width="384" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>colMeans(res$mse_mean)</code></pre>
+<pre><code>            ash           split split exp(b_pm) 
+       5.519197        6.371801        5.822060 </code></pre>
+<pre class="r"><code>colMeans(res$mse_non0_mean)</code></pre>
+<pre><code>            ash           split split exp(b_pm) 
+       27.59361        31.83897        29.09030 </code></pre>
 </div>
 <div id="r-5" class="section level2">
 <h2>r = 5</h2>
-<div id="first-run-1" class="section level3">
-<h3>first run</h3>
-<pre class="r"><code>set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 5
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<pre class="r"><code>sigma2 = log(1+1/r)
-sigma2</code></pre>
-<pre><code>[1] 0.1823216</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo</code></pre>
-<pre><code>[1] -7338.985</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.1823216
-
-$g_b
-$pi
-[1] 0.8542314 0.1457686
-
-$mean
-[1] -1.950497 -1.950497
-
-$scale
-[1] 0.000000 3.709187
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
+<pre class="r"><code>res = simu_func(n_simu=10,n=1000,r = 5,n_plot = 10)</code></pre>
+<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/94d73ace0661542bad9b8ba6ca85c3f9b36ddccc/docs/figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-1.png" target="_blank">94d73ac</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="second-run-1" class="section level3">
-<h3>second run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo</code></pre>
-<pre><code>[1] -7372.572</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.1823216
-
-$g_b
-$pi
-[1] 0.8516417 0.1483583
-
-$mean
-[1] -1.957995 -1.957995
-
-$scale
-[1] 0.000000 3.720176
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
 </div>
-<div id="third-run-1" class="section level3">
-<h3>third run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo</code></pre>
-<pre><code>[1] -7357.373</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.1823216
-
-$g_b
-$pi
-[1] 0.8561683 0.1438317
-
-$mean
-[1] -1.888776 -1.888776
-
-$scale
-[1] 0.000000 3.652401
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
+<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-2.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-3.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-4.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-5.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-6.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-7.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-8.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-9.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-4-10.png" width="384" style="display: block; margin: auto;" /></p>
 </div>
+<div id="r-1" class="section level2">
+<h2>r = 1</h2>
+<pre class="r"><code>res = simu_func(n_simu=10,n=1000,r = 1,n_plot = 10)</code></pre>
+<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-1.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-2.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-3.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-4.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-5.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-6.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-7.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-8.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-9.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-5-10.png" width="384" style="display: block; margin: auto;" /></p>
 </div>
 <div id="r-50" class="section level2">
 <h2>r = 50</h2>
-<div id="first-run-2" class="section level3">
-<h3>first run</h3>
-<pre class="r"><code>set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 50
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<pre class="r"><code>sigma2 = log(1+1/r)
-sigma2</code></pre>
-<pre><code>[1] 0.01980263</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))</code></pre>
-<pre><code>Warning in pois_mean_split2(y, sigma2 = sigma2, est_sigma2 = FALSE, mu_pm_init =
-log(y + : An iteration decreases ELBO. This is likely due to numerical issues.</code></pre>
-<pre class="r"><code>fit$elbo</code></pre>
-<pre><code>[1] -11559.26</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.01980263
-
-$g_b
-$pi
-[1] 0.0004275021 0.9995724979
-
-$mean
-[1] -1.222233 -1.222233
-
-$scale
-[1] 0.0000000 0.6113245
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-</div>
-<div id="second-run-2" class="section level3">
-<h3>second run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))</code></pre>
-<pre><code>Warning in pois_mean_split2(y, sigma2 = sigma2, est_sigma2 = FALSE, mu_pm_init =
-log(y + : An iteration decreases ELBO. This is likely due to numerical issues.</code></pre>
-<pre class="r"><code>fit$elbo</code></pre>
-<pre><code>[1] -8852.339</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.01980263
-
-$g_b
-$pi
-[1] 0.6725263 0.3274737
-
-$mean
-[1] -1.216211 -1.216211
-
-$scale
-[1] 0.0000000 0.8433485
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-</div>
-<div id="third-run-2" class="section level3">
-<h3>third run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))
-fit$elbo</code></pre>
-<pre><code>[1] -7723.969</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.01980263
-
-$g_b
-$pi
-[1] 0.831282 0.168718
-
-$mean
-[1] -2.427278 -2.427278
-
-$scale
-[1] 0.000000 4.317392
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
+<pre class="r"><code>res = simu_func(n_simu=10,n=1000,r = 50,n_plot = 10)</code></pre>
+<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/94d73ace0661542bad9b8ba6ca85c3f9b36ddccc/docs/figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-1.png" target="_blank">94d73ac</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-21
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div id="r-500" class="section level2">
-<h2>r = 500</h2>
-<div id="first-run-3" class="section level3">
-<h3>first run</h3>
-<pre class="r"><code>set.seed(12345)
-n = 3000
-lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-r = 500
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<pre class="r"><code>sigma2 = log(1+1/r)
-sigma2</code></pre>
-<pre><code>[1] 0.001998003</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))</code></pre>
-<pre><code>Warning in pois_mean_split2(y, sigma2 = sigma2, est_sigma2 = FALSE, mu_pm_init =
-log(y + : An iteration decreases ELBO. This is likely due to numerical issues.</code></pre>
-<pre class="r"><code>fit$elbo</code></pre>
-<pre><code>[1] -14715.5</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.001998003
-
-$g_b
-$pi
-[1] 1.234136e-11 1.000000e+00
-
-$mean
-[1] -0.694044 -0.694044
-
-$scale
-[1] 0.0000000 0.4826454
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-</div>
-<div id="second-run-3" class="section level3">
-<h3>second run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))</code></pre>
-<pre><code>Warning in pois_mean_split2(y, sigma2 = sigma2, est_sigma2 = FALSE, mu_pm_init =
-log(y + : An iteration decreases ELBO. This is likely due to numerical issues.</code></pre>
-<pre class="r"><code>fit$elbo</code></pre>
-<pre><code>[1] -14951.34</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.001998003
-
-$g_b
-$pi
-[1] 3.637649e-08 1.000000e+00
-
-$mean
-[1] -0.3579676 -0.3579676
-
-$scale
-[1] 0.0000000 0.4422295
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
-</div>
-<div id="third-run-3" class="section level3">
-<h3>third run</h3>
-<pre class="r"><code>lambda = c(rep(0,n*0.8),rexp(n*0.2,0.1))
-
-y = rnbinom(n,r,mu  = lambda)</code></pre>
-<p>fix <span class="math inline">\(\sigma2\)</span></p>
-<pre class="r"><code>fit = pois_mean_split2(y,sigma2=sigma2,est_sigma2 = FALSE,mu_pm_init = log(y+1))</code></pre>
-<pre><code>Warning in pois_mean_split2(y, sigma2 = sigma2, est_sigma2 = FALSE, mu_pm_init =
-log(y + : An iteration decreases ELBO. This is likely due to numerical issues.</code></pre>
-<pre class="r"><code>fit$elbo</code></pre>
-<pre><code>[1] -14954.5</code></pre>
-<pre class="r"><code>plot(lambda,col=&#39;grey80&#39;)
-lines(fit$posterior$mean)</code></pre>
-<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-29-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fitted_g</code></pre>
-<pre><code>$sigma2
-[1] 0.001998003
-
-$g_b
-$pi
-[1] 7.026071e-08 9.999999e-01
-
-$mean
-[1] -0.2497244 -0.2497244
-
-$scale
-[1] 0.0000000 0.4171243
-
-attr(,&quot;class&quot;)
-[1] &quot;laplacemix&quot;
-attr(,&quot;row.names&quot;)
-[1] 1 2</code></pre>
+<p><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-2.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-3.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-4.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-5.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-6.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-7.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-8.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-9.png" width="384" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting_nb.Rmd/unnamed-chunk-6-10.png" width="384" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1095,7 +862,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] vebpm_0.2.6     workflowr_1.7.0
+[1] ashr_2.2-54     vebpm_0.3.1     workflowr_1.7.0
 
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.9         horseshoe_0.2.0    invgamma_1.1       lattice_0.20-45   
@@ -1106,7 +873,7 @@ loaded via a namespace (and not attached):
 [21] rstudioapi_0.14    ebnm_1.0-9         irlba_2.3.5.1      nloptr_2.0.3      
 [25] whisker_0.4        callr_3.7.2        jquerylib_0.1.4    Matrix_1.5-1      
 [29] rmarkdown_2.17     splines_4.2.1      stringr_1.4.1      munsell_0.5.0     
-[33] mixsqp_0.3-43      compiler_4.2.1     httpuv_1.6.6       xfun_0.33         
+[33] mixsqp_0.3-48      compiler_4.2.1     httpuv_1.6.6       xfun_0.33         
 [37] pkgconfig_2.0.3    SQUAREM_2021.1     htmltools_0.5.3    tidyselect_1.2.0  
 [41] tibble_3.1.8       matrixStats_0.62.0 fansi_1.0.3        dplyr_1.0.10      
 [45] later_1.3.0        grid_4.2.1         jsonlite_1.8.2     gtable_0.3.1      
@@ -1115,9 +882,8 @@ loaded via a namespace (and not attached):
 [57] cachem_1.0.6       fs_1.5.2           promises_1.2.0.1   bslib_0.4.0       
 [61] generics_0.1.3     vctrs_0.4.2        trust_0.1-8        tools_4.2.1       
 [65] glue_1.6.2         parallel_4.2.1     processx_3.7.0     fastmap_1.1.0     
-[69] yaml_2.3.5         colorspace_2.0-3   ashr_2.2-54        deconvolveR_1.2-1 
-[73] knitr_1.40         sass_0.4.2        </code></pre>
-</div>
+[69] yaml_2.3.5         colorspace_2.0-3   deconvolveR_1.2-1  knitr_1.40        
+[73] sass_0.4.2        </code></pre>
 </div>
 </div>
 </div>
