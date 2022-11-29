@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree9af28809a50c4b6f6b7ec0c329bdcd3a0b2d023atargetblank9af2880a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree59d1733a1d5c295010f4e066aaecfba7969626c0targetblank59d1733a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/9af28809a50c4b6f6b7ec0c329bdcd3a0b2d023a" target="_blank">9af2880</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/59d1733a1d5c295010f4e066aaecfba7969626c0" target="_blank">59d1733</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree9af28809a50c4b6f6b7ec0c329bdcd3a0b2d023atargetblank9af2880a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree59d1733a1d5c295010f4e066aaecfba7969626c0targetblank59d1733a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/9af28809a50c4b6f6b7ec0c329bdcd3a0b2d023a" target="_blank">9af2880</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/59d1733a1d5c295010f4e066aaecfba7969626c0" target="_blank">59d1733</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -619,6 +619,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59d1733a1d5c295010f4e066aaecfba7969626c0/analysis/overdispersed_splitting.Rmd" target="_blank">59d1733</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+<td>
+wflow_publish("analysis/overdispersed_splitting.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/overdispersed_splitting.html" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/9af28809a50c4b6f6b7ec0c329bdcd3a0b2d023a/analysis/overdispersed_splitting.Rmd" target="_blank">9af2880</a>
 </td>
 <td>
@@ -682,6 +716,7 @@ fixed and known <span class="math inline">\(\sigma^2\)</span>.</p>
 <pre class="r"><code>library(vebpm)
 library(ashr)</code></pre>
 <pre class="r"><code>simu_func = function(n_simu=10,n,sigma2,prior_mean=0,w=0.8,prior_var = 2,seed = 12345,n_plot = 3){
+  set.seed(seed)
   mse_b = c()
   mse_exp_b = c()
   for(i in 1:n_simu){
@@ -720,7 +755,7 @@ library(ashr)</code></pre>
 <div id="sigma2-0.5" class="section level2">
 <h2><span class="math inline">\(\sigma^2 = 0.5\)</span></h2>
 <pre class="r"><code>res1 = simu_func(n_simu = 10,n=1000,sigma2=0.5,n_plot = 10)</code></pre>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-1.png" width="384" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
 Past versions of unnamed-chunk-3-1.png
@@ -745,6 +780,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-1.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/463f5a3950c26972d0a33a3bf2f1b4b393e48f00/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-1.png" target="_blank">463f5a3</a>
 </td>
 <td>
@@ -758,18 +804,359 @@ DongyueXie
 </table>
 </div>
 </div>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-2.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-2.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-3.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-3">
+Past versions of unnamed-chunk-3-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-3.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-4.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-4">
+Past versions of unnamed-chunk-3-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-4.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-5.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-5">
+Past versions of unnamed-chunk-3-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-5.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-6.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-6">
+Past versions of unnamed-chunk-3-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-6.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-7.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-7">
+Past versions of unnamed-chunk-3-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-7.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-8.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-8">
+Past versions of unnamed-chunk-3-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-8.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-9.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-9">
+Past versions of unnamed-chunk-3-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-9.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-3-10.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-10">
+Past versions of unnamed-chunk-3-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-3-10.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>colMeans(res1$mse_exp_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-       5.549103        5.499520        5.499579 </code></pre>
+       3.369476        3.832288        3.832290 </code></pre>
 <pre class="r"><code>colMeans(res1$mse_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-      0.3394072       0.3520494       0.3520503 </code></pre>
+      0.3064548       0.3314694       0.3314692 </code></pre>
 </div>
 <div id="sigma2-1" class="section level2">
 <h2><span class="math inline">\(\sigma^2 = 1\)</span></h2>
 <pre class="r"><code>res1 = simu_func(n_simu = 10,n=1000,sigma2=1,n_plot = 10)</code></pre>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-1.png" width="384" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
 Past versions of unnamed-chunk-4-1.png
@@ -794,6 +1181,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-1.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/463f5a3950c26972d0a33a3bf2f1b4b393e48f00/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-1.png" target="_blank">463f5a3</a>
 </td>
 <td>
@@ -807,24 +1205,744 @@ DongyueXie
 </table>
 </div>
 </div>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-2.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-2.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-3.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
+Past versions of unnamed-chunk-4-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-3.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-4.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-4">
+Past versions of unnamed-chunk-4-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-4.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-5.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-5">
+Past versions of unnamed-chunk-4-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-5.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-6.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-6">
+Past versions of unnamed-chunk-4-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-6.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-7.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-7">
+Past versions of unnamed-chunk-4-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-7.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-8.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-8">
+Past versions of unnamed-chunk-4-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-8.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-9.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-9">
+Past versions of unnamed-chunk-4-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-9.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-4-10.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-10">
+Past versions of unnamed-chunk-4-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-4-10.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>colMeans(res1$mse_exp_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-      20.995422        5.155696        5.155700 </code></pre>
+       31.07754        20.65579        20.65577 </code></pre>
 <pre class="r"><code>colMeans(res1$mse_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-      0.7043561       0.3972193       0.3972186 </code></pre>
+      0.6850592       0.3982003       0.3981989 </code></pre>
 </div>
 <div id="sigma2-0.1" class="section level2">
 <h2><span class="math inline">\(\sigma^2 = 0.1\)</span></h2>
 <pre class="r"><code>res1 = simu_func(n_simu = 10,n=1000,sigma2=0.1,n_plot = 10)</code></pre>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-1.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-2.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-2.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-3.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
+Past versions of unnamed-chunk-5-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-3.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-4.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-4">
+Past versions of unnamed-chunk-5-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-4.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-5.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-5">
+Past versions of unnamed-chunk-5-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-5.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-6.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-6">
+Past versions of unnamed-chunk-5-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-6.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-7.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-7">
+Past versions of unnamed-chunk-5-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-7.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-8.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-8">
+Past versions of unnamed-chunk-5-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-8.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-9.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-9">
+Past versions of unnamed-chunk-5-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-9.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-5-10.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-10">
+Past versions of unnamed-chunk-5-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-5-10.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>colMeans(res1$mse_exp_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-      0.5823949       0.6663989       0.7719027 </code></pre>
+      0.6187320       0.7109729       0.8445713 </code></pre>
 <pre class="r"><code>colMeans(res1$mse_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-      0.2570366       0.2818552       0.3021638 </code></pre>
+      0.2413878       0.2645117       0.2837892 </code></pre>
 </div>
 </div>
 <div id="prior-mean-5" class="section level1">
@@ -832,7 +1950,7 @@ DongyueXie
 <div id="sigma2-0.5-1" class="section level2">
 <h2><span class="math inline">\(\sigma^2 = 0.5\)</span></h2>
 <pre class="r"><code>res1 = simu_func(n_simu = 10,n=1000,sigma2=0.5,n_plot = 10,prior_mean = 5)</code></pre>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-1.png" width="384" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
 Past versions of unnamed-chunk-6-1.png
@@ -857,6 +1975,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-1.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/463f5a3950c26972d0a33a3bf2f1b4b393e48f00/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-1.png" target="_blank">463f5a3</a>
 </td>
 <td>
@@ -870,18 +1999,359 @@ DongyueXie
 </table>
 </div>
 </div>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-2.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-2.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-3.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-3">
+Past versions of unnamed-chunk-6-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-3.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-4.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-4">
+Past versions of unnamed-chunk-6-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-4.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-5.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-5">
+Past versions of unnamed-chunk-6-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-5.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-6.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-6">
+Past versions of unnamed-chunk-6-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-6.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-7.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-7">
+Past versions of unnamed-chunk-6-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-7.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-8.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-8">
+Past versions of unnamed-chunk-6-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-8.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-9.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-9">
+Past versions of unnamed-chunk-6-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-9.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-6-10.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-10">
+Past versions of unnamed-chunk-6-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-6-10.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>colMeans(res1$mse_exp_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-       77875.33        35922.56        35922.47 </code></pre>
+      113544.58        91834.64        91834.53 </code></pre>
 <pre class="r"><code>colMeans(res1$mse_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-      0.2481651       0.1582991       0.1582967 </code></pre>
+      0.2458574       0.1530075       0.1530068 </code></pre>
 </div>
 <div id="sigma2-1-1" class="section level2">
 <h2><span class="math inline">\(\sigma^2 = 1\)</span></h2>
 <pre class="r"><code>res1 = simu_func(n_simu = 10,n=1000,sigma2=1,n_plot = 10,prior_mean = 5)</code></pre>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-1.png" width="384" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
 Past versions of unnamed-chunk-7-1.png
@@ -906,6 +2376,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-1.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/463f5a3950c26972d0a33a3bf2f1b4b393e48f00/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-1.png" target="_blank">463f5a3</a>
 </td>
 <td>
@@ -919,24 +2400,744 @@ DongyueXie
 </table>
 </div>
 </div>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-2.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-2.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-3.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
+Past versions of unnamed-chunk-7-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-3.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-4.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-4">
+Past versions of unnamed-chunk-7-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-4.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-5.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-5">
+Past versions of unnamed-chunk-7-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-5.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-6.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-6">
+Past versions of unnamed-chunk-7-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-6.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-7.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-7">
+Past versions of unnamed-chunk-7-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-7.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-8.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-8">
+Past versions of unnamed-chunk-7-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-8.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-9.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-9">
+Past versions of unnamed-chunk-7-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-9.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-7-10.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-10">
+Past versions of unnamed-chunk-7-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-7-10.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>colMeans(res1$mse_exp_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-       952575.6        300682.5        300619.0 </code></pre>
+       855022.7        204339.0        204016.0 </code></pre>
 <pre class="r"><code>colMeans(res1$mse_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-      0.9977677       0.2464851       0.2464854 </code></pre>
+      1.0171164       0.2538093       0.2538020 </code></pre>
 </div>
 <div id="sigma2-0.1-1" class="section level2">
 <h2><span class="math inline">\(\sigma^2 = 0.1\)</span></h2>
 <pre class="r"><code>res1 = simu_func(n_simu = 10,n=1000,sigma2=0.1,n_plot = 10,prior_mean = 5)</code></pre>
-<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-8.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-9.png" width="672" style="display: block; margin: auto;" /><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-1.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-1.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-2.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-2.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-3.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-3">
+Past versions of unnamed-chunk-8-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-3.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-4.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-4">
+Past versions of unnamed-chunk-8-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-4.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-5.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-5">
+Past versions of unnamed-chunk-8-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-5.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-6.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-6">
+Past versions of unnamed-chunk-8-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-6.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-7.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-7">
+Past versions of unnamed-chunk-8-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-7.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-8.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-8">
+Past versions of unnamed-chunk-8-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-8.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-9.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-9">
+Past versions of unnamed-chunk-8-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-9.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/overdispersed_splitting.Rmd/unnamed-chunk-8-10.png" width="384" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-10">
+Past versions of unnamed-chunk-8-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7b57aa1af41bbe2a13a8616bfff8dda45037bb0a/docs/figure/overdispersed_splitting.Rmd/unnamed-chunk-8-10.png" target="_blank">7b57aa1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-29
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>colMeans(res1$mse_exp_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-       2143.736        2605.140        2605.095 </code></pre>
+       3009.285        2506.889        2506.869 </code></pre>
 <pre class="r"><code>colMeans(res1$mse_b)</code></pre>
 <pre><code>            ash  split ash init split logx init 
-     0.01254905      0.02421612      0.02421592 </code></pre>
+     0.01123108      0.02362258      0.02362064 </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
