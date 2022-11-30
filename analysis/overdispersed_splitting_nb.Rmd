@@ -49,12 +49,15 @@ simu_func = function(n_simu=10,n,r,prior_rate=0.1,w=0.8,seed = 12345,n_plot = 3)
     colnames(mse_mean) = c('ash','split','split exp(b_pm)')
     colnames(mse_non0_mean) = c('ash','split','split exp(b_pm)')
     if(i<=n_plot){
-      par(mfrow=c(3,1))
-      plot(lambda,col='grey80',ylab='lambda',main='ash')
+      par(mfrow=c(4,1))
+      ylim = range(c(y,lambda,fit_split_ash_init$posterior$mean_exp_b,exp(fit_split_ash_init$posterior$mean_b)))
+      plot(y,col='grey80',ylab='y',main='true mean',ylim=ylim)
+      lines(lambda,col='grey20')
+      plot(y,col='grey80',ylab='y',main='ash',ylim=ylim)
       lines(fit_ash$result$PosteriorMean)
-      plot(lambda,col='grey80',ylab='lambda',main='splitting ')
+      plot(y,col='grey80',ylab='y',main='splitting',ylim=ylim)
       lines(fit_split_ash_init$posterior$mean_exp_b)
-      plot(lambda,col='grey80',ylab='lambda',main='splitting, exp(b_pm)')
+      plot(y,col='grey80',ylab='y',main='splitting, exp(b_pm)',ylim=ylim)
       lines(exp(fit_split_ash_init$posterior$mean_b))
     }
     
@@ -66,7 +69,7 @@ simu_func = function(n_simu=10,n,r,prior_rate=0.1,w=0.8,seed = 12345,n_plot = 3)
 
 ## r = 10
 
-```{r,warning=F,fig.width=4,fig.height=6}
+```{r,warning=F,fig.width=6,fig.height=9}
 res = simu_func(n_simu=10,n=1000,r = 10,n_plot = 10)
 colMeans(res$mse_mean)
 colMeans(res$mse_non0_mean)
@@ -74,20 +77,26 @@ colMeans(res$mse_non0_mean)
 
 ## r = 5
 
-```{r,warning=F,fig.width=4,fig.height=6}
+```{r,warning=F,fig.width=6,fig.height=9}
 res = simu_func(n_simu=10,n=1000,r = 5,n_plot = 10)
+colMeans(res$mse_mean)
+colMeans(res$mse_non0_mean)
 ```
 
 ## r = 1
 
-```{r,warning=F,fig.width=4,fig.height=6}
+```{r,warning=F,fig.width=6,fig.height=9}
 res = simu_func(n_simu=10,n=1000,r = 1,n_plot = 10)
+colMeans(res$mse_mean)
+colMeans(res$mse_non0_mean)
 ```
 
 ## r = 50
 
-```{r,warning=F,fig.width=4,fig.height=6}
+```{r,warning=F,fig.width=6,fig.height=9}
 res = simu_func(n_simu=10,n=1000,r = 50,n_plot = 10)
+colMeans(res$mse_mean)
+colMeans(res$mse_non0_mean)
 ```
 
 
