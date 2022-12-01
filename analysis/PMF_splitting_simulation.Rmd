@@ -1,0 +1,26 @@
+---
+title: "PMF splitting simulation"
+author: "DongyueXie"
+date: "2022-11-29"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I generated data from the following model:
+
+$$Y_{ij}\sim Poisson(\exp(l_{0i}f_{0j}+\sum_k l_{ik}f_{kj}+e_{ij})),$$
+$$l_{0i}\sim Uniform(a,b),f_{0j}\sim Uniform(a,b),$$
+
+$$l_{ki}\sim N(0,d_k),f_{kj}\sim \pi_0\delta_0 + (1-\pi_0)N(0,\sigma^2_1),$$
+$$e_{ij}\sim N(0,\sigma^2).$$
+The $S_0 = \exp(l_0f_0')$ is the background/baseline frequency.
+
+I set $n=p\in\{100,200,500,1000\}$, $a=1,b=2$, $d_k=1$ for $k=1,2,...,K$, $K=3$, $\sigma^2\in\{0,0.25\}$, $\sigma^2_1 = 1$, $\pi_0 = 0.8$.
+
+```{r}
+
+```
+
