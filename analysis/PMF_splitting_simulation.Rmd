@@ -9,6 +9,8 @@ editor_options:
 
 ## Introduction
 
+This is the first simulation I tried. But a more realistic one is under development.
+
 I generated data from the following model:
 
 $$Y_{ij}\sim Poisson(\exp(l_{0i}f_{0j}+\sum_k l_{ik}f_{kj}+e_{ij})),$$
@@ -20,7 +22,12 @@ The $S_0 = \exp(l_0f_0')$ is the background/baseline frequency.
 
 I set $n=p\in\{100,200,500,1000\}$, $a=1,b=2$, $d_k=1$ for $k=1,2,...,K$, $K=3$, $\sigma^2\in\{0,0.25\}$, $\sigma^2_1 = 1$, $\pi_0 = 0.8$.
 
-```{r}
+## Conclusions from this simulation
 
-```
+A. Splitting approach can often identify the correct number of factors. 
+
+B. When $\sigma^2$ is larger, the algorithm converges faster.
+
+
+
 
