@@ -10,9 +10,50 @@ editor_options:
 ## Neagative binomial
 
 
-The mean-var parameterization of Negative Binomial distribution is mean=$m=rp/(1-p)$, and var=$m + \frac{1}{r}m^2 = (1+\frac{1}{r}m)m$. So if we want to generate some count data with mean $\lambda$ and variance being say $\phi$ times the mean, we can set $r = m/(\phi-1)$. ($\phi>1$)
+The mean-var parameterization of Negative Binomial distribution is mean=$m=rp/(1-p)$, and var=$m + \frac{1}{r}m^2 = (1+\frac{1}{r}m)m$. So if we want to generate some count data with mean $\lambda$ and variance being say $\phi$ times the mean, we can set $r = \lambda/(\phi-1)$.
 
 
 ## Poisson Log-normal
 
-The mean-var relationship in a Poisson log normal model is mean=$m=e^{\mu+\sigma^2/2}$ and var=$m+(e^{\sigma^2}-1)e^{2\mu+\sigma^2} = (1+(e^{\sigma^2}-1)m)m$. So given $\mu$, if we want to generate some count data with mean $\lambda$ and variance being say $\phi$ times the mean, we can set $\sigma^2 = \log(1+\frac{\phi-1}{\lambda})$. ($\phi>1$)
+The mean-var relationship in a Poisson log normal model is mean=$m=e^{\mu+\sigma^2/2}$ and var=$m+(e^{\sigma^2}-1)e^{2\mu+\sigma^2} = (1+(e^{\sigma^2}-1)m)m$. So given $\mu$, if we want to generate some count data with mean $\lambda$ and variance being say $\phi$ times the mean, we can set $\sigma^2 = \log(1+\frac{\phi-1}{\lambda})$. ($\phi>1$). However $\lambda$ itself is a function of $\sigma^2$, so we can solve $(e^{\sigma^2}-1)e^{0.5\sigma^2} = (\phi-1)e^{-\mu}$ for $\sigma^2$. Further assume $\sigma^2 = \log(1+\alpha),\alpha>0$, then we solve $\alpha^3+\alpha^2 - d^2 = 0$ where $d = (\phi-1)e^{-\mu}$. The [wolframalpha](https://www.wolframalpha.com/input?i=solve+for+x+in+x%5E3%2Bx%5E2-a+%3D+0) gives the following solution:
+
+```{r}
+cubsolver = function(a){
+   1/3*(((27*a)/2 + 3/2*sqrt(3)*sqrt(a*(27*a - 4)) - 1)^(1/3) + 1/((27*a)/2 + 3/2*sqrt(3)*sqrt(a*(27*a - 4)) - 1)^(1/3) - 1)
+}
+```
+
+Lets verify it using `polyroot` when $d^2=1$, corresponding to $\phi=2,\mu=0$.
+
+```{r}
+cubsolver(1)
+polyroot(c(-1,0,1,1))
+```
+
+So in this case the $sigma^2$ is 
+
+```{r}
+log(1+cubsolver(1))
+```
+
+However the solution from wolframalpha seems to only support $27*d^2-4 > 0$?
+
+So we can simply use `polyroot` then.  The following function takes input of $\mu,\phi$ and return the $\sigma^2$:
+
+```{r}
+calc_var_PLN = function(mu,phi){
+  a = ((phi-1)*exp(-mu))^2
+  return(log(1+Re(polyroot(c(-a,0,1,1))[1])))
+}
+```
+
+```{r}
+calc_var_PLN(-5,2)
+calc_var_PLN(5,2)
+```
+
+## Implications.
+
+So for both cases, fixing $\phi$, if the mean is large, the extra variance from the over-dispersion parameter($r$ in NB, $\sigma^2$ in PLN) is small. This not too surprising for example in PLN, if $\mu$ is small, then a lot of observations are 0 so in order to make variance larger, $\sigma^2$ has to be larger.
+
+
