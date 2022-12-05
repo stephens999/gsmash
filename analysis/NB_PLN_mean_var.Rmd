@@ -1,0 +1,18 @@
+---
+title: "Negative Binomial and Poisson log-normal mean-var relationship"
+author: "DongyueXie"
+date: "2022-12-04"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Neagative binomial
+
+
+The mean-var parameterization of Negative Binomial distribution is mean=$m=rp/(1-p)$, and var=$m + \frac{1}{r}m^2 = (1+\frac{1}{r}m)m$. So if we want to generate some count data with mean $\lambda$ and variance being say $\phi$ times the mean, we can set $r = m/(\phi-1)$. ($\phi>1$)
+
+
+## Poisson Log-normal
+
+The mean-var relationship in a Poisson log normal model is mean=$m=e^{\mu+\sigma^2/2}$ and var=$m+(e^{\sigma^2}-1)e^{2\mu+\sigma^2} = (1+(e^{\sigma^2}-1)m)m$. So given $\mu$, if we want to generate some count data with mean $\lambda$ and variance being say $\phi$ times the mean, we can set $\sigma^2 = \log(1+\frac{\phi-1}{\lambda})$. ($\phi>1$)
