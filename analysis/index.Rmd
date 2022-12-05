@@ -100,6 +100,8 @@ Second Run:
 ## Poisson Matrix Factorization
 
 * [Splitting method in PMF](PMF_splitting.html)
+* [PMF splitting simulation](PMF_splitting_simulation.html)
+* [Negative Binomial and Poisson log-normal mean-var relationship](NB_PLN_mean_var.html)
 
 ## Binomial 
 
