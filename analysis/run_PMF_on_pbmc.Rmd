@@ -1,0 +1,127 @@
+---
+title: "run PMF on pbmc data"
+author: "DongyueXie"
+date: "2022-12-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I take the pbmc data from `fastTopics` package, and run splitting PMF on the dataset.
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+counts <- pbmc_facs$counts
+table(pbmc_facs$samples$subpop)
+## use only B cell and NK cell
+cells = pbmc_facs$samples$subpop%in%c('B cell', 'NK cell')
+Y = counts[cells,]
+dim(Y)
+# filter out genes that has few expressions(3% cells)
+genes = (colSums(Y>0) > 0.03*dim(Y)[1])
+Y = Y[,genes]
+# make sure there is no zero col and row
+sum(rowSums(Y)==0)
+sum(colSums(Y)==0)
+dim(Y)
+
+S = tcrossprod(c(rowSums(Y)),c(colSums(Y)))/sum(Y)
+Y = as.matrix(Y)
+```
+
+There are 5 main cell types and 16791 genes.
+
+To start with, I considered two cell types, B cell, and NK cell. Then I filtered out genes that have no expression in more than $3\%$ cells. The gene filtering is mainly for reducing the data size and the running time.
+
+The final dataset is of dimension 1440 cells by 4015 genes. I set the scaling factors as $s_{ij} = \frac{y_{i+}y_{+j}}{y_{++}}$. For comparison, I also fit `flash` on transformed count data, as $\tilde{y}_{ij} = \log(1+\frac{y_{ij}}{s_{ij}}\frac{a_j}{0.5})$ where $a_j = median(s_{\cdot j})$. This transformation is derived from $\tilde{y}_{ij} = \log(\frac{y_{ij}}{s_{ij}}+\frac{0.5}{a_j})$. However `flash` was not able to terminate at $Kmax = 50$. The splitting PMF estiamted $K=3$. In addition, the svd seems to also support $K=3$, as the scree plot show 3 points clearly separated from the rest.
+
+```{r}
+fit = readRDS('output/poisson_MF_simulation/fit_pbmc_2cells.rds')
+fit_flashier = readRDS('output/poisson_MF_simulation/fit_flashier_pbmc_2cells.rds')
+fit_svd = readRDS('output/poisson_MF_simulation/fit_svd_pbmc_2cells.rds')
+```
+
+
+```{r}
+plot(fit_svd$d)
+```
+
+
+```{r}
+fit$run_time
+plot(fit$eblo_trace,type='l')
+```
+
+The PMF algorithm converges after $~3000$ iterations and $106$mins.
+
+```{r}
+fit$fit_flash$n.factors
+plot(fit$sigma2,ylab = 'sigma2',xlab='gene',col='grey50')
+```
+
+```{r}
+plot(colSums(Y/c(rowSums(Y)))/dim(Y)[1],fit$sigma2,xlab='gene mean count(after library size adjustment)')
+plot(colSums(Y==0)/dim(Y)[1],fit$sigma2,xlab='sparsity')
+```
+
+
+Plot of factors:
+
+```{r,fig.width=9,fig.height=9}
+par(mfrow=c(3,1))
+plot(fit$fit_flash$F.pm[,1],xlab='gene',ylab='first factor')
+plot(fit$fit_flash$F.pm[,2],xlab='gene',ylab='second factor')
+plot(fit$fit_flash$F.pm[,3],xlab='gene',ylab='third factor')
+```
+
+Plot of Loading:
+
+```{r,fig.width=9,fig.height=9}
+cell_names = as.character(pbmc_facs$samples$subpop[cells])
+color_cell = replace(cell_names,which(cell_names=='B cell'),'red')
+color_cell = replace(color_cell,which(cell_names=='NK cell'),'blue')
+par(mfrow=c(3,1))
+plot(fit$fit_flash$L.pm[,1],xlab='cells',ylab='first loading',col=color_cell)
+plot(fit$fit_flash$L.pm[,2],xlab='cells',ylab='second loading',col=color_cell)
+plot(fit$fit_flash$L.pm[,3],xlab='cells',ylab='third factor',col=color_cell)
+```
+
+Plot of first two loadings:
+
+```{r}
+par(mfrow=c(1,1))
+plot(fit$fit_flash$L.pm[,1],fit$fit_flash$L.pm[,2],col=color_cell,xlab='first loading',ylab='second loading')
+legend(c('topright'),c('B cell','NK cell'),col=c('red','blue'),pch=c(1,1))
+```
+
+Plot of second two loadings:
+
+```{r}
+par(mfrow=c(1,1))
+plot(fit$fit_flash$L.pm[,2],fit$fit_flash$L.pm[,3],col=color_cell,xlab='second loading',ylab='third loading')
+legend(c('topleft'),c('B cell','NK cell'),col=c('red','blue'),pch=c(1,1))
+```
+
+
+Use Jason's method for visualizing loadings:
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r}
+plot.factors(fit$fit_flash,cell_names,title='splitting PMF')
+```
+
+```{r}
+plot.factors(fit_flashier,cell_names,kset = c(1:10),title='flashier')
+```
+
+
+
+
