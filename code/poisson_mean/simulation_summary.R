@@ -131,7 +131,7 @@ get_summary_mean = function(out,rm_method = NULL){
   mse_relative = mse_all/mse_mle
   datax = reshape2::melt(mse_relative,varnames =c('simu','methods'),value.name = 'mse_relative_to_mle')
   print(datax %>%
-          ggplot(aes(x=methods, y=mse_relative_to_mle)) +
+          ggplot(aes(x=methods, y=`MSE(relative to MLE)`)) +
           geom_boxplot()+
           coord_flip()+
           geom_hline(yintercept = 1, linetype="dashed",
