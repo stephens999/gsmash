@@ -102,6 +102,7 @@ Second Run:
 * [Splitting method in PMF](PMF_splitting.html)
 * [PMF splitting simulation](PMF_splitting_simulation.html)
 * [Negative Binomial and Poisson log-normal mean-var relationship](NB_PLN_mean_var.html)
+* [run PMF on PBMC data](run_PMF_on_pbmc.html)
 
 ## Binomial 
 
