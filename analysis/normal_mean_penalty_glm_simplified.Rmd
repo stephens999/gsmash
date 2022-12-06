@@ -24,14 +24,14 @@ $T(\theta;g)$ is the inversion of posterior mean operator.
 $s^2 = e^{-\theta}$
 
 ```{r}
-source('code/normal_mean_model_utils.R')
+#source('code/normal_mean_model_utils.R')
 # revised one allow more extreme observations
 pois_penalty = function(theta,w,mu,grid){
-  z_range = range(theta) + c(-100,100)
+  #z_range = range(theta) + c(-100,100)
   s = sqrt(exp(-theta))
-  z = S_inv(theta,s,w,mu,grid,z_range)
+  z = vebpm:::S_inv(theta,s,w,mu,grid)
   data = ashr::set_data(z,s)
-  g = normalmix(pi=w,mean=rep(mu,length(w)),sd = grid)
+  g = ashr::normalmix(pi=w,mean=rep(mu,length(w)),sd = grid)
   #z = vebpm:::S_inv(theta,s,w,mu,grid)
   return(-calc_vloglik(g,data) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
 }
@@ -53,7 +53,7 @@ plot_pois_penalty = function(theta,w,mu,grid){
  
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-10,10,length.out = n)
+x = seq(-20,20,length.out = n)
 mu = 0
 w = c(0.9,0.1)
 par(mfrow=c(2,2))
@@ -68,7 +68,7 @@ for(gg in grid_list){
 
 ```{r,fig.height=12,fig.width=12}
 n = 101
-x = seq(-10,10,length.out = n)
+x = seq(-20,20,length.out = n)
 mu = 3
 w = c(0.9,0.1)
 par(mfrow=c(2,2))
@@ -173,9 +173,9 @@ for(gg in grid_list){
 
 ```{r}
 binom_penalty = function(theta,w,mu,grid,bn){
-   z_range = range(theta) + c(-100,100)
+   #z_range = range(theta) + c(-100,100)
   s = sqrt((1+exp(theta))^2/bn/exp(theta))
-  z = S_inv(theta,s,w,mu,grid,z_range)
+  z = vebpm:::S_inv(theta,s,w,mu,grid)
   data = ashr::set_data(z,s)
   g = normalmix(pi=w,mean=rep(mu,length(w)),sd = grid)
   #z = vebpm:::S_inv(theta,s,w,mu,grid)
@@ -187,7 +187,7 @@ binom_penalty = function(theta,w,mu,grid,bn){
   # return(-l_nm(z,s,w,grid) - (theta-z)^2/2/s^2 - log(2*pi*s^2)/2)
 }
 plot_binom_penalty = function(theta,w,mu,grid,bn){
-  plot(x,pois_penalty(theta,w,mu,grid),col='blue',lty=2,type='l',xlab='theta',ylab='penalty',
+  plot(x,binom_penalty(theta,w,mu,grid,bn),col='blue',lty=2,type='l',xlab='theta',ylab='penalty',
        main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
   #legend('bottomright',c(expression(rho(theta))),lty=c(2),col=c('blue'))
 }
