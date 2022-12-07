@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-12-06
+<strong>Last updated:</strong> 2022-12-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree39f087bb8be9f3d745c31744f371ad0ff8b4942etargetblank39f087ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreedeab1e8b94b401ccae686dcf46c534e1d12d4b2etargetblankdeab1e8a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/39f087bb8be9f3d745c31744f371ad0ff8b4942e" target="_blank">39f087b</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/deab1e8b94b401ccae686dcf46c534e1d12d4b2e" target="_blank">deab1e8</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree39f087bb8be9f3d745c31744f371ad0ff8b4942etargetblank39f087ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreedeab1e8b94b401ccae686dcf46c534e1d12d4b2etargetblankdeab1e8a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/39f087bb8be9f3d745c31744f371ad0ff8b4942e" target="_blank">39f087b</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/deab1e8b94b401ccae686dcf46c534e1d12d4b2e" target="_blank">deab1e8</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -559,18 +559,15 @@ Ignored files:
     Ignored:    data/poisson_mean_simulation/
 
 Untracked files:
-    Untracked:  code/poisson_STM/plot_factors.R
-    Untracked:  code/poisson_STM/real_PMF.R
+    Untracked:  Rplot.png
+    Untracked:  data/real_data_singlecell/
     Untracked:  figure/
     Untracked:  output/poisson_MF_simulation/
     Untracked:  output/poisson_mean_simulation/
     Untracked:  output/poisson_smooth_simulation/
 
 Unstaged changes:
-    Modified:   analysis/index.Rmd
-    Modified:   analysis/normal_mean_penalty_glm_simplified.Rmd
-    Modified:   analysis/trendfiltering.ipynb
-    Modified:   code/poisson_mean/simulation_summary.R
+    Modified:   code/poisson_STM/real_PMF.R
 
 </code></pre>
 <p>
@@ -621,6 +618,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/deab1e8b94b401ccae686dcf46c534e1d12d4b2e/analysis/run_PMF_on_pbmc.Rmd" target="_blank">deab1e8</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+<td>
+wflow_publish("analysis/run_PMF_on_pbmc.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/f6599060c4805ca33dde3a73d8f0a4fe556a1e7e/docs/run_PMF_on_pbmc.html" target="_blank">f659906</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/39f087bb8be9f3d745c31744f371ad0ff8b4942e/analysis/run_PMF_on_pbmc.Rmd" target="_blank">39f087b</a>
 </td>
 <td>
@@ -658,30 +689,14 @@ table(pbmc_facs$samples$subpop)</code></pre>
 <pre><code>
  B cell   CD14+   CD34+ NK cell  T cell 
     767     163     687     673    1484 </code></pre>
-<pre class="r"><code>## use only B cell and NK cell
-cells = pbmc_facs$samples$subpop%in%c(&#39;B cell&#39;, &#39;NK cell&#39;)
-Y = counts[cells,]
-dim(Y)</code></pre>
-<pre><code>[1]  1440 16791</code></pre>
-<pre class="r"><code># filter out genes that has few expressions(3% cells)
-genes = (colSums(Y&gt;0) &gt; 0.03*dim(Y)[1])
-Y = Y[,genes]
-# make sure there is no zero col and row
-sum(rowSums(Y)==0)</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>sum(colSums(Y)==0)</code></pre>
-<pre><code>[1] 0</code></pre>
-<pre class="r"><code>dim(Y)</code></pre>
-<pre><code>[1] 1440 4015</code></pre>
-<pre class="r"><code>S = tcrossprod(c(rowSums(Y)),c(colSums(Y)))/sum(Y)
-Y = as.matrix(Y)</code></pre>
+<pre class="r"><code>hist(rowSums(counts),breaks = 100,main=&#39;library size&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>sum(counts != 0)/prod(dim(counts))</code></pre>
+<pre><code>[1] 0.04265257</code></pre>
+<pre class="r"><code>hist(colMeans(counts!=0),breaks = 100,main=&#39;gene expression sparsity&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>There are 5 main cell types and 16791 genes.</p>
-<p>To start with, I considered two cell types, B cell, and NK cell. Then
-I filtered out genes that have no expression in more than <span
-class="math inline">\(3\%\)</span> cells. The gene filtering is mainly
-for reducing the data size and the running time.</p>
-<p>The final dataset is of dimension 1440 cells by 4015 genes. I set the
-scaling factors as <span class="math inline">\(s_{ij} =
+<p>I set the scaling factors as <span class="math inline">\(s_{ij} =
 \frac{y_{i+}y_{+j}}{y_{++}}\)</span>. For comparison, I also fit
 <code>flash</code> on transformed count data, as <span
 class="math inline">\(\tilde{y}_{ij} =
@@ -689,63 +704,246 @@ class="math inline">\(\tilde{y}_{ij} =
 class="math inline">\(a_j = median(s_{\cdot j})\)</span>. This
 transformation is derived from <span
 class="math inline">\(\tilde{y}_{ij} =
-\log(\frac{y_{ij}}{s_{ij}}+\frac{0.5}{a_j})\)</span>. However
-<code>flash</code> was not able to terminate at <span
-class="math inline">\(Kmax = 50\)</span>. The splitting PMF estiamted
-<span class="math inline">\(K=3\)</span>. In addition, the svd seems to
-also support <span class="math inline">\(K=3\)</span>, as the scree plot
-show 3 points clearly separated from the rest.</p>
-<pre class="r"><code>fit = readRDS(&#39;output/poisson_MF_simulation/fit_pbmc_2cells.rds&#39;)
-fit_flashier = readRDS(&#39;output/poisson_MF_simulation/fit_flashier_pbmc_2cells.rds&#39;)
-fit_svd = readRDS(&#39;output/poisson_MF_simulation/fit_svd_pbmc_2cells.rds&#39;)</code></pre>
-<pre class="r"><code>plot(fit_svd$d)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+\log(\frac{y_{ij}}{s_{ij}}+\frac{0.5}{a_j})\)</span>. PMF splitting
+found 8 topics while <code>flash</code> was not able to terminate at
+<span class="math inline">\(Kmax = 50\)</span>.</p>
+<pre class="r"><code>fit = readRDS(&#39;output/poisson_MF_simulation/pbmc.rds&#39;)
+fit_flashier = readRDS(&#39;output/poisson_MF_simulation/fit_flashier_pbmc.rds&#39;)</code></pre>
 <pre class="r"><code>fit$run_time</code></pre>
-<pre><code>Time difference of 1.768594 hours</code></pre>
-<pre class="r"><code>plot(fit$eblo_trace,type=&#39;l&#39;)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>The PMF algorithm converges after <span
-class="math inline">\(~3000\)</span> iterations and <span
-class="math inline">\(106\)</span>mins.</p>
+<pre><code>Time difference of 47.32218 mins</code></pre>
+<pre class="r"><code>length(fit$eblo_trace)</code></pre>
+<pre><code>[1] 31</code></pre>
 <pre class="r"><code>fit$fit_flash$n.factors</code></pre>
-<pre><code>[1] 3</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>plot(fit$K_trace)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/f6599060c4805ca33dde3a73d8f0a4fe556a1e7e/docs/figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-4-1.png" target="_blank">f659906</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,ylab = &#39;sigma2&#39;,xlab=&#39;gene&#39;,col=&#39;grey50&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit$fit_flash$pve</code></pre>
+<pre><code>[1] 0.123040424 0.063147067 0.154416315 0.032677966 0.089673586 0.011026902
+[7] 0.004013609 0.004966344</code></pre>
+<pre class="r"><code>plot(colSums(counts/c(rowSums(counts)))/dim(counts)[1],fit$sigma2,xlab=&#39;gene mean count(after library size adjustment)&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(colSums(Y/c(rowSums(Y)))/dim(Y)[1],fit$sigma2,xlab=&#39;gene mean count(after library size adjustment)&#39;)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(colSums(Y==0)/dim(Y)[1],fit$sigma2,xlab=&#39;sparsity&#39;)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Plot of factors:</p>
-<pre class="r"><code>par(mfrow=c(3,1))
-plot(fit$fit_flash$F.pm[,1],xlab=&#39;gene&#39;,ylab=&#39;first factor&#39;)
-plot(fit$fit_flash$F.pm[,2],xlab=&#39;gene&#39;,ylab=&#39;second factor&#39;)
-plot(fit$fit_flash$F.pm[,3],xlab=&#39;gene&#39;,ylab=&#39;third factor&#39;)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-7-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>Plot of Loading:</p>
-<pre class="r"><code>cell_names = as.character(pbmc_facs$samples$subpop[cells])
-color_cell = replace(cell_names,which(cell_names==&#39;B cell&#39;),&#39;red&#39;)
-color_cell = replace(color_cell,which(cell_names==&#39;NK cell&#39;),&#39;blue&#39;)
-par(mfrow=c(3,1))
-plot(fit$fit_flash$L.pm[,1],xlab=&#39;cells&#39;,ylab=&#39;first loading&#39;,col=color_cell)
-plot(fit$fit_flash$L.pm[,2],xlab=&#39;cells&#39;,ylab=&#39;second loading&#39;,col=color_cell)
-plot(fit$fit_flash$L.pm[,3],xlab=&#39;cells&#39;,ylab=&#39;third factor&#39;,col=color_cell)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-8-1.png" width="864" style="display: block; margin: auto;" /></p>
-<p>Plot of first two loadings:</p>
-<pre class="r"><code>par(mfrow=c(1,1))
-plot(fit$fit_flash$L.pm[,1],fit$fit_flash$L.pm[,2],col=color_cell,xlab=&#39;first loading&#39;,ylab=&#39;second loading&#39;)
-legend(c(&#39;topright&#39;),c(&#39;B cell&#39;,&#39;NK cell&#39;),col=c(&#39;red&#39;,&#39;blue&#39;),pch=c(1,1))</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Plot of second two loadings:</p>
-<pre class="r"><code>par(mfrow=c(1,1))
-plot(fit$fit_flash$L.pm[,2],fit$fit_flash$L.pm[,3],col=color_cell,xlab=&#39;second loading&#39;,ylab=&#39;third loading&#39;)
-legend(c(&#39;topleft&#39;),c(&#39;B cell&#39;,&#39;NK cell&#39;),col=c(&#39;red&#39;,&#39;blue&#39;),pch=c(1,1))</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/f6599060c4805ca33dde3a73d8f0a4fe556a1e7e/docs/figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-5-1.png" target="_blank">f659906</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot(colSums(counts==0)/dim(counts)[1],fit$sigma2,xlab=&#39;sparsity&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>There’s trend that the sparser the gene , the larger <span
+class="math inline">\(\sigma^2\)</span>.</p>
+<pre class="r"><code>cell_names = as.character(pbmc_facs$samples$subpop)
+colors = 1:5
+cell_types = unique(cell_names)
+color_cell = colors[match(cell_names,cell_types)]
+par(mfrow=c(1,1))
+plot(fit$fit_flash$L.pm[,1],fit$fit_flash$L.pm[,2],col=color_cell,xlab=&#39;third loading&#39;,ylab=&#39;first loading&#39;)
+legend(c(&#39;topright&#39;),cell_types,col=1:5,pch=c(1,1,1,1,1))</code></pre>
 <p>Use Jason’s method for visualizing loadings:</p>
 <pre class="r"><code>source(&#39;code/poisson_STM/plot_factors.R&#39;)</code></pre>
-<pre class="r"><code>plot.factors(fit$fit_flash,cell_names,title=&#39;splitting PMF&#39;)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot.factors(fit_flashier,cell_names,kset = c(1:10),title=&#39;flashier&#39;)</code></pre>
-<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cell_names = as.character(pbmc_facs$samples$subpop)
+plot.factors(fit$fit_flash,cell_names,title=&#39;splitting PMF&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/f6599060c4805ca33dde3a73d8f0a4fe556a1e7e/docs/figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-8-1.png" target="_blank">f659906</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot.factors(fit_flashier,cell_names,kset = c(1:8),title=&#39;flashier&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/f6599060c4805ca33dde3a73d8f0a4fe556a1e7e/docs/figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-9-1.png" target="_blank">f659906</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot.factors(fit_flashier,cell_names,kset = c(1:30),title=&#39;flashier&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Some of the loadings from flashier such as 3 to 6 are local. So I
+filtered out genes that with nonzero counts in fewer than 10 cells, and
+refit flash.</p>
+<pre class="r"><code>fit_flashier = readRDS(&#39;output/poisson_MF_simulation/fit_flashier_pbmc_filter_gene.rds&#39;)
+plot.factors(fit_flashier,cell_names,kset = c(1:8),title=&#39;flashier&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/f6599060c4805ca33dde3a73d8f0a4fe556a1e7e/docs/figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-10-1.png" target="_blank">f659906</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot.factors(fit_flashier,cell_names,kset = c(1:30),title=&#39;flashier&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plot-of-factors" class="section level2">
+<h2>Plot of factors</h2>
+<pre class="r"><code>for(k in 1:fit$fit_flash$n.factors){
+  plot(fit$fit_flash$F.pm[,k],xlab=&#39;gene&#39;,ylab=&#39;&#39;,main=paste(&#39;factor&#39;,k))
+}</code></pre>
+<p><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-5.png" width="672" style="display: block; margin: auto;" /><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-6.png" width="672" style="display: block; margin: auto;" /><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-7.png" width="672" style="display: block; margin: auto;" /><img src="figure/run_PMF_on_pbmc.Rmd/unnamed-chunk-11-8.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -773,7 +971,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_3.3.6      stm_1.0.9          Matrix_1.5-1       fastTopics_0.6-142
+[1] ggplot2_3.3.6      stm_1.1.0          Matrix_1.5-1       fastTopics_0.6-142
 [5] workflowr_1.7.0   
 
 loaded via a namespace (and not attached):
