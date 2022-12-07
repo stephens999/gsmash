@@ -1,0 +1,57 @@
+---
+title: "run PMF on droplet dataset"
+author: "DongyueXie"
+date: "2022-12-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+The droplet dataset is from Peter and stored on RCC. I ran splitting PMF on the dataset.
+
+The dataset initially has 7193 cells and 18388 genes. I tried to run PMF on the dataset with 32GB memory but got an error saying out of memory. I don't know why but likely due to the vga step that I'm using a vector of size 7193*18388?
+
+So I filtered out genes that has no expressio in more than $3%$ of the total cells. The resulting dataset has 7193 cells and 8701 genes. I set the scaling factors as $s_{ij} = \frac{y_{i+}y_{+j}}{y_{++}}$. For comparison, I also fit `flash` on transformed count data, as $\tilde{y}_{ij} = \log(1+\frac{y_{ij}}{s_{ij}}\frac{a_j}{0.5})$ where $a_j = median(s_{\cdot j})$. This transformation is derived from $\tilde{y}_{ij} = \log(\frac{y_{ij}}{s_{ij}}+\frac{0.5}{a_j})$. 
+
+```{r}
+fit = readRDS('output/poisson_MF_simulation/droplet.rds')
+fit_flashier = readRDS('output/poisson_MF_simulation/fit_flashier_droplet_filter_gene.rds')
+```
+
+```{r}
+fit$run_time
+length(fit$eblo_trace)
+```
+
+```{r}
+fit$fit_flash$n.factors
+plot(fit$K_trace)
+plot(fit$sigma2,ylab = 'sigma2',xlab='gene',col='grey50')
+fit$fit_flash$pve
+```
+
+```{r}
+library(Matrix)
+load('data/real_data_singlecell/droplet.RData')
+genes = (colSums(counts>0) > (dim(counts)[1]*0.03))
+counts = counts[,genes]
+```
+
+Use Jason's method for visualizing loadings:
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r}
+cell_names = as.character(samples$tissue)
+plot.factors(fit$fit_flash,cell_names,title='splitting PMF')
+```
+
+```{r}
+plot.factors(fit_flashier,cell_names,title='flashier')
+```
+
+
