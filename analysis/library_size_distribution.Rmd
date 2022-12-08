@@ -9,7 +9,9 @@ editor_options:
 
 ## Introduction
 
-I look at the distribution of single cell library size on two datasets.
+I look at the distribution of single cell library size on two datasets. The main purpose is to learn a distribution of library size and generate data from it. 
+
+So to make it scale with the number of genes, the library size in the following is divided by the number of genes.
 
 The pbmc dataset.
 
@@ -17,7 +19,7 @@ The pbmc dataset.
 library(fastTopics)
 library(Matrix)
 data("pbmc_facs")
-s = rowSums(pbmc_facs$counts)
+s = rowSums(pbmc_facs$counts)/ncol(pbmc_facs$counts)
 hist(s,breaks = 100,main='pbmc data library size',probability = T)
 ```
 
@@ -38,7 +40,9 @@ shape = 2 + mean(s)^2/var(s)
 rate = (shape-1)*mean(s)
 shape
 rate
-hist(rinvgamma(1e5,shape=shape,rate=rate),breaks = 100,main='simulated library size',probability = T)
+dd = rinvgamma(1e5,shape=shape,rate=rate)
+hist(dd,breaks = 100,main='simulated library size',probability = T)
+hist(dd[dd<max(s)],breaks = 100,main='simulated library size',probability = T)
 ```
 
 droplet data
@@ -48,7 +52,7 @@ load('data/real_data_singlecell/droplet.RData')
 ```
 
 ```{r}
-s = rowSums(counts)
+s = rowSums(counts)/ncol(counts)
 hist(s,breaks = 100,main='droplet data library size',probability = T)
 ```
 
