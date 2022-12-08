@@ -1,0 +1,101 @@
+---
+title: "mean-variance relationship in real_single cell data"
+author: "DongyueXie"
+date: "2022-12-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+[Previously](NB_PLN_mean_var.html) I looked at the mean variance relationship in PLN model. Here I look at what the retio of variance to mean in real dataset. 
+
+Load the fitted model on pbmc data.
+
+```{r}
+fit = readRDS('output/poisson_MF_simulation/pbmc_iter270.rds')
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+counts <- pbmc_facs$counts
+S = tcrossprod(c(rowSums(counts)),c(colSums(counts)))/sum(counts)
+```
+
+We take the ratio of variance and mean,
+
+```{r}
+n = dim(counts)[1]
+p = dim(counts)[2]
+Sigma2 = matrix(fit$sigma2,nrow=n,ncol=p,byrow=TRUE)
+Phi = 1 + (exp(Sigma2)-1)*S*exp(fitted(fit$fit_flash)+Sigma2/2)
+```
+
+```{r}
+mean(Phi)
+median(Phi)
+quantile(Phi,0.25)
+quantile(Phi,0.75)
+```
+
+```{r}
+range(Phi)
+which(Phi==max(Phi),arr.ind=T)
+```
+
+```{r}
+counts[2281,16240]
+Sigma2[2281,16240]
+fitted(fit$fit_flash)[2281,16240]
+S[2281,16240]
+```
+
+
+```{r}
+plot(counts[2281,])
+plot(counts[,16240])
+```
+
+droplet data
+
+```{r}
+fit = readRDS('output/poisson_MF_simulation/droplet.rds')
+load('data/real_data_singlecell/droplet.RData')
+genes = (colSums(counts>0) > (dim(counts)[1]*0.03))
+counts = counts[,genes]
+S = tcrossprod(c(rowSums(counts)),c(colSums(counts)))/sum(counts)
+```
+
+We take the ratio of variance and mean,
+
+```{r}
+n = dim(counts)[1]
+p = dim(counts)[2]
+Sigma2 = matrix(fit$sigma2,nrow=n,ncol=p,byrow=TRUE)
+Phi = 1 + (exp(Sigma2)-1)*S*exp(fitted(fit$fit_flash)+Sigma2/2)
+```
+
+```{r}
+mean(Phi)
+median(Phi)
+quantile(Phi,0.25)
+quantile(Phi,0.75)
+```
+
+```{r}
+range(Phi)
+which(Phi==max(Phi),arr.ind=T)
+```
+
+```{r}
+counts[420,8506]
+Sigma2[420,8506]
+fitted(fit$fit_flash)[420,8506]
+S[420,8506]
+```
+
+```{r}
+plot(counts[420,])
+plot(counts[,8506])
+```
