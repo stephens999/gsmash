@@ -1,0 +1,81 @@
+---
+title: "single cell library size distribution"
+author: "DongyueXie"
+date: "2022-12-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I look at the distribution of single cell library size on two datasets.
+
+The pbmc dataset.
+
+```{r}
+library(fastTopics)
+library(Matrix)
+data("pbmc_facs")
+s = rowSums(pbmc_facs$counts)
+hist(s,breaks = 100,main='pbmc data library size',probability = T)
+```
+
+Fit a gamma distribution on $s$, using method of moment.
+
+```{r}
+rate = mean(s)/var(s)
+shape = mean(s)*rate
+rate
+shape
+hist(rgamma(1e5,shape=shape,rate=rate),breaks = 100,main='simulated library size',probability = T)
+```
+
+Fit a inverse gamma distribution on $s$, using method of moment.
+```{r}
+library(invgamma)
+shape = 2 + mean(s)^2/var(s)
+rate = (shape-1)*mean(s)
+shape
+rate
+hist(rinvgamma(1e5,shape=shape,rate=rate),breaks = 100,main='simulated library size',probability = T)
+```
+
+droplet data
+
+```{r}
+load('data/real_data_singlecell/droplet.RData')
+```
+
+```{r}
+s = rowSums(counts)
+hist(s,breaks = 100,main='droplet data library size',probability = T)
+```
+
+Fit a gamma distribution on $s$, using method of moment.
+
+```{r}
+rate = mean(s)/var(s)
+shape = mean(s)*rate
+rate
+shape
+hist(rgamma(1e5,shape=shape,rate=rate),breaks = 100,main='simulated library size',probability = T)
+```
+
+Fit a inverse gamma distribution on $s$, using method of moment.
+```{r}
+library(invgamma)
+shape = 2 + mean(s)^2/var(s)
+rate = (shape-1)*mean(s)
+shape
+rate
+dd = rinvgamma(1e5,shape=shape,rate=rate)
+hist(rinvgamma(1e5,shape=shape,rate=rate),breaks = 100,main='simulated library size',probability = T)
+hist(dd[dd<max(s)],breaks = 100,main='simulated library size',probability = T)
+```
+
+## Conclusion
+
+Gamma distribution seems not able to capture the peak of library size distribution. Inverse-gamma has heavier tails. I'll use inverse-Gamma, but set a maximum library size(truncate it).
+
+
