@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeb446697f8c39b21deaab34ae08b994e58e9871e9targetblankb446697a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree6739f3c50ec3864dfdcee80ed5d59f0ff94fa0c5targetblank6739f3ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/b446697f8c39b21deaab34ae08b994e58e9871e9" target="_blank">b446697</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/6739f3c50ec3864dfdcee80ed5d59f0ff94fa0c5" target="_blank">6739f3c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeb446697f8c39b21deaab34ae08b994e58e9871e9targetblankb446697a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree6739f3c50ec3864dfdcee80ed5d59f0ff94fa0c5targetblank6739f3ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/b446697f8c39b21deaab34ae08b994e58e9871e9" target="_blank">b446697</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/6739f3c50ec3864dfdcee80ed5d59f0ff94fa0c5" target="_blank">6739f3c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -567,6 +567,7 @@ Untracked files:
     Untracked:  output/poisson_smooth_simulation/
 
 Unstaged changes:
+    Modified:   analysis/index.Rmd
     Modified:   analysis/run_PMF_on_pbmc.Rmd
     Modified:   code/poisson_STM/real_PMF.R
 
@@ -620,6 +621,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/6739f3c50ec3864dfdcee80ed5d59f0ff94fa0c5/analysis/library_size_distribution.Rmd" target="_blank">6739f3c</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+<td>
+wflow_publish("analysis/library_size_distribution.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/9259fc254c454a96fa85596240ce8f602614df6d/docs/library_size_distribution.html" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/b446697f8c39b21deaab34ae08b994e58e9871e9/analysis/library_size_distribution.Rmd" target="_blank">b446697</a>
 </td>
 <td>
@@ -642,24 +677,101 @@ wflow_publish("analysis/library_size_distribution.Rmd")
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>I look at the distribution of single cell library size on two
-datasets.</p>
+datasets. The main purpose is to learn a distribution of library size
+and generate data from it.</p>
+<p>So to make it scale with the number of genes, the library size in the
+following is divided by the number of genes.</p>
 <p>The pbmc dataset.</p>
 <pre class="r"><code>library(fastTopics)
 library(Matrix)
 data(&quot;pbmc_facs&quot;)
-s = rowSums(pbmc_facs$counts)
+s = rowSums(pbmc_facs$counts)/ncol(pbmc_facs$counts)
 hist(s,breaks = 100,main=&#39;pbmc data library size&#39;,probability = T)</code></pre>
 <p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-1-1">
+Past versions of unnamed-chunk-1-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9259fc254c454a96fa85596240ce8f602614df6d/docs/figure/library_size_distribution.Rmd/unnamed-chunk-1-1.png" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Fit a gamma distribution on <span class="math inline">\(s\)</span>,
 using method of moment.</p>
 <pre class="r"><code>rate = mean(s)/var(s)
 shape = mean(s)*rate
 rate</code></pre>
-<pre><code>[1] 0.0009626857</code></pre>
+<pre><code>[1] 16.16446</code></pre>
 <pre class="r"><code>shape</code></pre>
 <pre><code>[1] 1.913245</code></pre>
 <pre class="r"><code>hist(rgamma(1e5,shape=shape,rate=rate),breaks = 100,main=&#39;simulated library size&#39;,probability = T)</code></pre>
 <p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9259fc254c454a96fa85596240ce8f602614df6d/docs/figure/library_size_distribution.Rmd/unnamed-chunk-2-1.png" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Fit a inverse gamma distribution on <span
 class="math inline">\(s\)</span>, using method of moment.</p>
 <pre class="r"><code>library(invgamma)
@@ -668,24 +780,138 @@ rate = (shape-1)*mean(s)
 shape</code></pre>
 <pre><code>[1] 3.913245</code></pre>
 <pre class="r"><code>rate</code></pre>
-<pre><code>[1] 5789.791</code></pre>
-<pre class="r"><code>hist(rinvgamma(1e5,shape=shape,rate=rate),breaks = 100,main=&#39;simulated library size&#39;,probability = T)</code></pre>
+<pre><code>[1] 0.3448151</code></pre>
+<pre class="r"><code>dd = rinvgamma(1e5,shape=shape,rate=rate)
+hist(dd,breaks = 100,main=&#39;simulated library size&#39;,probability = T)</code></pre>
 <p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9259fc254c454a96fa85596240ce8f602614df6d/docs/figure/library_size_distribution.Rmd/unnamed-chunk-3-1.png" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>hist(dd[dd&lt;max(s)],breaks = 100,main=&#39;simulated library size&#39;,probability = T)</code></pre>
+<p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>droplet data</p>
 <pre class="r"><code>load(&#39;data/real_data_singlecell/droplet.RData&#39;)</code></pre>
-<pre class="r"><code>s = rowSums(counts)
+<pre class="r"><code>s = rowSums(counts)/ncol(counts)
 hist(s,breaks = 100,main=&#39;droplet data library size&#39;,probability = T)</code></pre>
 <p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9259fc254c454a96fa85596240ce8f602614df6d/docs/figure/library_size_distribution.Rmd/unnamed-chunk-5-1.png" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Fit a gamma distribution on <span class="math inline">\(s\)</span>,
 using method of moment.</p>
 <pre class="r"><code>rate = mean(s)/var(s)
 shape = mean(s)*rate
 rate</code></pre>
-<pre><code>[1] 0.0003536794</code></pre>
+<pre><code>[1] 6.503457</code></pre>
 <pre class="r"><code>shape</code></pre>
 <pre><code>[1] 2.258288</code></pre>
 <pre class="r"><code>hist(rgamma(1e5,shape=shape,rate=rate),breaks = 100,main=&#39;simulated library size&#39;,probability = T)</code></pre>
 <p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9259fc254c454a96fa85596240ce8f602614df6d/docs/figure/library_size_distribution.Rmd/unnamed-chunk-6-1.png" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Fit a inverse gamma distribution on <span
 class="math inline">\(s\)</span>, using method of moment.</p>
 <pre class="r"><code>library(invgamma)
@@ -694,12 +920,86 @@ rate = (shape-1)*mean(s)
 shape</code></pre>
 <pre><code>[1] 4.258288</code></pre>
 <pre class="r"><code>rate</code></pre>
-<pre><code>[1] 20804.58</code></pre>
+<pre><code>[1] 1.131422</code></pre>
 <pre class="r"><code>dd = rinvgamma(1e5,shape=shape,rate=rate)
 hist(rinvgamma(1e5,shape=shape,rate=rate),breaks = 100,main=&#39;simulated library size&#39;,probability = T)</code></pre>
 <p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9259fc254c454a96fa85596240ce8f602614df6d/docs/figure/library_size_distribution.Rmd/unnamed-chunk-7-1.png" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(dd[dd&lt;max(s)],breaks = 100,main=&#39;simulated library size&#39;,probability = T)</code></pre>
 <p><img src="figure/library_size_distribution.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9259fc254c454a96fa85596240ce8f602614df6d/docs/figure/library_size_distribution.Rmd/unnamed-chunk-7-2.png" target="_blank">9259fc2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-08
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="conclusion" class="section level2">
 <h2>Conclusion</h2>
