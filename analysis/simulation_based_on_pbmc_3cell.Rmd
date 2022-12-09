@@ -1,0 +1,126 @@
+---
+title: "Simulation based on pbmc 3 cell types"
+author: "DongyueXie"
+date: "2022-12-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Setting
+
+This is a simulation comparing splitting PMF and flash on factorizing Poisson matrix. 
+
+To make the simulated dataset close to a real single cell data, I fitted a splitting PMF on a PBMC single cell data from `fastTopics` package. I took cells from cell types in  'B cell', 'NK cell','CD34+' and then filtered out genes that has no expression in more than $3\%$ percent of the cells. The two steps are mainly for reducing the dataset size. The resulting dataset has 2127 cells and 5470 genes. 
+
+Then I fitted splitting PMF on the dataset, with the scaling factors being $s_{ij} = \frac{y_{i+}y_{+j}}{y_{++}}$ and gene-specific variances. Then I generated data from the fitted model, and repeated 5 times. When simulating data, I took the first three topics(with PVE 0.24,0.20,0.17) and discarded the rests. The `flash` was fit on transformed count data, as $\tilde{y}_{ij} = \log(1+\frac{y_{ij}}{s_{ij}}\frac{a_j}{0.5})$ where $a_j = median(s_{\cdot j})$. This transformation is derived from $\tilde{y}_{ij} = \log(\frac{y_{ij}}{s_{ij}}+\frac{0.5}{a_j})$. 
+
+```{r}
+rmse = function(x,y){return(sqrt(mean((x-y)^2)))}
+res = readRDS('output/poisson_MF_simulation/PMF5_K3simu_pbmc_3cells.rds')
+```
+
+We first look at the number factors recovered from both methods. The true $K$ is 3.
+
+```{r}
+K_hat = c()
+for(i in 1:length(res$output)){
+  K_hat = rbind(K_hat,c(res$output[[i]]$fitted_model$flash$n.factors,res$output[[i]]$fitted_model$splitting$fit_flash$n.factors))
+}
+colnames(K_hat) = c('flash','splittingPMF')
+K_hat
+```
+
+Next we compare $\hat L\hat F'$ and true $LF'$.
+
+```{r}
+fit = readRDS('output/poisson_MF_simulation/pbmc_3cells_Sij.rds')
+kset = order(fit$fit$fit_flash$pve,decreasing = TRUE)[1:3]
+Ltrue = fit$fit$fit_flash$L.pm[,kset]
+Ftrue = fit$fit$fit_flash$F.pm[,kset]
+Mu_true = tcrossprod(Ltrue,Ftrue)
+```
+
+```{r}
+rmses= c()
+for(i in 1:length(res$output)){
+  rmses = rbind(rmses,c(rmse(Mu_true,fitted(res$output[[i]]$fitted_model$flash)),rmse(Mu_true,fitted(res$output[[i]]$fitted_model$splitting$fit_flash))))
+}
+colnames(rmses) = c('flash','splittingPMF')
+rmses
+```
+
+```{r,fig.width=10,fig.height=5,eval=F}
+par(mfrow=c(2,1))
+for(i in 1:length(res$output)){
+  plot(fitted(res$output[[i]]$fitted_model$flash),Mu_true,col='grey80',xlab='fitted',ylab='LF',main='flash')
+  abline(a=0,b=1)
+  plot(fitted(res$output[[i]]$fitted_model$splitting$fit_flash),Mu_true,col='grey80',xlab='fitted',ylab='LF',main='splitting')
+  abline(a=0,b=1)
+}
+par(mfrow=c(1,1))
+```
+
+Next we look at how the structures of L and F are recovered by both methods.
+
+We first plot loadings.
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(stm)
+require(gridExtra)
+data(pbmc_facs)
+counts <- pbmc_facs$counts
+table(pbmc_facs$samples$subpop)
+## use only B cell and NK cell and CD34+
+cells = pbmc_facs$samples$subpop%in%c('B cell', 'NK cell','CD34+')
+counts = counts[cells,]
+# filter out genes that has few expressions(3% cells)
+genes = (colSums(counts>0) > 0.03*dim(counts)[1])
+cell_names = pbmc_facs$samples$subpop[cells]
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r,fig.width=12,fig.height=4}
+plot0=plot.factors(fit$fit$fit_flash,cell.types=cell_names,kset=kset,title='True Loadings')
+for(i in 1:length(res$output)){
+  plot1 = plot.factors(res$output[[i]]$fitted_model$flash,cell.types=cell_names,title='flash')
+  plot2 = plot.factors(res$output[[i]]$fitted_model$splitting$fit_flash,cell.types=cell_names,title='splittingPMF')
+  grid.arrange(plot1, plot0,plot2, ncol=3)
+}
+
+```
+
+Plot of factors: the first simulation
+
+```{r,fig.width=12,fig.height=4}
+library(flashier)
+par(mfrow=c(3,1))
+ldfed = ldf(fit$fit$fit_flash)
+plot(ldfed$F[,1],main='factor 1')
+plot(ldfed$F[,2],main='factor 2')
+plot(ldfed$F[,3],main='factor 3')
+```
+
+```{r,fig.width=12,fig.height=4}
+par(mfrow=c(3,1))
+ldfed1 = ldf(res$output[[1]]$fitted_model$splitting$fit_flash)
+plot(ldfed1$F[,1],main='splittingPMF estimated factor 1')
+plot(ldfed1$F[,2],main='splittingPMF estimated factor 2')
+plot(ldfed1$F[,3],main='splittingPMF estimated factor 3')
+```
+
+```{r,fig.width=12,fig.height=4}
+par(mfrow=c(3,1))
+ldfed2 = ldf(res$output[[1]]$fitted_model$flash)
+plot(ldfed2$F[,1],main='flash estimated factor 1')
+plot(ldfed2$F[,2],main='flash estimated factor 2')
+plot(ldfed2$F[,3],main='flash estimated factor 3')
+plot(ldfed2$F[,4],main='flash estimated factor 4')
+plot(ldfed2$F[,5],main='flash estimated factor 5')
+plot(ldfed2$F[,6],main='flash estimated factor 6')
+```
+
+
+
