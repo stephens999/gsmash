@@ -82,7 +82,7 @@ cell_names = pbmc_facs$samples$subpop[cells]
 source('code/poisson_STM/plot_factors.R')
 ```
 
-```{r,fig.width=18,fig.height=4}
+```{r,fig.width=16,fig.height=4}
 plot0=plot.factors(fit$fit$fit_flash,cell.types=cell_names,kset=kset,title='True Loadings')
 for(i in 1:length(res$output)){
   plot1 = plot.factors(res$output[[i]]$fitted_model$flash,cell.types=cell_names,title='flash')
