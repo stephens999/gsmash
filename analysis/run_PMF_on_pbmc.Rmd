@@ -50,19 +50,12 @@ plot(colSums(counts/c(rowSums(counts)))/dim(counts)[1],fit$sigma2,xlab='gene mea
 plot(colSums(counts==0)/dim(counts)[1],fit$sigma2,xlab='sparsity')
 ```
 
-There's trend that the sparser the gene , the larger $\sigma^2$.
-
-
-```{r,eval=F}
-cell_names = as.character(pbmc_facs$samples$subpop)
-colors = 1:5
-cell_types = unique(cell_names)
-color_cell = colors[match(cell_names,cell_types)]
-par(mfrow=c(1,1))
-plot(fit$fit_flash$L.pm[,1],fit$fit_flash$L.pm[,2],col=color_cell,xlab='third loading',ylab='first loading')
-legend(c('topright'),cell_types,col=1:5,pch=c(1,1,1,1,1))
+```{r}
+plot(colSums(counts/c(rowSums(counts)))/dim(counts)[1],fit$sigma2,xlab='gene mean count(after library size adjustment)')
+plot(colSums(counts==0)/dim(counts)[1],fit$sigma2,xlab='sparsity')
 ```
 
+There's trend that the sparser the gene , the larger $\sigma^2$.
 
 Use Jason's method for visualizing loadings:
 
@@ -76,8 +69,7 @@ plot.factors(fit$fit_flash,cell_names,title='splitting PMF')
 ```
 
 ```{r}
-plot.factors(fit_flashier,cell_names,kset = c(1:8),title='flashier')
-plot.factors(fit_flashier,cell_names,kset = c(1:30),title='flashier')
+plot.factors(fit_flashier,cell_names,title='flashier')
 ```
 
 Some of the loadings from flashier such as 3 to 6 are local. So I filtered out genes that with nonzero counts in fewer than 10 cells, and refit flash.
@@ -85,9 +77,7 @@ Some of the loadings from flashier such as 3 to 6 are local. So I filtered out g
 ```{r}
 fit_flashier = readRDS('output/poisson_MF_simulation/fit_flashier_pbmc_filter_gene.rds')
 plot.factors(fit_flashier,cell_names,kset = c(1:8),title='flashier')
-plot.factors(fit_flashier,cell_names,kset = c(1:30),title='flashier')
 ```
-
 
 ## Plot of factors
 
