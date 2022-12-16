@@ -1,0 +1,101 @@
+---
+title: "bernoulli splitting fail"
+author: ""
+date: "2022-12-10"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+\begin{equation}
+    \begin{split}
+        &x_i|\mu_i\sim Ber(\sigma(\mu_i)),
+        \\
+        &\mu_i\sim N(\beta,\sigma^2),
+    \end{split}
+\end{equation}
+where $\beta$ is known and $\sigma^2$ is to be estimated by maximizing the log(marginal)-likelihood
+\begin{equation}
+    l(\sigma^2) = \sum_i\log \int p(x_i|\mu_i)N(\mu_i;\beta,\sigma^2)d\mu_i. 
+\end{equation}
+
+```{r}
+library(vebpm)
+library(fastGHQuad)
+library(ebnm)
+library(Rfast)
+#p(x|\sigma2) when x = 1
+h1 = function(x){
+  1/(1+exp(-x))
+}
+marginal1 = function(sigma2,beta,n_gh = 10){
+  gh_points = gaussHermiteData(n_gh)
+  1/sqrt(pi)*sum(gh_points$w*h1(sqrt(2*sigma2)*gh_points$x+beta))
+}
+
+#p(x|\sigma2) when x = 0
+h0 = function(x){
+  1/(1+exp(x))
+}
+marginal0 = function(sigma2,beta,n_gh = 10){
+  gh_points = gaussHermiteData(n_gh)
+  1/sqrt(pi)*sum(gh_points$w*h0(sqrt(2*sigma2)*gh_points$x+beta))
+}
+```
+
+```{r}
+loglik_sigma2= function(sigma2,x,beta,n_gh=20){
+  n1 = sum(x)
+  n0 = length(x) - n1
+  L1 = marginal1(sigma2,beta,n_gh)
+  L0 = marginal0(sigma2,beta,n_gh)
+  n1*log(L1) + n0*log(L0)
+}
+loglik_sigma2_vec= function(sigma2,x,beta,n_gh=20){
+  res = c()
+  for(i in 1:length(sigma2)){
+    res[i] = loglik_sigma2(sigma2[i],x,beta,n_gh)
+  }
+  res
+}
+loglik_grad = function(sigma2,x,beta,n_gh=20){
+  grad(loglik_sigma2,sigma2,x=x,beta=beta,n_gh)
+}
+loglik_grad_vec= function(sigma2,x,beta,n_gh=20){
+  res = c()
+  for(i in 1:length(sigma2)){
+    res[i] = loglik_grad(sigma2[i],x,beta,n_gh)
+  }
+  res
+}
+```
+
+```{r}
+n = 100
+beta=1
+sigma2=1
+mu = rnorm(n,beta,sqrt(sigma2))
+x = rbinom(n,1,1/(1+exp(-mu)))
+```
+
+```{r}
+s2 = seq(0,5,length.out=100)
+plot(s2,loglik_sigma2_vec(s2,x,0),type='l')
+```
+
+```{r}
+s2 = seq(0,100,length.out=100)
+plot(s2,loglik_sigma2_vec(s2,x,1),type='l')
+```
+
+```{r}
+s2 = seq(0,100,length.out=100)
+plot(s2,loglik_sigma2_vec(s2,x,10),type='l')
+```
+
+```{r}
+s2 = seq(0,100,length.out=100)
+plot(s2,loglik_sigma2_vec(s2,x,-10),type='l')
+```
