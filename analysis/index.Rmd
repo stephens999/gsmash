@@ -111,3 +111,4 @@ Second Run:
 ## Binomial 
 
 * [Apply Splitting to Binomial Mean problem](binomial_mean_spliiting.html)
+* [It does not work for binary data](bernoulli_GG_fail.html)
