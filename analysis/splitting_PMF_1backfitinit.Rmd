@@ -1,0 +1,130 @@
+---
+title: "splitting PMF 1 backfitting in init"
+author: "DongyueXie"
+date: "2022-12-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+The results here show that using 1 back-fitting in flash initialization does not affect the final results.
+
+```{r}
+rmse = function(x,y){return(sqrt(mean((x-y)^2)))}
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/PMF10_K3simu_pbmc_3cells_1backinit.rds')
+```
+
+We first look at the number factors recovered from both methods. The true $K$ is 3.
+
+```{r}
+K_hat = c()
+for(i in 1:length(res$output)){
+  K_hat = rbind(K_hat,c(res$output[[i]]$fitted_model$flash$n.factors,res$output[[i]]$fitted_model$splitting$fit_flash$n.factors))
+}
+colnames(K_hat) = c('flash','splittingPMF')
+K_hat
+```
+
+Next we compare $\hat L\hat F'$ and true $LF'$.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_3cells_Sij.rds')
+kset = order(fit$fit$fit_flash$pve,decreasing = TRUE)[1:3]
+Ltrue = fit$fit$fit_flash$L.pm[,kset]
+Ftrue = fit$fit$fit_flash$F.pm[,kset]
+Mu_true = tcrossprod(Ltrue,Ftrue)
+```
+
+```{r}
+rmses= c()
+for(i in 1:length(res$output)){
+  rmses = rbind(rmses,c(rmse(Mu_true,fitted(res$output[[i]]$fitted_model$flash)),rmse(Mu_true,fitted(res$output[[i]]$fitted_model$splitting$fit_flash))))
+}
+colnames(rmses) = c('flash','splittingPMF')
+rmses
+```
+
+```{r,fig.width=10,fig.height=5,eval=F}
+par(mfrow=c(2,1))
+for(i in 1:length(res$output)){
+  plot(fitted(res$output[[i]]$fitted_model$flash),Mu_true,col='grey80',xlab='fitted',ylab='LF',main='flash')
+  abline(a=0,b=1)
+  plot(fitted(res$output[[i]]$fitted_model$splitting$fit_flash),Mu_true,col='grey80',xlab='fitted',ylab='LF',main='splitting')
+  abline(a=0,b=1)
+}
+par(mfrow=c(1,1))
+```
+
+Next we look at how the structures of L and F are recovered by both methods.
+
+We first plot loadings.
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(stm)
+require(gridExtra)
+data(pbmc_facs)
+counts <- pbmc_facs$counts
+table(pbmc_facs$samples$subpop)
+## use only B cell and NK cell and CD34+
+cells = pbmc_facs$samples$subpop%in%c('B cell', 'NK cell','CD34+')
+counts = counts[cells,]
+# filter out genes that has few expressions(3% cells)
+genes = (colSums(counts>0) > 0.03*dim(counts)[1])
+cell_names = pbmc_facs$samples$subpop[cells]
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r,fig.width=16,fig.height=4}
+plot0=plot.factors(fit$fit$fit_flash,cell.types=cell_names,kset=kset,title='True Loadings')
+for(i in 1:length(res$output)){
+  plot1 = plot.factors(res$output[[i]]$fitted_model$flash,cell.types=cell_names,title='flash')
+  plot2 = plot.factors(res$output[[i]]$fitted_model$splitting$fit_flash,cell.types=cell_names,title='splittingPMF')
+  grid.arrange(plot1, plot0,plot2, ncol=3)
+}
+
+```
+
+## misc
+
+number of iterations until convergence
+
+```{r}
+for(i in 1:length(res$output)){
+   print(length(res$output[[i]]$fitted_model$splitting$eblo_trace))
+}
+```
+
+
+run time analysis
+
+```{r}
+for(i in 1:length(res$output)){
+   print((res$output[[i]]$fitted_model$splitting$run_time))
+}
+```
+
+run time break down
+
+```{r}
+tt = c()
+for(i in 1:length(res$output)){
+   tt = rbind(tt,unlist(lapply(res$output[[i]]$fitted_model$splitting$run_time_break_down,mean)))
+}
+apply(tt,2,mean)
+```
+
+Plot K trace
+
+```{r}
+plot(res$output[[i]]$fitted_model$splitting$K_trace,ylab='K',xlab='iterations',type='l',col='grey80')
+for(i in 1:length(res$output)){
+   lines(res$output[[i]]$fitted_model$splitting$K_trace,col=i)
+}
+```
+
+
+Maybe omit greedy step after the K is stabilized? to reduce computation time.
