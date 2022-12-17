@@ -214,20 +214,40 @@ Esigmoid = function(m,v,gh_points){
 # }
 
 
-binomial_mean_GG = function(x,nb,beta=NULL,sigma2=NULL,maxiter=100,tol=1e-5,n_gh = 10,printevery = 1){
+binomial_mean_GG = function(x,nb,beta=NULL,sigma2=NULL,
+                            est_prior_mean =TRUE,
+                            est_prior_var = TRUE,
+                            m_init = NULL,
+                            v_init = NULL,
+                            maxiter=100,tol=1e-5,n_gh = 10,printevery = 1){
 
   n = length(x)
-  m = logit(x/nb)
-  m[m==-Inf] = logit(0.1)
-  m[m==Inf] = logit(0.9)
-  v = rep(1/n,n)
+  if(is.null(m_init)){
+    m = logit(x/nb)
+    m[m==-Inf] = logit(0.1)
+    m[m==Inf] = logit(0.9)
+  }else{
+    m = m_init
+  }
+
+  if(is.null(v_init)){
+    v = rep(1/n,n)
+  }else{
+    v = v_init
+  }
+
   gh_points = gaussHermiteData(n_gh)
   const = sum(lfactorial(nb)-lfactorial(x)-lfactorial(nb-x))
   obj = -Inf
 
   for(iter in 1:maxiter){
-    beta = mean(m)
-    sigma2 = mean(m^2+v-2*m*beta+beta^2)
+    if(est_prior_mean){
+      beta = mean(m)
+    }
+    if(est_prior_var){
+      sigma2 = mean(m^2+v-2*m*beta+beta^2)
+    }
+
 
     opt = vga_binomial(c(m,log(v)),x,nb,beta,sigma2,gh_points=gh_points)
     m = opt$m
@@ -259,6 +279,49 @@ binomial_mean_GG = function(x,nb,beta=NULL,sigma2=NULL,maxiter=100,tol=1e-5,n_gh
 }
 
 
+binomial_smooth = function(x,nb,sigma2_init=NULL, est_sigma2=TRUE,maxiter=100,tol=1e-4,n_gh=10,filter.number = 1,
+                           Eb_init = NULL,
+                           family = 'DaubExPhase',ebnm_params=list(mode=0)){
+  n = length(x)
+  W = (t(GenW(n,filter.number,family)))[-1,]
+  obj = -Inf
+  sigma2 = sigma2_init
+  gh_points = gaussHermiteData(n_gh)
+  #Eb = logit(mean(x))
+  if(is.null(Eb_init)){
+    Eb = rep(0,n)
+  }else{
+    Eb = Eb_init
+  }
+  opt = vga_binomial(c(Eb,rep(1/n,n)),x,nb,Eb,sigma2,gh_points=gh_points)
+  m = opt$m
+  v = opt$v
+  for(iter in 1:maxiter){
+
+    qb = smash_dwt(m,sqrt(sigma2),filter.number=filter.number,family=family,ebnm_params=ebnm_params,W=W)
+    Eb = qb$posterior$mean
+    Eb2 = qb$posterior$var + Eb^2
+
+    opt = vga_binomial(c(m,log(v)),x,nb,Eb,sigma2,gh_points=gh_points)
+    m = opt$m
+    v = opt$v
+
+    if(est_sigma2){
+      sigma2 = mean(m^2+v+Eb2-2*m*Eb)
+    }
+
+  }
+  return(list(Eb=Eb,m=m,sigma2=sigma2))
+}
+
+# n = 512
+# nb = rep(1,n)
+# mu = c(rep(-3,n/2),rep(3,n/2))
+# p = sigmoid(mu)
+# x = rbinom(n,nb,p)
+# plot(x,col='grey80')
+# lines(sigmoid(mu))
+# lines(sigmoid(fit$Eb),col=4)
 
 
 
