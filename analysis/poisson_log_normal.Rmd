@@ -1,0 +1,113 @@
+---
+title: "poisson log normal distribution"
+author: "DongyueXie"
+date: "2022-12-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Consider the model 
+\[x\sim Poisson(s\exp(\mu)),\mu\sim N(0,\sigma2).\]
+
+There are two approaches to estimate $\sigma^2$ and get the posterior of $\mu$.
+
+A. estimate $\sigma^2$ by maximizing the marginal likelihood then obtain $p(\mu|x;\hat\sigma^2)$.
+
+B. estimate $\sigma^2$ and $q(\mu)$ iteratively in a variational empirical Bayes algorithm.
+
+ANother question is: is $q(\mu)=M(\mu;\cdot,\cdot)$ a good approximation to the true posterior?
+
+Let's answer the last question first. Assume $\sigma^2$ is known. THe true posterior of $\mu$ is 
+$$p(\mu|x) = \frac{p(x|\mu)p(\mu)}{p(x)} \propto e^{\mu x - se^\mu-\frac{\mu^2}{2\sigma^2}}$$. Apparently there's no closed form of the posterior.
+
+Here I use quadrature to calculate the posterior density. 
+
+```{r}
+library(fastGHQuad)
+library(vebpm)
+pois_pmf = function(mu,x){
+  dpois(x,exp(mu))
+}
+pln_marginal = function(x,sigma2,n_gh=20){
+  gh_points = gaussHermiteData(n_gh)
+  1/sqrt(pi)*sum(gh_points$w*pois_pmf(sqrt(2*sigma2)*gh_points$x,x))
+}
+mu_true_post = function(mu,x,sigma2){
+  pois_pmf(mu,x)*dnorm(mu,0,sqrt(sigma2))/pln_marginal(x,sigma2)
+}
+mu_true_post_vec = function(mu,x,sigma2){
+  n = length(mu)
+  res = c()
+  for(i in 1:n){
+    res[i] =  mu_true_post(mu[i],x,sigma2)
+  }
+  res
+}
+```
+
+Let's plot the true posterior density, setting $\sigma^2=1$: I also plot the posterior $q(\mu) = N(m,v)$ fitted by variational inference.
+
+```{r}
+plot_posterior = function(mu_seq,x,prior_var=1){
+  d_true = mu_true_post_vec(mu_seq,x,prior_var)
+  fit = pois_mean_GG(x,prior_mean = 0,prior_var = prior_var,)
+  d_hat = dnorm(mu_seq,mean=fit$posterior$mean_log,sd=sqrt(fit$posterior$var_log))
+  plot(mu_seq,d_true,type='l',xlab=expression(mu),ylab='density',main=paste('prior N(0,',prior_var,'), x = ',x,sep=''),col=2,ylim=range(c(d_true,d_hat)))
+  lines(mu_seq,d_hat,col=4)
+  legend('topleft',c('true posterior','estimated'),lty=c(1,1),col=c(2,4))
+}
+```
+
+```{r,fig.width=6,fig.height=6}
+sigma2 = 1
+mu_seq = seq(-5,8,length.out = 500)
+par(mfrow=c(2,2))
+for(x in 0:11){
+  plot_posterior(mu_seq,x,prior_var=sigma2)
+}
+```
+
+The normal posterior is a reasonable choice.
+
+Now about estimating the variance, we are interested in the accuracy and the speed. We can either use quadrature or numerical integration to evaluate the marginal likelihood.
+
+```{r}
+f = function(mu,x,lsigma2){
+  dpois(x,exp(mu))*dnorm(mu,0,sqrt(exp(lsigma2)))
+}
+pln_marginal_loglik = function(lsigma2,x){
+  # quadrature
+  res = 0
+  for(i in 1:length(x)){
+    res = res + log(pln_marginal(x[i],exp(lsigma2)))
+  }
+  -res
+}
+pln_mle = function(x){
+  exp(optim(0,pln_marginal_loglik,x=x,method = "L-BFGS-B")$par)
+}
+```
+
+```{r}
+par(mfrow=c(1,1))
+n = 1000
+mu = rnorm(n)
+x = rpois(n,exp(mu))
+s_seq = seq(0.001,3,length.out=100)
+l = c()
+for(i in 1:length(s_seq)){
+  l[i] = pln_marginal_loglik(log(s_seq[i]),x)
+}
+plot(s_seq,l,ylab='negative llik')
+
+pln_mle(x)
+exp(optimize(pln_marginal_loglik,interval = c(-1,1),x=x)$minimum)
+```
+
+The numerical integration is a bottleneck of the computation. If we could get rid of the integration...?
+
+
+
