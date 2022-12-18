@@ -61,7 +61,7 @@ plot_posterior = function(mu_seq,x,prior_var=1){
 }
 ```
 
-```{r,fig.width=6,fig.height=6}
+```{r,fig.width=10,fig.height=10}
 sigma2 = 1
 mu_seq = seq(-5,8,length.out = 500)
 par(mfrow=c(2,2))
