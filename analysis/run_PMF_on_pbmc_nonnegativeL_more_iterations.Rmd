@@ -1,0 +1,56 @@
+---
+title: "run PMF on pbmc, nonnegative Loadings, more iterations"
+author: "DongyueXie"
+date: "2022-12-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I run splitting PMF on the pbmc data with nonnegative loadings. [Previous one](run_PMF_on_pbmc_nonnegativeL.Rmd) was run 200 iterations.
+
+```{r}
+rmse = function(x,y){return(sqrt(mean((x-y)^2)))}
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_full_Sij_nonnegativeL.rds')
+fit = res$fit
+```
+
+```{r}
+fit$run_time
+plot(fit$eblo_trace,type='l')
+```
+
+
+```{r}
+fit$fit_flash$n.factors
+plot(fit$K_trace)
+plot(fit$sigma2,ylab = 'sigma2',xlab='gene',col='grey50')
+```
+
+Use Jason's method for visualizing loadings:
+
+```{r}
+library(fastTopics)
+data(pbmc_facs)
+
+### use three cells
+#cells = pbmc_facs$samples$subpop%in%c('B cell', 'NK cell','CD34+')
+cell_names =pbmc_facs$samples$subpop
+```
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r}
+plot.factors(fit$fit_flash,cell_names,title='splitting PMF')
+```
+
+## RUn time analysis
+
+```{r}
+unlist(lapply(fit$run_time_break_down,median))
+```
+
