@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>hOMEPAGe</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gsmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">hOMEPAGe</h1>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2022-12-19
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>gsmash/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee0212d0ec365d35490e9d6bc92aff4a8ce152abftargetblanke0212d0a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/e0212d0ec365d35490e9d6bc92aff4a8ce152abf" target="_blank">e0212d0</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee0212d0ec365d35490e9d6bc92aff4a8ce152abftargetblanke0212d0a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/e0212d0ec365d35490e9d6bc92aff4a8ce152abf" target="_blank">e0212d0</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/index.Rmd</code>) and HTML
+(<code>docs/index.html</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e0212d0ec365d35490e9d6bc92aff4a8ce152abf/analysis/index.Rmd" target="_blank">e0212d0</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/e0212d0ec365d35490e9d6bc92aff4a8ce152abf/docs/index.html" target="_blank">e0212d0</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/2368e4d0bd13d25b650a484c6d8a1678a1725325/docs/index.html" target="_blank">2368e4d</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/7365c10072dbab1ec87fe5a25863a0ca8077f4c1/analysis/index.Rmd" target="_blank">7365c10</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/1cf27664fe494a608fb911da01e02beece2142a2/docs/index.html" target="_blank">1cf2766</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/a8700206296be6bab391fae38b79ff2c1258afa8/analysis/index.Rmd" target="_blank">a870020</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-18
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/c4099060790123cac75d3e37a1353b2d4e40173c/docs/index.html" target="_blank">c409906</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3481595e91adbd4cc248e82e66c82e4ed6c41470/analysis/index.Rmd" target="_blank">3481595</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-17
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/d94d5c1d4c420bc730c363c5e02140f0d4d64bca/docs/index.html" target="_blank">d94d5c1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3abf9675f9fb5b4a65dd71d069a15a3d21307b86/analysis/index.Rmd" target="_blank">3abf967</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-17
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/9e9974ecbddfdb4b5ee63a48928954f2995d1e3b/docs/index.html" target="_blank">9e9974e</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/4ec37a235c40f7a96735b7c0e392d339af1bf378/analysis/index.Rmd" target="_blank">4ec37a2</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/dcd5d991eb5e2838a0292fc12a0ec9df1ade50e1/docs/index.html" target="_blank">dcd5d99</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/6c9f108c7400a215406aeab360e81797c1fcf6b4/analysis/index.Rmd" target="_blank">6c9f108</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-09
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/fce6a089e32920244010ef14da9124bff2af77e9/docs/index.html" target="_blank">fce6a08</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/02435cd476a188c4236b6ed90361bf76945fb4fe/analysis/index.Rmd" target="_blank">02435cd</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/f626fbd1a8820bea3eb752bd434f9f46505162b7/docs/index.html" target="_blank">f626fbd</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/ddd4418bbfbcc01e2e6d11c1f0d7ec85fb50bd33/analysis/index.Rmd" target="_blank">ddd4418</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/ba6d36b4b0f953916d86309f78e086896a53c868/docs/index.html" target="_blank">ba6d36b</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/569eba873b2965a349e2a35c36ec6b873bb2b7bf/analysis/index.Rmd" target="_blank">569eba8</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-06
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/d2d140fecb44a6be31f7f1e3b1b026241b29760d/docs/index.html" target="_blank">d2d140f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/65c5c38d9e55ff1c9760ec6a5fa8e9d237fae610/analysis/index.Rmd" target="_blank">65c5c38</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-04
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/035e7354b5d2658d9dfd6f58cff040fe4a086134/docs/index.html" target="_blank">035e735</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/a3c7d8a63764cea79290a3f8ea0d9c0f88abaea5/analysis/index.Rmd" target="_blank">a3c7d8a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-28
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/8aed873e12442b494186a8dd9002ec11cc46894e/docs/index.html" target="_blank">8aed873</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/5e3d5b13457bdfc129af929f260d8b1103679fb2/analysis/index.Rmd" target="_blank">5e3d5b1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-28
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/7953ed05c4d6a2bd8eecab71c301d1a9f2b947be/docs/index.html" target="_blank">7953ed0</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/343de7b53ad61e36139404fe531c216aec012486/analysis/index.Rmd" target="_blank">343de7b</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-22
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/b855ed131dc1ea32cdc63c1037fa9e56c47b6a05/docs/index.html" target="_blank">b855ed1</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-21
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/6cd3705b1be0bcef624b369c510a7d896fed9cad/analysis/index.Rmd" target="_blank">6cd3705</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-21
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/c773488912df139c88fd985452c4809c1a79ea97/docs/index.html" target="_blank">c773488</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-18
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/c6ad06f25ef49efabb22e72dc8f89c9531f3e4b7/analysis/index.Rmd" target="_blank">c6ad06f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-18
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/a7150cfbdac4c09d2c4c1fba1e28d39f0cfda932/docs/index.html" target="_blank">a7150cf</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/5e4038f48c8ada82206f83ad516549e26ba7d334/analysis/index.Rmd" target="_blank">5e4038f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/82b7d065dccc8582ffa10b5d3110fa79e5e3a6ae/docs/index.html" target="_blank">82b7d06</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/164270794c182b2ed69f3e9f83d3e2a5c0cc7a67/analysis/index.Rmd" target="_blank">1642707</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/97ed5ae7ddfa8e950e36d65c62029f2ca52a4cbf/docs/index.html" target="_blank">97ed5ae</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/8428e51b45fccf79044c16f18804fc1e2353af95/analysis/index.Rmd" target="_blank">8428e51</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-16
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/befb8ea629b8f4e0fc8be10fa77172f81c83ab4c/docs/index.html" target="_blank">befb8ea</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/a6aa06c6b4cb411f27e5b37cf30808e68ae50b5f/analysis/index.Rmd" target="_blank">a6aa06c</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/3f4cd851ab69ae53fc9c487a7f26c8b3d5bd1813/docs/index.html" target="_blank">3f4cd85</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/d45c20fe907aa06769781495a75f94d5c29a85ac/analysis/index.Rmd" target="_blank">d45c20f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/dd4d101e3d821f80ea95e1d4747dcdfff8262513/docs/index.html" target="_blank">dd4d101</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/31ff30d0a4f9c39ff5bed8d87656b04ec091376f/analysis/index.Rmd" target="_blank">31ff30d</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/ef380824e968c344a55cdffb117644026fd030f3/docs/index.html" target="_blank">ef38082</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/340c808ed7c79065843c05398c53dde9f1f1af4c/analysis/index.Rmd" target="_blank">340c808</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-15
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/79bc4c46a77ed88d7042371dfd28dffd895d250e/docs/index.html" target="_blank">79bc4c4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/902ec365ad23f88909ebc0a3521d2fea0ba8664a/analysis/index.Rmd" target="_blank">902ec36</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-12
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/aca3b1f39f214eac5323e38d356d5fa4eb368745/docs/index.html" target="_blank">aca3b1f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/04ec5b30b790a4988464fb8c5ddce2b05f52e7f0/analysis/index.Rmd" target="_blank">04ec5b3</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-11
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/86f98d56e7bd75a5a34f20e5711f341af8b893ee/docs/index.html" target="_blank">86f98d5</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9f29c63d94c8369a8db0125e122751997843342e/analysis/index.Rmd" target="_blank">9f29c63</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-28
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/e283ad60c510c2a263f3a1c4c64fb0bd96303d4b/docs/index.html" target="_blank">e283ad6</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/8694b47c8c5139d3eaafdab69a3925e765ecfe23/analysis/index.Rmd" target="_blank">8694b47</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-14
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/65ba198d908802b0e9c183bfbe4c8b61ca0694bf/docs/index.html" target="_blank">65ba198</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/cf17f4244b68552de220f6802f1b1a830099ad59/analysis/index.Rmd" target="_blank">cf17f42</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-14
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/c8ee67d6e01a23c98c4b3232d4bf2bf6e0ccd913/docs/index.html" target="_blank">c8ee67d</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/8d449b7d76bf453e988076b71e3139490584abdc/analysis/index.Rmd" target="_blank">8d449b7</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-12
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/49f65d903339fbd7cb5e227e81f2799d3498b3b2/docs/index.html" target="_blank">49f65d9</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/04490832ffeea393dd54b0a6be7f28490d85d152/analysis/index.Rmd" target="_blank">0449083</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-10-12
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/d82d96032fca0f15cf80a90b53aa14f230719924/docs/index.html" target="_blank">d82d960</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-11
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/41da4548e88f59a9405b4bec6eb47b58d489f07d/analysis/index.Rmd" target="_blank">41da454</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-11
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/9263a71c55696fe83b8d5cfb9fb203e84736e732/docs/index.html" target="_blank">9263a71</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/75bcfb392e1cc3e23dbc10439bdc9c7ac5de89e8/analysis/index.Rmd" target="_blank">75bcfb3</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-06
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/c3a4a4dccfcf1f9815bd62291dd18956dc446a42/docs/index.html" target="_blank">c3a4a4d</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/b73cc630f094f05ec1f112af92376bca692f37ee/analysis/index.Rmd" target="_blank">b73cc63</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-10-03
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/4e18aa6e382d19ea79e186f573fd37f787a09f8a/docs/index.html" target="_blank">4e18aa6</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/967deea94cb90401d4b89b9dba1953d00890cf32/analysis/index.Rmd" target="_blank">967deea</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-29
+</td>
+<td>
+add inversion method
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/c8343efb7478196673eb3af4d8599b9ebb91d3fd/docs/index.html" target="_blank">c8343ef</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/1e05e86c592476a945053e20547e1895541a48ce/analysis/index.Rmd" target="_blank">1e05e86</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-27
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/5fb1cadf2a64efbc7d72b81f155cdc9f019fbf42/docs/index.html" target="_blank">5fb1cad</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/8b155584e84ad720b937ae63e469e4c0c60cd3b1/analysis/index.Rmd" target="_blank">8b15558</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Publish the initial files for myproject
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/a3f39a473d562db98bf9c99fdf46dd567c37fa40/docs/index.html" target="_blank">a3f39a4</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e87f570ccbd32ea0a823384769106e4789a08278/analysis/index.Rmd" target="_blank">e87f570</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+none
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/76d409570a3c824998dd1417c804e90f6b0af96b/docs/index.html" target="_blank">76d4095</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/9df5fb21d9065b9f8839be3ae9720862b711899d/analysis/index.Rmd" target="_blank">9df5fb2</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Start my new project
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/c28e1a6c12d0566bd84b071d0416473145f84751/analysis/index.Rmd" target="_blank">c28e1a6</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-06-06
+</td>
+<td>
+Start workflowr project.
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="poisson-matrix-factorization" class="section level2">
+<h2>Poisson Matrix Factorization</h2>
+<ul>
+<li><a href="PMF_splitting.html">Splitting method in PMF</a></li>
+<li><a href="PMF_splitting_simulation.html">PMF splitting
+simulation</a></li>
+<li><a href="NB_PLN_mean_var.html">Negative Binomial and Poisson
+log-normal mean-var relationship</a></li>
+<li><a href="run_PMF_on_pbmc_3cells.html">run PMF on PBMC data, 3 cell
+types</a></li>
+<li><a
+href="run_PMF_on_pbmc_3cells_nonnegativeL_more_iterations.html">run PMF
+on PBMC data, 3 cell types, nonnegative loadings</a></li>
+<li><a
+href="run_PMF_on_pbmc_3cells_nonnegativeLF_more_iterations.html">run PMF
+on PBMC data, 3 cell types, nonnegative loadings and factors</a></li>
+<li><a href="run_PMF_on_pbmc.html">run PMF on PBMC data</a></li>
+<li><a href="run_PMF_on_pbmc_nonnegativeL.html">run PMF on PBMC
+data,nonnegative Loadings</a></li>
+<li><a href="run_PMF_on_pbmc_nonnegativeLF.html">run PMF on PBMC
+data,nonnegative Loadings and factors</a></li>
+<li><a href="run_PMF_on_droplet.html">run PMF on droplet data</a></li>
+<li><a href="library_size_distribution.html">library size
+distribution</a></li>
+<li><a href="mean_var_relationship_in_real_sc_data.html">mean variance
+relationship in real single cell data</a></li>
+<li><a href="simulation_based_on_pbmc_3cell.html">Simulation based on
+PBMC data, 3 cell types</a></li>
+<li><a href="splitting_PMF_1backfitinit.html">Simulation based on PBMC
+data, 3 cell types, 1 init backfitting</a></li>
+</ul>
+</div>
+<div id="normal-mean-penalty-form" class="section level2">
+<h2>Normal mean penalty form</h2>
+<ul>
+<li><a href="bound_log_marginal.html">bound on (log g)’’</a></li>
+<li><a href="log_gmm_concave.html">log density of normal mixture</a>
+<ul>
+<li><a href="log_gmm_concave_ratio.html">log density of normal mixture,
+variance ratio</a></li>
+</ul></li>
+<li><a href="log_lmm_concave.html">log density of laplace
+mixture</a></li>
+<li><a href="normal_mean_penalty.html">normal mean penalty
+plots</a></li>
+<li><a href="normal_mean_penalized_optimization.html">Solve normal mean
+problem using optimization - compund penalty</a></li>
+<li><a href="normal_mean_penalized_optimization_inversion.html">Solve
+normal mean problem using optimization - inversion method</a></li>
+<li><a href="normal_mean_penalized_optimization_prior_mean.html">Solve
+normal mean problem using optimization - also estimate prior
+mean</a></li>
+<li><a href="normal_mean_penalty_glm_simplified.html">normal mean
+penalty plots, when <span class="math inline">\(s^2\)</span> depends on
+posterior mean</a></li>
+<li><a href="remove_log_in_penalty.html">normal mean penalty plots, when
+<span class="math inline">\(s^2\)</span> depends on posterior mean,
+penalty exlcuding <span class="math inline">\(\log(2\pi
+s^2)/2\)</span></a></li>
+<li><a href="log_term_in_penalty.html">where is the log term from in the
+penalty</a></li>
+</ul>
+</div>
+<div id="poisson-mean" class="section level2">
+<h2>Poisson mean</h2>
+<ul>
+<li><a href="poisson_log_normal.html">Poisson log normal</a></li>
+<li><a href="neg_binom_mean_lower_bound.html">NB JJ lower bound</a></li>
+<li><a href="neg_binom_mean_polya_gamma.html">NB PG
+augmentation</a></li>
+<li><a href="nb_approx_poisson.html">NB approxiamation to
+Poisson</a></li>
+<li><a href="pois_mean_log1exp.html">Poisson mean <span
+class="math inline">\(\log(1+\exp(\cdot))\)</span> link</a></li>
+</ul>
+<div id="penalized" class="section level3">
+<h3>Penalized</h3>
+<ul>
+<li><a href="pois_mean_penalized.html">Poisson mean penalized form,
+compound</a></li>
+<li><a href="pois_mean_penalized_inversion.html">Poisson mean penalized
+form, inversion</a></li>
+</ul>
+</div>
+<div id="benchmarking" class="section level3">
+<h3>Benchmarking</h3>
+<ul>
+<li><a href="log_link_benchmark_revised.html">log link</a></li>
+<li><a href="exp_prior_benchmark.html">exp prior</a></li>
+<li><a href="gamma_prior_benchmark.html">gamma prior</a></li>
+<li><a href="t_prior_benchmark_revise.html">t prior</a></li>
+</ul>
+<p>With Run time Comparison:</p>
+<ul>
+<li><a href="exp_prior_runtime.html">exp prior with runtime</a></li>
+<li><a href="log_prior_runtime.html">log prior with runtime</a></li>
+</ul>
+</div>
+<div id="overdispersed-model" class="section level3">
+<h3>Overdispersed model</h3>
+<ul>
+<li><a href="overdispersed_splitting.html">generate data from splitting
+model</a></li>
+<li><a href="overdispersed_splitting_nb.html">generate data from
+negative binomial model</a></li>
+</ul>
+</div>
+</div>
+<div id="poisson-smoothing" class="section level2">
+<h2>Poisson smoothing</h2>
+<ul>
+<li><a href="poisson_nugget_two_step.html">The two step procedure for
+smoothing overdispersed count data</a></li>
+</ul>
+<div id="bechmarking-smoothing-methods" class="section level3">
+<h3>Bechmarking smoothing methods</h3>
+<p>I benchmarked methods on the following smooth functions.</p>
+<ul>
+<li><a href="smooth_angles_benchmark_new.html">Angles</a></li>
+<li><a href="smooth_bursts_benchmark_new.html">Bursts</a></li>
+<li><a href="smooth_heavisine_benchmark_new.html">heavisine</a></li>
+<li><a href="smooth_sblocks_benchmark_new.html">simple blocks</a></li>
+<li><a href="smooth_cblocks_benchmark_new.html">clipped blocks</a></li>
+<li><a href="smooth_spike_benchmark_new.html">Spike</a></li>
+</ul>
+<p>Below are some old results. Specifically the smooth functions are in
+the log-space. (So after exp they may look different than their name
+originally suggest.)</p>
+<p>I picked up some methods that are performing better and reduce the
+plot size for better illustration.</p>
+<ul>
+<li><a href="smooth_angles_benchmark_simplified.html">Angles</a></li>
+<li><a href="smooth_sblocks_benchmark_simplified.html">simple
+blocks</a></li>
+<li><a href="smooth_spike_benchmark_simplified.html">spike</a></li>
+</ul>
+<p>First Run:</p>
+<ul>
+<li><a href="smooth_heavi_benchmark.html">heavisine</a></li>
+<li><a href="smooth_blocks_benchmark.html">blocks</a></li>
+</ul>
+<p>Second Run:</p>
+<ul>
+<li><a href="smooth_angles_benchmark.html">Angles</a></li>
+<li><a href="smooth_bursts_benchmark.html">Bursts</a></li>
+<li><a href="smooth_heavisine_benchmark.html">heavisine</a></li>
+<li><a href="smooth_sblocks_benchmark.html">simple blocks</a></li>
+<li><a href="smooth_cblocks_benchmark.html">clipped blocks</a></li>
+<li><a href="smooth_spike_benchmark.html">Spike</a></li>
+</ul>
+</div>
+<div id="details" class="section level3">
+<h3>Details</h3>
+<ul>
+<li><a href="splitting_method_low_count_smoothing.html">low count smooth
+ndwt</a></li>
+</ul>
+</div>
+</div>
+<div id="binomial" class="section level2">
+<h2>Binomial</h2>
+<ul>
+<li><a href="binomial_mean_spliiting.html">Apply Splitting to Binomial
+Mean problem</a></li>
+<li><a href="bernoulli_GG_fail.html">It does not work for binary
+data</a></li>
+</ul>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
