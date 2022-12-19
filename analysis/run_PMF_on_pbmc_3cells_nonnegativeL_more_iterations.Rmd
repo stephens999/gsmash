@@ -1,0 +1,76 @@
+---
+title: "run PMF on pbmc data, 3 cells, nonnegative Loadings, more iterations"
+author: "DongyueXie"
+date: "2022-12-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In a [previously run](run_PMF_on_pbmc_3cells_nonnegativeL.html), there were 200 iterations but the plot of ELBO shows that the algorithm does not converge.
+
+Here I ran it 1000 iterations.
+
+```{r}
+rmse = function(x,y){return(sqrt(mean((x-y)^2)))}
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_3cells_Sij_nonnegativeL.rds')
+fit = res$fit
+```
+
+```{r}
+fit$run_time
+plot(fit$eblo_trace,type='l')
+```
+
+
+
+
+```{r}
+fit$fit_flash$n.factors
+plot(fit$K_trace)
+plot(fit$sigma2,ylab = 'sigma2',xlab='gene',col='grey50')
+```
+
+Use Jason's method for visualizing loadings:
+
+```{r}
+library(fastTopics)
+library(stm)
+library(Matrix)
+data(pbmc_facs)
+
+### use three cells
+cells = pbmc_facs$samples$subpop%in%c('B cell', 'NK cell','CD34+')
+cell_names =pbmc_facs$samples$subpop[cells]
+```
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r}
+plot.factors(fit$fit_flash,cell_names,title='splitting PMF')
+```
+
+## RUn time
+
+RUn time analysis
+
+```{r}
+unlist(lapply(fit$run_time_break_down,median))
+```
+
+Each iteration takes about 13 seconds. 
+
+The most time consuming steps are vga, greedy, and backfitting.
+
+THe vga solves n*p optimization problem using newton's method. 
+
+THe add_greedy command needs to perform a rank-1 init every time, while from the plot of K_tace, we saw the K is stabilized after a few iterations. So we may skip the add greedy step after certain iterations, or do add greedy less often as more and more iterations are done.
+
+The convergence takes more than 1000 iterations. Do we really need such many iterations? How can we accelarete the convergence?
+
+
+
