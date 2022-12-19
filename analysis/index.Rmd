@@ -42,8 +42,7 @@ editor_options:
 
 ## Poisson mean 
 
-* [Poisson mean, ash prior, Gaussian posterior]()
-* [Poisson mean, ash prior, Gaussian Mixture posterior]()
+* [Poisson log normal](poisson_log_normal.html)
 * [NB JJ lower bound](neg_binom_mean_lower_bound.html)
 * [NB PG augmentation](neg_binom_mean_polya_gamma.html)
 * [NB approxiamation to Poisson](nb_approx_poisson.html)
