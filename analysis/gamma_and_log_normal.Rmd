@@ -1,0 +1,56 @@
+---
+title: "gamma and log normal distribution closeness"
+author: "DongyueXie"
+date: "2022-12-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+$x\sim Gamma(\alpha,\beta)$, $p(x) = \beta^\alpha/\Gamma(\alpha)x^{\alpha-1}e^{-\beta x}$.
+
+$x\sim LogNormal(\mu,\sigma^2)$, 
+
+Match the moment of the two distributions, we have 
+
+$\alpha = 1/(e^{\sigma^2}-1)$, $\beta = 1/((e^{\sigma^2}-1)e^{\mu+\sigma^2/2})$
+
+```{r}
+plot_density = function(){
+  
+}
+```
+
+```{r}
+mu = 0
+sigma2 = .25
+alpha = 1/(exp(sigma2)-1)
+beta = 1/((exp(sigma2)-1)*exp(mu+sigma2/2))
+```
+
+```{r}
+x = seq(1e-5,10,length.out = 10000)
+dx_gamma = dgamma(x,alpha,beta)
+dx_lnorm = dlnorm(x,mu,sqrt(sigma2))
+plot(x,dx_gamma,type='l',col=2,ylim=range(c(dx_lnorm,dx_gamma)),ylab='density')
+lines(x,dx_lnorm,col=4)
+```
+
+```{r}
+mu = 0
+sigma2 = 1
+alpha = 1/(exp(sigma2)-1)
+beta = 1/((exp(sigma2)-1)*exp(mu+sigma2/2))
+```
+
+```{r}
+x = seq(1e-5,10,length.out = 10000)
+dx_gamma = dgamma(x,alpha,beta)
+dx_lnorm = dlnorm(x,mu,sqrt(sigma2))
+plot(x,dx_gamma,type='l',col=2,ylim=range(c(dx_lnorm,dx_gamma)),ylab='density')
+lines(x,dx_lnorm,col=4)
+```
+
+
