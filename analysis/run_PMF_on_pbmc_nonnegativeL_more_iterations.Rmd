@@ -9,7 +9,7 @@ editor_options:
 
 ## Introduction
 
-I run splitting PMF on the pbmc data with nonnegative loadings. [Previous one](run_PMF_on_pbmc_nonnegativeL.Rmd) was run 200 iterations.
+I run splitting PMF on the pbmc data with nonnegative loadings. [Previous one](run_PMF_on_pbmc_nonnegativeL.html) was run 200 iterations.
 
 ```{r}
 rmse = function(x,y){return(sqrt(mean((x-y)^2)))}
