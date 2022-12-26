@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-12-19
+<strong>Last updated:</strong> 2022-12-25
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed267f12222809b83a8613ee64bf24c3fdec5fe36targetblankd267f12a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreea9c78abac4a401408876fca90e7dc9b99a9b6cc9targetblanka9c78aba">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/d267f12222809b83a8613ee64bf24c3fdec5fe36" target="_blank">d267f12</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/a9c78abac4a401408876fca90e7dc9b99a9b6cc9" target="_blank">a9c78ab</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed267f12222809b83a8613ee64bf24c3fdec5fe36targetblankd267f12a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreea9c78abac4a401408876fca90e7dc9b99a9b6cc9targetblanka9c78aba"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/d267f12222809b83a8613ee64bf24c3fdec5fe36" target="_blank">d267f12</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/a9c78abac4a401408876fca90e7dc9b99a9b6cc9" target="_blank">a9c78ab</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -611,6 +611,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/a9c78abac4a401408876fca90e7dc9b99a9b6cc9/analysis/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd" target="_blank">a9c78ab</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-25
+</td>
+<td>
+wflow_publish("analysis/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/ceca43f9181781865ec5298fd75267aa6b29ac99/docs/run_PMF_on_pbmc_nonnegativeL_more_iterations.html" target="_blank">ceca43f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/d267f12222809b83a8613ee64bf24c3fdec5fe36/analysis/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd" target="_blank">d267f12</a>
 </td>
 <td>
@@ -633,7 +667,7 @@ wflow_publish("analysis/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd")
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>I run splitting PMF on the pbmc data with nonnegative loadings. <a
-href="run_PMF_on_pbmc_nonnegativeL.Rmd">Previous one</a> was run 200
+href="run_PMF_on_pbmc_nonnegativeL.html">Previous one</a> was run 200
 iterations.</p>
 <pre class="r"><code>rmse = function(x,y){return(sqrt(mean((x-y)^2)))}
 res = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/pbmc_full_Sij_nonnegativeL.rds&#39;)
@@ -642,12 +676,123 @@ fit = res$fit</code></pre>
 <pre><code>Time difference of 16.75936 hours</code></pre>
 <pre class="r"><code>plot(fit$eblo_trace,type=&#39;l&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/ceca43f9181781865ec5298fd75267aa6b29ac99/docs/figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-2-1.png" target="_blank">ceca43f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>fit$fit_flash$n.factors</code></pre>
 <pre><code>[1] 9</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
 <p><img src="figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/ceca43f9181781865ec5298fd75267aa6b29ac99/docs/figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-3-1.png" target="_blank">ceca43f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,ylab = &#39;sigma2&#39;,xlab=&#39;gene&#39;,col=&#39;grey50&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/ceca43f9181781865ec5298fd75267aa6b29ac99/docs/figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-3-2.png" target="_blank">ceca43f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Use Jason’s method for visualizing loadings:</p>
 <pre class="r"><code>library(fastTopics)
 data(pbmc_facs)
@@ -658,6 +803,43 @@ cell_names =pbmc_facs$samples$subpop</code></pre>
 <pre class="r"><code>source(&#39;code/poisson_STM/plot_factors.R&#39;)</code></pre>
 <pre class="r"><code>plot.factors(fit$fit_flash,cell_names,title=&#39;splitting PMF&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/ceca43f9181781865ec5298fd75267aa6b29ac99/docs/figure/run_PMF_on_pbmc_nonnegativeL_more_iterations.Rmd/unnamed-chunk-6-1.png" target="_blank">ceca43f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="run-time-analysis" class="section level2">
 <h2>RUn time analysis</h2>
