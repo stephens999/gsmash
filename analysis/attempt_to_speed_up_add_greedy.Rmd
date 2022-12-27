@@ -1,0 +1,84 @@
+---
+title: "An attempt to speed up flash add greedy"
+author: "DongyueXie"
+date: "2022-12-27"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In splitting PMF, each iteration needs an add greedy step of flash.
+
+This step involves an initialization step of rank-1 factorization which can be time consuming. On the other hand, the K usually does not change much after certain number of iterations. So I decided to see if I can use the same initialization for the add greedy if the K does not change and set Kmax = 1 in add_greedy in iterations so that at most 1 factor is added each iteration.
+
+IN addition, I set default maxiter of vga to be 1 to speed up iterations.
+
+```{r}
+library(stm)
+set.seed(12345)
+N = 10000
+p = 100
+K = 3
+Ftrue = matrix(0,nrow=p,ncol=K)
+Ftrue[1:20,1] = 5
+Ftrue[21:40,2] = 2
+Ftrue[41:60,3] = 1
+Ltrue = pmax(matrix(rnorm(N*K), ncol=K),0)
+Lambda = exp(tcrossprod(Ltrue,Ftrue))
+Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
+fit1 = splitting_PMF_flashier(Y,verbose=TRUE,
+                              ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_normal),
+                              add_greedy_init = 'new_init',add_greedy_Kmax = 1,
+                              printevery = 1,
+                              loadings_sign = 1,maxiter = 100,n_cores = 10)
+fit2 = splitting_PMF_flashier(Y,verbose=TRUE,
+                             ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_normal),
+                             add_greedy_init = 'previous_init',add_greedy_Kmax = 1,
+                             printevery = 1,
+                             loadings_sign = 1,maxiter = 100,n_cores = 10)
+summary_fit = function(fit){
+  plot(fit$K_trace,ylab='K',xlab='iteration')
+  plot(fit$elbo_trace,ylab='elbo',xlab='iteration')
+  
+  idx = sample(1:prod(dim(Y)),min(1e5,prod(dim(Y))))
+  plot(fitted(fit$fit_flash)[idx],tcrossprod(Ltrue,Ftrue)[idx],col='grey80',xlab='fitted',ylab='true')
+  abline(a=0,b=1)
+  
+  for(k in 1:fit$fit_flash$n.factors){
+    plot(fit$fit_flash$F.pm[,k],type='l',xlab='',ylab='',main=paste('factor:',k))
+  }
+  print(paste('pve=',paste0(round(fit$fit_flash$pve,3),collapse = ',')))
+  print(paste('elbo=',round(fit$elbo,3)))
+  print(paste('run time: ',round(fit$run_time,3)))
+  print(round(unlist(lapply(fit$run_time_break_down,mean)),3))
+  
+}
+
+
+
+```
+
+## new init
+
+```{r}
+summary_fit(fit1)
+```
+
+## previous init
+
+```{r}
+summary_fit(fit2)
+```
+
+## other thoughts
+
+I have also added `add_greedy_every` option, such that the `flash.add.greedy` need not running every iteration.
+
+The acceleration method for EM like daarem, squarem are not very applicable in this setting because (a) K is changing, (b) elbo calculation needs KL term from ebnm, (c) to0 many parameters.
+
+Maybe look at the extrapolation methods.
+
+
+
