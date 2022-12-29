@@ -1,0 +1,88 @@
+---
+title: "vga objective function"
+author: "DongyueXie"
+date: "2022-12-29"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+$f(m) = ym - se^{m + v(m)/2} - \frac{m^2 + v(m) -2m\theta}{2\sigma^2} + \frac{1}{2}\log v(m)$.
+
+$v(m) = \frac{\sigma^2}{\sigma^2 y -m +\theta+1}$.
+
+In this analysis, I show that v(m) only holds at optimal values, i.e. $v^* = \frac{\sigma^2}{\sigma^2 y -m^* +\theta+1}$ 
+
+```{r}
+v = function(m,y,theta,sigma2){
+  sigma2/(sigma2*y-m+theta+1)
+}
+f = function(m,y,theta,sigma2){
+  vm = v(m,y,theta,sigma2)
+   y*m - 1*exp(m + vm/2) - (m^2 + vm -2*m*theta)/(2*sigma2) + log(vm)/2
+}
+
+f_mv = function(m,v,y,theta,sigma2){
+  y*m - 1*exp(m + v/2) - (m^2 + v -2*m*theta)/(2*sigma2) + log(v)/2
+}
+```
+
+
+## plots
+
+```{r}
+y = 10
+theta=0
+sigma2 = 1
+m = seq(-3,5,length.out = 1000)
+m_opt = m[which.max(f(m,y,theta,sigma2))]
+m_opt
+```
+
+The optimal $m$ is $2.02$. And at optimal $m$, we can see $v(m)$ gives optimal $v$.
+
+```{r}
+m = m_opt
+vs = seq(0,sigma2,length.out = 1000)
+plot(vs,f_mv(m,vs,y,theta,sigma2),type='l',xlab='v',ylab='obj')
+abline(v = v(m,y,theta,sigma2),lty=2)
+abline(v = vs[which.max(f_mv(m,vs,y,theta,sigma2))],lty=3)
+legend('topright',c('v optimal','v(m)'),lty=c(3,2))
+```
+
+
+However this is not true for non-optimal values of $m$.
+
+When $m=0$:
+
+```{r}
+m = 0
+vs = seq(0,sigma2,length.out = 1000)
+plot(vs,f_mv(m,vs,y,theta,sigma2),type='l',xlab='v',ylab='obj')
+abline(v = v(m,y,theta,sigma2),lty=2)
+abline(v = vs[which.max(f_mv(m,vs,y,theta,sigma2))],lty=3)
+legend('topright',c('v optimal','v(m)'),lty=c(3,2))
+```
+
+When $m=1$:
+
+```{r}
+m = 1
+vs = seq(0,sigma2,length.out = 1000)
+plot(vs,f_mv(m,vs,y,theta,sigma2),type='l',xlab='v',ylab='obj')
+abline(v = v(m,y,theta,sigma2),lty=2)
+abline(v = vs[which.max(f_mv(m,vs,y,theta,sigma2))],lty=3)
+legend('topright',c('v optimal','v(m)'),lty=c(3,2))
+```
+
+When $m=3$:
+
+```{r}
+m = 3
+vs = seq(0,sigma2,length.out = 1000)
+plot(vs,f_mv(m,vs,y,theta,sigma2),type='l',xlab='v',ylab='obj')
+abline(v = v(m,y,theta,sigma2),lty=2)
+abline(v = vs[which.max(f_mv(m,vs,y,theta,sigma2))],lty=3)
+legend('topright',c('v optimal','v(m)'),lty=c(3,2))
+```
+
