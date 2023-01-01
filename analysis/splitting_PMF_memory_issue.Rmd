@@ -1,0 +1,62 @@
+---
+title: "splitting PMF memory issue"
+author: "DongyueXie"
+date: "2022-12-31"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Status
+
+The splitting PMF method, first implementation, requires the following matrices: 
+
+ALl matrices are dense. I only list matrices, and omit vectors.
+
+1. Input: Y, S
+
+2. Initialization: M 
+
+3. VGA: Beta(LF'), Sigma, M,V
+
+4. flash: M
+
+5. calc elbo: everything
+
+As we can see, there are 6 dense matrices stored in memory all the time. The memory can easily run out on large Y, but the advantage is it's fast because I basically traded space for time. However, for a matrix of dimension $10^5\times 10^4$, it requires hundreds of GB of memory which is not practical.
+
+To reduce the memory usage, I decided to do the following modification, some of which traded time for space. 
+
+A. the input matrix $Y$ is stored in sparse format, and $S$ is rank-1 so we only need two vectors to represent it.
+
+B. Instead of storing Beta, I store EL, EF, two low rank matrices. When ever Beta is needed, just multiple EL,EF.
+
+C. Sigma is not needed because sigma2 is at most a vector, Previously I formulate Sigma to simply the code. 
+
+D. For the VGA step, I did two things. First, I break samples into small folds and update each folds in a loop. So it avoids operations on huge matrices Second, since we know at optimal value, there's an implicit relationship between M and V, we only need M. So I only stored M.
+
+E. I also found gc() very useful to clean up the memory, but it's very slow so I use it after each iteration.
+
+F. do not calculate the elbo during iterations. Instead use the MSE between two sigma2 to decide if iterations should be terminated.
+
+G. flash.fit object stores the input data M so after flash running, we can do rm(M)
+
+
+However it significantly increases the computation cost because:
+
+A. No longer support 1 iter update in VGA. (otherwise would need matrix V). (It's fine because usually newton's method converges in 3-5 steps)
+
+B. Need to calculate LF' repeatly. (Can be solving by storing LF' for each fold)
+
+C. Sparse matrix and dense matrix dot product is very slow. Basically element-wise operation of sparse matrix should be avoided. (Can be solving by 
+as.matrix(Y_sparse)for each fold)
+
+D. folds add extra for loop in vga step.
+
+On a matrix of dimension $10^5\times 10^3$ with $97\%$ 0's, the peak memory usage was reduced from 17GB to 6GB. 
+
+
+## Thoughts
+
+Maybe ultimately need a mini-batch version(like SGD) to reduce memory overload.
+
