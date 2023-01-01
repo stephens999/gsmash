@@ -16,6 +16,7 @@ editor_options:
 * [Negative Binomial and Poisson log-normal mean-var relationship](NB_PLN_mean_var.html)
 * [mean variance relationship in real single cell data](mean_var_relationship_in_real_sc_data.html)
 * [attempt to reduce run time](attempt_to_speed_up_add_greedy.html)
+* [memory usage analysis](splitting_PMF_memory_issue.html)
 
 ### Simulation 
 
