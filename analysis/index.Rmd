@@ -30,6 +30,7 @@ editor_options:
 * [run PMF on PBMC data, 3 cell types](run_PMF_on_pbmc_3cells.html)
 * [run PMF on PBMC data, 3 cell types, nonnegative loadings](run_PMF_on_pbmc_3cells_nonnegativeL_more_iterations.html)
 * [run PMF on PBMC data, 3 cell types, nonnegative loadings and factors](run_PMF_on_pbmc_3cells_nonnegativeLF_more_iterations.html)
+* [Compare VGA iterations on PBMC data, 3 cell types](compare_vga_iterations.html)
 * [run PMF on PBMC data](run_PMF_on_pbmc.html)
 * [run PMF on PBMC data,nonnegative Loadings](run_PMF_on_pbmc_nonnegativeL_more_iterations.html)
 * [run PMF on PBMC data,nonnegative Loadings and factors](run_PMF_on_pbmc_nonnegativeLF_more_iterations.html)
