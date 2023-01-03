@@ -1,0 +1,79 @@
+---
+title: "compare vga iterations"
+author: "DongyueXie"
+date: "2023-01-02"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+The vga step is an optimization problem. 1 iteration can already increase the elbo. Running till convergence will increase more elbo but is that necessary? does this benefit the overall fit in the long run?
+
+I compare VGA 1 iteration vs convergence
+
+```{r}
+res1000 = readRDS('/project2/mstephens/dongyue/poisson_mf/compare_vga_iterations/pbmc_3cells_vga1000.rds')
+res1 = readRDS('/project2/mstephens/dongyue/poisson_mf/compare_vga_iterations/pbmc_3cells_vga1.rds')
+```
+
+## compare elbo
+
+```{r}
+plot(res1$fit$elbo_trace,type='l',col=2,lwd=2)
+lines(res1000$fit$elbo_trace,col=4,lwd=2)
+legend('bottomright',c('vga 1iter','vga converge'),lty=c(1,1),col=c(2,4))
+res1$fit$elbo
+res1000$fit$elbo
+```
+
+Not much difference. Running 1 iteration actually results in a slightly larger elbo.
+
+## compare run time
+
+```{r}
+res1$fit$run_time
+res1000$fit$run_time
+```
+
+```{r}
+lapply(res1$fit$run_time_break_down,mean)$run_time_vga
+lapply(res1000$fit$run_time_break_down,mean)$run_time_vga
+```
+
+
+1 iteration is much faster.
+
+## fitted sturcture
+
+```{r}
+res1$fit$fit_flash$n.factors
+res1000$fit$fit_flash$n.factors
+```
+
+```{r}
+library(fastTopics)
+data(pbmc_facs)
+
+### use three cells
+cells = pbmc_facs$samples$subpop%in%c('B cell', 'NK cell','CD34+')
+cell_names =pbmc_facs$samples$subpop[cells]
+```
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r}
+plot.factors(res1$fit$fit_flash,cell_names,title='vga 1 iter')
+plot.factors(res1000$fit$fit_flash,cell_names,title='vga converge')
+```
+
+The last 3 factors are slightly different.
+
+## Other concerns
+
+The 1 iteration version requires storing the full dense matrix V which can take huge memory space when the dimension is large. For example for a $10^5\times 10^3$ dense matrix it takes > 16GB RAM. 
+
+The converged version can exploit the explicit relationship between optimal M and V so storing V is not required.
