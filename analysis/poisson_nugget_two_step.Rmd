@@ -1,5 +1,5 @@
 ---
-title: "poisson nugget smooting, two_step procedure"
+title: "poisson smoothing splitting simple example"
 author: "DongyueXie"
 date: "2022-5-14"
 output: workflowr::wflow_html
@@ -16,235 +16,70 @@ Step 1: VGA of Poisson data
 Step 2: EB smoothing of Gaussian data
 
 ```{r}
-source('code/poisson_smooth/poisson_nugget_two_step.R')
+library(smashrgen)
 ```
 
 ## Block Function
 
 ```{r}
-library(wavethresh)
-
-n = 512
-
+n = 2048
 signal = 1
 y_list = DJ.EX(n=n,signal=signal,noisy=FALSE,plotfn = FALSE)
 ```
 
 ```{r}
 b = y_list$blocks
-b = b - min(b) + 1
-
+b = log(b - min(b) + 1)
+b = b * 2
 set.seed(12345)
 snr = 3
-plot(b,type='l')
-sigma2 = var(b)/snr
-mu = b + rnorm(n,0,sqrt(sigma2))
-
-plot(mu,type='l')
-plot(exp(mu),type='l')
-lambda = exp(mu)
-y = rpois(n,lambda)
-```
-
-```{r}
-fit = vag_pois_smooth(y)
-```
-
-
-```{r}
-fit$sigma2
-plot(y,col='grey80',main='data space')
-lines(exp(b),col='grey60')
-lines(exp(fit$Eb))
-legend('topleft',c('data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-```{r}
-plot(mu,col='grey80',main='log space')
-lines(b,col='grey60')
-lines(fit$Eb)
-legend('topleft',c('latent data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-What if I increase $\sigma^2$? That is reduce the SNR, from 3 to 1
-
-```{r}
-set.seed(12345)
-sigma2 = var(b)
-mu = b + rnorm(n,0,sqrt(sigma2))
-
-plot(mu,type='l')
-plot(exp(mu),type='l')
-lambda = exp(mu)
-y = rpois(n,lambda)
-```
-
-```{r}
-fit = vag_pois_smooth(y)
-```
-
-
-```{r}
-fit$sigma2
-plot(y,col='grey80',main='data space')
-lines(exp(b),col='grey60')
-lines(exp(fit$Eb))
-legend('topleft',c('data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-```{r}
-plot(mu,col='grey80',main='log space')
-lines(b,col='grey60')
-lines(fit$Eb)
-legend('topleft',c('latent data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-What if I decrease $\sigma^2$? 
-
-```{r}
-set.seed(12345)
-sigma2 = var(b)/10
-mu = b + rnorm(n,0,sqrt(sigma2))
-
-plot(mu,type='l')
-plot(exp(mu),type='l')
-lambda = exp(mu)
-y = rpois(n,lambda)
-```
-
-```{r}
-fit = vag_pois_smooth(y)
-```
-
-
-```{r}
-fit$sigma2
-plot(y,col='grey80',main='data space')
-lines(exp(b),col='grey60')
-lines(exp(fit$Eb))
-legend('topleft',c('data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-```{r}
-plot(mu,col='grey80',main='log space')
-lines(b,col='grey60')
-lines(fit$Eb)
-legend('topleft',c('latent data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-
-further decrease $\sigma^2$ to 1/100:
-
-```{r}
-set.seed(12345)
-sigma2 = var(b)/100
-mu = b + rnorm(n,0,sqrt(sigma2))
-
-plot(mu,type='l')
-plot(exp(mu),type='l')
-lambda = exp(mu)
-y = rpois(n,lambda)
-```
-
-```{r}
-fit = vag_pois_smooth(y)
-```
-
-
-```{r}
-fit$sigma2
-plot(y,col='grey80',main='data space')
-lines(exp(b),col='grey60')
-lines(exp(fit$Eb))
-legend('topleft',c('data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-```{r}
-plot(mu,col='grey80',main='log space')
-lines(b,col='grey60')
-lines(fit$Eb)
-legend('topleft',c('latent data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-```
-
-### Another block function
-
-```{r}
-b = log(c(rep(0.1,n/8),rep(2,n/8),rep(0.1,n/8),rep(0.1,n/8),rep(0.1,n/8),rep(2,n/8),rep(0.1,n/8),rep(0.1,n/8)))
-
-set.seed(12345)
-snr = 3
-plot(b,type='l')
+#plot(b,type='l')
 sigma2 = var(b)/snr
 sigma2
 mu = b + rnorm(n,0,sqrt(sigma2))
-
-plot(mu,type='l')
-plot(exp(mu),type='l')
 lambda = exp(mu)
-
-```
-
-```{r}
 y = rpois(n,lambda)
-fit = vag_pois_smooth(y)
 ```
 
-
 ```{r}
-fit$sigma2
-par(mfrow=c(1,2))
-plot(y,col='grey80',main='data space')
+fit = pois_smooth_split(y)
+plot(fit$elbo_trace,type='l')
+fit$fitted_g$sigma2_trace
+plot(y,col='grey80',main='')
 lines(exp(b),col='grey60')
-lines(exp(fit$Eb))
-legend('topleft',c('data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-
-
-plot(mu,col='grey80',main='log space')
-lines(b,col='grey60')
-lines(fit$Eb)
-legend('topleft',c('latent data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
+lines(fit$posterior$mean_smooth)
+legend('topleft',c('data','true smooth mean','estimated smooth mean'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
 ```
 
 ```{r}
+plot(fit$fitted_g$sigma2_trace)
+```
+
+No nugget
+
+```{r}
+b = y_list$blocks
+b = log(b - min(b) + 1)
+b = b * 2
+set.seed(12345)
+sigma2 = 0
+sigma2
+mu = b + rnorm(n,0,sqrt(sigma2))
+lambda = exp(mu)
 y = rpois(n,lambda)
-fit = vag_pois_smooth(y)
 ```
 
-
 ```{r}
-fit$sigma2
-par(mfrow=c(1,2))
-plot(y,col='grey80',main='data space')
+fit = pois_smooth_split(y)
+plot(fit$elbo_trace,type='l')
+fit$fitted_g$sigma2_trace
+plot(y,col='grey80',main='')
 lines(exp(b),col='grey60')
-lines(exp(fit$Eb))
-legend('topleft',c('data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-
-
-plot(mu,col='grey80',main='log space')
-lines(b,col='grey60')
-lines(fit$Eb)
-legend('topleft',c('latent data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
+lines(fit$posterior$mean_smooth)
+legend('topleft',c('data','true smooth mean','estimated smooth mean'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
 ```
 
-
 ```{r}
-y = rpois(n,lambda)
-fit = vag_pois_smooth(y)
-```
-
-
-```{r}
-fit$sigma2
-par(mfrow=c(1,2))
-plot(y,col='grey80',main='data space')
-lines(exp(b),col='grey60')
-lines(exp(fit$Eb))
-legend('topleft',c('data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
-
-
-plot(mu,col='grey80',main='log space')
-lines(b,col='grey60')
-lines(fit$Eb)
-legend('topleft',c('latent data','true smooth mean','mean hat'),lty=c(NA,1,1),pch=c(1,NA,NA),col=c('grey80','grey80',1))
+plot(fit$fitted_g$sigma2_trace)
 ```
 
