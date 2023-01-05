@@ -48,6 +48,13 @@ source('code/poisson_STM/plot_factors.R')
 plot.factors(fit$fit_flash,cell_names,title='splitting PMF')
 ```
 
+```{r}
+fit_flashier = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/flash_pbmc3k_nonnegL.rds')
+fit_flashier$n.factors
+```
+
+flashier was not able to find any structure.
+
 ## RUn time analysis
 
 ```{r}
