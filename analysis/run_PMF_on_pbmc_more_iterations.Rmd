@@ -1,0 +1,78 @@
+---
+title: "run splitting PMF on pbmc data with more iterations"
+author: "DongyueXie"
+date: "2023-01-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I have a [previous result](run_PMF_on_pbmc.html) run the very initial version of the splitting PMF. Now I revise the code and re-run the model. THe main diff is a. run vga 1 iter every big iteration; b. 1000 iterations; c. add 1 dimension each add_greedy attempt. 
+
+
+
+I set the scaling factors as $s_{ij} = \frac{y_{i+}y_{+j}}{y_{++}}$. For comparison, I also fit `flash` on transformed count data, as $\tilde{y}_{ij} = \log(1+\frac{y_{ij}}{s_{i}}\frac{a}{0.5})$ where $s_i=\sum_j y_{ij}$, $a = median(s_{i})$.
+
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+counts <- pbmc_facs$counts
+table(pbmc_facs$samples$subpop)
+```
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/pbmc_splitting_point_normal_vga1.rds')
+```
+
+```{r}
+plot(fit$K_trace, ylab='K',xlab='iterations')
+plot(fit$elbo_trace,ylab='elbo',xlab='iterations',type='l')
+```
+
+```{r}
+plot(colSums(counts/c(rowSums(counts)))/dim(counts)[1],fit$sigma2,xlab='gene mean count(after library size adjustment)')
+plot(colSums(counts==0)/dim(counts)[1],fit$sigma2,xlab='sparsity')
+```
+
+
+## Visualize loadings
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r}
+cell_names = as.character(pbmc_facs$samples$subpop)
+plot.factors(fit$fit_flash,cell_names,title='splitting PMF')
+```
+
+```{r}
+fit_flashier = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/flash_pbmc3k.rds')
+plot.factors(fit_flashier,cell_names,title='flashier')
+```
+
+```{r}
+source('code/poisson_STM/plot_factors_general.R')
+fit_glmpca_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/glmpca_pbmc3k_poi.rds')
+plot.factors.general(fit_glmpca_poi$loadings,cell_names,title='glmpca poi')
+```
+
+```{r}
+fit_glmpca_nb = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/glmpca_pbmc3k_nb.rds')
+plot.factors.general(fit_glmpca_nb$loadings,cell_names,title='glmpca nb')
+```
+
+## run time analysis
+
+```{r}
+fit$run_time
+lapply(fit$run_time_break_down,mean)
+```
+
+
+
