@@ -1,0 +1,75 @@
+---
+title: "splitting smooth on RNA-seq data"
+author: "DongyueXie"
+date: "2023-01-04"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Here I applied splitting Poisson regression to smoothing a RNA seq data along the genome.
+
+```{r}
+library(smashrgen)
+```
+
+```{r}
+ploter = function(x){
+  plot(x,col='grey80',xlab='poisition',ylab='count',pch='.',cex=2)
+  fit = pois_smooth_split(x)
+  lines(fit$posterior$mean_smooth,lwd=2,col=2)
+  
+  print(fit$run_time)
+  print(fit$fitted_g$sigma2)
+  
+  # plot(x,col='grey80',xlab='poisition',ylab='count')
+  # fit_ndwt = pois_smooth_split(x,wave_trans = 'ndwt',ndwt_method = 'ti.thresh')
+  # lines(fit$posterior$mean_smooth,lwd=2,col=2)
+  
+  plot(x,col='grey80',xlab='poisition',ylab='count',pch='.',cex=2)
+  out = system.time(fit_smash <- smash.poiss(x))
+  lines(fit_smash,lwd=2,col=2)
+  print(out)
+}
+```
+
+## TPM3
+
+```{r}
+datax = read.csv('/project2/mstephens/gtex-stm/Counts/TPM3.Counts.csv.gz')
+dim(datax)
+datax[1:5,1:5]
+```
+
+
+```{r}
+ploter(as.numeric(datax[4,-1]))
+```
+
+```{r}
+ploter(as.numeric(datax[5,-1]))
+```
+
+## SRSF3
+
+```{r}
+datax = read.csv('/project2/mstephens/gtex-stm/Counts/SRSF3.Counts.csv.gz')
+```
+
+
+```{r}
+ploter(as.numeric(datax[4,-1]))
+```
+
+```{r}
+ploter(as.numeric(datax[5,-1]))
+```
+
+
+
+
+
+
+
