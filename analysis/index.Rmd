@@ -85,7 +85,7 @@ With Run time Comparison:
 
 ## Poisson smoothing 
 
-* [The two step procedure for smoothing overdispersed count data](poisson_nugget_two_step.html)
+* [The splitting method smoothing overdispersed count data](poisson_nugget_two_step.html)
 
 ### Real data
 
