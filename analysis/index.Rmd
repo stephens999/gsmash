@@ -37,19 +37,6 @@ editor_options:
 * [run PMF on droplet data](run_PMF_on_droplet.html)
 * [library size distribution](library_size_distribution.html)
 
-## Normal mean penalty form
-
-* [bound on (log g)''](bound_log_marginal.html)
-* [log density of normal mixture](log_gmm_concave.html)
-  + [log density of normal mixture, variance ratio](log_gmm_concave_ratio.html)
-* [log density of laplace mixture](log_lmm_concave.html)
-* [normal mean penalty plots](normal_mean_penalty.html)
-* [Solve normal mean problem using optimization - compund penalty](normal_mean_penalized_optimization.html)
-* [Solve normal mean problem using optimization - inversion method](normal_mean_penalized_optimization_inversion.html)
-* [Solve normal mean problem using optimization - also estimate prior mean](normal_mean_penalized_optimization_prior_mean.html)
-* [normal mean penalty plots, when $s^2$ depends on posterior mean](normal_mean_penalty_glm_simplified.html)
-* [normal mean penalty plots, when $s^2$ depends on posterior mean, penalty exlcuding $\log(2\pi s^2)/2$ ](remove_log_in_penalty.html)
-* [where is the log term from in the penalty](log_term_in_penalty.html)
 
 
 ## Poisson mean 
@@ -82,6 +69,7 @@ With Run time Comparison:
 
 * [generate data from splitting model](overdispersed_splitting.html)
 * [generate data from negative binomial model](overdispersed_splitting_nb.html)
+* [thoughts on the results](overdispersed_splitting_analysis.html)
 
 ## Poisson smoothing 
 
@@ -133,3 +121,18 @@ Second Run:
 
 * [Apply Splitting to Binomial Mean problem](binomial_mean_spliiting.html)
 * [It does not work for binary data](bernoulli_GG_fail.html)
+
+## Normal mean penalty form
+
+* [bound on (log g)''](bound_log_marginal.html)
+* [log density of normal mixture](log_gmm_concave.html)
+  + [log density of normal mixture, variance ratio](log_gmm_concave_ratio.html)
+* [log density of laplace mixture](log_lmm_concave.html)
+* [normal mean penalty plots](normal_mean_penalty.html)
+* [Solve normal mean problem using optimization - compund penalty](normal_mean_penalized_optimization.html)
+* [Solve normal mean problem using optimization - inversion method](normal_mean_penalized_optimization_inversion.html)
+* [Solve normal mean problem using optimization - also estimate prior mean](normal_mean_penalized_optimization_prior_mean.html)
+* [normal mean penalty plots, when $s^2$ depends on posterior mean](normal_mean_penalty_glm_simplified.html)
+* [normal mean penalty plots, when $s^2$ depends on posterior mean, penalty exlcuding $\log(2\pi s^2)/2$ ](remove_log_in_penalty.html)
+* [where is the log term from in the penalty](log_term_in_penalty.html)
+
