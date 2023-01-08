@@ -1,0 +1,18 @@
+---
+title: "overdispersed splitting analysis"
+author: "DongyueXie"
+date: "2023-01-02"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+[In previous examples](overdispersed_splitting.html), the prior on $b$ is estimated to be a point mass.
+
+This is because the `ebnm` was not able to find having more than one component useful.
+
+Is $g\sim\delta_\theta$ a local optimal? Probably not.
+
+In theory when $g(b)$ is a point mass then the ELBO of mean field splitting and the one with marginal $f(\mu;g,\sigma^2)$ are equivalent. But this does not mean $g(b)$ must be a point mass to maximize the elbo.
