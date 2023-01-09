@@ -1,0 +1,159 @@
+---
+title: "size of sigma2 on convergence of splitting method"
+author: "DongyueXie"
+date: "2023-01-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+We answer two questions here:
+
+A. Does larger $\sigma^2$ help with convergence?
+
+B. Do those columns with small $\sigma^2$ converge slower than columns with larger $\sigma^2$?
+
+C. To what extent does fix $\sigma^2$ help with convergence?
+
+We mainly focus on matrix factorization cases.
+
+
+## A. Does larger $\sigma^2$ help with convergence?
+
+Generate a matrix with $\sigma^2=0,0.01,0.1,0.5,1...$
+
+```{r}
+library(stm)
+simu_study = function(sigma2_list,N=1000,p=1000,K=3,seed=12345){
+  set.seed(seed)
+  conv_iter = c()
+  for(sigma2 in sigma2_list){
+    Ftrue = matrix(0,nrow=p,ncol=K)
+    Ftrue[1:20,1] = 1
+    Ftrue[21:40,2] = 1
+    Ftrue[41:60,3] = 1
+    Ltrue = matrix(rnorm(N*K), ncol=K)
+    # test
+    Lambda = exp(tcrossprod(Ltrue,Ftrue) + matrix(rnorm(N*p,0,sqrt(sigma2)),nrow=N))
+    Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
+    fit = splitting_PMF_flashier(Y,maxiter_vga = 100,conv_tol = 1e-8,maxiter = 1000)
+    conv_iter = c(conv_iter,length(fit$elbo_trace))
+  }
+  return(conv_iter)
+}
+
+```
+
+```{r}
+sigma2_list = c(0,0.001,0.01,0.1,0.3,0.5,1,2)
+res = simu_study(sigma2_list,N=100,p=100)
+plot(sigma2_list,res,xlab='sigma2',ylab='iterations',type='l')
+plot(log(sigma2_list),res,xlab='log(sigma2)',ylab='iterations',type='l')
+```
+
+## B. Do those columns with small $\sigma^2$ converge slower than columns with larger $\sigma^2$?
+
+Need to record all the sigma2 estimates. I need to modify the function.
+
+I set the first half of column $\sigma^2$ to be small, $0.01$ and the second half to be large, $1$. Then plot the $\sigma^2$'s over 1000 iterations.
+
+```{r}
+set.seed(12345)
+N = 1000
+p = 200
+K = 3
+
+Ftrue = matrix(0,nrow=p,ncol=K)
+Ftrue[1:20,1] = 1
+Ftrue[21:40,2] = 1
+Ftrue[41:60,3] = 1
+Ltrue = matrix(rnorm(N*K), ncol=K)
+# test
+sigma2 = c(rep(0.01,p/2),rep(1,p/2))
+E = matrix(nrow=N,ncol=p)
+for(i in 1:N){
+  E[i,] = rnorm(p,0,sqrt(sigma2))
+}
+Lambda = exp(tcrossprod(Ltrue,Ftrue) + E)
+Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
+fit = splitting_PMF_flashier(Y,maxiter_vga = 100,conv_tol = 1e-8,maxiter = 1000,return_sigma2_trace = TRUE)
+```
+
+```{r}
+plot(fit$sigma2)
+```
+
+It seems that $\sigma^2$ converges to three different scales. I plot the convergence rate of the three cases.
+
+```{r}
+plot(log10(1:length(fit$elbo_trace)),fit$sigma2_trace[,80],xlab='log10 iterations',ylab='sigma2',main='sigma2 converges to 0.01')
+plot(log10(1:length(fit$elbo_trace)),fit$sigma2_trace[,2],xlab='log10 iterations',ylab='sigma2',main='sigma2 converges to 0.1x')
+plot(log10(1:length(fit$elbo_trace)),fit$sigma2_trace[,150],xlab='log10 iterations',ylab='sigma2',main='sigma2 converges to 0.9x')
+```
+
+Apparently, those $\sigma^2$ that are converging to small value, 0.01  are still far from convergence. While the ones converging to 1 converges after around $10^{1.5}\approx32$ iterations.
+
+
+[I swapped the $\sigma^2$ such that the first half are 1 and the second half are 0.01. The same trend holds. (But there's no that little jump for the first 60s.). Not run to save time.]
+```{r,eval=FALSE}
+set.seed(12345)
+N = 1000
+p = 1000
+K = 3
+
+Ftrue = matrix(0,nrow=p,ncol=K)
+Ftrue[1:20,1] = 1
+Ftrue[21:40,2] = 1
+Ftrue[41:60,3] = 1
+Ltrue = matrix(rnorm(N*K), ncol=K)
+# test
+sigma2 = c(rep(1,p/2),rep(0.01,p/2))
+E = matrix(nrow=N,ncol=p)
+for(i in 1:N){
+  E[i,] = rnorm(p,0,sqrt(sigma2))
+}
+Lambda = exp(tcrossprod(Ltrue,Ftrue) + E)
+Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
+fit = splitting_PMF_flashier(Y,maxiter_vga = 100,conv_tol = 1e-8,maxiter = 1000,return_sigma2_trace = TRUE,verbose = T)
+
+
+plot(fit$sigma2)
+plot(log10(1:1001),fit$sigma2_trace[,100],xlab='log10 iterations',ylab='sigma2',main='sigma2 converges to 0.9x')
+plot(log10(1:1001),fit$sigma2_trace[,600],xlab='log10 iterations',ylab='sigma2',main='sigma2 converges to 0.01')
+```
+
+
+## C. To what extent does fix $\sigma^2$ help with convergence?
+
+If the initializations are the same but one model estimates $\sigma^2$ while the other model fixs $\sigma^2$. Which one converges faster?
+
+We repeat experiments above, and fix $\sigma^2$ at true value, and then observe how many iterations are needed?
+
+```{r}
+fit_fix = splitting_PMF_flashier(Y,maxiter_vga = 100,conv_tol = 1e-8,maxiter = 1000,sigma2 = sigma2,est_sigma2 = FALSE,M_init = fit$fit_flash$flash.fit$Y)
+fit_est = splitting_PMF_flashier(Y,maxiter_vga = 100,conv_tol = 1e-8,maxiter = 1000,sigma2 = sigma2,est_sigma2 = TRUE,M_init = fit$fit_flash$flash.fit$Y)
+```
+
+```{r}
+plot(fit_est$elbo_trace,type='l',col=2,lwd=2)
+lines(fit_fix$elbo_trace,col=4,lwd=2)
+legend('bottomright',c('fix sigma2','estiamte sigma2'),lty=c(1,1),col=c(4,2))
+```
+
+Plot of factors:
+
+```{r}
+plot(fit_est$fit_flash$F.pm[,1],type='l')
+plot(fit_est$fit_flash$F.pm[,2],type='l')
+plot(fit_est$fit_flash$F.pm[,3],type='l')
+```
+
+```{r}
+plot(fit_fix$fit_flash$F.pm[,1],type='l')
+plot(fit_fix$fit_flash$F.pm[,2],type='l')
+plot(fit_fix$fit_flash$F.pm[,3],type='l')
+```
+
+It seems that fixing the $\sigma^2$ leads to lower elbo, and the estimated factors are also noiser.
