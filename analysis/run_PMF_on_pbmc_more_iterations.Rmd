@@ -74,5 +74,69 @@ fit$run_time
 lapply(fit$run_time_break_down,mean)
 ```
 
+## Latent variable
 
+Take a look at the latent M in splitting PMF model. M is the posterior mean of $q_\mu = N(\mu;m,v)$.
+
+1. What are M's corresponds to zero Ys? Large Ys?
+
+2. How does the M compared to GLMPCA's latent representation?
+
+Histogram of latent variable corresponding to y = 0.
+
+```{r}
+hist(fit$fit_flash$flash.fit$Y[as.vector(counts==0)],breaks=100,xlab='splitting PMF latent var size for those Y=0',main='')
+summary(fit$fit_flash$flash.fit$Y[as.vector(counts==0)])
+```
+
+It seems that most of them are very close to 0? Let's set probability = TRUE and restrict ylim to (0,0.2).
+
+```{r}
+hist(fit$fit_flash$flash.fit$Y[as.vector(counts==0)],breaks=200,xlab='splitting PMF latent var size for those Y=0',main='',probability = T,ylim=c(0,0.2))
+```
+
+Look at GLMPCA:
+
+```{r}
+hist(tcrossprod(as.matrix(fit_glmpca_poi$loadings),as.matrix(fit_glmpca_poi$factors))[as.vector(counts==0)],breaks=100,xlab='GLMPCA latent var size for those Y=0',main='')
+summary(tcrossprod(as.matrix(fit_glmpca_poi$loadings),as.matrix(fit_glmpca_poi$factors))[as.vector(counts==0)])
+```
+
+The GLMPCA latent vraibles are less concentrated around 0. Maybe this is because it does not induce sparsity on L and F.
+
+Histogram of latent variable corresponding to y > 0.
+
+```{r}
+hist(fit$fit_flash$flash.fit$Y[as.vector(counts>0)],breaks=100,xlab='splitting PMF latent var size for those Y>0',main='')
+summary(fit$fit_flash$flash.fit$Y[as.vector(counts>0)])
+```
+
+Let's limit ylim to (0,1), and set probability = TRUE.
+
+```{r}
+hist(fit$fit_flash$flash.fit$Y[as.vector(counts>0)],breaks=200,xlab='splitting PMF latent var size for those Y>0',main='',ylim=c(0,1),probability = T,col=rgb(1,0,0,1/4))
+abline(v = 0,lty=2)
+```
+
+```{r}
+hist(tcrossprod(as.matrix(fit_glmpca_poi$loadings),as.matrix(fit_glmpca_poi$factors))[as.vector(counts>0)],breaks=100,xlab='GLMPCA latent var size for those Y>0',main='')
+summary(tcrossprod(as.matrix(fit_glmpca_poi$loadings),as.matrix(fit_glmpca_poi$factors))[as.vector(counts>0)])
+```
+
+Look at how many non-zeros are there in the Y:
+
+```{r}
+hist(log(counts[counts>0]),breaks = 100)
+```
+
+
+```{r,eval=FALSE}
+# The latent variable from splitting PMF seems to be very symmetric for those corresponding to $Y>0$. 
+h_smaller = hist(log(counts[(fit$fit_flash$flash.fit$Y[as.vector(counts>0)])<0]),breaks = 100,main='',xlab='')
+h_larger = hist(log(counts[(fit$fit_flash$flash.fit$Y[as.vector(counts>0)])>0]),breaks = 100,main='',xlab='')
+
+plot( h_larger, col=rgb(0,0,1,1/4), xlim=c(0,5)) 
+plot( h_smaller, col=rgb(1,0,0,1/4), xlim=c(0,5),add=T) 
+legend('topright',c('>0','<0'),fill=c(rgb(0,0,1,1/4),rgb(1,0,0,1/4)),)
+```
 
