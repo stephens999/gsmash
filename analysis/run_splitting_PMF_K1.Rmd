@@ -1,0 +1,77 @@
+---
+title: "run splitting PMF with K=1 on pbmc3k data"
+author: "DongyueXie"
+date: "2023-01-10"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Here we run splitting pmf with 1 factor on pbmc3k data, and look at the loading and factor
+
+```{r}
+# library(fastTopics)
+# library(stm)
+# library(Matrix)
+# data(pbmc_facs)
+# 
+# ## original data fit
+# Y<- as.matrix(pbmc_facs$counts)
+# S = tcrossprod(c(rowSums(Y)),c(colSums(Y)))/sum(Y)
+# 
+# fit = splitting_PMF_flashier(Y,S,var_type = 'by_col',
+#                             ebnm.fn = ebnm::ebnm_point_normal,
+#                              maxiter = 100,
+#                              conv_tol=1e-8,
+#                              maxiter_vga = 1,
+#                             Kmax_init = 1,
+#                             add_greedy_every = 1e10,
+#                              verbose = TRUE,
+#                              n_cores = 10,
+#                              maxiter_backfitting = 1)
+fit_k1 = readRDS('output/pbmc3k_k1.rds')
+```
+
+```{r}
+plot(fit_k1$elbo_trace)
+plot(fit_k1$sigma2)
+plot(fit_k1$fit_flash$L.pm)
+plot(fit_k1$fit_flash$F.pm)
+```
+
+```{r}
+hist(fitted(fit_k1$fit_flash),breaks = 1000,probability = T,ylim=c(0,0.1))
+summary(c(fitted(fit_k1$fit_flash)))
+```
+
+Remove the background scaling factor and re-fit splitting PMF with K=1.
+
+
+```{r}
+# fit2 = splitting_PMF_flashier(Y,S=NULL,var_type = 'by_col',
+#                             ebnm.fn = ebnm::ebnm_point_normal,
+#                              maxiter = 100,
+#                              conv_tol=1e-8,
+#                              maxiter_vga = 1,
+#                             Kmax_init = 1,
+#                             add_greedy_every = 1e10,
+#                              verbose = TRUE,
+#                              n_cores = 10,
+#                              maxiter_backfitting = 1)
+fit_k1_s1 = readRDS('output/pbmc3k_k1_S1.rds')
+```
+
+```{r}
+plot(fit_k1_s1$elbo_trace)
+plot(fit_k1_s1$sigma2)
+plot(fit_k1_s1$fit_flash$L.pm)
+plot(fit_k1_s1$fit_flash$F.pm)
+```
+
+```{r}
+hist(fitted(fit_k1_s1$fit_flash),breaks = 1000,probability = T,ylim=c(0,0.5))
+summary(c(fitted(fit_k1_s1$fit_flash)))
+```
+
