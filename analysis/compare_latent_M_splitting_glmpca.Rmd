@@ -1,0 +1,73 @@
+---
+title: "compare latent M between my splitting method and glmpca"
+author: "DongyueXie"
+date: "2023-01-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+counts <- pbmc_facs$counts
+l0 = rowSums(counts)/sqrt(sum(counts))
+f0 = colSums(counts)/sqrt(sum(counts))
+```
+
+Both methods glmpca and splittingPMF recover latent variables in the latent log space. Here we look at how differ they are?
+
+```{r}
+fit_glmpca_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/glmpca_pbmc3k_poi.rds')
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/ebpmf_pbmc3k_vga3.rds')
+fit_multinom = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/ebpmf_pbmc3k_multinom_vga3.rds')
+```
+
+```{r}
+M_glmpca = tcrossprod(as.matrix(fit_glmpca_poi$loadings),as.matrix(fit_glmpca_poi$factors))
+hist(M_glmpca,breaks = 1000)
+```
+
+```{r}
+# get M from splitting method
+M_splitting = stm:::vga_pois_solver_mat_newton(M=as.matrix(log(1+counts/tcrossprod(l0,f0))),X = as.matrix(counts),S = tcrossprod(l0,f0),
+                                               Beta = fitted(fit$fit_flash),
+                                               Sigma2 = stm:::adjust_var_shape(sigma2=fit$sigma2,
+                                                                               var_type = 'by_col',
+                                                                               n = nrow(counts),
+                                                                               p=ncol(counts)),
+                                              return_V = F)
+```
+
+```{r}
+# get M from splitting method
+M_splitting_multinom = stm:::vga_pois_solver_mat_newton(M=as.matrix(log(1+counts/rowMeans(counts))),
+                                                        X = as.matrix(counts),S = tcrossprod(rowMeans(counts),rep(1,ncol(counts))),
+                                               Beta = fitted(fit_multinom$fit_flash),
+                                               Sigma2 = stm:::adjust_var_shape(sigma2=fit_multinom$sigma2,
+                                                                               var_type = 'by_col',
+                                                                               n = nrow(counts),
+                                                                               p=ncol(counts)),
+                                              return_V = F)
+```
+
+```{r}
+hist(M_splitting_multinom,breaks = 1000)
+hist(M_splitting,breaks = 1000)
+```
+
+
+
+Much sparser? 
+
+Perhaps I'll try use a flat prior on my splitting method , and/or use glmpca for initialization.
+
+
+
+
+
+
+
+
