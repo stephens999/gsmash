@@ -15,8 +15,8 @@
 
 <title>run PMF on droplet dataset</title>
 
-<script src="site_libs/header-attrs-2.17/header-attrs.js"></script>
-<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -40,7 +40,7 @@
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
-<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
 <style type="text/css">
 div.section {
@@ -77,7 +77,6 @@ if (window.hljs) {
 
 
 
-
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -98,9 +97,6 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
-}
-details > summary > p:only-child {
-  display: inline;
 }
 pre code {
   padding: 0;
@@ -158,15 +154,11 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark the anchor link active (and if it's in a dropdown, also mark that active)
-  var dropdown = menuAnchor.closest('li.dropdown');
-  if (window.bootstrap) { // Bootstrap 4+
-    menuAnchor.addClass('active');
-    dropdown.find('> .dropdown-toggle').addClass('active');
-  } else { // Bootstrap 3
-    menuAnchor.parent().addClass('active');
-    dropdown.addClass('active');
-  }
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -195,8 +187,8 @@ $(document).ready(function () {
   border-radius: 4px;
 }
 
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-  content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
   font-family: 'Glyphicons Halflings';
   display: inline-block;
   padding: 10px;
@@ -204,9 +196,16 @@ $(document).ready(function () {
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-  content: "\e258";
-  font-family: 'Glyphicons Halflings';
+  content: "&#xe258;";
   border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
 }
 
 .tabset-dropdown > .nav-tabs > li.active {
@@ -323,7 +322,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -390,7 +389,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-12-07
+<strong>Last updated:</strong> 2023-01-23
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -405,10 +404,10 @@ title="This is the local directory in which the code in this file was executed."
 </span>
 </p>
 <p>
-This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
-  href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -521,15 +520,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3a2ef3485db44fbd0fe366fa2ea1e5a3fd76b9e5targetblank3a2ef34a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec46a9cdb49875d45d0c2c9cbede63dae34d4e8edtargetblankc46a9cda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/3a2ef3485db44fbd0fe366fa2ea1e5a3fd76b9e5" target="_blank">3a2ef34</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/c46a9cdb49875d45d0c2c9cbede63dae34d4e8ed" target="_blank">c46a9cd</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree3a2ef3485db44fbd0fe366fa2ea1e5a3fd76b9e5targetblank3a2ef34a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec46a9cdb49875d45d0c2c9cbede63dae34d4e8edtargetblankc46a9cda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +538,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/3a2ef3485db44fbd0fe366fa2ea1e5a3fd76b9e5" target="_blank">3a2ef34</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/c46a9cdb49875d45d0c2c9cbede63dae34d4e8ed" target="_blank">c46a9cd</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -556,20 +555,16 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
-    Ignored:    data/poisson_mean_simulation/
 
 Untracked files:
-    Untracked:  Rplot.png
-    Untracked:  data/real_data_singlecell/
-    Untracked:  figure/
-    Untracked:  output/poisson_MF_simulation/
-    Untracked:  output/poisson_mean_simulation/
-    Untracked:  output/poisson_smooth_simulation/
+    Untracked:  analysis/compare_vga_iterations_pbmc_full.Rmd
+    Untracked:  analysis/gene_variance_expression.Rmd
+    Untracked:  output/pbmc3k_k1.rds
+    Untracked:  output/pbmc3k_k1_S1.rds
 
 Unstaged changes:
-    Modified:   analysis/run_PMF_on_pbmc.Rmd
-    Modified:   code/poisson_STM/real_PMF.R
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/overdispersed_splitting.Rmd
 
 </code></pre>
 <p>
@@ -620,6 +615,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/c46a9cdb49875d45d0c2c9cbede63dae34d4e8ed/analysis/run_PMF_on_droplet.Rmd" target="_blank">c46a9cd</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-01-23
+</td>
+<td>
+wflow_publish("analysis/run_PMF_on_droplet.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/eb3aa65d95cd03f322789fb7dab170d0e83ac48c/docs/run_PMF_on_droplet.html" target="_blank">eb3aa65</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/3a2ef3485db44fbd0fe366fa2ea1e5a3fd76b9e5/analysis/run_PMF_on_droplet.Rmd" target="_blank">3a2ef34</a>
 </td>
 <td>
@@ -641,54 +670,196 @@ wflow_publish("analysis/run_PMF_on_droplet.Rmd")
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>The droplet dataset is from Peter and stored on RCC. I ran splitting
-PMF on the dataset.</p>
-<p>The dataset initially has 7193 cells and 18388 genes. I tried to run
-PMF on the dataset with 32GB memory but got an error saying out of
-memory. I don’t know why but likely due to the vga step that I’m using a
-vector of size 7193*18388?</p>
-<p>So I filtered out genes that has no expressio in more than <span
-class="math inline">\(3%\)</span> of the total cells. The resulting
-dataset has 7193 cells and 8701 genes. I set the scaling factors as
-<span class="math inline">\(s_{ij} =
-\frac{y_{i+}y_{+j}}{y_{++}}\)</span>. For comparison, I also fit
-<code>flash</code> on transformed count data, as <span
-class="math inline">\(\tilde{y}_{ij} =
-\log(1+\frac{y_{ij}}{s_{ij}}\frac{a_j}{0.5})\)</span> where <span
-class="math inline">\(a_j = median(s_{\cdot j})\)</span>. This
-transformation is derived from <span
-class="math inline">\(\tilde{y}_{ij} =
-\log(\frac{y_{ij}}{s_{ij}}+\frac{0.5}{a_j})\)</span>.</p>
-<pre class="r"><code>fit = readRDS(&#39;output/poisson_MF_simulation/droplet.rds&#39;)
-fit_flashier = readRDS(&#39;output/poisson_MF_simulation/fit_flashier_droplet_filter_gene.rds&#39;)</code></pre>
+<pre class="r"><code>fit = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_vga3.rds&#39;)
+load(&#39;/project2/mstephens/pcarbo/git/single-cell-topics/data/droplet.RData&#39;)
+source(&#39;code/poisson_STM/plot_factors.R&#39;)
+source(&#39;code/poisson_STM/plot_factors_general.R&#39;)</code></pre>
+<pre class="r"><code>dim(counts)</code></pre>
+<pre><code>[1]  7193 18388</code></pre>
+<pre class="r"><code>table(samples$tissue)</code></pre>
+<pre><code>
+         Basal       Ciliated           Club         Goblet       Ionocyte 
+          3845            425           2578             65             26 
+Neuroendocrine           Tuft 
+            96            158 </code></pre>
 <pre class="r"><code>fit$run_time</code></pre>
-<pre><code>Time difference of 3.446107 hours</code></pre>
-<pre class="r"><code>length(fit$eblo_trace)</code></pre>
-<pre><code>[1] 91</code></pre>
-<pre class="r"><code>fit$fit_flash$n.factors</code></pre>
-<pre><code>[1] 26</code></pre>
-<pre class="r"><code>plot(fit$K_trace)</code></pre>
+<pre><code>Time difference of 21.34445 hours</code></pre>
+<pre class="r"><code>plot(fit$elbo_trace,type=&#39;l&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(fit$sigma2,ylab = &#39;sigma2&#39;,xlab=&#39;gene&#39;,col=&#39;grey50&#39;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/eb3aa65d95cd03f322789fb7dab170d0e83ac48c/docs/figure/run_PMF_on_droplet.Rmd/unnamed-chunk-3-1.png" target="_blank">eb3aa65</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot(fit$K_trace,type=&#39;l&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$fit_flash$pve</code></pre>
-<pre><code> [1] 0.1568789125 0.0341639389 0.1349336658 0.0267323517 0.0215516881
- [6] 0.0088459773 0.0096850569 0.0043514745 0.0183677735 0.0032679003
-[11] 0.0061264726 0.0020586084 0.0012677020 0.0019521592 0.0017855445
-[16] 0.0013343647 0.0007932285 0.0004428087 0.0012478659 0.0005800477
-[21] 0.0008824267 0.0114974202 0.0006673994 0.0007898059 0.0037400368
-[26] 0.0003999684</code></pre>
-<pre class="r"><code>library(Matrix)
-load(&#39;data/real_data_singlecell/droplet.RData&#39;)
-genes = (colSums(counts&gt;0) &gt; (dim(counts)[1]*0.03))
-counts = counts[,genes]</code></pre>
-<p>Use Jason’s method for visualizing loadings:</p>
-<pre class="r"><code>source(&#39;code/poisson_STM/plot_factors.R&#39;)</code></pre>
-<pre class="r"><code>cell_names = as.character(samples$tissue)
-plot.factors(fit$fit_flash,cell_names,title=&#39;splitting PMF&#39;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-2">
+Past versions of unnamed-chunk-3-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/eb3aa65d95cd03f322789fb7dab170d0e83ac48c/docs/figure/run_PMF_on_droplet.Rmd/unnamed-chunk-3-2.png" target="_blank">eb3aa65</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot(fit$fit_flash$pve)</code></pre>
+<p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit$sigma2_trace[,which.max(fit$sigma2)],type=&#39;l&#39;,ylab=&#39;&#39;,main=&#39;convergence of largest sigma2&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>round(unlist(lapply(fit$run_time_break_down,median)),3)</code></pre>
+<pre><code>         run_time_vga_init        run_time_flash_init 
+                   176.656                    186.724 
+              run_time_vga run_time_flash_init_factor 
+                    44.425                     22.808 
+     run_time_flash_greedy run_time_flash_backfitting 
+                     0.000                     78.932 
+  run_time_flash_nullcheck 
+                     8.489 </code></pre>
+<pre class="r"><code>plot.factors(fit$fit_flash,samples$tissue,title=&#39;splitting PMF&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>glmpca_nb = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/droplet/glmpca_droplet_nb.rds&#39;)
+glmpca_poi = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/droplet/glmpca_droplet_poi.rds&#39;)
+flash_fit = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/droplet/flash_droplet.rds&#39;)</code></pre>
+<pre class="r"><code>plot.factors(flash_fit,samples$tissue,title=&#39;flash&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot.factors(fit_flashier,cell_names,title=&#39;flashier&#39;)</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/eb3aa65d95cd03f322789fb7dab170d0e83ac48c/docs/figure/run_PMF_on_droplet.Rmd/unnamed-chunk-6-1.png" target="_blank">eb3aa65</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot.factors.general(glmpca_poi$loadings,samples$tissue,title=&#39;glmpca pois&#39;)</code></pre>
 <p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/eb3aa65d95cd03f322789fb7dab170d0e83ac48c/docs/figure/run_PMF_on_droplet.Rmd/unnamed-chunk-7-1.png" target="_blank">eb3aa65</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-12-07
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot.factors.general(glmpca_nb$loadings,samples$tissue,title=&#39;glmpca nb&#39;)</code></pre>
+<p><img src="figure/run_PMF_on_droplet.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -698,53 +869,52 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.1 (2022-06-23)
+<pre><code>R version 4.1.0 (2021-05-18)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 20.04.5 LTS
+Running under: CentOS Linux 7 (Core)
 
 Matrix products: default
-BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.9.0
-LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.9.0
+BLAS:   /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRblas.so
+LAPACK: /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRlapack.so
 
 locale:
- [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       
- [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   
- [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          
-[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   
+ [1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C         LC_TIME=C           
+ [4] LC_COLLATE=C         LC_MONETARY=C        LC_MESSAGES=C       
+ [7] LC_PAPER=C           LC_NAME=C            LC_ADDRESS=C        
+[10] LC_TELEPHONE=C       LC_MEASUREMENT=C     LC_IDENTIFICATION=C 
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_3.3.6   Matrix_1.5-1    workflowr_1.7.0
+[1] ggplot2_3.4.0   workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.9        horseshoe_0.2.0   invgamma_1.1      lattice_0.20-45  
- [5] getPass_0.2-2     ps_1.7.1          assertthat_0.2.1  rprojroot_2.0.3  
- [9] digest_0.6.29     utf8_1.2.2        truncnorm_1.0-8   plyr_1.8.7       
-[13] R6_2.5.1          evaluate_0.17     highr_0.9         httr_1.4.4       
-[17] pillar_1.8.1      rlang_1.0.6       rstudioapi_0.14   ebnm_1.0-9       
-[21] irlba_2.3.5.1     whisker_0.4       callr_3.7.2       jquerylib_0.1.4  
-[25] rmarkdown_2.17    labeling_0.4.2    splines_4.2.1     stringr_1.4.1    
-[29] munsell_0.5.0     mixsqp_0.3-48     compiler_4.2.1    httpuv_1.6.6     
-[33] xfun_0.33         pkgconfig_2.0.3   SQUAREM_2021.1    htmltools_0.5.3  
-[37] tidyselect_1.2.0  tibble_3.1.8      fansi_1.0.3       withr_2.5.0      
-[41] dplyr_1.0.10      later_1.3.0       grid_4.2.1        jsonlite_1.8.2   
-[45] gtable_0.3.1      lifecycle_1.0.3   DBI_1.1.3         git2r_0.30.1     
-[49] magrittr_2.0.3    scales_1.2.1      cli_3.4.1         stringi_1.7.8    
-[53] cachem_1.0.6      farver_2.1.1      reshape2_1.4.4    fs_1.5.2         
-[57] promises_1.2.0.1  flashier_0.2.34   bslib_0.4.0       generics_0.1.3   
-[61] vctrs_0.4.2       trust_0.1-8       tools_4.2.1       softImpute_1.4-1 
-[65] glue_1.6.2        parallel_4.2.1    processx_3.7.0    fastmap_1.1.0    
-[69] yaml_2.3.5        colorspace_2.0-3  ashr_2.2-54       deconvolveR_1.2-1
-[73] knitr_1.40        sass_0.4.2       </code></pre>
+ [1] Rcpp_1.0.9        horseshoe_0.2.0   invgamma_1.1      lattice_0.20-44  
+ [5] assertthat_0.2.1  rprojroot_2.0.2   digest_0.6.30     utf8_1.2.2       
+ [9] truncnorm_1.0-8   plyr_1.8.6        R6_2.5.1          evaluate_0.14    
+[13] highr_0.9         pillar_1.8.1      rlang_1.0.6       rstudioapi_0.13  
+[17] ebnm_1.0-11       irlba_2.3.5.1     whisker_0.4       jquerylib_0.1.4  
+[21] Matrix_1.5-3      rmarkdown_2.9     labeling_0.4.2    splines_4.1.0    
+[25] stringr_1.4.0     munsell_0.5.0     mixsqp_0.3-48     compiler_4.1.0   
+[29] httpuv_1.6.1      xfun_0.24         pkgconfig_2.0.3   SQUAREM_2021.1   
+[33] htmltools_0.5.3   tidyselect_1.2.0  tibble_3.1.8      fansi_1.0.3      
+[37] dplyr_1.0.10      withr_2.5.0       later_1.3.0       MASS_7.3-54      
+[41] grid_4.1.0        jsonlite_1.8.3    gtable_0.3.1      lifecycle_1.0.3  
+[45] DBI_1.1.1         git2r_0.28.0      magrittr_2.0.3    scales_1.2.1     
+[49] cli_3.5.0         stringi_1.6.2     farver_2.1.1      reshape2_1.4.4   
+[53] fs_1.5.0          promises_1.2.0.1  flashier_0.2.34   bslib_0.2.5.1    
+[57] generics_0.1.3    vctrs_0.5.1       trust_0.1-8       tools_4.1.0      
+[61] glmpca_0.2.0      glue_1.6.2        softImpute_1.4-1  parallel_4.1.0   
+[65] fastmap_1.1.0     yaml_2.3.6        colorspace_2.0-3  ashr_2.2-54      
+[69] deconvolveR_1.2-1 knitr_1.33        sass_0.4.0       </code></pre>
 </div>
 </div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
-https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
 the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
