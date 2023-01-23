@@ -1,0 +1,41 @@
+---
+title: "run flash on latent M glmpca"
+author: "DongyueXie"
+date: "2023-01-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+I first fit a glmpca on pbmc3k data, then fit a flash on $L_{glmpca}F'_{glmpca}$.
+
+How does it compare with flash fit, and glmpca fit?
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+flash_glmpca = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/flash_glmpca.rds')
+source('code/poisson_STM/plot_factors.R')
+```
+
+```{r}
+plot.factors(flash_glmpca,pbmc_facs$samples$subpop,title='flash on glmpca')
+```
+
+```{r}
+source('code/poisson_STM/plot_factors_general.R')
+fit_glmpca_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/glmpca_pbmc3k_poi.rds')
+plot.factors.general(fit_glmpca_poi$loadings,pbmc_facs$samples$subpop,title='glmpca poi')
+```
+
+What's the gene expression-variance relationship?
+
+
+```{r}
+plot(colSums(pbmc_facs$counts/rowSums(pbmc_facs$counts)),flash_glmpca$residuals.sd^2,xlab='gene expression',ylab='gene variance',main='pbmc3k, flash on glmpca',pch='.',cex=2,col='grey40')
+```
+
+This gene expression-variance relationship looks very similar to the splitting method results, see [here](gene_variance_expression.html).
+
