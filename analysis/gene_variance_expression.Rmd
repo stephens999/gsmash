@@ -1,0 +1,95 @@
+---
+title: "gene variance expression relationship"
+author: "DongyueXie"
+date: "2023-01-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Here we study the gene specific variance and gene expression level.
+
+Does a gene with high expression also have high variance?
+
+$$\Lambda = l_0f_0^T\exp(LF^T)$$ 
+$$\lambda_{ij}=l_{0i}f_{0j}\exp(\sum_k l_{ik}f_{jk}) = \exp(\log(l_{0i})+\log(f_{0j})+\sum_k l_{ik}f_{jk})$$
+Interpretation of $l_0,f_0$: from a data generating perspective, $l_0$ can be thought of the size of samples, for example, the number of counts in a cell; $f_0$ can be thought as the size of covariates, for example the gene expression level. So the $i,j$th entry is the gene $j$ expression count in cell $i$ then we can think it as: draw its baseline expression based on $\exp(\sum_k l_{ik}f_{jk})$, then since it's gene $j$, it should multiple $f_{0j}$ and since it's in cell $i$, it should multiple $l_{0i}$.
+
+
+## pbmc
+
+```{r}
+library(fastTopics)
+library(Matrix)
+data(pbmc_facs)
+counts = pbmc_facs$counts
+flash_pbmc3k = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/flash_pbmc3k.rds')
+plot(colSums(counts/c(rowSums(counts))),flash_pbmc3k$residuals.sd^2,xlab='gene expression',ylab='gene variance',main='pbmc3k, flash',pch='.',cex=2,col='grey40')
+
+ebpmf_pbmc3k = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/ebpmf_pbmc3k_vga3.rds')
+plot(colSums(counts/c(rowSums(counts)))/colSums(counts)*sum(counts),ebpmf_pbmc3k$sigma2,xlab='gene expression/colsums(geneexpression)',ylab='gene variance',main='pbmc3k, ebpmf, l0 f0',pch='.',cex=2,col='grey40')
+
+ebpmf_pbmc3k_multinom = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/ebpmf_pbmc3k_multinom_vga3.rds')
+plot(colSums(counts/c(rowSums(counts))),ebpmf_pbmc3k_multinom$sigma2,xlab='gene expression',ylab='gene variance',main='pbmc3k, ebpmf, l0',pch='.',cex=2,col='grey40')
+
+glmpca_pbmc3k_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/glmpca_pbmc3k_poi.rds')
+```
+
+Look at one gene that has highest estimated variance.
+
+```{r}
+l0 = rowMeans(counts)
+which.max(ebpmf_pbmc3k_multinom$sigma2)
+gene_idx = which.max(ebpmf_pbmc3k_multinom$sigma2)
+plot(ebpmf_pbmc3k_multinom$sigma2_trace[,gene_idx],type='l',xlab='iteration',ylab='sigma2 trace')
+
+plot(counts[,gene_idx]/l0,ylab='after divided by cell size',xlab='cells',main='ebpmf latent')
+lines(exp(ebpmf_pbmc3k_multinom$fit_flash$flash.fit$Y[,gene_idx]))
+
+plot((fitted(ebpmf_pbmc3k_multinom$fit_flash)[,gene_idx]),main='ebpmf fitted latent')
+
+```
+
+So the m seems to represent the latent space ok, but it seems that the fitted $LF^t$ are all negative and the sigma2 is large.  
+
+**I don't know exactly how to make sense of it right now.** If we look at the factors corresponding to this gene:
+
+```{r}
+plot(ebpmf_pbmc3k_multinom$fit_flash$F.pm[gene_idx,])
+```
+
+All of them are effectively 0...What is gene's called? 
+
+The glmpca latent is also plotted here for comparison:
+
+```{r}
+plot(counts[,8589]/l0,ylab='after divided by cell size',xlab='cells',main='glmpca latent')
+lines(exp(tcrossprod(as.matrix(glmpca_pbmc3k_poi$loadings),as.matrix(glmpca_pbmc3k_poi$factors))[,8589]))
+```
+
+
+How about fit flash on the latent representation learned by glmpca? Then what's the relationship between gene expression and the variance?
+
+
+```{r}
+flash_glmpca = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/flash_glmpca.rds')
+plot(colSums(counts/rowSums(counts)),flash_glmpca$residuals.sd^2,xlab='gene expression',ylab='gene variance',main='pbmc3k, flash fit on glmpca',pch='.',cex=2,col='grey40')
+```
+
+## droplet
+
+```{r}
+load('/project2/mstephens/pcarbo/git/fastTopics-experiments/data/droplet.RData')
+flash_droplet = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/flash_droplet.rds')
+plot(colSums(counts/c(rowSums(counts))),flash_droplet$residuals.sd^2,xlab='gene expression',ylab='gene variance',main='droplet, flash',pch='.',cex=2,col='grey40')
+
+ebpmf_droplet = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_vga3.rds')
+f0 = colSums(counts)
+plot(colSums(counts/rowSums(counts))/f0*sum(counts),ebpmf_droplet$sigma2,xlab='gene expression/colsums(geneexpression)',ylab='gene variance',main='droplet, ebpmf, l0 f0',pch='.',cex=2,col='grey40')
+
+plot(colSums(counts/rowSums(counts)),ebpmf_droplet$sigma2,xlab='gene expression',ylab='gene variance',main='droplet, ebpmf, l0 f0',pch='.',cex=3,col='grey40')
+```
+
+
