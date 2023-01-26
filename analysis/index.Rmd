@@ -27,7 +27,7 @@ editor_options:
 * [Simulation based on PBMC data, 3 cell types](simulation_based_on_pbmc_3cell.html)
 * [Simulation based on PBMC data, 3 cell types, 1 init backfitting](splitting_PMF_1backfitinit.html)
 
-### On real dataset
+### On pbmc3k
 
 * [run PMF on PBMC data, 3 cell types](run_PMF_on_pbmc_3cells.html)
 * [run PMF on PBMC data, 3 cell types, nonnegative loadings](run_PMF_on_pbmc_3cells_nonnegativeL_more_iterations.html)
@@ -37,9 +37,17 @@ editor_options:
 * [run PMF on PBMC data](run_PMF_on_pbmc_more_iterations.html)
 * [run PMF on PBMC data,nonnegative Loadings](run_PMF_on_pbmc_nonnegativeL_more_iterations.html)
 * [run PMF on PBMC data,nonnegative Loadings and factors](run_PMF_on_pbmc_nonnegativeLF_more_iterations.html)
-* [run PMF on droplet data](run_PMF_on_droplet.html)
 * [library size distribution](library_size_distribution.html)
+* [gene specific variance and gene expression](gene_variance_expression.html)
+* [Compare latent M from splitting and glmpca](compare_latent_M_splitting_glmpca.html)
+* [Run flash on latent M from glmpca](run_flash_on_latent_M_glmpca.html)
+* [Re-plot loadings after setting upper limit on $\sigma^2$]()
+* [How do results differ over iterations? When can we stop iterations?]()
 
+
+### On Droplet
+
+* [run PMF on droplet result](run_PMF_on_droplet.Rmd)
 
 
 ## Poisson mean 
