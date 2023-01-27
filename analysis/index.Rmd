@@ -49,6 +49,7 @@ editor_options:
 * [run PMF on droplet result](run_PMF_on_droplet.Rmd)
 
 
+
 ## Poisson mean 
 
 * [Poisson log normal](poisson_log_normal.html)
@@ -131,6 +132,7 @@ Second Run:
 
 * [Apply Splitting to Binomial Mean problem](binomial_mean_spliiting.html)
 * [It does not work for binary data](bernoulli_GG_fail.html)
+* [Apply Splitting to Binomial smooth problem](binomial_smooth_splitting.html)
 
 ## Normal mean penalty form
 
