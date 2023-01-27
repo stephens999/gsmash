@@ -1,0 +1,116 @@
+---
+title: "binomial smooth splitting"
+author: "DongyueXie"
+date: "2023-01-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Here we study if splitting method work for binomial and Bernoulli data, for regression(smoothing) problem.
+
+The basic model is 
+
+$$x_i\sim Binomial(n_i,\sigma(\mu_i))$$
+$$\mu_i|b_i\sim N(b_i,\sigma^2)$$
+$$b_i\sim g_{smooth}(\cdot).$$
+
+```{r}
+source("code/binomial_mean/binomial_smooth_splitting.R")
+source("code/binomial_mean/binomial_mean_splitting.R")
+```
+
+## binomial n =100
+
+```{r}
+library(vebpm)
+library(fastGHQuad)
+library(ebnm)
+library(Rfast)
+library(smashrgen)
+logit = function(p){log(p/(1-p))}
+set.seed(12345)
+n=1024
+mu = c(rep(-1,n/2),rep(1,n/4),rep(-1,n/4))
+p = 1/(1+exp(-mu))
+nb = rep(100,n)
+x = rbinom(n,nb,p)
+plot(x/nb,col='grey80')
+lines(p,col='grey60')
+fit = binom_smooth_split(x,nb,m_init = logit((x+1)/(nb+2)),sigma2_init=1,tol=1e-8,maxiter = 100,printevery = 10)
+#fit = binom_smooth_split(x,nb,m_init = logit(x/nb),sigma2_init=0.5,tol=1e-8)
+#fit = binomial_mean_splitting(x,nb,printevery = 1)
+lines(fit$posterior$mean_smooth)
+
+```
+
+```{r}
+plot(fit$fitted_g$sigma2_trace,type='l',main='trace of sigma2')
+plot(fit$elbo_trace,type='l',main='trace of elbo')
+```
+
+## binomial n =10
+
+```{r}
+set.seed(12345)
+n=1024
+mu = c(rep(-1,n/2),rep(1,n/4),rep(-1,n/4))
+p = 1/(1+exp(-mu))
+nb = rep(10,n)
+x = rbinom(n,nb,p)
+plot(x/nb,col='grey80')
+lines(p,col='grey60')
+fit = binom_smooth_split(x,nb,m_init = logit((x+1)/(nb+2)),sigma2_init=1,tol=1e-8,maxiter = 100,printevery = 10)
+#fit = binom_smooth_split(x,nb,m_init = logit(x/nb),sigma2_init=0.5,tol=1e-8)
+#fit = binomial_mean_splitting(x,nb,printevery = 1)
+lines(fit$posterior$mean_smooth)
+
+```
+
+```{r}
+plot(fit$fitted_g$sigma2_trace,type='l',main='trace of sigma2')
+plot(fit$elbo_trace,type='l',main='trace of elbo')
+```
+
+## binomial n = 1
+
+```{r}
+set.seed(12345)
+n=1024
+mu = c(rep(-1,n/2),rep(1,n/4),rep(-1,n/4))
+p = 1/(1+exp(-mu))
+nb = rep(1,n)
+x = rbinom(n,nb,p)
+plot(x/nb,col='grey80')
+lines(p,col='grey60')
+fit = binom_smooth_split(x,nb,m_init = logit((x+1)/(nb+2)),sigma2_init=1,tol=1e-8,maxiter = 100,printevery = 10)
+#fit = binom_smooth_split(x,nb,m_init = logit(x/nb),sigma2_init=0.5,tol=1e-8)
+#fit = binomial_mean_splitting(x,nb,printevery = 1)
+lines(fit$posterior$mean_smooth)
+
+```
+
+```{r}
+plot(fit$fitted_g$sigma2_trace,type='l',main='trace of sigma2')
+plot(fit$elbo_trace,type='l',main='trace of elbo')
+```
+
+```{r}
+fit = binom_smooth_split(x,nb,m_init = logit((x+1)/(nb+2)),sigma2_init=0.5,tol=1e-8,maxiter = 100,printevery = 10)
+plot(x/nb,col='grey80')
+lines(p,col='grey60')
+lines(fit$posterior$mean_smooth)
+plot(fit$fitted_g$sigma2_trace,type='l',main='trace of sigma2')
+plot(fit$elbo_trace,type='l',main='trace of elbo')
+```
+
+```{r}
+fit = binom_smooth_split(x,nb,m_init = rep(mean(x),n),sigma2_init=0.5,tol=1e-8,maxiter = 100,printevery = 10)
+plot(x/nb,col='grey80')
+lines(p,col='grey60')
+lines(fit$posterior$mean_smooth)
+plot(fit$fitted_g$sigma2_trace,type='l',main='trace of sigma2')
+plot(fit$elbo_trace,type='l',main='trace of elbo')
+```
