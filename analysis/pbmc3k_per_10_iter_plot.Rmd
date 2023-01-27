@@ -1,0 +1,86 @@
+---
+title: "pbmc3k per 10 iter plot"
+author: "DongyueXie"
+date: "2023-01-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+# PBMC3k
+
+## Unconstrained L and F
+```{r}
+source('code/poisson_STM/plot_factors_general.R')
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+```
+
+```{r}
+i_list = c(10,20,30,40,50,100,200,300,400)
+for(i in i_list){
+  fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_vga3_iter',i,'.rds',sep=''))
+  plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k unconstrained iteration',i))
+  print(plt)
+}
+```
+
+## nonnegative L 
+
+```{r}
+for(i in i_list){
+  fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegL_pe_vga3_iter',i,'.rds',sep=''))
+  plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('nonnegative L unconstrained iteration',i))
+  print(plt)
+}
+```
+
+## nonnegative L and F
+
+```{r}
+i_list = c(10,20,30,40,50,100,190)
+for(i in i_list){
+  fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegLF_pe_vga3_iter',i,'.rds',sep=''))
+  plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k nonneg L F iteration',i))
+  print(plt)
+}
+```
+
+# Droplet 
+
+```{r,eval=F}
+i_list = c(10,20,30,40,50,100,200,300,400)
+for(i in i_list){
+  fit = readRDS(paste('output/droplet_iteration_results/ebpmf_droplet_vga3_iter',i,'.rds',sep=''))
+  plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('droplet unconstrained iteration',i))
+  print(plt)
+}
+```
+
+
+# PBMC3k More
+
+## $S_i = rowSums(Y)$
+
+```{r}
+i_list = c(10,20,30,40,50,100,200,300,400)
+for(i in i_list){
+  fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_multinom_vga3_iter',i,'.rds',sep=''))
+  plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k multinom unconstrained iteration',i))
+  print(plt)
+}
+```
+
+## Use GLMPCA for init
+
+```{r}
+i_list = c(10,20,30,40,50,100,200,300,400)
+for(i in i_list){
+  fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_vga3_glmpca_init_iter',i,'.rds',sep=''))
+  plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k glmpca init unconstrained iteration',i))
+  print(plt)
+}
+```
+
