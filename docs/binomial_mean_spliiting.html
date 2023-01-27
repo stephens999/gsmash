@@ -13,9 +13,9 @@
 
 <meta name="date" content="2022-11-17" />
 
-<title>binomial mean spliiting method</title>
+<title>binomial mean spliting method</title>
 
-<script src="site_libs/header-attrs-2.18/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
@@ -359,7 +359,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">binomial mean spliiting method</h1>
+<h1 class="title toc-ignore">binomial mean spliting method</h1>
 <h4 class="author">DongyueXie</h4>
 <h4 class="date">2022-11-17</h4>
 
@@ -390,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-12-16
+<strong>Last updated:</strong> 2023-01-27
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec4e08e5c8501d13dd4612b325e5958115e7ed9d0targetblankc4e08e5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeb8080308e623ccbaefbc63384c6bec47f6ef58a1targetblankb808030a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/c4e08e5c8501d13dd4612b325e5958115e7ed9d0" target="_blank">c4e08e5</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/b8080308e623ccbaefbc63384c6bec47f6ef58a1" target="_blank">b808030</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec4e08e5c8501d13dd4612b325e5958115e7ed9d0targetblankc4e08e5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeb8080308e623ccbaefbc63384c6bec47f6ef58a1targetblankb808030a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/c4e08e5c8501d13dd4612b325e5958115e7ed9d0" target="_blank">c4e08e5</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/b8080308e623ccbaefbc63384c6bec47f6ef58a1" target="_blank">b808030</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -558,7 +558,12 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  analysis/bernoulli_GG_fail.Rmd
+    Untracked:  code/binomial_mean/binomial_smooth_splitting.R
+    Untracked:  code/binomial_mean/test_binomial.R
+    Untracked:  output/droplet_iteration_results/
+    Untracked:  output/ebpmf_pbmc3k_vga3_glmpca_init.rds
+    Untracked:  output/pbmc3k_iteration_results/
+    Untracked:  output/pbmc_no_constraint.rds
 
 Unstaged changes:
     Modified:   code/binomial_mean/binomial_mean_splitting.R
@@ -608,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/b8080308e623ccbaefbc63384c6bec47f6ef58a1/analysis/binomial_mean_spliiting.Rmd" target="_blank">b808030</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-01-27
+</td>
+<td>
+wflow_publish("analysis/binomial_mean_spliiting.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/e08c844775e35e92a47433de0bd625f03d2978c7/docs/binomial_mean_spliiting.html" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -668,9 +707,21 @@ wflow_publish("analysis/binomial_mean_spliiting.Rmd")
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
+<p>Here we study if splitting method work for binomial and Bernoulli
+data.</p>
+<p>The basic model is</p>
+<p><span class="math display">\[x_i\sim
+Binomial(n_i,\sigma(\mu_i))\]</span> <span
+class="math display">\[\mu_i|b_i\sim N(b_i,\sigma^2)\]</span> <span
+class="math display">\[b_i\sim g(\cdot).\]</span></p>
+<p>I generated <span class="math inline">\(\mu_i\sim \pi_0\delta_0 +
+\pi_1 N(0,1)\)</span> where <span class="math inline">\(\pi_0 =
+0.8\)</span>.</p>
 <pre class="r"><code>source(&quot;code/binomial_mean/binomial_mean_splitting.R&quot;)</code></pre>
 <pre><code>Loading required package: Rcpp</code></pre>
 <pre><code>Loading required package: RcppZiggurat</code></pre>
+<div id="binomial-n-100" class="section level3">
+<h3>Binomial n = 100</h3>
 <pre class="r"><code>set.seed(12345)
 n = 500
 nb = rep(100,n)
@@ -680,42 +731,15 @@ p = sigmoid(mu)
 x = rbinom(n,nb,p)</code></pre>
 <pre class="r"><code>library(ashr)
 fit_ash = ashr::ash(rep(0,n),1,lik=lik_binom(x,nb,link=&#39;identity&#39;))
-fit_split = binomial_mean_splitting(x,nb,printevery = 1,n_gh=10,
+fit_split = binomial_mean_splitting(x,nb,printevery = 100,n_gh=10,
                                     b_pm_init = NULL,sigma2_init = NULL,
                                     ebnm_params = list(prior_family=&#39;normal_scale_mixture&#39;))</code></pre>
-<pre><code>[1] &quot;At iter 1 elbo= -1564.537 sigma2= 0.205&quot;
-[1] &quot;At iter 2 elbo= -1505.271 sigma2= 0.159&quot;
-[1] &quot;At iter 3 elbo= -1461.715 sigma2= 0.131&quot;
-[1] &quot;At iter 4 elbo= -1434.582 sigma2= 0.117&quot;
-[1] &quot;At iter 5 elbo= -1419.311 sigma2= 0.11&quot;
-[1] &quot;At iter 6 elbo= -1412.213 sigma2= 0.107&quot;
-[1] &quot;At iter 7 elbo= -1409.016 sigma2= 0.105&quot;
-[1] &quot;At iter 8 elbo= -1407.596 sigma2= 0.105&quot;
-[1] &quot;At iter 9 elbo= -1406.97 sigma2= 0.105&quot;
-[1] &quot;At iter 10 elbo= -1406.694 sigma2= 0.104&quot;
-[1] &quot;At iter 11 elbo= -1406.573 sigma2= 0.104&quot;
-[1] &quot;At iter 12 elbo= -1406.519 sigma2= 0.104&quot;
-[1] &quot;At iter 13 elbo= -1406.496 sigma2= 0.104&quot;
-[1] &quot;At iter 14 elbo= -1406.486 sigma2= 0.104&quot;
-[1] &quot;At iter 15 elbo= -1406.481 sigma2= 0.104&quot;
-[1] &quot;At iter 16 elbo= -1406.479 sigma2= 0.104&quot;
-[1] &quot;At iter 17 elbo= -1406.478 sigma2= 0.104&quot;
-[1] &quot;At iter 18 elbo= -1406.478 sigma2= 0.104&quot;
-[1] &quot;At iter 19 elbo= -1406.478 sigma2= 0.104&quot;
-[1] &quot;At iter 20 elbo= -1406.478 sigma2= 0.104&quot;
-[1] &quot;At iter 21 elbo= -1406.478 sigma2= 0.104&quot;
-[1] &quot;At iter 22 elbo= -1406.478 sigma2= 0.104&quot;
-[1] &quot;At iter 23 elbo= -1406.478 sigma2= 0.104&quot;</code></pre>
-<pre class="r"><code>fit_GG = binomial_mean_GG(x,nb,printevery = 1,n_gh=10)</code></pre>
-<pre><code>[1] &quot;At iter 1 elbo= -1645.672&quot;
-[1] &quot;At iter 2 elbo= -1598.219&quot;
-[1] &quot;At iter 3 elbo= -1586.716&quot;
-[1] &quot;At iter 4 elbo= -1577.111&quot;
-[1] &quot;At iter 5 elbo= -1576.244&quot;
-[1] &quot;At iter 6 elbo= -1575.846&quot;
-[1] &quot;At iter 7 elbo= -1575.346&quot;
-[1] &quot;At iter 8 elbo= -1575.346&quot;</code></pre>
-<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;)
+<pre><code>Warning in binomial_mean_splitting(x, nb, printevery = 100, n_gh = 10, b_pm_init
+= NULL, : An iteration decreases ELBO. This is likely due to numerical issues.</code></pre>
+<pre class="r"><code>fit_GG = binomial_mean_GG(x,nb,printevery = 100,n_gh=10)</code></pre>
+<pre><code>Warning in binomial_mean_GG(x, nb, printevery = 100, n_gh = 10): An iteration
+decreases ELBO. This is likely due to numerical issues.</code></pre>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;ash fit&#39;)
 lines(p,col=&#39;grey80&#39;)
 lines(fit_ash$result$PosteriorMean,col=2)</code></pre>
 <p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -743,6 +767,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-4-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-4-1.png" target="_blank">b4d61ba</a>
 </td>
 <td>
@@ -756,7 +791,7 @@ DongyueXie
 </table>
 </div>
 </div>
-<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;)
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;splitting fit latent m&#39;)
 lines(p,col=&#39;grey80&#39;)
 lines(fit_split$posterior$mean,col=4)</code></pre>
 <p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -784,6 +819,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-5-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-5-1.png" target="_blank">b4d61ba</a>
 </td>
 <td>
@@ -797,7 +843,7 @@ DongyueXie
 </table>
 </div>
 </div>
-<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;)
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;splitting fit latent b&#39;)
 lines(p,col=&#39;grey80&#39;)
 lines(sigmoid(fit_split$posterior$mean_b),col=4)</code></pre>
 <p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -825,6 +871,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-6-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-6-1.png" target="_blank">b4d61ba</a>
 </td>
 <td>
@@ -838,7 +895,7 @@ DongyueXie
 </table>
 </div>
 </div>
-<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;)
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;vga binom fit&#39;)
 lines(p,col=&#39;grey80&#39;)
 lines(fit_GG$posterior$mean,col=3)</code></pre>
 <p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -866,6 +923,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-7-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-7-1.png" target="_blank">b4d61ba</a>
 </td>
 <td>
@@ -879,6 +947,274 @@ DongyueXie
 </table>
 </div>
 </div>
+</div>
+<div id="binomial-n-10" class="section level3">
+<h3>Binomial n = 10</h3>
+<pre class="r"><code>set.seed(12345)
+n = 500
+nb = rep(10,n)
+w = 0.8
+mu = c(rep(0,n*w),rnorm(round(n*(1-w))))
+p = sigmoid(mu)
+x = rbinom(n,nb,p)</code></pre>
+<pre class="r"><code>library(ashr)
+fit_ash = ashr::ash(rep(0,n),1,lik=lik_binom(x,nb,link=&#39;identity&#39;))
+fit_split = binomial_mean_splitting(x,nb,printevery = 100,n_gh=10,
+                                    b_pm_init = NULL,sigma2_init = NULL,
+                                    ebnm_params = list(prior_family=&#39;normal_scale_mixture&#39;))
+fit_GG = binomial_mean_GG(x,nb,printevery = 100,n_gh=10)</code></pre>
+<pre><code>[1] &quot;At iter 100 elbo= -881.405&quot;</code></pre>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;ash fit&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(fit_ash$result$PosteriorMean,col=2)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-10-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-10-1.png" target="_blank">b4d61ba</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;splitting fit latent m&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(fit_split$posterior$mean,col=4)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-11-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-11-1.png" target="_blank">b4d61ba</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;splitting fit latent b&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(sigmoid(fit_split$posterior$mean_b),col=4)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-12-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-12-1.png" target="_blank">b4d61ba</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;vga binom fit&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(fit_GG$posterior$mean,col=3)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e08c844775e35e92a47433de0bd625f03d2978c7/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-13-1.png" target="_blank">e08c844</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-12-16
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/b4d61ba966c380d4a3821eea9725a48a7d8366b6/docs/figure/binomial_mean_spliiting.Rmd/unnamed-chunk-13-1.png" target="_blank">b4d61ba</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2022-11-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="bernoulli" class="section level3">
+<h3>Bernoulli</h3>
+<pre class="r"><code>set.seed(12345)
+n = 500
+nb = rep(1,n)
+w = 0.8
+mu = c(rep(0,n*w),rnorm(round(n*(1-w))))
+p = sigmoid(mu)
+x = rbinom(n,nb,p)</code></pre>
+<pre class="r"><code>library(ashr)
+fit_ash = ashr::ash(rep(0,n),1,lik=lik_binom(x,nb,link=&#39;identity&#39;))
+fit_split = binomial_mean_splitting(x,nb,printevery = 100,n_gh=10,
+                                    b_pm_init = NULL,sigma2_init = NULL,
+                                    ebnm_params = list(prior_family=&#39;normal_scale_mixture&#39;))</code></pre>
+<pre><code>[1] &quot;At iter 100 elbo= -846.413 sigma2= 2.447&quot;
+[1] &quot;At iter 200 elbo= -846.208 sigma2= 1.847&quot;
+[1] &quot;At iter 300 elbo= -846.133 sigma2= 1.555&quot;
+[1] &quot;At iter 400 elbo= -846.095 sigma2= 1.376&quot;
+[1] &quot;At iter 500 elbo= -846.073 sigma2= 1.253&quot;
+[1] &quot;At iter 600 elbo= -846.059 sigma2= 1.161&quot;
+[1] &quot;At iter 700 elbo= -846.049 sigma2= 1.09&quot;
+[1] &quot;At iter 800 elbo= -846.041 sigma2= 1.032&quot;
+[1] &quot;At iter 900 elbo= -846.036 sigma2= 0.985&quot;
+[1] &quot;At iter 1000 elbo= -846.031 sigma2= 0.944&quot;</code></pre>
+<pre class="r"><code>fit_GG = binomial_mean_GG(x,nb,printevery = 100,n_gh=10)</code></pre>
+<pre><code>[1] &quot;At iter 100 elbo= -943.612&quot;</code></pre>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;ash fit&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(fit_ash$result$PosteriorMean,col=2)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;splitting fit latent m&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(fit_split$posterior$mean,col=4)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;splitting fit latent b&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(sigmoid(fit_split$posterior$mean_b),col=4)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(x/nb,col=&#39;grey80&#39;,main=&#39;vga binom fit&#39;)
+lines(p,col=&#39;grey80&#39;)
+lines(fit_GG$posterior$mean,col=3)</code></pre>
+<p><img src="figure/binomial_mean_spliiting.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -890,7 +1226,7 @@ Session information
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.2.2 Patched (2022-11-10 r83330)
 Platform: x86_64-pc-linux-gnu (64-bit)
-Running under: Ubuntu 22.10
+Running under: Ubuntu 22.04.1 LTS
 
 Matrix products: default
 BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3
@@ -909,27 +1245,27 @@ attached base packages:
 
 other attached packages:
 [1] ashr_2.2-54        Rfast_2.0.6        RcppZiggurat_0.1.6 ebnm_1.0-11       
-[5] fastGHQuad_1.0.1   Rcpp_1.0.9         vebpm_0.3.3        workflowr_1.7.0   
+[5] fastGHQuad_1.0.1   Rcpp_1.0.9         vebpm_0.4.0        workflowr_1.7.0   
 
 loaded via a namespace (and not attached):
- [1] horseshoe_0.2.0    invgamma_1.1       lattice_0.20-45    nleqslv_3.3.3     
- [5] getPass_0.2-2      ps_1.7.2           rprojroot_2.0.3    digest_0.6.30     
- [9] utf8_1.2.2         truncnorm_1.0-8    R6_2.5.1           rootSolve_1.8.2.3 
-[13] evaluate_0.18      highr_0.9          httr_1.4.4         ggplot2_3.4.0     
-[17] pillar_1.8.1       rlang_1.0.6        rstudioapi_0.14    irlba_2.3.5.1     
-[21] whisker_0.4.1      callr_3.7.3        jquerylib_0.1.4    nloptr_2.0.3      
-[25] Matrix_1.5-3       rmarkdown_2.18     splines_4.2.2      stringr_1.5.0     
-[29] munsell_0.5.0      mixsqp_0.3-48      compiler_4.2.2     httpuv_1.6.6      
-[33] xfun_0.35          pkgconfig_2.0.3    SQUAREM_2021.1     htmltools_0.5.4   
-[37] tidyselect_1.2.0   tibble_3.1.8       matrixStats_0.63.0 fansi_1.0.3       
-[41] dplyr_1.0.10       later_1.3.0        grid_4.2.2         jsonlite_1.8.4    
-[45] gtable_0.3.1       lifecycle_1.0.3    git2r_0.30.1       magrittr_2.0.3    
-[49] scales_1.2.1       ebpm_0.0.1.3       cli_3.4.1          stringi_1.7.8     
-[53] cachem_1.0.6       fs_1.5.2           promises_1.2.0.1   bslib_0.4.1       
-[57] generics_0.1.3     vctrs_0.5.1        trust_0.1-8        tools_4.2.2       
-[61] glue_1.6.2         parallel_4.2.2     processx_3.8.0     fastmap_1.1.0     
-[65] yaml_2.3.6         colorspace_2.0-3   deconvolveR_1.2-1  knitr_1.41        
-[69] sass_0.4.4        </code></pre>
+ [1] horseshoe_0.2.0    invgamma_1.1       lattice_0.20-45    getPass_0.2-2     
+ [5] ps_1.7.2           rprojroot_2.0.3    digest_0.6.31      utf8_1.2.2        
+ [9] truncnorm_1.0-8    R6_2.5.1           evaluate_0.19      highr_0.9         
+[13] httr_1.4.4         ggplot2_3.4.0      pillar_1.8.1       rlang_1.0.6       
+[17] rstudioapi_0.14    irlba_2.3.5.1      whisker_0.4.1      callr_3.7.3       
+[21] jquerylib_0.1.4    nloptr_2.0.3       Matrix_1.5-3       rmarkdown_2.19    
+[25] splines_4.2.2      stringr_1.5.0      munsell_0.5.0      mixsqp_0.3-48     
+[29] compiler_4.2.2     httpuv_1.6.7       xfun_0.35          pkgconfig_2.0.3   
+[33] SQUAREM_2021.1     htmltools_0.5.4    tidyselect_1.2.0   tibble_3.1.8      
+[37] matrixStats_0.63.0 fansi_1.0.3        dplyr_1.0.10       later_1.3.0       
+[41] grid_4.2.2         jsonlite_1.8.4     gtable_0.3.1       lifecycle_1.0.3   
+[45] git2r_0.30.1       magrittr_2.0.3     scales_1.2.1       ebpm_0.0.1.3      
+[49] cli_3.4.1          stringi_1.7.8      cachem_1.0.6       fs_1.5.2          
+[53] promises_1.2.0.1   bslib_0.4.2        generics_0.1.3     vctrs_0.5.1       
+[57] trust_0.1-8        tools_4.2.2        glue_1.6.2         processx_3.8.0    
+[61] parallel_4.2.2     fastmap_1.1.0      yaml_2.3.6         colorspace_2.0-3  
+[65] deconvolveR_1.2-1  knitr_1.41         sass_0.4.4        </code></pre>
+</div>
 </div>
 </div>
 
