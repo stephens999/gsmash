@@ -41,9 +41,8 @@ editor_options:
 * [gene specific variance and gene expression](gene_variance_expression.html)
 * [Compare latent M from splitting and glmpca](compare_latent_M_splitting_glmpca.html)
 * [Run flash on latent M from glmpca](run_flash_on_latent_M_glmpca.html)
-* [Re-plot loadings after setting upper limit on $\sigma^2$]()
-* [How do results differ over iterations? When can we stop iterations?]()
-
+* [How do results differ over iterations? When can we stop iterations?](pbmc3k_per_10_iter_plot.html)
+* [Use GLMPCA as init](pbmc3k_glmpca_init_for_ebpmf.html)
 
 ### On Droplet
 
