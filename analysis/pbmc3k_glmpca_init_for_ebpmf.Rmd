@@ -1,0 +1,52 @@
+---
+title: "pbmc3k use glmpca init for ebpmf"
+author: "DongyueXie"
+date: "2023-01-23"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+I wanted to see whether use GLMPCA as init for splitting method makes any difference. 
+
+The default init for splitting PMF is as follows: Let L=0, F=0, then solve for latent M and variances $\sigma^2$ using Poisson VGA.
+
+Now use GLMPCA for init, I get the latent representation from GLMPCA, i.e. $\hat L\hat F$. Then treat this as latent M, then run flash on M to init $\sigma^2$.
+
+**I have to point out that the GLMPCA use rowMeans as the scaling factor, but the splitting PMF default is to use rowSums outer colSums. So I probably should have use the rowMeans as scaling factor when using GLMPCA as init. Nonetheless let's see the results below.**
+
+
+```{r}
+source('code/poisson_STM/plot_factors_general.R')
+source('code/poisson_STM/plot_factors.R')
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+```
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/ebpmf_pbmc3k_vga3_glmpca_init.rds')
+plot.factors(fit$fit_flash,pbmc_facs$samples$subpop,title='glmpca as init for splitting')
+plot(fit$fit_flash$pve)
+```
+
+I put the glmpca fit, flash on glmpca, flash fit, and splitting default init fit here as comparison.
+
+```{r}
+flash_pbmc3k = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/flash_pbmc3k.rds')
+ebpmf_pbmc3k = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/ebpmf_pbmc3k_vga3.rds')
+ebpmf_pbmc3k_multinom = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/ebpmf_pbmc3k_multinom_vga3.rds')
+glmpca_pbmc3k_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/glmpca_pbmc3k_poi.rds')
+flash_glmpca = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/flash_glmpca.rds')
+```
+
+```{r}
+plot.factors(flash_pbmc3k,pbmc_facs$samples$subpop,title='flash')
+plot.factors(ebpmf_pbmc3k$fit_flash,pbmc_facs$samples$subpop,title='splitting')
+plot.factors(ebpmf_pbmc3k_multinom$fit_flash,pbmc_facs$samples$subpop,title='splitting multinom')
+plot.factors.general(as.matrix(glmpca_pbmc3k_poi$loadings),pbmc_facs$samples$subpop,title='glmpca poi')
+plot.factors(flash_glmpca,pbmc_facs$samples$subpop,title='flash on glmpca fit')
+```
+
