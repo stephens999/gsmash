@@ -1,0 +1,127 @@
+---
+title: "is vga binomial problem convex?"
+author: "DongyueXie"
+date: "2023-02-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+The evidence lower bound is,
+\begin{equation}
+    \begin{split}
+        F(\bar\mu,v_\mu) =  x\bar\mu - n\E_q\log(1+\exp(\mu)) - \frac{\bar\mu^2+v_\mu - 2\bar\mu\beta}{2\sigma^2} + \frac{1}{2}\log v_\mu + \text{const}.
+    \end{split}
+\end{equation}
+
+There is no close form for expected $\log(1+\exp(\mu))$ function. To evaluate $\E_q\log(1+\exp(\mu))$, we consider a Gauss-Hermite quadrature approximation as 
+\begin{equation}
+\begin{split}
+       \E\log(1+\exp(\mu)) &= \int \frac{1}{\sqrt{\pi}}\exp(-\mu^2)\log(1+\exp(\sqrt{2v_\mu}\mu+\bar\mu))d\mu
+       \\
+       &\approx \frac{1}{\sqrt{\pi}} \sum_j w_j \log(1+\exp(\sqrt{2v_\mu}\mu_j+\bar\mu)),
+\end{split}
+\end{equation}
+where $w_j,\mu_j$ are pre-selected fixed sampling points.
+
+
+```{r}
+source('code/binomial_mean/binomial_mean_splitting.R')
+vga_binom_obj = function(m,lv,x,nb,beta,sigma2,gh_points){
+  val = - sum(x*m - nb*Elog1pexp(m,exp(lv),gh_points) - (m^2+exp(lv)-2*m*beta)/2/sigma2 + lv/2)
+  return(val)
+}
+```
+
+```{r}
+library(vebpm)
+library(fastGHQuad)
+library(ebnm)
+library(Rfast)
+```
+
+```{r}
+x = 1
+nb = 5
+beta=0
+sigma2=1
+n=1
+n_gh = 10
+gh_points = gaussHermiteData(n_gh)
+lv = 0
+m_list = seq(-3,3,length.out = 100)
+val = c()
+for(m in m_list){
+  val  =c(val,vga_binom_obj(m,lv,x,nb,beta,sigma2,gh_points))
+}
+plot(m_list,val,type='l')
+```
+
+```{r}
+x = 0
+nb = 5
+beta=0
+sigma2=1
+n=1
+n_gh = 10
+gh_points = gaussHermiteData(n_gh)
+lv = 0
+m_list = seq(-3,3,length.out = 100)
+val = c()
+for(m in m_list){
+  val  =c(val,vga_binom_obj(m,lv,x,nb,beta,sigma2,gh_points))
+}
+plot(m_list,val,type='l')
+```
+
+```{r}
+x = 0
+nb = 1
+beta=0
+sigma2=1
+n=1
+n_gh = 10
+gh_points = gaussHermiteData(n_gh)
+lv = 0
+m_list = seq(-3,3,length.out = 100)
+val = c()
+for(m in m_list){
+  val  =c(val,vga_binom_obj(m,lv,x,nb,beta,sigma2,gh_points))
+}
+plot(m_list,val,type='l')
+```
+
+
+```{r}
+x = 1
+nb = 5
+beta=0
+sigma2=1
+n=1
+n_gh = 10
+gh_points = gaussHermiteData(n_gh)
+m = 0
+v_list = seq(1e-5,3,length.out = 100)
+val = c()
+for(v in v_list){
+  val  =c(val,vga_binom_obj(m,log(v),x,nb,beta,sigma2,gh_points))
+}
+plot(v_list,val,type='l')
+```
+
+```{r}
+x = 1
+nb = 5
+beta=0
+sigma2=0.5
+n=1
+n_gh = 10
+gh_points = gaussHermiteData(n_gh)
+m = 0
+v_list = seq(1e-5,3,length.out = 100)
+val = c()
+for(v in v_list){
+  val  =c(val,vga_binom_obj(m,log(v),x,nb,beta,sigma2,gh_points))
+}
+plot(v_list,val,type='l')
+```
