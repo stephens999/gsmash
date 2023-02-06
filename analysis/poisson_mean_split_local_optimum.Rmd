@@ -1,0 +1,82 @@
+---
+title: "poisson mean split local optimum"
+author: "DongyueXie"
+date: "2023-02-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+\[y_i\sim Poisson(exp(\mu_j)),\mu_j|b_j\sim N(b_j,\sigma^2),b_j\sim g(\cdot).\]
+
+We show in a simple POisson mean example, there are two local optimums - one where $g_b$ is a point mass, one where $g_b$ is the one we are interested in.
+
+```{r}
+library(vebpm)
+n = 1000
+set.seed(12345)
+mu = c(rep(3,100),rep(0,n-100))
+x = rpois(n,exp(mu))
+
+plot(x,col='grey80')
+lines(exp(mu))
+
+```
+
+In the first example we initialize $\sigma^2=0.5$, ans we can see that the final $sigma^2$ is around 0.22
+
+```{r}
+fit0 = pois_mean_split(x,sigma2=0.5)
+plot(x,col='grey80')
+lines(fit0$posterior$mean_exp_b)
+plot(fit0$fitted_g$sigma2_trace)
+fit0$fitted_g$g_b
+fit0$elbo
+```
+
+WE try to initialize $\sigma^2=0.1$, and we can see that the final $sigma^2$ is still around 0.22
+
+```{r}
+fit0 = pois_mean_split(x,sigma2=0.1)
+plot(x,col='grey80')
+lines(fit0$posterior$mean_exp_b)
+plot(fit0$fitted_g$sigma2_trace)
+fit0$fitted_g$g_b
+fit0$elbo
+```
+
+So this is a local optimum and is the one that gives the results we'd love to see.
+
+ON the other hand If we initialize $\sigma^2$ to be bigger at $\sigma^2 = 1$, then $\sigma^2$ converges to 1.8 and $g_b$ goes to a point mass.
+
+```{r}
+fit0 = pois_mean_split(x,sigma2=1)
+plot(x,col='grey80')
+lines(fit0$posterior$mean_exp_b)
+fit0$fitted_g$sigma2_trace
+fit0$fitted_g$g_b
+fit0$elbo
+```
+
+Try a larger init value of $\sigma^2$ at 3, then same thing happens.
+
+```{r}
+fit0 = pois_mean_split(x,sigma2=3)
+plot(x,col='grey80')
+lines(fit0$posterior$mean_exp_b)
+fit0$fitted_g$sigma2_trace
+fit0$fitted_g$g_b
+fit0$elbo
+```
+
+
+The ELBO is larger when $g_b$ is a point mass and $\sigma^2$ is larger. 
+
+Maybe we should not start with a too large $\sigma^2$ because $g_b$ being a point mass is a local optimum and in most cases we are not very interested in. I find that the starting $\sigma^2$ should not be greater than $var(\bar\mu_i)$, and perhaps smaller.
+
+
+
+
+
