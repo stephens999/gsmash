@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="DongyueXie" />
+
+<meta name="date" content="2023-02-06" />
+
+<title>poisson mean split local optimum</title>
+
+<script src="site_libs/header-attrs-2.19/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gsmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">poisson mean split local optimum</h1>
+<h4 class="author">DongyueXie</h4>
+<h4 class="date">2023-02-06</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-02-06
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>gsmash/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree0a9bdef210a818b574be157539012c7ce4850e37targetblank0a9bdefa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/0a9bdef210a818b574be157539012c7ce4850e37" target="_blank">0a9bdef</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree0a9bdef210a818b574be157539012c7ce4850e37targetblank0a9bdefa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/0a9bdef210a818b574be157539012c7ce4850e37" target="_blank">0a9bdef</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/movielens.Rmd
+    Untracked:  analysis/profiled_obj_for_b_splitting.Rmd
+    Untracked:  code/binomial_mean/binomial_smooth_splitting.R
+    Untracked:  code/binomial_mean/test_binomial.R
+    Untracked:  code/poisson_smooth/pois_reg_splitting.R
+    Untracked:  data/ml-latest-small/
+    Untracked:  output/droplet_iteration_results/
+    Untracked:  output/ebpmf_pbmc3k_vga3_glmpca_init.rds
+    Untracked:  output/pbmc3k_iteration_results/
+    Untracked:  output/pbmc_no_constraint.rds
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+    Modified:   code/binomial_mean/binomial_mean_splitting.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/poisson_mean_split_local_optimum.Rmd</code>) and HTML
+(<code>docs/poisson_mean_split_local_optimum.html</code>) files. If
+you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/0a9bdef210a818b574be157539012c7ce4850e37/analysis/poisson_mean_split_local_optimum.Rmd" target="_blank">0a9bdef</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-06
+</td>
+<td>
+wflow_publish("analysis/poisson_mean_split_local_optimum.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><span class="math display">\[y_i\sim
+Poisson(exp(\mu_j)),\mu_j|b_j\sim N(b_j,\sigma^2),b_j\sim
+g(\cdot).\]</span></p>
+<p>We show in a simple POisson mean example, there are two local
+optimums - one where <span class="math inline">\(g_b\)</span> is a point
+mass, one where <span class="math inline">\(g_b\)</span> is the one we
+are interested in.</p>
+<pre class="r"><code>library(vebpm)
+n = 1000
+set.seed(12345)
+mu = c(rep(3,100),rep(0,n-100))
+x = rpois(n,exp(mu))
+
+plot(x,col=&#39;grey80&#39;)
+lines(exp(mu))</code></pre>
+<p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>In the first example we initialize <span
+class="math inline">\(\sigma^2=0.5\)</span>, ans we can see that the
+final <span class="math inline">\(sigma^2\)</span> is around 0.22</p>
+<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=0.5)
+plot(x,col=&#39;grey80&#39;)
+lines(fit0$posterior$mean_exp_b)</code></pre>
+<p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit0$fitted_g$sigma2_trace)</code></pre>
+<p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit0$fitted_g$g_b</code></pre>
+<pre><code>$pi
+[1] 0.8656205 0.0000000 0.0000000 0.0000000 0.0000000 0.1343795 0.0000000
+[8] 0.0000000
+
+$mean
+[1] -0.0760271 -0.0760271 -0.0760271 -0.0760271 -0.0760271 -0.0760271 -0.0760271
+[8] -0.0760271
+
+$sd
+[1] 0.0000000 0.4948273 0.8264801 1.2113393 1.6943897 2.3201300 3.1430577
+[8] 4.2337875
+
+attr(,&quot;class&quot;)
+[1] &quot;normalmix&quot;
+attr(,&quot;row.names&quot;)
+[1] 1 2 3 4 5 6 7 8</code></pre>
+<pre class="r"><code>fit0$elbo</code></pre>
+<pre><code>[1] -3047.729</code></pre>
+<p>WE try to initialize <span
+class="math inline">\(\sigma^2=0.1\)</span>, and we can see that the
+final <span class="math inline">\(sigma^2\)</span> is still around
+0.22</p>
+<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=0.1)
+plot(x,col=&#39;grey80&#39;)
+lines(fit0$posterior$mean_exp_b)</code></pre>
+<p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit0$fitted_g$sigma2_trace)</code></pre>
+<p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit0$fitted_g$g_b</code></pre>
+<pre><code>$pi
+[1] 0.8769104 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.1230896
+[8] 0.0000000 0.0000000
+
+$mean
+[1] -0.0316568 -0.0316568 -0.0316568 -0.0316568 -0.0316568 -0.0316568 -0.0316568
+[8] -0.0316568 -0.0316568
+
+$sd
+[1] 0.0000000 0.4045662 0.6757223 0.9903795 1.3853170 1.8969163 2.5697342
+[8] 3.4615046 4.6484273
+
+attr(,&quot;class&quot;)
+[1] &quot;normalmix&quot;
+attr(,&quot;row.names&quot;)
+[1] 1 2 3 4 5 6 7 8 9</code></pre>
+<pre class="r"><code>fit0$elbo</code></pre>
+<pre><code>[1] -3044.584</code></pre>
+<p>So this is a local optimum and is the one that gives the results we’d
+love to see.</p>
+<p>ON the other hand If we initialize <span
+class="math inline">\(\sigma^2\)</span> to be bigger at <span
+class="math inline">\(\sigma^2 = 1\)</span>, then <span
+class="math inline">\(\sigma^2\)</span> converges to 1.8 and <span
+class="math inline">\(g_b\)</span> goes to a point mass.</p>
+<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=1)
+plot(x,col=&#39;grey80&#39;)
+lines(fit0$posterior$mean_exp_b)</code></pre>
+<p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit0$fitted_g$sigma2_trace</code></pre>
+<pre><code> [1] 1.233145 1.391178 1.518241 1.615259 1.684353 1.731559 1.763087 1.783876
+ [9] 1.797480 1.806341 1.812095 1.815822</code></pre>
+<pre class="r"><code>fit0$fitted_g$g_b</code></pre>
+<pre><code>$pi
+[1] 1 0 0 0 0
+
+$mean
+[1] 0.02648361 0.02648361 0.02648361 0.02648361 0.02648361
+
+$sd
+[1] 0.000000 1.196248 1.998021 2.928420 4.096198
+
+attr(,&quot;class&quot;)
+[1] &quot;normalmix&quot;
+attr(,&quot;row.names&quot;)
+[1] 1 2 3 4 5</code></pre>
+<pre class="r"><code>fit0$elbo</code></pre>
+<pre><code>[1] -3031.456</code></pre>
+<p>Try a larger init value of <span
+class="math inline">\(\sigma^2\)</span> at 3, then same thing
+happens.</p>
+<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=3)
+plot(x,col=&#39;grey80&#39;)
+lines(fit0$posterior$mean_exp_b)</code></pre>
+<p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit0$fitted_g$sigma2_trace</code></pre>
+<pre><code>[1] 2.435644 2.049915 1.941053 1.894578 1.868205 1.851837 1.841424 1.834748
+[9] 1.830450</code></pre>
+<pre class="r"><code>fit0$fitted_g$g_b</code></pre>
+<pre><code>$pi
+[1] 1 0 0 0 0
+
+$mean
+[1] 0.01644114 0.01644114 0.01644114 0.01644114 0.01644114
+
+$sd
+[1] 0.000000 1.203702 2.010471 2.946668 4.121722
+
+attr(,&quot;class&quot;)
+[1] &quot;normalmix&quot;
+attr(,&quot;row.names&quot;)
+[1] 1 2 3 4 5</code></pre>
+<pre class="r"><code>fit0$elbo</code></pre>
+<pre><code>[1] -3031.458</code></pre>
+<p>The ELBO is larger when <span class="math inline">\(g_b\)</span> is a
+point mass and <span class="math inline">\(\sigma^2\)</span> is
+larger.</p>
+<p>Maybe we should not start with a too large <span
+class="math inline">\(\sigma^2\)</span> because <span
+class="math inline">\(g_b\)</span> being a point mass is a local optimum
+and in most cases we are not very interested in. I find that the
+starting <span class="math inline">\(\sigma^2\)</span> should not be
+greater than <span class="math inline">\(var(\bar\mu_i)\)</span>, and
+perhaps smaller.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.2 Patched (2022-11-10 r83330)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 22.04.1 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3
+LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] vebpm_0.4.0     workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9         horseshoe_0.2.0    invgamma_1.1       lattice_0.20-45   
+ [5] getPass_0.2-2      ps_1.7.2           rprojroot_2.0.3    digest_0.6.31     
+ [9] utf8_1.2.2         truncnorm_1.0-8    R6_2.5.1           evaluate_0.19     
+[13] highr_0.9          httr_1.4.4         ggplot2_3.4.0      pillar_1.8.1      
+[17] rlang_1.0.6        rstudioapi_0.14    ebnm_1.0-11        irlba_2.3.5.1     
+[21] whisker_0.4.1      callr_3.7.3        jquerylib_0.1.4    nloptr_2.0.3      
+[25] Matrix_1.5-3       rmarkdown_2.19     splines_4.2.2      stringr_1.5.0     
+[29] munsell_0.5.0      mixsqp_0.3-48      compiler_4.2.2     httpuv_1.6.7      
+[33] xfun_0.35          pkgconfig_2.0.3    SQUAREM_2021.1     htmltools_0.5.4   
+[37] tidyselect_1.2.0   tibble_3.1.8       matrixStats_0.63.0 fansi_1.0.3       
+[41] dplyr_1.0.10       later_1.3.0        grid_4.2.2         jsonlite_1.8.4    
+[45] gtable_0.3.1       lifecycle_1.0.3    git2r_0.30.1       magrittr_2.0.3    
+[49] scales_1.2.1       ebpm_0.0.1.3       cli_3.4.1          stringi_1.7.8     
+[53] cachem_1.0.6       fs_1.5.2           promises_1.2.0.1   bslib_0.4.2       
+[57] generics_0.1.3     vctrs_0.5.1        trust_0.1-8        tools_4.2.2       
+[61] glue_1.6.2         processx_3.8.0     parallel_4.2.2     fastmap_1.1.0     
+[65] yaml_2.3.6         colorspace_2.0-3   ashr_2.2-54        deconvolveR_1.2-1 
+[69] knitr_1.41         sass_0.4.4        </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
