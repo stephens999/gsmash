@@ -1,0 +1,192 @@
+---
+title: "poisson smooth split local optimum"
+author: "DongyueXie"
+date: "2023-02-07"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+\[y_i\sim Poisson(exp(\mu_j)),\mu_j|b_j\sim N(b_j,\sigma^2),b\sim g(\cdot).\]
+
+where $g(\cdot)$ is a wavelet prior.
+
+## A simple block function
+
+```{r}
+library(smashrgen)
+library(wavethresh)
+
+set.seed(12345)
+n=2^9
+sigma=0
+mu=c(rep(0.3,n/4), rep(3, n/4), rep(10, n/4), rep(0.3, n/4))
+x = rpois(n,exp(log(mu)+rnorm(n,sd=sigma)))
+fit = pois_smooth_split(x,maxiter=300,verbose = T,tol=1e-10)
+```
+
+```{r}
+plot(x,col='grey80')
+lines(mu,col='grey60')
+lines(fit$posterior$mean_smooth)
+```
+
+we see that the $\sigma^2$ converges to 0.
+
+```{r}
+plot(fit$fitted_g$sigma2_trace,type='l')
+```
+
+And the priors on wavelet coefficients converge to a point mass. At scale 0 and 1, they are pointmass at non-zero posoitons, and at other scales, they are point mass at 0.
+
+```{r}
+fit$fitted_g
+```
+
+The ELBO is 
+```{r}
+fit$elbo
+```
+
+Let's try to initialize at a different value and let it get stuck at a local optimum. In this case, 
+
+```{r}
+ fit = pois_smooth_split(x,maxiter=300,verbose = T,tol=1e-10,m_init=rep(mean(x),n),sigma2_init = 0.01)
+```
+
+we see that the $\sigma^2$ converges to 2.
+
+```{r}
+plot(fit$fitted_g$sigma2_trace,type='l')
+```
+
+And the priors on wavelet coefficients converge to a point mass at 0. 
+
+```{r}
+fit$fitted_g
+```
+
+The ELBO is 
+```{r}
+fit$elbo
+```
+
+
+## A simple curve
+
+We use non-haar wavelet here. THe function is spike.
+
+```{r}
+set.seed(12345)
+n=2^9
+count_size = 20
+sigma=0.5
+t = seq(0,1,length.out = n)
+b = smashrgen:::spike.f(t)
+b = b/(max(b)/count_size)
+x = rpois(n,exp(log(b)+rnorm(n,sd=sigma)))
+plot(x,col='grey80')
+lines(b,col='grey50')
+```
+```{r}
+fit = pois_smooth_split(x,maxiter=300,verbose = T,tol=1e-10,filter.number = 8)
+```
+
+```{r}
+plot(x,col='grey80')
+lines(b,col='grey60')
+lines(fit$posterior$mean_smooth,col=4)
+```
+
+The $\sigma^2$ converges to 0.4.
+
+```{r}
+plot(fit$fitted_g$sigma2_trace)
+fit$fitted_g$sigma2
+```
+
+And the priors on wavelet coefficients converge to a point mass at finer level. 
+
+At scale 5 and 2, the prior converges to a mixture of two normals.
+
+At scale 0 and 1, they are point-mass at non-zero positions.
+
+```{r}
+fit$fitted_g
+```
+
+The ELBO is 
+```{r}
+fit$elbo
+```
+
+Let's try to initialize at a different value and let it get stuck at a local optimum. In this case, 
+
+```{r}
+ fit = pois_smooth_split(x,maxiter=300,verbose = T,tol=1e-10,m_init=rep(mean(x),n),sigma2_init = 0.01)
+```
+```{r}
+plot(x,col='grey80')
+lines(b,col='grey60')
+lines(fit$posterior$mean_smooth,col=4)
+```
+
+The $\sigma^2$ converges to 5.47.
+
+```{r}
+plot(fit$fitted_g$sigma2_trace)
+fit$fitted_g$sigma2
+```
+
+And the priors on wavelet coefficients converge to a point mass at 0.
+
+```{r}
+fit$fitted_g
+```
+
+The ELBO is 
+```{r}
+fit$elbo
+```
+
+What if I still use a Haar wavelet?
+
+```{r}
+fit = pois_smooth_split(x,maxiter=300,verbose = T,tol=1e-10,filter.number = 1)
+```
+
+
+```{r}
+plot(x,col='grey80')
+lines(b,col='grey60')
+lines(fit$posterior$mean_smooth,col=4)
+```
+
+The $\sigma^2$ converges to 0.8.
+
+```{r}
+plot(fit$fitted_g$sigma2_trace)
+fit$fitted_g$sigma2
+```
+
+The prior does not converge to point-mass at scale 4,5,6.
+
+The ELBO is 
+```{r}
+fit$elbo
+```
+
+## Observations
+
+It seems that for the smoothing problem:
+
+If $g$ goes to pointmass at 0, then estimated $\sigma^2$ is large. This is the same as in Poisson mean problem.
+
+If $g$ goes to non-point mass(In wavelet case, some of the them maybe point mass, but at least one of them is not), then $\sigma^2$ can converge to smaller value, but not 0.
+
+If $g$ goes to pointmass's, but not all at 0. This corresponding to the first example. Then in this case $\sigma^2$ seems to be able to converge to 0. And apparently the estimated curve is close to the true one, as shown in plot.
+
+
+
