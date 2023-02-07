@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree05be5a74b8c9d77cfda136cafab6bbc81a24a955targetblank05be5a7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee9da031304274f7d3d7cf4cdba3955c1dbf951a5targetblanke9da031a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/05be5a74b8c9d77cfda136cafab6bbc81a24a955" target="_blank">05be5a7</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/e9da031304274f7d3d7cf4cdba3955c1dbf951a5" target="_blank">e9da031</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree05be5a74b8c9d77cfda136cafab6bbc81a24a955targetblank05be5a7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreee9da031304274f7d3d7cf4cdba3955c1dbf951a5targetblanke9da031a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/05be5a74b8c9d77cfda136cafab6bbc81a24a955" target="_blank">05be5a7</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/e9da031304274f7d3d7cf4cdba3955c1dbf951a5" target="_blank">e9da031</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -559,20 +559,12 @@ Ignored files:
 
 Untracked files:
     Untracked:  analysis/movielens.Rmd
-    Untracked:  analysis/poisson_smooth_split_local_optimum.Rmd
     Untracked:  analysis/profiled_obj_for_b_splitting.Rmd
-    Untracked:  code/binomial_mean/binomial_smooth_splitting.R
-    Untracked:  code/binomial_mean/test_binomial.R
-    Untracked:  code/poisson_smooth/pois_reg_splitting.R
     Untracked:  data/ml-latest-small/
     Untracked:  output/droplet_iteration_results/
     Untracked:  output/ebpmf_pbmc3k_vga3_glmpca_init.rds
     Untracked:  output/pbmc3k_iteration_results/
     Untracked:  output/pbmc_no_constraint.rds
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
-    Modified:   code/binomial_mean/binomial_mean_splitting.R
 
 </code></pre>
 <p>
@@ -619,6 +611,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/e9da031304274f7d3d7cf4cdba3955c1dbf951a5/analysis/poisson_mean_split_local_optimum.Rmd" target="_blank">e9da031</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-07
+</td>
+<td>
+wflow_publish("analysis/poisson_mean_split_local_optimum.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/2919c388c6a2d89b9a7810b425aca57b502b5d97/docs/poisson_mean_split_local_optimum.html" target="_blank">2919c38</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -689,7 +715,7 @@ are interested in.</p>
 <pre class="r"><code>library(vebpm)
 n = 1000
 set.seed(12345)
-mu = c(rep(3,100),rep(0,n-100))
+mu = c(rep(4,100),rep(0,n-100))
 x = rpois(n,exp(mu))
 
 plot(x,col=&#39;grey80&#39;)
@@ -734,9 +760,11 @@ DongyueXie
 </div>
 <p>In the first example we initialize <span
 class="math inline">\(\sigma^2=0.5\)</span>, ans we can see that the
-final <span class="math inline">\(sigma^2\)</span> is around 0.22</p>
-<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=0.5)
-plot(x,col=&#39;grey80&#39;)
+final <span class="math inline">\(sigma^2\)</span> is around 0.2</p>
+<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=0.5)</code></pre>
+<pre><code>Warning in pois_mean_split(x, sigma2 = 0.5): An iteration decreases ELBO. This
+is likely due to numerical issues.</code></pre>
+<pre class="r"><code>plot(x,col=&#39;grey80&#39;)
 lines(fit0$posterior$mean_exp_b)</code></pre>
 <p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
@@ -817,27 +845,27 @@ DongyueXie
 </div>
 <pre class="r"><code>fit0$fitted_g$g_b</code></pre>
 <pre><code>$pi
-[1] 0.8656205 0.0000000 0.0000000 0.0000000 0.0000000 0.1343795 0.0000000
-[8] 0.0000000
+[1] 0.8836418 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+[8] 0.1163582 0.0000000
 
 $mean
-[1] -0.0760271 -0.0760271 -0.0760271 -0.0760271 -0.0760271 -0.0760271 -0.0760271
-[8] -0.0760271
+[1] -0.06950088 -0.06950088 -0.06950088 -0.06950088 -0.06950088 -0.06950088
+[7] -0.06950088 -0.06950088 -0.06950088
 
 $sd
-[1] 0.0000000 0.4948273 0.8264801 1.2113393 1.6943897 2.3201300 3.1430577
-[8] 4.2337875
+[1] 0.0000000 0.4050770 0.6765755 0.9916300 1.3870662 1.8993115 2.5729789
+[8] 3.4658753 4.6542967
 
 attr(,&quot;class&quot;)
 [1] &quot;normalmix&quot;
 attr(,&quot;row.names&quot;)
-[1] 1 2 3 4 5 6 7 8</code></pre>
+[1] 1 2 3 4 5 6 7 8 9</code></pre>
 <pre class="r"><code>fit0$elbo</code></pre>
-<pre><code>[1] -3047.729</code></pre>
+<pre><code>[1] -3170.676</code></pre>
 <p>WE try to initialize <span
 class="math inline">\(\sigma^2=0.1\)</span>, and we can see that the
 final <span class="math inline">\(sigma^2\)</span> is still around
-0.22</p>
+0.14</p>
 <pre class="r"><code>fit0 = pois_mean_split(x,sigma2=0.1)
 plot(x,col=&#39;grey80&#39;)
 lines(fit0$posterior$mean_exp_b)</code></pre>
@@ -920,31 +948,31 @@ DongyueXie
 </div>
 <pre class="r"><code>fit0$fitted_g$g_b</code></pre>
 <pre><code>$pi
-[1] 0.8769104 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.1230896
-[8] 0.0000000 0.0000000
+ [1] 0.8885623 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+ [8] 0.0000000 0.1114377 0.0000000
 
 $mean
-[1] -0.0316568 -0.0316568 -0.0316568 -0.0316568 -0.0316568 -0.0316568 -0.0316568
-[8] -0.0316568 -0.0316568
+ [1] -0.02641456 -0.02641456 -0.02641456 -0.02641456 -0.02641456 -0.02641456
+ [7] -0.02641456 -0.02641456 -0.02641456 -0.02641456
 
 $sd
-[1] 0.0000000 0.4045662 0.6757223 0.9903795 1.3853170 1.8969163 2.5697342
-[8] 3.4615046 4.6484273
+ [1] 0.0000000 0.3227005 0.5389870 0.7899720 1.1049923 1.5130673 2.0497376
+ [8] 2.7610545 3.7077984 4.9707654
 
 attr(,&quot;class&quot;)
 [1] &quot;normalmix&quot;
 attr(,&quot;row.names&quot;)
-[1] 1 2 3 4 5 6 7 8 9</code></pre>
+ [1]  1  2  3  4  5  6  7  8  9 10</code></pre>
 <pre class="r"><code>fit0$elbo</code></pre>
-<pre><code>[1] -3044.584</code></pre>
+<pre><code>[1] -3168.611</code></pre>
 <p>So this is a local optimum and is the one that gives the results we’d
 love to see.</p>
 <p>ON the other hand If we initialize <span
 class="math inline">\(\sigma^2\)</span> to be bigger at <span
-class="math inline">\(\sigma^2 = 1\)</span>, then <span
-class="math inline">\(\sigma^2\)</span> converges to 1.8 and <span
+class="math inline">\(\sigma^2 = 2\)</span>, then <span
+class="math inline">\(\sigma^2\)</span> converges to 3 and <span
 class="math inline">\(g_b\)</span> goes to a point mass.</p>
-<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=1)
+<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=2)
 plot(x,col=&#39;grey80&#39;)
 lines(fit0$posterior$mean_exp_b)</code></pre>
 <p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -986,28 +1014,28 @@ DongyueXie
 </div>
 </div>
 <pre class="r"><code>fit0$fitted_g$sigma2_trace</code></pre>
-<pre><code> [1] 1.233145 1.391178 1.518241 1.615259 1.684353 1.731559 1.763087 1.783876
- [9] 1.797480 1.806341 1.812095 1.815822</code></pre>
+<pre><code>[1] 2.476947 2.685522 2.843666 2.949401 3.013449 3.050891 3.072491 3.084879
+[9] 3.091961</code></pre>
 <pre class="r"><code>fit0$fitted_g$g_b</code></pre>
 <pre><code>$pi
 [1] 1 0 0 0 0
 
 $mean
-[1] 0.02648361 0.02648361 0.02648361 0.02648361 0.02648361
+[1] -0.02755852 -0.02755852 -0.02755852 -0.02755852 -0.02755852
 
 $sd
-[1] 0.000000 1.196248 1.998021 2.928420 4.096198
+[1] 0.000000 1.560810 2.606926 3.820868 5.344530
 
 attr(,&quot;class&quot;)
 [1] &quot;normalmix&quot;
 attr(,&quot;row.names&quot;)
 [1] 1 2 3 4 5</code></pre>
 <pre class="r"><code>fit0$elbo</code></pre>
-<pre><code>[1] -3031.456</code></pre>
+<pre><code>[1] -3279.522</code></pre>
 <p>Try a larger init value of <span
-class="math inline">\(\sigma^2\)</span> at 3, then same thing
+class="math inline">\(\sigma^2\)</span> at 5, then same thing
 happens.</p>
-<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=3)
+<pre class="r"><code>fit0 = pois_mean_split(x,sigma2=5)
 plot(x,col=&#39;grey80&#39;)
 lines(fit0$posterior$mean_exp_b)</code></pre>
 <p><img src="figure/poisson_mean_split_local_optimum.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
@@ -1049,24 +1077,23 @@ DongyueXie
 </div>
 </div>
 <pre class="r"><code>fit0$fitted_g$sigma2_trace</code></pre>
-<pre><code>[1] 2.435644 2.049915 1.941053 1.894578 1.868205 1.851837 1.841424 1.834748
-[9] 1.830450</code></pre>
+<pre><code>[1] 4.012418 3.401599 3.249432 3.183250 3.147588 3.127588 3.116270 3.109837</code></pre>
 <pre class="r"><code>fit0$fitted_g$g_b</code></pre>
 <pre><code>$pi
 [1] 1 0 0 0 0
 
 $mean
-[1] 0.01644114 0.01644114 0.01644114 0.01644114 0.01644114
+[1] -0.03821734 -0.03821734 -0.03821734 -0.03821734 -0.03821734
 
 $sd
-[1] 0.000000 1.203702 2.010471 2.946668 4.121722
+[1] 0.000000 1.568731 2.620156 3.840259 5.371654
 
 attr(,&quot;class&quot;)
 [1] &quot;normalmix&quot;
 attr(,&quot;row.names&quot;)
 [1] 1 2 3 4 5</code></pre>
 <pre class="r"><code>fit0$elbo</code></pre>
-<pre><code>[1] -3031.458</code></pre>
+<pre><code>[1] -3279.521</code></pre>
 <p>Maybe we should not start with a too large <span
 class="math inline">\(\sigma^2\)</span> because <span
 class="math inline">\(g_b\)</span> being a point mass is a local optimum
@@ -1086,7 +1113,7 @@ to a non-pointmass, then <span class="math inline">\(\sigma^2\)</span>
 can converge to a smaller value, but not 0. In this simulation we know
 that true <span class="math inline">\(\sigma^2\)</span> is 0, and in
 this case the estimated <span class="math inline">\(\sigma^2\)</span>
-converges to 0.22.</p>
+converges to 0.2.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
