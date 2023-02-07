@@ -1,9 +1,5 @@
 
 ## examples
-
-
-
-
 library(vebpm)
 library(fastGHQuad)
 library(ebnm)
@@ -78,8 +74,7 @@ binomial_mean_splitting = function(x,nb=1,
     sigma2 = mean(mu_pm^2+mu_pv+b_pm^2+b_pv-2*b_pm*mu_pm)
 
     # ELBO
-    obj[iter+1] = sum(x*mu_pm-nb*Elog1pexp(mu_pm,mu_pv,gh_points)) +const - n/2*log(2*pi*sigma2)
-    - sum(mu_pm^2 + mu_pv + b_pm^2 + b_pv - 2*mu_pm*b_pm)/2/sigma2 + H + sum(log(2*pi*mu_pv))/2 - n/2
+    obj[iter+1] = binom_mean_split_obj(x,nb,mu_pm,mu_pv,gh_points,const,sigma2,b_pm,b_pv,H)
 
     if(iter%%printevery==0){
       print(paste('At iter', iter, 'elbo=',round(obj[iter+1],3),'sigma2=',round(sigma2,3)))
@@ -115,7 +110,12 @@ binomial_mean_splitting = function(x,nb=1,
 }
 
 
-
+binom_mean_split_obj = function(x,nb,mu_pm,mu_pv,gh_points,const,sigma2,b_pm,b_pv,H){
+  n = length(x)
+  term1 =sum(x*mu_pm-nb*Elog1pexp(mu_pm,mu_pv,gh_points)- (mu_pm^2 + mu_pv + b_pm^2 + b_pv - 2*mu_pm*b_pm)/2/sigma2+ (log(2*pi*mu_pv))/2)
+  term2 =const - n/2*log(2*pi*sigma2) + H  - n/2
+  return(term1 + term2)
+}
 
 vga_binomial = function(init_val,x,nb,beta,sigma2,method='lbfgs',gh_points){
   if(method!="lbfgs"){
@@ -143,6 +143,31 @@ vga_binomial = function(init_val,x,nb,beta,sigma2,method='lbfgs',gh_points){
 
 }
 
+vga_binomial_lbfgs = function(init_val,x,nb,beta,sigma2,method='lbfgs',gh_points){
+  if(method!="lbfgs"){
+    stop('only lbfgs is implemented')
+  }
+  n = length(x)
+  opt = try(lbfgs::lbfgs(
+    call_eval = vga_binom_obj,
+                  call_grad = vga_binom_obj_grad,
+                  vars=init_val,
+                  x=x,
+                  nb=nb,
+                  beta=beta,
+                  sigma2=sigma2,
+                  n=n,
+                  gh_points=gh_points),silent = TRUE)
+
+  if(class(opt)=='try-error'){
+    warning(paste(opt[1],'; returning the initialization values'))
+    return(list(m=init_val[1:n],v=exp(init_val[(n+1):(2*n)])))
+  }else{
+    return(list(m=opt$par[1:n],v=exp(opt$par[(n+1):(2*n)]),opt=opt))
+  }
+
+
+}
 
 vga_binom_obj = function(theta,x,nb,beta,sigma2,n,gh_points){
   m = theta[1:n]
@@ -154,7 +179,7 @@ vga_binom_obj = function(theta,x,nb,beta,sigma2,n,gh_points){
 vga_binom_obj_grad = function(theta,x,nb,beta,sigma2,n,gh_points){
   m = theta[1:n]
   lv = theta[(n+1):(2*n)]
-  dm = - (x - nb*Elog1pexp_dm(m,exp(lv),gh_points) - (m-m*beta)/sigma2)
+  dm = - (x - nb*Elog1pexp_dm(m,exp(lv),gh_points) - (m-beta)/sigma2)
   dlv = - (- nb*Elog1pexp_dlv(m,lv,gh_points) - exp(lv)/2/sigma2 + 1/2)
   return(c(dm,dlv))
 }
@@ -270,6 +295,7 @@ binomial_mean_GG = function(x,nb,beta=NULL,sigma2=NULL,
   }
 
   return(list(posterior = list(mean_logit = m,
+                               var_logit = v,
                                mean = Esigmoid(m,v,gh_points)),
               fitted_g = list(beta=beta,sigma2=sigma2),
               elbo=obj[length(obj)],
