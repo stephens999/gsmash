@@ -71,12 +71,13 @@ fit0$fitted_g$g_b
 fit0$elbo
 ```
 
-
-The ELBO is larger when $g_b$ is a point mass and $\sigma^2$ is larger. 
-
 Maybe we should not start with a too large $\sigma^2$ because $g_b$ being a point mass is a local optimum and in most cases we are not very interested in. I find that the starting $\sigma^2$ should not be greater than $var(\bar\mu_i)$, and perhaps smaller.
 
 
+## Observations
 
+Apparently if $g_b$ goes to a pointmass, then $\sigma^2$ is large. This converges to the problem of putting a Gaussian prior on the parameter $\mu$.
+
+On the other hand, if $g_b$ goes to a non-pointmass, then $\sigma^2$ can converge to a smaller value, but not 0. In this simulation we know that true $\sigma^2$ is 0, and in this case the estimated $\sigma^2$ converges to 0.22. 
 
 
