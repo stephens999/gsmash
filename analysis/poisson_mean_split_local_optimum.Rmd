@@ -17,7 +17,7 @@ We show in a simple POisson mean example, there are two local optimums - one whe
 library(vebpm)
 n = 1000
 set.seed(12345)
-mu = c(rep(3,100),rep(0,n-100))
+mu = c(rep(4,100),rep(0,n-100))
 x = rpois(n,exp(mu))
 
 plot(x,col='grey80')
@@ -25,7 +25,7 @@ lines(exp(mu))
 
 ```
 
-In the first example we initialize $\sigma^2=0.5$, ans we can see that the final $sigma^2$ is around 0.22
+In the first example we initialize $\sigma^2=0.5$, ans we can see that the final $sigma^2$ is around 0.2
 
 ```{r}
 fit0 = pois_mean_split(x,sigma2=0.5)
@@ -36,7 +36,7 @@ fit0$fitted_g$g_b
 fit0$elbo
 ```
 
-WE try to initialize $\sigma^2=0.1$, and we can see that the final $sigma^2$ is still around 0.22
+WE try to initialize $\sigma^2=0.1$, and we can see that the final $sigma^2$ is still around 0.14
 
 ```{r}
 fit0 = pois_mean_split(x,sigma2=0.1)
@@ -49,10 +49,10 @@ fit0$elbo
 
 So this is a local optimum and is the one that gives the results we'd love to see.
 
-ON the other hand If we initialize $\sigma^2$ to be bigger at $\sigma^2 = 1$, then $\sigma^2$ converges to 1.8 and $g_b$ goes to a point mass.
+ON the other hand If we initialize $\sigma^2$ to be bigger at $\sigma^2 = 2$, then $\sigma^2$ converges to 3 and $g_b$ goes to a point mass.
 
 ```{r}
-fit0 = pois_mean_split(x,sigma2=1)
+fit0 = pois_mean_split(x,sigma2=2)
 plot(x,col='grey80')
 lines(fit0$posterior$mean_exp_b)
 fit0$fitted_g$sigma2_trace
@@ -60,10 +60,10 @@ fit0$fitted_g$g_b
 fit0$elbo
 ```
 
-Try a larger init value of $\sigma^2$ at 3, then same thing happens.
+Try a larger init value of $\sigma^2$ at 5, then same thing happens.
 
 ```{r}
-fit0 = pois_mean_split(x,sigma2=3)
+fit0 = pois_mean_split(x,sigma2=5)
 plot(x,col='grey80')
 lines(fit0$posterior$mean_exp_b)
 fit0$fitted_g$sigma2_trace
@@ -78,6 +78,11 @@ Maybe we should not start with a too large $\sigma^2$ because $g_b$ being a poin
 
 Apparently if $g_b$ goes to a pointmass, then $\sigma^2$ is large. This converges to the problem of putting a Gaussian prior on the parameter $\mu$.
 
-On the other hand, if $g_b$ goes to a non-pointmass, then $\sigma^2$ can converge to a smaller value, but not 0. In this simulation we know that true $\sigma^2$ is 0, and in this case the estimated $\sigma^2$ converges to 0.22. 
+On the other hand, if $g_b$ goes to a non-pointmass, then $\sigma^2$ can converge to a smaller value, but not 0. In this simulation we know that true $\sigma^2$ is 0, and in this case the estimated $\sigma^2$ converges to 0.2. 
+
+
+
+
+
 
 
