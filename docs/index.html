@@ -310,7 +310,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-01-27
+<strong>Last updated:</strong> 2023-02-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -357,15 +357,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree60d225be3fcd7fbbc8141717f240858b3ca22da5targetblank60d225ba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree101932328c7a3ce64f1262ea70948d9f7fbe1333targetblank1019323a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/60d225be3fcd7fbbc8141717f240858b3ca22da5" target="_blank">60d225b</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/101932328c7a3ce64f1262ea70948d9f7fbe1333" target="_blank">1019323</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree60d225be3fcd7fbbc8141717f240858b3ca22da5targetblank60d225ba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree101932328c7a3ce64f1262ea70948d9f7fbe1333targetblank1019323a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -375,7 +375,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/60d225be3fcd7fbbc8141717f240858b3ca22da5" target="_blank">60d225b</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/101932328c7a3ce64f1262ea70948d9f7fbe1333" target="_blank">1019323</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -394,8 +394,12 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
+    Untracked:  analysis/movielens.Rmd
+    Untracked:  analysis/profiled_obj_for_b_splitting.Rmd
     Untracked:  code/binomial_mean/binomial_smooth_splitting.R
     Untracked:  code/binomial_mean/test_binomial.R
+    Untracked:  code/poisson_smooth/pois_reg_splitting.R
+    Untracked:  data/ml-latest-small/
     Untracked:  output/droplet_iteration_results/
     Untracked:  output/ebpmf_pbmc3k_vga3_glmpca_init.rds
     Untracked:  output/pbmc3k_iteration_results/
@@ -447,6 +451,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/101932328c7a3ce64f1262ea70948d9f7fbe1333/analysis/index.Rmd" target="_blank">1019323</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-07
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/a6cff57ee2327b8e30ddb87dd143e5aa56c3ee1b/docs/index.html" target="_blank">a6cff57</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-01-27
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2341,6 +2379,8 @@ Poisson</a></li>
 class="math inline">\(\log(1+\exp(\cdot))\)</span> link</a></li>
 <li><a href="vga_objective_function.html">VGA objective function v(m)
 relationship</a></li>
+<li><a href="poisson_mean_split_local_optimum.html">Poisson mean
+splitting local optimum</a></li>
 </ul>
 <div id="penalized" class="section level3">
 <h3>Penalized</h3>
@@ -2380,15 +2420,13 @@ results</a></li>
 <div id="poisson-smoothing" class="section level2">
 <h2>Poisson smoothing</h2>
 <ul>
-<li><a href="poisson_nugget_two_step.html">The splitting method
-smoothing overdispersed count data</a></li>
+<li><p><a href="poisson_nugget_two_step.html">The splitting method
+smoothing overdispersed count data</a></p></li>
+<li><p><a href="poisson_smooth_split_local_optimum.html">Poisson smooth
+splitting local optimum</a> ### Real data</p></li>
+<li><p><a href="splitting_smooth_RNAseq.html">Smooth RNA
+seq</a></p></li>
 </ul>
-<div id="real-data" class="section level3">
-<h3>Real data</h3>
-<ul>
-<li><a href="splitting_smooth_RNAseq.html">Smooth RNA seq</a></li>
-</ul>
-</div>
 <div id="bechmarking-smoothing-methods" class="section level3">
 <h3>Bechmarking smoothing methods</h3>
 <p>I benchmarked methods on the following smooth functions.</p>
@@ -2443,6 +2481,8 @@ Mean problem</a></li>
 data</a></li>
 <li><a href="binomial_smooth_splitting.html">Apply Splitting to Binomial
 smooth problem</a></li>
+<li><a href="is_vga_binom_convex.Rmd">is vga binom problem
+convex?</a></li>
 </ul>
 </div>
 <div id="normal-mean-penalty-form" class="section level2">
