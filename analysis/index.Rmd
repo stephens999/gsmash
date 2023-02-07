@@ -58,6 +58,7 @@ editor_options:
 * [NB approxiamation to Poisson](nb_approx_poisson.html)
 * [Poisson mean $\log(1+\exp(\cdot))$ link](pois_mean_log1exp.html)
 * [VGA objective function v(m) relationship](vga_objective_function.html)
+* [Poisson mean splitting local optimum](poisson_mean_split_local_optimum.html)
 
 ### Penalized
 
@@ -85,7 +86,7 @@ With Run time Comparison:
 ## Poisson smoothing 
 
 * [The splitting method smoothing overdispersed count data](poisson_nugget_two_step.html)
-
+* [Poisson smooth splitting local optimum](poisson_smooth_split_local_optimum.html)
 ### Real data
 
 * [Smooth RNA seq](splitting_smooth_RNAseq.html)
@@ -133,6 +134,7 @@ Second Run:
 * [Apply Splitting to Binomial Mean problem](binomial_mean_spliiting.html)
 * [It does not work for binary data](bernoulli_GG_fail.html)
 * [Apply Splitting to Binomial smooth problem](binomial_smooth_splitting.html)
+* [is vga binom problem convex?](is_vga_binom_convex.Rmd)
 
 ## Normal mean penalty form
 
