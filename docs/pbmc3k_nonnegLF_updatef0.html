@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree5225a9d18c62e75046c910830094810d13beb9e7targetblank5225a9da">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeab8513ab8d5c206751c1dcd24ffccaaa736a7a6dtargetblankab8513aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/5225a9d18c62e75046c910830094810d13beb9e7" target="_blank">5225a9d</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/ab8513ab8d5c206751c1dcd24ffccaaa736a7a6d" target="_blank">ab8513a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree5225a9d18c62e75046c910830094810d13beb9e7targetblank5225a9da"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeab8513ab8d5c206751c1dcd24ffccaaa736a7a6dtargetblankab8513aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/5225a9d18c62e75046c910830094810d13beb9e7" target="_blank">5225a9d</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/ab8513ab8d5c206751c1dcd24ffccaaa736a7a6d" target="_blank">ab8513a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -561,14 +561,12 @@ Ignored files:
 Untracked files:
     Untracked:  analysis/movielens.Rmd
     Untracked:  analysis/profiled_obj_for_b_splitting.Rmd
+    Untracked:  code/poisson_STM/structure_plot.R
     Untracked:  data/ml-latest-small/
     Untracked:  output/droplet_iteration_results/
     Untracked:  output/ebpmf_pbmc3k_vga3_glmpca_init.rds
     Untracked:  output/pbmc3k_iteration_results/
     Untracked:  output/pbmc_no_constraint.rds
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -615,6 +613,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/ab8513ab8d5c206751c1dcd24ffccaaa736a7a6d/analysis/pbmc3k_nonnegLF_updatef0.Rmd" target="_blank">ab8513a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-09
+</td>
+<td>
+wflow_publish("analysis/pbmc3k_nonnegLF_updatef0.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/3e1fad020fb9014ee1b3f35fc731a46001ddd637/docs/pbmc3k_nonnegLF_updatef0.html" target="_blank">3e1fad0</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-09
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -672,22 +704,401 @@ comparing to unimodal nonnegative prior</a>.</p>
 <p>Since I only got results from first 30 iterations, I’ll compare the
 30th iterations results.</p>
 <pre class="r"><code>source(&#39;code/poisson_STM/plot_factors_general.R&#39;)
+source(&#39;code/poisson_STM/structure_plot.R&#39;)
 library(fastTopics)
 library(Matrix)
 library(stm)
 data(pbmc_facs)</code></pre>
+</div>
+<div id="fix-f0" class="section level2">
+<h2>fix f0</h2>
 <pre class="r"><code>fit = readRDS(paste(&#39;output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegLF_pe_vga3_iter&#39;,30,&#39;.rds&#39;,sep=&#39;&#39;))
 plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste(&#39;pbmc3k nonneg L F iteration&#39;,30))
 print(plt)</code></pre>
 <p><img src="figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3e1fad020fb9014ee1b3f35fc731a46001ddd637/docs/figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-3-1.png" target="_blank">3e1fad0</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>fit$elbo</code></pre>
+<pre><code>[1] -19765312</code></pre>
+<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop)</code></pre>
+<pre><code>Running tsne on 417 x 7 matrix.</code></pre>
+<pre><code>Read the 417 x 7 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.07 seconds (sparsity = 0.873557)!
+Learning embedding...
+Iteration 50: error is 42.997166 (50 iterations in 0.04 seconds)
+Iteration 100: error is 41.868908 (50 iterations in 0.03 seconds)
+Iteration 150: error is 41.868062 (50 iterations in 0.03 seconds)
+Iteration 200: error is 41.868149 (50 iterations in 0.04 seconds)
+Iteration 250: error is 41.868091 (50 iterations in 0.03 seconds)
+Iteration 300: error is 0.090940 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.090530 (50 iterations in 0.03 seconds)
+Iteration 400: error is 0.090535 (50 iterations in 0.03 seconds)
+Iteration 450: error is 0.090537 (50 iterations in 0.03 seconds)
+Iteration 500: error is 0.090538 (50 iterations in 0.03 seconds)
+Iteration 550: error is 0.090537 (50 iterations in 0.03 seconds)
+Iteration 600: error is 0.090538 (50 iterations in 0.03 seconds)
+Iteration 650: error is 0.090537 (50 iterations in 0.03 seconds)
+Iteration 700: error is 0.090538 (50 iterations in 0.03 seconds)
+Iteration 750: error is 0.090538 (50 iterations in 0.03 seconds)
+Iteration 800: error is 0.090538 (50 iterations in 0.03 seconds)
+Iteration 850: error is 0.090537 (50 iterations in 0.03 seconds)
+Iteration 900: error is 0.090535 (50 iterations in 0.03 seconds)
+Iteration 950: error is 0.090538 (50 iterations in 0.03 seconds)
+Iteration 1000: error is 0.090538 (50 iterations in 0.03 seconds)
+Fitting performed in 0.61 seconds.</code></pre>
+<pre><code>Running tsne on 91 x 7 matrix.</code></pre>
+<pre><code>Read the 91 x 7 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 29.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.987320)!
+Learning embedding...
+Iteration 50: error is 53.493352 (50 iterations in 0.01 seconds)
+Iteration 100: error is 48.356461 (50 iterations in 0.00 seconds)
+Iteration 150: error is 49.518330 (50 iterations in 0.00 seconds)
+Iteration 200: error is 48.106554 (50 iterations in 0.00 seconds)
+Iteration 250: error is 47.422229 (50 iterations in 0.00 seconds)
+Iteration 300: error is 1.112187 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.697176 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.690709 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.690712 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.690712 (50 iterations in 0.00 seconds)
+Fitting performed in 0.06 seconds.</code></pre>
+<pre><code>Running tsne on 358 x 7 matrix.</code></pre>
+<pre><code>Read the 358 x 7 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.06 seconds (sparsity = 0.951437)!
+Learning embedding...
+Iteration 50: error is 44.073232 (50 iterations in 0.03 seconds)
+Iteration 100: error is 41.466782 (50 iterations in 0.03 seconds)
+Iteration 150: error is 41.448750 (50 iterations in 0.03 seconds)
+Iteration 200: error is 41.448801 (50 iterations in 0.03 seconds)
+Iteration 250: error is 41.448774 (50 iterations in 0.03 seconds)
+Iteration 300: error is 0.073591 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.072700 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.072698 (50 iterations in 0.03 seconds)
+Iteration 500: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.072699 (50 iterations in 0.03 seconds)
+Iteration 850: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.072698 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.072699 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.072699 (50 iterations in 0.02 seconds)
+Fitting performed in 0.49 seconds.</code></pre>
+<pre><code>Running tsne on 359 x 7 matrix.</code></pre>
+<pre><code>Read the 359 x 7 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.05 seconds (sparsity = 0.952631)!
+Learning embedding...
+Iteration 50: error is 41.095007 (50 iterations in 0.03 seconds)
+Iteration 100: error is 40.915822 (50 iterations in 0.02 seconds)
+Iteration 150: error is 40.915712 (50 iterations in 0.02 seconds)
+Iteration 200: error is 40.915706 (50 iterations in 0.02 seconds)
+Iteration 250: error is 40.915701 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.074192 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.074106 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.074102 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.074105 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.074103 (50 iterations in 0.03 seconds)
+Iteration 550: error is 0.074103 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.074103 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.074102 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.074103 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.074103 (50 iterations in 0.03 seconds)
+Iteration 800: error is 0.074102 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.074103 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.074103 (50 iterations in 0.03 seconds)
+Iteration 950: error is 0.074103 (50 iterations in 0.03 seconds)
+Iteration 1000: error is 0.074103 (50 iterations in 0.02 seconds)
+Fitting performed in 0.48 seconds.</code></pre>
+<pre><code>Running tsne on 775 x 7 matrix.</code></pre>
+<pre><code>Read the 775 x 7 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.12 seconds (sparsity = 0.498091)!
+Learning embedding...
+Iteration 50: error is 45.482085 (50 iterations in 0.07 seconds)
+Iteration 100: error is 41.615579 (50 iterations in 0.06 seconds)
+Iteration 150: error is 41.017730 (50 iterations in 0.07 seconds)
+Iteration 200: error is 40.805126 (50 iterations in 0.06 seconds)
+Iteration 250: error is 40.708478 (50 iterations in 0.06 seconds)
+Iteration 300: error is 0.183027 (50 iterations in 0.06 seconds)
+Iteration 350: error is 0.125610 (50 iterations in 0.06 seconds)
+Iteration 400: error is 0.116738 (50 iterations in 0.06 seconds)
+Iteration 450: error is 0.114335 (50 iterations in 0.07 seconds)
+Iteration 500: error is 0.113508 (50 iterations in 0.06 seconds)
+Iteration 550: error is 0.113136 (50 iterations in 0.06 seconds)
+Iteration 600: error is 0.112980 (50 iterations in 0.07 seconds)
+Iteration 650: error is 0.112861 (50 iterations in 0.06 seconds)
+Iteration 700: error is 0.112738 (50 iterations in 0.06 seconds)
+Iteration 750: error is 0.112710 (50 iterations in 0.06 seconds)
+Iteration 800: error is 0.112659 (50 iterations in 0.06 seconds)
+Iteration 850: error is 0.112640 (50 iterations in 0.06 seconds)
+Iteration 900: error is 0.112656 (50 iterations in 0.06 seconds)
+Iteration 950: error is 0.112646 (50 iterations in 0.06 seconds)
+Iteration 1000: error is 0.112634 (50 iterations in 0.06 seconds)
+Fitting performed in 1.26 seconds.</code></pre>
+<p><img src="figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>f00 = colSums(pbmc_facs$counts)/sqrt(sum(pbmc_facs$counts))</code></pre>
+</div>
+<div id="update-f0" class="section level2">
+<h2>update f0</h2>
 <pre class="r"><code>fit = readRDS(paste(&#39;output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegLF_pe_vga3_est_f0_iter30.rds&#39;))
 plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste(&#39;pbmc3k update f0 nonneg L F iteration&#39;,30))
 print(plt)</code></pre>
-<p><img src="figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>plot(f00,fit$f0,xlab=&#39;init f0&#39;,ylab=&#39;fitted f0&#39;)
-abline(a=0,b=1,lty=2)</code></pre>
 <p><img src="figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/3e1fad020fb9014ee1b3f35fc731a46001ddd637/docs/figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-6-1.png" target="_blank">3e1fad0</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-09
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>fit$elbo</code></pre>
+<pre><code>[1] -19580914</code></pre>
+<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop)</code></pre>
+<pre><code>Running tsne on 417 x 8 matrix.</code></pre>
+<pre><code>Read the 417 x 8 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.07 seconds (sparsity = 0.875306)!
+Learning embedding...
+Iteration 50: error is 45.701851 (50 iterations in 0.04 seconds)
+Iteration 100: error is 41.959043 (50 iterations in 0.03 seconds)
+Iteration 150: error is 41.904270 (50 iterations in 0.03 seconds)
+Iteration 200: error is 41.903176 (50 iterations in 0.03 seconds)
+Iteration 250: error is 41.903098 (50 iterations in 0.04 seconds)
+Iteration 300: error is 0.092093 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.087865 (50 iterations in 0.03 seconds)
+Iteration 400: error is 0.087711 (50 iterations in 0.03 seconds)
+Iteration 450: error is 0.087732 (50 iterations in 0.03 seconds)
+Iteration 500: error is 0.087729 (50 iterations in 0.03 seconds)
+Iteration 550: error is 0.087731 (50 iterations in 0.03 seconds)
+Iteration 600: error is 0.087732 (50 iterations in 0.03 seconds)
+Iteration 650: error is 0.087731 (50 iterations in 0.03 seconds)
+Iteration 700: error is 0.087732 (50 iterations in 0.03 seconds)
+Iteration 750: error is 0.087732 (50 iterations in 0.03 seconds)
+Iteration 800: error is 0.087731 (50 iterations in 0.03 seconds)
+Iteration 850: error is 0.087732 (50 iterations in 0.03 seconds)
+Iteration 900: error is 0.087732 (50 iterations in 0.03 seconds)
+Iteration 950: error is 0.087732 (50 iterations in 0.03 seconds)
+Iteration 1000: error is 0.087732 (50 iterations in 0.03 seconds)
+Fitting performed in 0.58 seconds.</code></pre>
+<pre><code>Running tsne on 91 x 8 matrix.</code></pre>
+<pre><code>Read the 91 x 8 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 29.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.00 seconds (sparsity = 0.986837)!
+Learning embedding...
+Iteration 50: error is 49.735471 (50 iterations in 0.00 seconds)
+Iteration 100: error is 48.569182 (50 iterations in 0.00 seconds)
+Iteration 150: error is 50.621830 (50 iterations in 0.00 seconds)
+Iteration 200: error is 50.788143 (50 iterations in 0.00 seconds)
+Iteration 250: error is 52.077153 (50 iterations in 0.00 seconds)
+Iteration 300: error is 1.641253 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.800636 (50 iterations in 0.00 seconds)
+Iteration 400: error is 0.796971 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 500: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 600: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 850: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 950: error is 0.796977 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.796977 (50 iterations in 0.00 seconds)
+Fitting performed in 0.06 seconds.</code></pre>
+<pre><code>Running tsne on 358 x 8 matrix.</code></pre>
+<pre><code>Read the 358 x 8 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.05 seconds (sparsity = 0.950953)!
+Learning embedding...
+Iteration 50: error is 43.493234 (50 iterations in 0.03 seconds)
+Iteration 100: error is 43.493234 (50 iterations in 0.03 seconds)
+Iteration 150: error is 43.493234 (50 iterations in 0.03 seconds)
+Iteration 200: error is 43.493234 (50 iterations in 0.03 seconds)
+Iteration 250: error is 43.493234 (50 iterations in 0.03 seconds)
+Iteration 300: error is 0.164546 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.160839 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.159392 (50 iterations in 0.03 seconds)
+Iteration 450: error is 0.159392 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.159391 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.159392 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.159391 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.159391 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.159392 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.159391 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.159392 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.159392 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.159392 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.159392 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.159392 (50 iterations in 0.02 seconds)
+Fitting performed in 0.51 seconds.</code></pre>
+<pre><code>Running tsne on 359 x 8 matrix.</code></pre>
+<pre><code>Read the 359 x 8 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.05 seconds (sparsity = 0.952615)!
+Learning embedding...
+Iteration 50: error is 43.105018 (50 iterations in 0.03 seconds)
+Iteration 100: error is 41.222909 (50 iterations in 0.03 seconds)
+Iteration 150: error is 41.222379 (50 iterations in 0.02 seconds)
+Iteration 200: error is 41.222379 (50 iterations in 0.02 seconds)
+Iteration 250: error is 41.222380 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.090568 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.090346 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.090346 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.090345 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.090345 (50 iterations in 0.03 seconds)
+Iteration 550: error is 0.090346 (50 iterations in 0.03 seconds)
+Iteration 600: error is 0.090346 (50 iterations in 0.04 seconds)
+Iteration 650: error is 0.090346 (50 iterations in 0.04 seconds)
+Iteration 700: error is 0.090346 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.090346 (50 iterations in 0.03 seconds)
+Iteration 800: error is 0.090345 (50 iterations in 0.03 seconds)
+Iteration 850: error is 0.090346 (50 iterations in 0.03 seconds)
+Iteration 900: error is 0.090346 (50 iterations in 0.03 seconds)
+Iteration 950: error is 0.090345 (50 iterations in 0.03 seconds)
+Iteration 1000: error is 0.090345 (50 iterations in 0.04 seconds)
+Fitting performed in 0.58 seconds.</code></pre>
+<pre><code>Running tsne on 775 x 8 matrix.</code></pre>
+<pre><code>Read the 775 x 8 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.15 seconds (sparsity = 0.500172)!
+Learning embedding...
+Iteration 50: error is 46.009739 (50 iterations in 0.07 seconds)
+Iteration 100: error is 43.831645 (50 iterations in 0.06 seconds)
+Iteration 150: error is 43.565172 (50 iterations in 0.09 seconds)
+Iteration 200: error is 43.487247 (50 iterations in 0.09 seconds)
+Iteration 250: error is 43.457697 (50 iterations in 0.06 seconds)
+Iteration 300: error is 0.240611 (50 iterations in 0.07 seconds)
+Iteration 350: error is 0.186438 (50 iterations in 0.09 seconds)
+Iteration 400: error is 0.178554 (50 iterations in 0.09 seconds)
+Iteration 450: error is 0.176758 (50 iterations in 0.07 seconds)
+Iteration 500: error is 0.176225 (50 iterations in 0.06 seconds)
+Iteration 550: error is 0.176036 (50 iterations in 0.06 seconds)
+Iteration 600: error is 0.175941 (50 iterations in 0.06 seconds)
+Iteration 650: error is 0.175917 (50 iterations in 0.06 seconds)
+Iteration 700: error is 0.175878 (50 iterations in 0.06 seconds)
+Iteration 750: error is 0.175807 (50 iterations in 0.07 seconds)
+Iteration 800: error is 0.175806 (50 iterations in 0.06 seconds)
+Iteration 850: error is 0.175784 (50 iterations in 0.08 seconds)
+Iteration 900: error is 0.175774 (50 iterations in 0.08 seconds)
+Iteration 950: error is 0.175774 (50 iterations in 0.06 seconds)
+Iteration 1000: error is 0.175777 (50 iterations in 0.07 seconds)
+Fitting performed in 1.44 seconds.</code></pre>
+<p><img src="figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(f00,fit$f0,xlab=&#39;init f0&#39;,ylab=&#39;fitted f0&#39;,main=&#39;fixed vs updated&#39;)
+abline(a=0,b=1,lty=2)</code></pre>
+<p><img src="figure/pbmc3k_nonnegLF_updatef0.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
