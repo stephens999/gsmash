@@ -1,0 +1,91 @@
+---
+title: "Run ebpmf pbmc3k with nonnegative LF while also updating f0"
+author: "DongyueXie"
+date: "2023-02-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Recall the model is 
+
+\[y_{ij}\sim Poisson(l_{i0}f_{j0}\exp(\sum_k l_{ik}f_{jk}+\epsilon_{ij}).\]
+
+I compare the fit between fix $f_{j0} = y_{+j}/\sqrt{y_{++}}$, and update $f_{j0}$.
+
+ALL other parameters are the same.
+
+When estimating $f_{j0}$, I got an error saying:
+
+```{bash,eval=FALSE}
+running initial flash fit
+Running iterations...
+iter 10, elbo=-18401566.4360083, K=8
+iter 20, elbo=-17763539.8435548, K=8
+iter 30, elbo=-17393989.0758334, K=8
+Error in (function (f, p, ..., hessian = FALSE, typsize = rep(1, length(p)),  : 
+  missing value in parameter
+Calls: ebpmf_log ... parametric_workhorse -> mle_parametric -> do.call -> <Anonymous>
+In addition: Warning message:
+In handle_standard_errors(x, s) :
+  Nonpositive SEs have been replaced by small positive SEs.
+Execution halted
+
+```
+
+My general impression is that the point exponential prior implementation in `ebnm` is less stable, and can yield less desirable results, but much faster, [when comparing to unimodal nonnegative prior](example_unimodal_nonnegative_better_than_point_exponential.html).
+
+Since I only got results from first 30 iterations, I'll compare the 30th iterations results.
+
+```{r}
+source('code/poisson_STM/plot_factors_general.R')
+library(fastTopics)
+library(Matrix)
+library(stm)
+data(pbmc_facs)
+```
+
+```{r}
+fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegLF_pe_vga3_iter',30,'.rds',sep=''))
+plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k nonneg L F iteration',30))
+print(plt)
+```
+
+```{r}
+f00 = colSums(pbmc_facs$counts)/sqrt(sum(pbmc_facs$counts))
+```
+
+```{r}
+fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegLF_pe_vga3_est_f0_iter30.rds'))
+plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k update f0 nonneg L F iteration',30))
+print(plt)
+```
+
+```{r}
+plot(f00,fit$f0,xlab='init f0',ylab='fitted f0')
+abline(a=0,b=1,lty=2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
