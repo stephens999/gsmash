@@ -1,0 +1,64 @@
+---
+title: "An example when unimodal nonnegative is better than point exponential prior"
+author: "DongyueXie"
+date: "2023-02-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+When imposing nonnegative constraint on L and F, there are two choices of priors in `ebnm` - unimodal nonnegative, and point exponential. 
+
+Here I show an example where unimodal nonnegative performs better in terms of recovering structure. But point exponential is much faster.
+
+```{r}
+library(stm)
+```
+
+```{r}
+set.seed(12345)
+N = 1000
+p = 100
+K = 3
+sigma2 = 0.25
+Ftrue = matrix(0,nrow=p,ncol=K)
+Ftrue[1:20,1] = 3
+Ftrue[21:40,2] = 2
+Ftrue[41:60,3] = 1
+Ltrue = matrix(rnorm(N*K), ncol=K)
+```
+
+## point exponential fit
+
+```{r}
+Lambda = exp(tcrossprod(abs(Ltrue),abs(Ftrue))+ matrix(rnorm(N*p,0,sqrt(sigma2)),nrow=N))
+Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
+fit = ebpmf_log(Y,verbose=TRUE,l0=1,f0=1,est_f0 = F,
+                ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                loadings_sign = 1,factors_sign = 1,maxiter = 100,printevery = 1,return_sigma2_trace = T)
+for(k in 1:fit$fit_flash$n.factors){
+  plot(fit$fit_flash$F.pm[,k],type='l')
+}
+fit$elbo
+plot(fit$fit_flash$pve)
+fit$run_time
+unlist(lapply(fit$run_time_break_down,mean))
+```
+
+## unimodal nonnegative
+
+```{r}
+Lambda = exp(tcrossprod(abs(Ltrue),abs(Ftrue))+ matrix(rnorm(N*p,0,sqrt(sigma2)),nrow=N))
+Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
+fit = ebpmf_log(Y,verbose=TRUE,l0=1,f0=1,est_f0 = F,
+                ebnm.fn = c(ebnm::ebnm_unimodal_nonnegative, ebnm::ebnm_unimodal_nonnegative),
+                loadings_sign = 1,factors_sign = 1,maxiter = 100,printevery = 1,return_sigma2_trace = T)
+for(k in 1:fit$fit_flash$n.factors){
+  plot(fit$fit_flash$F.pm[,k],type='l')
+}
+fit$elbo
+plot(fit$fit_flash$pve)
+fit$run_time
+unlist(lapply(fit$run_time_break_down,mean))
+```
+
