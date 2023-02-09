@@ -19,6 +19,7 @@ editor_options:
 * [memory usage analysis](splitting_PMF_memory_issue.html)
 * [size of sigma2 on convergence speed](size_of_sigma2_on_convergence.html)
 * [fit K=1 on pbmc data](run_splitting_PMF_K1.html)
+* [point exponential and unimodal nonnegative]
 
 ### Simulation 
 
@@ -43,6 +44,7 @@ editor_options:
 * [Run flash on latent M from glmpca](run_flash_on_latent_M_glmpca.html)
 * [How do results differ over iterations? When can we stop iterations?](pbmc3k_per_10_iter_plot.html)
 * [Use GLMPCA as init](pbmc3k_glmpca_init_for_ebpmf.html)
+* [estimate f0, nonnegative LF case](pbmc3k_nonnegLF_updatef0.html)
 
 ### On Droplet
 
