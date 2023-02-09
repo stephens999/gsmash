@@ -41,30 +41,46 @@ Since I only got results from first 30 iterations, I'll compare the 30th iterati
 
 ```{r}
 source('code/poisson_STM/plot_factors_general.R')
+source('code/poisson_STM/structure_plot.R')
 library(fastTopics)
 library(Matrix)
 library(stm)
 data(pbmc_facs)
 ```
 
+## fix f0
+
 ```{r}
 fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegLF_pe_vga3_iter',30,'.rds',sep=''))
 plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k nonneg L F iteration',30))
 print(plt)
+fit$elbo
+```
+
+```{r}
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop)
 ```
 
 ```{r}
 f00 = colSums(pbmc_facs$counts)/sqrt(sum(pbmc_facs$counts))
 ```
 
+## update f0
+
 ```{r}
 fit = readRDS(paste('output/pbmc3k_iteration_results/ebpmf_pbmc3k_nonnegLF_pe_vga3_est_f0_iter30.rds'))
 plt = plot.factors.general(fit$fit_flash$L.pm,pbmc_facs$samples$subpop,title=paste('pbmc3k update f0 nonneg L F iteration',30))
 print(plt)
+fit$elbo
+```
+
+
+```{r}
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop)
 ```
 
 ```{r}
-plot(f00,fit$f0,xlab='init f0',ylab='fitted f0')
+plot(f00,fit$f0,xlab='init f0',ylab='fitted f0',main='fixed vs updated')
 abline(a=0,b=1,lty=2)
 ```
 
