@@ -1,0 +1,167 @@
+---
+title: "pbmc3k 10X result"
+author: "DongyueXie"
+date: "2023-02-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Data
+
+The pbmc3k data is from [10X](https://support.10xgenomics.com/single-cell-gene-expression/datasets/1.1.0/pbmc3k?), and I downloaded Gene/cell matrix(raw) dataset.
+
+The quality control and cell types annotation are done by Seurat, [following the tutorial here](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html). 
+
+The resulting dataset has 2638 cells and 13714 genes. 
+
+```{r}
+pbmc3k = readRDS('data/pbmc3k_10x/pbmc3k.rds')
+dim(pbmc3k$counts)
+```
+
+The cell types are 
+
+```{r}
+table(pbmc3k$cell_type)
+```
+
+## Filter out genes
+
+I filtered out genes that expressed in less than 10 cells, and no further preprocessing. The final data matrix is 
+
+```{r}
+library(stm)
+library(Matrix)
+counts = pbmc3k$counts
+counts_filtered = counts[,colSums(counts!=0)>10]
+dim(counts_filtered)
+```
+
+```{r,eval=F}
+pbmc3k_sparse = ebpmf_log(counts_filtered,flash_control = list())
+saveRDS(pbmc3k_sparse,'pbmc3k_sparse.rds')
+pbmc3k_nonnegL = ebpmf_log(counts_filtered,flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_normal),loadings_sign = 1))
+saveRDS(pbmc3k_nonnegL,'pbmc3k_nonnegL_pe.rds')
+pbmc3k_nonnegLF = ebpmf_log(counts_filtered,flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),factors_sign=1,loadings_sign = 1))
+saveRDS(pbmc3k_nonnegLF,'pbmc3k_nonnegLF_pe.rds')
+
+pbmc3k_nonnegL = ebpmf_log(counts_filtered,flash_control = list(ebnm.fn=c(ebnm::ebnm_unimodal_nonnegative,ebnm::ebnm_point_normal),loadings_sign = 1))
+saveRDS(pbmc3k_nonnegL,'pbmc3k_nonnegL_un.rds')
+pbmc3k_nonnegLF = ebpmf_log(counts_filtered,flash_control = list(ebnm.fn=c(ebnm::ebnm_unimodal_nonnegative,ebnm::ebnm_unimodal_nonnegative),factors_sign=1,loadings_sign = 1))
+saveRDS(pbmc3k_nonnegLF,'pbmc3k_nonnegLF_un.rds')
+```
+
+## Model fitting
+
+The model is the Empirical Bayes Poisson matrix factorization model, and $l_0$ is fixed at `log(rowMeans(Y))`, $f_0$ is initialized at `log(colSums(Y)/sum(l_0)`, then let the model estiamtes $f_0$ during iterations.
+
+```{r}
+summary_plot = function(res){
+  plot(res$K_trace,ylab='',xlab='iterations',main='K over iterations',pch=20)
+  plot(res$sigma2,ylab='',xlab='gene',main = 'gene specific variance',pch=20,col='grey70')
+  plot(colSums(counts_filtered/rowSums(counts_filtered)),res$sigma2,xlab='gene expression',ylab='gene specific varaince',pch=20,col='grey60')
+  plot(colSums(counts_filtered==0)/nrow(counts_filtered),res$sigma2,xlab='gene expression sparsity',ylab='gene specific varaince',pch = 20, col='grey50')
+}
+```
+
+### Sparse loadings and factors
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+pbmc3k_sparse = readRDS('output/pbmc3k_10x/pbmc3k_sparse.rds')
+```
+
+```{r}
+summary_plot(pbmc3k_sparse)
+```
+
+```{r}
+plot.factors(pbmc3k_sparse$fit_flash,pbmc3k$cell_type)
+```
+
+## Nonnegative loadings with point exponential prior, and sparse factors
+
+```{r}
+source('code/poisson_STM/structure_plot.R')
+pbmc3k_nonnegL_pe = readRDS('output/pbmc3k_10x/pbmc3k_nonnegL_pe.rds')
+```
+
+```{r}
+summary_plot(pbmc3k_nonnegL_pe)
+```
+
+```{r}
+plot.factors(pbmc3k_nonnegL_pe$fit_flash,pbmc3k$cell_type,nonnegative = T)
+```
+
+```{r}
+structure_plot_general(pbmc3k_nonnegL_pe$fit_flash$L.pm,pbmc3k_nonnegL_pe$fit_flash$F.pm,pbmc3k$cell_type,LD=T)
+```
+
+## Nonnegative loadings with unimodal nonnegative prior, and sparse factors
+
+```{r}
+pbmc3k_nonnegL_un = readRDS('output/pbmc3k_10x/pbmc3k_nonnegL_un.rds')
+```
+
+```{r}
+summary_plot(pbmc3k_nonnegL_un)
+```
+
+```{r}
+plot.factors(pbmc3k_nonnegL_un$fit_flash,pbmc3k$cell_type,nonnegative = T)
+```
+
+```{r}
+structure_plot_general(pbmc3k_nonnegL_un$fit_flash$L.pm,pbmc3k_nonnegL_un$fit_flash$F.pm,pbmc3k$cell_type,LD=T)
+```
+
+
+## Nonnegative loadings and factors with point exponential prior
+
+I got a warning message saying that 
+
+'Warning message:
+In scale.EF(EF) :
+  Fitting stopped after the initialization function failed to find a non-zero factor.'
+
+```{r}
+pbmc3k_nonnegLF_pe = readRDS('output/pbmc3k_10x/pbmc3k_nonnegLF_pe.rds')
+```
+
+```{r}
+summary_plot(pbmc3k_nonnegLF_pe)
+```
+
+```{r}
+plot.factors(pbmc3k_nonnegLF_pe$fit_flash,pbmc3k$cell_type,nonnegative = T)
+```
+
+```{r}
+structure_plot_general(pbmc3k_nonnegLF_pe$fit_flash$L.pm,pbmc3k_nonnegLF_pe$fit_flash$F.pm,pbmc3k$cell_type,LD=T)
+```
+
+## Nonnegative loadings and factors with unimodal nonnegative prior
+
+I got a warning message saying that 
+
+'Warning message:
+In scale.EF(EF) :
+  Fitting stopped after the initialization function failed to find a non-zero factor.'
+
+```{r}
+pbmc3k_nonnegLF_un = readRDS('output/pbmc3k_10x/pbmc3k_nonnegLF_un.rds')
+```
+
+```{r}
+summary_plot(pbmc3k_nonnegLF_un)
+```
+
+```{r}
+plot.factors(pbmc3k_nonnegLF_un$fit_flash,pbmc3k$cell_type,nonnegative = T)
+```
+
+```{r}
+structure_plot_general(pbmc3k_nonnegLF_un$fit_flash$L.pm,pbmc3k_nonnegLF_un$fit_flash$F.pm,pbmc3k$cell_type,LD=T)
+```
