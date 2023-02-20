@@ -1,0 +1,83 @@
+---
+title: "pbmc68k_reults"
+author: "DongyueXie"
+date: "2023-02-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+
+Fresh 68k PBMCs (Donor A)
+Single Cell Gene Expression Dataset by Cell Ranger 1.1.0
+Fresh 68k PBMCs (Donor A)
+
+~68,000 cells detected
+
+Sequenced on Illumina NextSeq 500 High Output with ~20,000 reads per cell
+
+98bp read1 (transcript), 8bp I5 sample barcode, 14bp I7 GemCode barcode and 5bp read2 (UMI)
+
+Analysis run with --cells=24000
+
+I filtered out genes that expressed in less than 100 cells, and removed 'CD34+','CD4+ T Helper2' cell types because there are less than 100 cells of each cell type. The final data matrix is 
+
+```{r}
+library(Matrix) 
+load("/project2/mstephens/pcarbo/git/single-cell-topics/data/pbmc_68k.RData")
+counts = counts[,colSums(counts!=0)>100]
+cell_idx = rowSums(counts!=0)>200 & !(samples$celltype %in%c('CD34+','CD4+ T Helper2'))
+counts = counts[cell_idx,]
+print(dim(counts))
+```
+
+
+
+## Model fitting
+
+The model is the Empirical Bayes Poisson matrix factorization model, and $l_0$ is fixed at `log(rowMeans(Y))`, $f_0$ is initialized at `log(colSums(Y)/sum(l_0))`, then let the model estimates $f_0$ during iterations.
+
+
+```{r}
+summary_plot = function(res,counts){
+  plot(res$K_trace,ylab='',xlab='iterations',main='K over iterations',pch=20)
+  plot(res$sigma2,ylab='',xlab='gene',main = 'gene specific variance',pch=20,col='grey70')
+  plot(colSums(counts/rowSums(counts)),res$sigma2,xlab='gene expression',ylab='gene specific varaince',pch=20,col='grey60')
+  plot(colSums(counts==0)/nrow(counts),res$sigma2,xlab='gene expression sparsity',ylab='gene specific varaince',pch = 20, col='grey50')
+}
+
+source('code/poisson_STM/plot_factors.R')
+source('code/poisson_STM/structure_plot.R')
+```
+
+## Nonnegative loadings and factors with point exponential prior
+
+```{r}
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_68k/ebpmf_pbmc_nonnegLF.rds')
+```
+
+```{r}
+summary_plot(res,counts)
+```
+
+```{r}
+f0_init = log(colSums(counts)/sum(rowMeans(counts)))
+plot(res$fit_flash$F.pm[,2],f0_init,xlab='f0 estimates',ylab='f0 init value',pch=20,col='grey70')
+abline(a=0,b=1)
+```
+
+```{r}
+plot.factors(res$fit_flash,samples$celltype[cell_idx],nonnegative = T)
+```
+
+```{r}
+structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$celltype[cell_idx],LD=T)
+```
+
+```{r}
+plot(res$fit_flash$pve[-c(1,2)],xlab='factors',ylab='PVE')
+```
+
+
