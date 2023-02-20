@@ -391,7 +391,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-02-16
+<strong>Last updated:</strong> 2023-02-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed9f1f5cb6a304646103e3e397ef339d796746ea1targetblankd9f1f5ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree0c85a756bd12701d51e7a5b517bbdc089d49ae47targetblank0c85a75a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/d9f1f5cb6a304646103e3e397ef339d796746ea1" target="_blank">d9f1f5c</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/0c85a756bd12701d51e7a5b517bbdc089d49ae47" target="_blank">0c85a75</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed9f1f5cb6a304646103e3e397ef339d796746ea1targetblankd9f1f5ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree0c85a756bd12701d51e7a5b517bbdc089d49ae47targetblank0c85a75a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/d9f1f5cb6a304646103e3e397ef339d796746ea1" target="_blank">d9f1f5c</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/0c85a756bd12701d51e7a5b517bbdc089d49ae47" target="_blank">0c85a75</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -561,16 +561,14 @@ Ignored files:
 Untracked files:
     Untracked:  analysis/movielens.Rmd
     Untracked:  analysis/profiled_obj_for_b_splitting.Rmd
-    Untracked:  code/poisson_STM/structure_plot.R
+    Untracked:  code/misc_test.R
+    Untracked:  code/poisson_mean/pois_log_normal_mle.R
     Untracked:  data/ml-latest-small/
     Untracked:  data/pbmc3k_10x/
     Untracked:  output/droplet_iteration_results/
     Untracked:  output/pbmc3k_10x/
     Untracked:  output/pbmc3k_iteration_results/
     Untracked:  output/pbmc_fasttopics/
-
-Unstaged changes:
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -617,6 +615,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/0c85a756bd12701d51e7a5b517bbdc089d49ae47/analysis/pbmc3k_infasttopic_result.Rmd" target="_blank">0c85a75</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-19
+</td>
+<td>
+wflow_publish("analysis/index.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/59cf7e469cc69248f48f8f12474854fe99227814/docs/pbmc3k_infasttopic_result.html" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -685,21 +717,246 @@ iterations.</p>
 <pre class="r"><code>summary_plot = function(res){
   plot(res$K_trace,ylab=&#39;&#39;,xlab=&#39;iterations&#39;,main=&#39;K over iterations&#39;,pch=20)
   plot(res$sigma2,ylab=&#39;&#39;,xlab=&#39;gene&#39;,main = &#39;gene specific variance&#39;,pch=20,col=&#39;grey70&#39;)
-  plot(colSums(counts_filtered/rowSums(counts_filtered)),res$sigma2,xlab=&#39;gene expression&#39;,ylab=&#39;gene specific varaince&#39;,pch=20,col=&#39;grey60&#39;)
-  plot(colSums(counts_filtered==0)/nrow(counts_filtered),res$sigma2,xlab=&#39;gene expression sparsity&#39;,ylab=&#39;gene specific varaince&#39;,pch = 20, col=&#39;grey50&#39;)
+  plot(colSums(counts_filtered/rowSums(counts_filtered)),res$sigma2,xlab=&#39;gene expression&#39;,ylab=&#39;gene specific variance&#39;,pch=20,col=&#39;grey60&#39;)
+  plot(colSums(counts_filtered==0)/nrow(counts_filtered),res$sigma2,xlab=&#39;gene expression sparsity&#39;,ylab=&#39;gene specific variance&#39;,pch = 20, col=&#39;grey50&#39;)
 }</code></pre>
 <div id="sparse-loadings-and-factors" class="section level3">
 <h3>Sparse loadings and factors</h3>
 <pre class="r"><code>source(&#39;code/poisson_STM/plot_factors.R&#39;)
 pbmc3k_sparse = readRDS(&#39;output/pbmc_fasttopics/pbmc3k_sparse.rds&#39;)</code></pre>
 <pre class="r"><code>summary_plot(pbmc3k_sparse)</code></pre>
-<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-2.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
+Past versions of unnamed-chunk-5-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-3.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-4">
+Past versions of unnamed-chunk-5-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-5-4.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot.factors(pbmc3k_sparse$fit_flash,pbmc_facs$samples$subpop)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-6-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>f0_init = log(colSums(counts_filtered)/sum(rowMeans(counts_filtered)))
 plot(pbmc3k_sparse$fit_flash$F.pm[,2],f0_init,xlab=&#39;f0 estimates&#39;,ylab=&#39;f0 init values&#39;,pch=20,col=&#39;grey70&#39;)
 abline(a=0,b=1)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-7-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div
@@ -710,12 +967,237 @@ factors</h2>
 <pre class="r"><code>source(&#39;code/poisson_STM/structure_plot.R&#39;)
 pbmc3k_nonnegL_pe = readRDS(&#39;output/pbmc_fasttopics/pbmc3k_nonnegL_pe.rds&#39;)</code></pre>
 <pre class="r"><code>summary_plot(pbmc3k_nonnegL_pe)</code></pre>
-<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-2.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-3">
+Past versions of unnamed-chunk-9-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-3.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-4">
+Past versions of unnamed-chunk-9-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-9-4.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(pbmc3k_nonnegL_pe$fit_flash$F.pm[,2],f0_init,xlab=&#39;f0 estimates&#39;,ylab=&#39;f0 init value&#39;,pch=20,col=&#39;grey70&#39;)
 abline(a=0,b=1)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-10-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot.factors(pbmc3k_nonnegL_pe$fit_flash,pbmc_facs$samples$subpop,nonnegative = T)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-11-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>structure_plot_general(pbmc3k_nonnegL_pe$fit_flash$L.pm,pbmc3k_nonnegL_pe$fit_flash$F.pm,pbmc_facs$samples$subpop,LD=T)</code></pre>
 <pre><code>Running tsne on 417 x 7 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 7 matrix.</code></pre>
@@ -723,6 +1205,43 @@ abline(a=0,b=1)</code></pre>
 <pre><code>Running tsne on 359 x 7 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 7 matrix.</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-12-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div
 id="nonnegative-loadings-with-unimodal-nonnegative-prior-and-sparse-factors"
@@ -731,12 +1250,237 @@ class="section level2">
 factors</h2>
 <pre class="r"><code>pbmc3k_nonnegL_un = readRDS(&#39;output/pbmc_fasttopics/pbmc3k_nonnegL_un.rds&#39;)</code></pre>
 <pre class="r"><code>summary_plot(pbmc3k_nonnegL_un)</code></pre>
-<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-2">
+Past versions of unnamed-chunk-14-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-2.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-3">
+Past versions of unnamed-chunk-14-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-3.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-4">
+Past versions of unnamed-chunk-14-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-14-4.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(pbmc3k_nonnegL_un$fit_flash$F.pm[,2],f0_init,xlab=&#39;f0 estimates&#39;,ylab=&#39;f0 init value&#39;,pch=20,col=&#39;grey70&#39;)
 abline(a=0,b=1)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-15-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot.factors(pbmc3k_nonnegL_un$fit_flash,pbmc_facs$samples$subpop,nonnegative = T)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-16-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>structure_plot_general(pbmc3k_nonnegL_un$fit_flash$L.pm,pbmc3k_nonnegL_un$fit_flash$F.pm,pbmc_facs$samples$subpop,LD=T)</code></pre>
 <pre><code>Running tsne on 417 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 6 matrix.</code></pre>
@@ -744,18 +1488,280 @@ abline(a=0,b=1)</code></pre>
 <pre><code>Running tsne on 359 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 6 matrix.</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-17-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="nonnegative-loadings-and-factors-with-point-exponential-prior"
 class="section level2">
 <h2>Nonnegative loadings and factors with point exponential prior</h2>
 <pre class="r"><code>pbmc3k_nonnegLF_pe = readRDS(&#39;output/pbmc_fasttopics/pbmc3k_nonnegLF_pe.rds&#39;)</code></pre>
 <pre class="r"><code>summary_plot(pbmc3k_nonnegLF_pe)</code></pre>
-<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-2">
+Past versions of unnamed-chunk-19-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-2.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-3">
+Past versions of unnamed-chunk-19-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-3.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-4">
+Past versions of unnamed-chunk-19-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-19-4.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(pbmc3k_nonnegLF_pe$fit_flash$F.pm[,2],f0_init,xlab=&#39;f0 estimates&#39;,ylab=&#39;f0 init value&#39;,pch=20,col=&#39;grey70&#39;)
 abline(a=0,b=1)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-20-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot.factors(pbmc3k_nonnegLF_pe$fit_flash,pbmc_facs$samples$subpop,nonnegative = T)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-21-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-21-1">
+Past versions of unnamed-chunk-21-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-21-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-21-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>structure_plot_general(pbmc3k_nonnegLF_pe$fit_flash$L.pm,pbmc3k_nonnegLF_pe$fit_flash$F.pm,pbmc_facs$samples$subpop,LD=T)</code></pre>
 <pre><code>Running tsne on 417 x 7 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 7 matrix.</code></pre>
@@ -763,6 +1769,43 @@ abline(a=0,b=1)</code></pre>
 <pre><code>Running tsne on 359 x 7 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 7 matrix.</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-22-1">
+Past versions of unnamed-chunk-22-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-22-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-22-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div
 id="nonnegative-loadings-and-factors-with-unimodal-nonnegative-prior"
@@ -771,12 +1814,237 @@ class="section level2">
 prior</h2>
 <pre class="r"><code>pbmc3k_nonnegLF_un = readRDS(&#39;output/pbmc_fasttopics/pbmc3k_nonnegLF_un.rds&#39;)</code></pre>
 <pre class="r"><code>summary_plot(pbmc3k_nonnegLF_un)</code></pre>
-<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-1">
+Past versions of unnamed-chunk-24-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-2">
+Past versions of unnamed-chunk-24-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-2.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-3">
+Past versions of unnamed-chunk-24-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-3.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-24-4">
+Past versions of unnamed-chunk-24-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-24-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-24-4.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(pbmc3k_nonnegLF_un$fit_flash$F.pm[,2],f0_init,xlab=&#39;f0 estimates&#39;,ylab=&#39;f0 init value&#39;,pch=20,col=&#39;grey70&#39;)
 abline(a=0,b=1)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-25-1">
+Past versions of unnamed-chunk-25-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-25-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-25-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot.factors(pbmc3k_nonnegLF_un$fit_flash,pbmc_facs$samples$subpop,nonnegative = T)</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-26-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-26-1">
+Past versions of unnamed-chunk-26-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-26-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-26-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>structure_plot_general(pbmc3k_nonnegLF_un$fit_flash$L.pm,pbmc3k_nonnegLF_un$fit_flash$F.pm,pbmc_facs$samples$subpop,LD=T)</code></pre>
 <pre><code>Running tsne on 417 x 11 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 11 matrix.</code></pre>
@@ -784,6 +2052,43 @@ abline(a=0,b=1)</code></pre>
 <pre><code>Running tsne on 359 x 11 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 11 matrix.</code></pre>
 <p><img src="figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-27-1">
+Past versions of unnamed-chunk-27-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-27-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/59cf7e469cc69248f48f8f12474854fe99227814/docs/figure/pbmc3k_infasttopic_result.Rmd/unnamed-chunk-27-1.png" target="_blank">59cf7e4</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-16
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -813,7 +2118,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_3.4.0      Matrix_1.5-3       stm_2.0.2          fastTopics_0.6-142
+[1] ggplot2_3.4.0      Matrix_1.5-3       stm_2.0.5          fastTopics_0.6-142
 [5] workflowr_1.7.0   
 
 loaded via a namespace (and not attached):
@@ -824,7 +2129,7 @@ loaded via a namespace (and not attached):
  [13] fansi_1.0.3        codetools_0.2-19   splines_4.2.2     
  [16] cachem_1.0.6       knitr_1.41         jsonlite_1.8.4    
  [19] nloptr_2.0.3       mcmc_0.9-7         ashr_2.2-54       
- [22] smashrgen_1.1.5    uwot_0.1.14        compiler_4.2.2    
+ [22] smashrgen_1.1.6    uwot_0.1.14        compiler_4.2.2    
  [25] httr_1.4.4         RcppZiggurat_0.1.6 fastmap_1.1.0     
  [28] lazyeval_0.2.2     cli_3.4.1          later_1.3.0       
  [31] htmltools_0.5.4    quantreg_5.94      prettyunits_1.1.1 
@@ -852,7 +2157,7 @@ loaded via a namespace (and not attached):
  [97] crayon_1.5.2       utf8_1.2.2         plotly_4.10.1     
 [100] rmarkdown_2.19     progress_1.2.2     grid_4.2.2        
 [103] data.table_1.14.6  callr_3.7.3        git2r_0.30.1      
-[106] digest_0.6.31      vebpm_0.4.1        tidyr_1.2.1       
+[106] digest_0.6.31      vebpm_0.4.3        tidyr_1.2.1       
 [109] httpuv_1.6.7       MCMCpack_1.6-3     RcppParallel_5.1.5
 [112] munsell_0.5.0      glmnet_4.1-6       viridisLite_0.4.1 
 [115] flashier_0.2.34    bslib_0.4.2        quadprog_1.5-8    </code></pre>
