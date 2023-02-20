@@ -1,0 +1,92 @@
+---
+title: "pbmc purified results"
+author: "DongyueXie"
+date: "2023-02-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+load("output/pbmc_purified/pbmc_purified.RData")
+```
+
+```{r}
+library(Matrix)
+counts = counts[,colSums(counts!=0)>10]
+cell_idx = rowSums(counts!=0)>200
+counts = counts[cell_idx,]
+print(dim(counts))
+```
+
+```{r}
+summary_plot = function(res,counts){
+  plot(res$K_trace,ylab='',xlab='iterations',main='K over iterations',pch=20)
+  plot(res$sigma2,ylab='',xlab='gene',main = 'gene specific variance',pch=20,col='grey70')
+  plot(colSums(counts/rowSums(counts)),res$sigma2,xlab='gene expression',ylab='gene specific varaince',pch=20,col='grey60')
+  plot(colSums(counts==0)/nrow(counts),res$sigma2,xlab='gene expression sparsity',ylab='gene specific varaince',pch = 20, col='grey50')
+}
+```
+
+
+## Nonnegative loadings with point exponential prior, and sparse factors
+
+```{r}
+source('code/poisson_STM/structure_plot.R')
+source('code/poisson_STM/plot_factors.R')
+nonnegL = readRDS('output/pbmc_purified/ebpmf_pbmc_nonnegL_iter30.rds')
+```
+
+
+
+```{r}
+summary_plot(nonnegL,counts)
+```
+
+```{r}
+f0_init = log(colSums(counts)/sum(rowMeans(counts)))
+plot(nonnegL$fit_flash$F.pm[,2],f0_init,xlab='f0 estimates',ylab='f0 init value',pch=20,col='grey70')
+abline(a=0,b=1)
+```
+
+```{r}
+#plot.factors(nonnegL$fit_flash,samples$celltype[cell_idx],nonnegative = T)
+```
+
+```{r}
+structure_plot_general(nonnegL$fit_flash$L.pm[,1:11],nonnegL$fit_flash$F.pm[,1:11],samples$celltype[cell_idx],LD=T)
+```
+
+```{r}
+plot(nonnegL$fit_flash$pve[3:11],xlab='factors',ylab='PVE')
+```
+
+## Nonnegative loadings and factors with point exponential prior.
+
+```{r}
+nonnegLF = readRDS('output/pbmc_purified/ebpmf_pbmc_nonnegLF_iter70.rds')
+```
+
+```{r}
+summary_plot(nonnegLF,counts)
+```
+
+```{r}
+f0_init = log(colSums(counts)/sum(rowMeans(counts)))
+plot(nonnegLF$fit_flash$F.pm[,2],f0_init,xlab='f0 estimates',ylab='f0 init value',pch=20,col='grey70')
+abline(a=0,b=1)
+```
+
+```{r}
+#plot.factors(nonnegLF$fit_flash,samples$celltype[cell_idx],nonnegative = T)
+```
+
+```{r}
+plot(nonnegLF$fit_flash$pve[3:9],xlab='factors',ylab='PVE')
+```
+
+```{r}
+structure_plot_general(nonnegLF$fit_flash$L.pm,nonnegLF$fit_flash$F.pm,samples$celltype[cell_idx],LD=T)
+```
