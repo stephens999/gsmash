@@ -57,7 +57,11 @@ Below are some analysis I have done, before putting $l_0,f_0$ as part of flash, 
 
 * [droplet Montoro results](run_PMF_on_droplet.Rmd)
 
-### On PBMC90k
+### On PBMC purified
+
+* [PBMC purified result](pbmc_purified_results.html)
+
+### On PBMC 68K
 
 ### On Pancreas data
 
