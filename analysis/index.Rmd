@@ -30,6 +30,12 @@ editor_options:
 
 ### On pbmc3k
 
+* [pbmc3k 10X result](pbmc3k_10X_result2.html)
+* [pbmc in fasttopic results](pbmc3k_infasttopic_result2.html)
+* [pbmc in fasttopic, 3-5 cell types for simulation]()
+
+Below are some analysis I have done, before putting $l_0,f_0$ as part of flash, and estimating $f_0$.
+
 * [run PMF on PBMC data, 3 cell types](run_PMF_on_pbmc_3cells.html)
 * [run PMF on PBMC data, 3 cell types, nonnegative loadings](run_PMF_on_pbmc_3cells_nonnegativeL_more_iterations.html)
 * [run PMF on PBMC data, 3 cell types, nonnegative loadings and factors](run_PMF_on_pbmc_3cells_nonnegativeLF_more_iterations.html)
@@ -46,11 +52,14 @@ editor_options:
 * [Use GLMPCA as init](pbmc3k_glmpca_init_for_ebpmf.html)
 * [estimate f0, nonnegative LF case](pbmc3k_nonnegLF_updatef0.html)
 
+
 ### On Droplet
 
-* [run PMF on droplet result](run_PMF_on_droplet.Rmd)
+* [droplet Montoro results](run_PMF_on_droplet.Rmd)
 
+### On PBMC90k
 
+### On Pancreas data
 
 ## Poisson mean 
 

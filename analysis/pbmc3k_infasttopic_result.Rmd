@@ -51,8 +51,8 @@ The model is the Empirical Bayes Poisson matrix factorization model, and $l_0$ i
 summary_plot = function(res){
   plot(res$K_trace,ylab='',xlab='iterations',main='K over iterations',pch=20)
   plot(res$sigma2,ylab='',xlab='gene',main = 'gene specific variance',pch=20,col='grey70')
-  plot(colSums(counts_filtered/rowSums(counts_filtered)),res$sigma2,xlab='gene expression',ylab='gene specific varaince',pch=20,col='grey60')
-  plot(colSums(counts_filtered==0)/nrow(counts_filtered),res$sigma2,xlab='gene expression sparsity',ylab='gene specific varaince',pch = 20, col='grey50')
+  plot(colSums(counts_filtered/rowSums(counts_filtered)),res$sigma2,xlab='gene expression',ylab='gene specific variance',pch=20,col='grey60')
+  plot(colSums(counts_filtered==0)/nrow(counts_filtered),res$sigma2,xlab='gene expression sparsity',ylab='gene specific variance',pch = 20, col='grey50')
 }
 ```
 
