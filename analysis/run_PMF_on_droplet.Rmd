@@ -7,49 +7,116 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
+The dataset is  “droplet” UMI count data from Montoro et al (2018)—these are gene expression profiles of trachea epithelial cells in C57BL/6 mice obtained using droplet-based 3’ single-cell RNA-seq—for topic modeling analysis.
+
+See [here](https://stephenslab.github.io/single-cell-topics/prepare_droplet.html) for data preparations.
+
+
+I filtered out genes that expressed in less than 10 cells, and no further preprocessing. The final data matrix is 
 
 ```{r}
-fit = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_vga3.rds')
+library(Matrix) 
 load('/project2/mstephens/pcarbo/git/single-cell-topics/data/droplet.RData')
-source('code/poisson_STM/plot_factors.R')
-source('code/poisson_STM/plot_factors_general.R')
-
-```
-
-```{r}
+counts = counts[,colSums(counts!=0)>10]
 dim(counts)
-table(samples$tissue)
+```
+
+
+
+## Model fitting
+
+The model is the Empirical Bayes Poisson matrix factorization model, and $l_0$ is fixed at `log(rowMeans(Y))`, $f_0$ is initialized at `log(colSums(Y)/sum(l_0))`, then let the model estimates $f_0$ during iterations.
+
+
+```{r}
+summary_plot = function(res,counts){
+  plot(res$K_trace,ylab='',xlab='iterations',main='K over iterations',pch=20)
+  plot(res$sigma2,ylab='',xlab='gene',main = 'gene specific variance',pch=20,col='grey70')
+  plot(colSums(counts/rowSums(counts)),res$sigma2,xlab='gene expression',ylab='gene specific varaince',pch=20,col='grey60')
+  plot(colSums(counts==0)/nrow(counts),res$sigma2,xlab='gene expression sparsity',ylab='gene specific varaince',pch = 20, col='grey50')
+}
+```
+
+### Sparse loadings and factors
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_sparse.rds')
 ```
 
 ```{r}
-fit$run_time
-plot(fit$elbo_trace,type='l')
-plot(fit$K_trace,type='l')
-plot(fit$fit_flash$pve)
-plot(fit$sigma2_trace[,which.max(fit$sigma2)],type='l',ylab='',main='convergence of largest sigma2')
-round(unlist(lapply(fit$run_time_break_down,median)),3)
+summary_plot(res,counts)
 ```
 
 ```{r}
-plot.factors(fit$fit_flash,samples$tissue,title='splitting PMF')
+plot.factors(res$fit_flash,samples$tissue)
 ```
 
 ```{r}
-glmpca_nb = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/glmpca_droplet_nb.rds')
-glmpca_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/glmpca_droplet_poi.rds')
-flash_fit = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/flash_droplet.rds')
+plot(res$fit_flash$pve[-c(1,2)],xlab='factors',ylab='PVE')
 ```
 
 ```{r}
-plot.factors(flash_fit,samples$tissue,title='flash')
+f0_init = log(colSums(counts)/sum(rowMeans(counts)))
+plot(res$fit_flash$F.pm[,2],f0_init,xlab='f0 estimates',ylab='f0 init values',pch=20,col='grey70')
+abline(a=0,b=1)
+```
+
+## Nonnegative loadings with point exponential prior, and sparse factors
+
+```{r}
+source('code/poisson_STM/structure_plot.R')
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_nonnegL.rds')
 ```
 
 ```{r}
-plot.factors.general(glmpca_poi$loadings,samples$tissue,title='glmpca pois')
-plot.factors.general(glmpca_nb$loadings,samples$tissue,title='glmpca nb')
+summary_plot(res,counts)
 ```
 
+```{r}
+f0_init = log(colSums(counts)/sum(rowMeans(counts)))
+plot(res$fit_flash$F.pm[,2],f0_init,xlab='f0 estimates',ylab='f0 init value',pch=20,col='grey70')
+abline(a=0,b=1)
+```
 
+```{r}
+plot.factors(res$fit_flash,samples$tissue,nonnegative = T)
+```
+
+```{r}
+structure_plot_general(res$fit_flash$L.pm[,order(res$fit_flash$pve,decreasing = T)[1:14]],res$fit_flash$F.pm[,order(res$fit_flash$pve,decreasing = T)[1:14]],samples$tissue,LD=T)
+```
+
+```{r}
+plot(res$fit_flash$pve[-c(1,2)],xlab='factors',ylab='PVE')
+```
+
+## Nonnegative loadings and factors with point exponential prior
+
+```{r}
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_nonnegLF.rds')
+```
+
+```{r}
+summary_plot(res,counts)
+```
+
+```{r}
+f0_init = log(colSums(counts)/sum(rowMeans(counts)))
+plot(res$fit_flash$F.pm[,2],f0_init,xlab='f0 estimates',ylab='f0 init value',pch=20,col='grey70')
+abline(a=0,b=1)
+```
+
+```{r}
+plot.factors(res$fit_flash,samples$tissue,nonnegative = T)
+```
+
+```{r}
+structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,LD=T)
+```
+
+```{r}
+plot(res$fit_flash$pve[-c(1,2)],xlab='factors',ylab='PVE')
+```
 
 
