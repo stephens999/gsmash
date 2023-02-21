@@ -20,6 +20,7 @@ editor_options:
 * [size of sigma2 on convergence speed](size_of_sigma2_on_convergence.html)
 * [fit K=1 on pbmc data](run_splitting_PMF_K1.html)
 * [point exponential and unimodal nonnegative]
+* [ebpm normal prior init in PMF](vga_init_in_ebpmf.html)
 
 ### Simulation 
 
@@ -55,7 +56,7 @@ Below are some analysis I have done, before putting $l_0,f_0$ as part of flash, 
 
 ### On Droplet
 
-* [droplet Montoro results](run_PMF_on_droplet.Rmd)
+* [droplet Montoro results](run_PMF_on_droplet.html)
 
 ### On PBMC purified
 
