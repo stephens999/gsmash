@@ -1,0 +1,29 @@
+---
+title: "vga init in ebpmf"
+author: "DongyueXie"
+date: "2023-02-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+In some cases the data vector is very sparse. I investigate the performance of vga in this case.
+
+The mean is fixed to -4, which is typically the case in single cell data. 
+
+```{r}
+library(vebpm)
+n = 3000
+y = c(rep(1,14),rep(0,n-14))
+```
+
+```{r}
+fit = ebpm_normal(y,1,g_init=list(mean=-4,var=NULL),fix_g=c(T,F),return_sigma2_trace = T,tol=1e-8,maxiter = 10000)
+plot(log10(fit$sigma2_trace),fit$obj_trace,xlab='log10(sigma2)',ylab='elbo',type='l',lwd=2,col=2)
+```
+
+The optimal variance in this case seems to converge to 0, but we don't want that for initialization in PMF.
+
+We can also see that the elbo is flat when sigma2 is small.
