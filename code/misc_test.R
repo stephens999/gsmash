@@ -8,6 +8,57 @@ counts = pbmc_facs$counts
 counts_filtered = counts[,colSums(counts!=0)>10]
 dim(counts_filtered)
 
+### study the init sigma2 on model fitting.
+
+fit0 = ebpmf_log(counts_filtered,
+                 general_control = list(maxiter=100,save_init_val=TRUE),
+                 init_control = list(single_gene_ebpm = FALSE,n_cores=5,init_tol=1e-8),
+                 flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),factors_sign=1,loadings_sign = 1),
+                 sigma2_control=list(return_sigma2_trace=TRUE))
+saveRDS(fit0,'output/pbmc_fasttopics/nonnegLF_pe_inittol1e8.rds')
+rm(fit0)
+gc()
+fit0 = ebpmf_log(counts_filtered,
+                 general_control = list(maxiter=100,save_init_val=TRUE),
+                 init_control = list(single_gene_ebpm = FALSE,n_cores=5,init_tol=1e-6),
+                 flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),factors_sign=1,loadings_sign = 1),
+                 sigma2_control=list(return_sigma2_trace=TRUE))
+saveRDS(fit0,'output/pbmc_fasttopics/nonnegLF_pe_inittol1e6.rds')
+rm(fit0)
+gc()
+fit0 = ebpmf_log(counts_filtered,
+                 general_control = list(maxiter=100,save_init_val=TRUE),
+                 init_control = list(single_gene_ebpm = FALSE,n_cores=5,init_tol=1e-4),
+                 flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),factors_sign=1,loadings_sign = 1),
+                 sigma2_control=list(return_sigma2_trace=TRUE))
+saveRDS(fit0,'output/pbmc_fasttopics/nonnegLF_pe_inittol1e4.rds')
+rm(fit0)
+gc()
+fit0 = ebpmf_log(counts_filtered,
+                 general_control = list(maxiter=100,save_init_val=TRUE),
+                 init_control = list(single_gene_ebpm = FALSE,n_cores=5,init_tol=1e-2),
+                 flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),factors_sign=1,loadings_sign = 1),
+                 sigma2_control=list(return_sigma2_trace=TRUE))
+saveRDS(fit0,'output/pbmc_fasttopics/nonnegLF_pe_inittol1e2.rds')
+rm(fit0)
+gc()
+fit0 = ebpmf_log(counts_filtered,
+                 general_control = list(maxiter=100,save_init_val=TRUE),
+                 init_control = list(single_gene_ebpm = FALSE,n_cores=5,init_tol=1e-1),
+                 flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),factors_sign=1,loadings_sign = 1),
+                 sigma2_control=list(return_sigma2_trace=TRUE))
+saveRDS(fit0,'output/pbmc_fasttopics/nonnegLF_pe_inittol1e1.rds')
+rm(fit0)
+gc()
+fit0 = ebpmf_log(counts_filtered,
+                 general_control = list(maxiter=100,save_init_val=TRUE),
+                 init_control = list(single_gene_ebpm = FALSE,n_cores=5,init_tol=1e-1,conv_type='sigma2abs'),
+                 flash_control = list(ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),factors_sign=1,loadings_sign = 1),
+                 sigma2_control=list(return_sigma2_trace=TRUE))
+saveRDS(fit0,'output/pbmc_fasttopics/nonnegLF_pe_inittol1e1_sigma2abs.rds')
+rm(fit0)
+gc()
+
 # pbmc3k_sparse = ebpmf_log(counts_filtered,flash_control = list())
 # saveRDS(pbmc3k_sparse,'output/pbmc_fasttopics/pbmc3k_sparse.rds')
 pbmc3k_nonnegL = ebpmf_log(counts_filtered,
