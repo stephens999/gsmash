@@ -520,15 +520,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree9b184cbcd3978fbed46cf7aeee5925105e27e054targetblank9b184cba">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree6fde94aa9a277e1e30e13a0c43f995048401a458targetblank6fde94aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/9b184cbcd3978fbed46cf7aeee5925105e27e054" target="_blank">9b184cb</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/6fde94aa9a277e1e30e13a0c43f995048401a458" target="_blank">6fde94a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree9b184cbcd3978fbed46cf7aeee5925105e27e054targetblank9b184cba"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree6fde94aa9a277e1e30e13a0c43f995048401a458targetblank6fde94aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -538,7 +538,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/9b184cbcd3978fbed46cf7aeee5925105e27e054" target="_blank">9b184cb</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/6fde94aa9a277e1e30e13a0c43f995048401a458" target="_blank">6fde94a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -562,6 +562,7 @@ Untracked files:
     Untracked:  output/pbmc3k_k1_S1.rds
 
 Unstaged changes:
+    Modified:   analysis/index.Rmd
     Modified:   analysis/overdispersed_splitting.Rmd
 
 </code></pre>
@@ -614,6 +615,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/6fde94aa9a277e1e30e13a0c43f995048401a458/analysis/pbmc_infasttopics_init_vga_effect.Rmd" target="_blank">6fde94a</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+<td>
+wflow_publish("analysis/pbmc_infasttopics_init_vga_effect.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/pbmc_infasttopics_init_vga_effect.html" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/9b184cbcd3978fbed46cf7aeee5925105e27e054/analysis/pbmc_infasttopics_init_vga_effect.Rmd" target="_blank">9b184cb</a>
 </td>
 <td>
@@ -632,6 +667,107 @@ wflow_publish("analysis/pbmc_infasttopics_init_vga_effect.Rmd")
 <hr>
 </div>
 </div>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>At iter 20</p>
+<pre class="r"><code>x = cbind(c(-9020841,-8970580,-8941787,-8938047,-8907999,-8943078),
+          c(0.1124,0.1951,0.4025,0.8480,1.5271,2.3999),
+          c(7,7,8,8,10,10),
+          c(20,20,20,20,20,20))
+colnames(x) = c(&#39;elbo&#39;,&#39;var&#39;,&#39;K&#39;,&#39;iter&#39;)
+knitr::kable(x)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">elbo</th>
+<th align="right">var</th>
+<th align="right">K</th>
+<th align="right">iter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">-9020841</td>
+<td align="right">0.1124</td>
+<td align="right">7</td>
+<td align="right">20</td>
+</tr>
+<tr class="even">
+<td align="right">-8970580</td>
+<td align="right">0.1951</td>
+<td align="right">7</td>
+<td align="right">20</td>
+</tr>
+<tr class="odd">
+<td align="right">-8941787</td>
+<td align="right">0.4025</td>
+<td align="right">8</td>
+<td align="right">20</td>
+</tr>
+<tr class="even">
+<td align="right">-8938047</td>
+<td align="right">0.8480</td>
+<td align="right">8</td>
+<td align="right">20</td>
+</tr>
+<tr class="odd">
+<td align="right">-8907999</td>
+<td align="right">1.5271</td>
+<td align="right">10</td>
+<td align="right">20</td>
+</tr>
+<tr class="even">
+<td align="right">-8943078</td>
+<td align="right">2.3999</td>
+<td align="right">10</td>
+<td align="right">20</td>
+</tr>
+</tbody>
+</table>
+<p>At convergence.</p>
+<pre class="r"><code>x = cbind(c(-8900823,-8870821,-8846708,-8895574),
+          c(0.3987,0.7643,1.3230,2.2076),
+          c(8,11,10,10),
+          c(60,60,60,35))
+colnames(x) = c(&#39;elbo&#39;,&#39;var&#39;,&#39;K&#39;,&#39;iter&#39;)
+knitr::kable(x)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">elbo</th>
+<th align="right">var</th>
+<th align="right">K</th>
+<th align="right">iter</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">-8900823</td>
+<td align="right">0.3987</td>
+<td align="right">8</td>
+<td align="right">60</td>
+</tr>
+<tr class="even">
+<td align="right">-8870821</td>
+<td align="right">0.7643</td>
+<td align="right">11</td>
+<td align="right">60</td>
+</tr>
+<tr class="odd">
+<td align="right">-8846708</td>
+<td align="right">1.3230</td>
+<td align="right">10</td>
+<td align="right">60</td>
+</tr>
+<tr class="even">
+<td align="right">-8895574</td>
+<td align="right">2.2076</td>
+<td align="right">10</td>
+<td align="right">35</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
@@ -660,21 +796,169 @@ an error occurred.</p>
 fit$elbo</code></pre>
 <pre><code>[1] -9020841</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-2">
+Past versions of unnamed-chunk-4-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.0113  0.0713  0.1124  0.1649  0.2050  2.0224 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-10,iter20&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-10,iter20&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 5 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-2-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-2-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-3">
+Past versions of unnamed-chunk-4-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-2-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-4">
+Past versions of unnamed-chunk-4-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="e-8" class="section level2">
 <h2>1e-8</h2>
@@ -685,21 +969,169 @@ an error occurred.</p>
 fit$elbo</code></pre>
 <pre><code>[1] -8970580</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.01657 0.13547 0.19515 0.22596 0.27370 2.02912 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-8,iter20&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-8,iter20&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 5 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 5 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-3">
+Past versions of unnamed-chunk-5-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-3-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-4">
+Past versions of unnamed-chunk-5-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="e-6" class="section level2">
 <h2>1e-6</h2>
@@ -709,40 +1141,336 @@ results here.</p>
 fit$elbo</code></pre>
 <pre><code>[1] -8941787</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
+Past versions of unnamed-chunk-6-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.01869 0.27130 0.40253 0.43056 0.56779 2.00395 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-6,iter20&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-6,iter20&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 6 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-3">
+Past versions of unnamed-chunk-6-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-4-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-4">
+Past versions of unnamed-chunk-6-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>fit = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e6_iter60.rds&#39;)
 fit$elbo</code></pre>
 <pre><code>[1] -8900823</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.01488 0.27523 0.39879 0.42636 0.55457 2.98685 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-6,iter60&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-6,iter60&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 6 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
+Past versions of unnamed-chunk-7-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-5-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-4">
+Past versions of unnamed-chunk-7-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="e-4" class="section level2">
 <h2>1e-4</h2>
@@ -752,40 +1480,336 @@ results here.</p>
 fit$elbo</code></pre>
 <pre><code>[1] -8938047</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.02164 0.55605 0.84809 0.89912 1.21483 2.05869 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-4,iter20&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-4,iter20&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 6 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 6 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-3">
+Past versions of unnamed-chunk-8-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-4">
+Past versions of unnamed-chunk-8-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>fit = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e4_iter60.rds&#39;)
 fit$elbo</code></pre>
 <pre><code>[1] -8870821</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-2">
+Past versions of unnamed-chunk-9-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.01459 0.51538 0.76435 0.79266 1.05284 3.05459 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-4,iter60&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-4,iter60&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 9 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 9 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 9 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 9 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 9 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-3">
+Past versions of unnamed-chunk-9-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-4">
+Past versions of unnamed-chunk-9-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="e-2" class="section level2">
 <h2>1e-2</h2>
@@ -795,40 +1819,336 @@ results here.</p>
 fit$elbo</code></pre>
 <pre><code>[1] -8907999</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
+Past versions of unnamed-chunk-10-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.01852 1.07197 1.52718 1.53082 1.97999 2.90007 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-2,iter20&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-2,iter20&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 8 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-3">
+Past versions of unnamed-chunk-10-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-8-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-4">
+Past versions of unnamed-chunk-10-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>fit = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e2_iter60.rds&#39;)
 fit$elbo</code></pre>
 <pre><code>[1] -8846708</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-1.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-2">
+Past versions of unnamed-chunk-11-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-2.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
  0.0141  0.8932  1.3230  1.2782  1.6644  3.0520 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-2,iter60&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-2,iter60&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 8 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-3">
+Past versions of unnamed-chunk-11-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-3.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-9-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-4">
+Past versions of unnamed-chunk-11-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/14227f2d85665f78b2cfca33d37ed46b81f6f78a/docs/figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-4.png" target="_blank">14227f2</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-02-22
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="e-1" class="section level2">
 <h2>1e-1</h2>
@@ -838,40 +2158,40 @@ results here.</p>
 fit$elbo</code></pre>
 <pre><code>[1] -8943078</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.01857 1.74882 2.39991 2.19174 2.72651 3.46886 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-1,iter20&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-1,iter20&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 8 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-10-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-12-4.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>fit = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e1_iter35.rds&#39;)
 fit$elbo</code></pre>
 <pre><code>[1] -8895574</code></pre>
 <pre class="r"><code>plot(fit$K_trace)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>hist(fit$sigma2,breaks = 100)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>summary(fit$sigma2)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 0.01549 1.51677 2.20763 1.97791 2.51471 3.24850 </code></pre>
-<pre class="r"><code>structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-1,iter35&#39;)</code></pre>
+<pre class="r"><code>p=structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title=&#39;1e-1,iter35&#39;)</code></pre>
 <pre><code>Running tsne on 417 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 91 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 358 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 359 x 8 matrix.</code></pre>
 <pre><code>Running tsne on 775 x 8 matrix.</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col=&#39;grey80&#39;)</code></pre>
-<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-11-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/pbmc_infasttopics_init_vga_effect.Rmd/unnamed-chunk-13-4.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -902,28 +2222,28 @@ other attached packages:
 [1] Matrix_1.5-3       ggplot2_3.4.0      fastTopics_0.6-142 workflowr_1.6.2   
 
 loaded via a namespace (and not attached):
- [1] httr_1.4.4         sass_0.4.0         tidyr_1.2.1        jsonlite_1.8.3    
- [5] viridisLite_0.4.1  splines_4.1.0      bslib_0.2.5.1      RcppParallel_5.1.5
- [9] assertthat_0.2.1   highr_0.9          mixsqp_0.3-48      progress_1.2.2    
-[13] yaml_2.3.6         ggrepel_0.9.2      pillar_1.8.1       lattice_0.20-44   
-[17] quadprog_1.5-8     quantreg_5.94      glue_1.6.2         digest_0.6.30     
-[21] promises_1.2.0.1   colorspace_2.0-3   cowplot_1.1.1      htmltools_0.5.3   
-[25] httpuv_1.6.1       pkgconfig_2.0.3    invgamma_1.1       SparseM_1.81      
-[29] purrr_0.3.5        scales_1.2.1       whisker_0.4        later_1.3.0       
-[33] Rtsne_0.16         MatrixModels_0.5-1 git2r_0.28.0       tibble_3.1.8      
-[37] farver_2.1.1       generics_0.1.3     ellipsis_0.3.2     withr_2.5.0       
-[41] ashr_2.2-54        pbapply_1.6-0      lazyeval_0.2.2     cli_3.5.0         
-[45] crayon_1.5.2       survival_3.2-11    magrittr_2.0.3     mcmc_0.9-7        
-[49] evaluate_0.14      fs_1.5.0           fansi_1.0.3        MASS_7.3-54       
-[53] truncnorm_1.0-8    prettyunits_1.1.1  tools_4.1.0        data.table_1.14.6 
-[57] hms_1.1.2          lifecycle_1.0.3    stringr_1.4.0      MCMCpack_1.6-3    
-[61] plotly_4.10.1      munsell_0.5.0      irlba_2.3.5.1      compiler_4.1.0    
-[65] jquerylib_0.1.4    rlang_1.0.6        grid_4.1.0         rstudioapi_0.13   
-[69] htmlwidgets_1.5.4  labeling_0.4.2     rmarkdown_2.9      gtable_0.3.1      
-[73] DBI_1.1.1          R6_2.5.1           knitr_1.33         dplyr_1.0.10      
-[77] uwot_0.1.14        fastmap_1.1.0      utf8_1.2.2         rprojroot_2.0.2   
-[81] stringi_1.6.2      parallel_4.1.0     SQUAREM_2021.1     Rcpp_1.0.9        
-[85] vctrs_0.5.1        tidyselect_1.2.0   xfun_0.24          coda_0.19-4       </code></pre>
+ [1] mcmc_0.9-7         fs_1.5.0           progress_1.2.2     httr_1.4.4        
+ [5] rprojroot_2.0.2    tools_4.1.0        bslib_0.2.5.1      utf8_1.2.2        
+ [9] R6_2.5.1           irlba_2.3.5.1      uwot_0.1.14        DBI_1.1.1         
+[13] lazyeval_0.2.2     colorspace_2.0-3   withr_2.5.0        tidyselect_1.2.0  
+[17] prettyunits_1.1.1  compiler_4.1.0     git2r_0.28.0       cli_3.5.0         
+[21] quantreg_5.94      SparseM_1.81       plotly_4.10.1      labeling_0.4.2    
+[25] sass_0.4.0         scales_1.2.1       SQUAREM_2021.1     quadprog_1.5-8    
+[29] pbapply_1.6-0      mixsqp_0.3-48      stringr_1.4.0      digest_0.6.30     
+[33] rmarkdown_2.9      MCMCpack_1.6-3     pkgconfig_2.0.3    htmltools_0.5.3   
+[37] fastmap_1.1.0      invgamma_1.1       highr_0.9          htmlwidgets_1.5.4 
+[41] rlang_1.0.6        rstudioapi_0.13    jquerylib_0.1.4    generics_0.1.3    
+[45] farver_2.1.1       jsonlite_1.8.3     dplyr_1.0.10       magrittr_2.0.3    
+[49] Rcpp_1.0.9         munsell_0.5.0      fansi_1.0.3        lifecycle_1.0.3   
+[53] stringi_1.6.2      whisker_0.4        yaml_2.3.6         MASS_7.3-54       
+[57] Rtsne_0.16         grid_4.1.0         parallel_4.1.0     promises_1.2.0.1  
+[61] ggrepel_0.9.2      crayon_1.5.2       lattice_0.20-44    cowplot_1.1.1     
+[65] splines_4.1.0      hms_1.1.2          knitr_1.33         pillar_1.8.1      
+[69] glue_1.6.2         evaluate_0.14      data.table_1.14.6  RcppParallel_5.1.5
+[73] vctrs_0.5.1        httpuv_1.6.1       MatrixModels_0.5-1 gtable_0.3.1      
+[77] purrr_0.3.5        tidyr_1.2.1        assertthat_0.2.1   ashr_2.2-54       
+[81] xfun_0.24          coda_0.19-4        later_1.3.0        survival_3.2-11   
+[85] viridisLite_0.4.1  truncnorm_1.0-8    tibble_3.1.8       ellipsis_0.3.2    </code></pre>
 </div>
 </div>
 
