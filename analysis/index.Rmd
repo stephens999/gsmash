@@ -21,6 +21,7 @@ editor_options:
 * [fit K=1 on pbmc data](run_splitting_PMF_K1.html)
 * [point exponential and unimodal nonnegative]
 * [ebpm normal prior init in PMF](vga_init_in_ebpmf.html)
+* [effect of initialization variances](pbmc_infasttopics_init_vga_effect.html)
 
 ### Simulation 
 
