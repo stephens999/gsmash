@@ -1,0 +1,78 @@
+---
+title: "simulation pbmc fasttpoics nonnegtive Loading and Factors"
+author: "DongyueXie"
+date: "2023-02-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+This is a simulation comparing ebpmf and flash on factorizing Poisson matrix. 
+
+To make the simulated dataset close to a real single cell data, I fitted an ebpmf model with nonnegtive loadings and factors on a PBMC single cell data from `fastTopics` package. [See fitted results here.](pbmc3k_infasttopic_result.html)
+
+Then I generated data from the fitted model, and repeated 3 times. When simulating data, The factors and loadings are chosen to be the posterior mean of the fitted model. The `flash` model was fit on transformed count data, as $\tilde{y}_{ij} = \log(1+\frac{a\times y_{ij}}{0.5\times s_{ij}})$ where $a = median(s_i), s_i = \sum_jy_{ij}$. This transformation is derived from $\tilde{y}_{ij} = \log(\frac{y_{ij}}{s_{i}}+\frac{0.5}{a}) = \log (1+\frac{a\times y_{ij}}{0.5\times s_i}) + \log \frac{0.5}{a}$. 
+
+
+The true dimension is 7+2. **Maybe I should have selected top 5+2 for simulation!**
+
+```{r}
+fit = readRDS("~/Documents/myproj/gsmash/output/pbmc_fasttopics/pbmc3k_nonnegLF_pe.rds")
+fit$fit_flash$pve
+```
+
+```{r}
+rmse = function(x,y){return(sqrt(mean((x-y)^2)))}
+res = readRDS('output/ebpmf_simulation/pbmc_fasttopics_simu.rds')
+```
+
+```{r}
+K_hat = c()
+for(i in 1:length(res$output)){
+  K_hat = rbind(K_hat,c(res$output[[i]]$fitted_model$flash$n.factors,res$output[[i]]$fitted_model$ebpmf$fit_flash$n.factors))
+}
+colnames(K_hat) = c('flash','ebpmf')
+K_hat
+```
+
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(gridExtra)
+source('code/poisson_STM/plot_factors.R')
+source('code/poisson_STM/plot_factors_general.R')
+source('code/poisson_STM/structure_plot.R')
+data("pbmc_facs")
+cell_names = pbmc_facs$samples$subpop
+```
+
+
+```{r}
+plot0=plot.factors.general(res$sim_data$Loading,res$sim_data$Factor,cell.types=cell_names,title='True Loadings',nonnegative = T)
+for(i in 1:length(res$output)){
+  plot1 = plot.factors(res$output[[i]]$fitted_model$flash,cell.types=cell_names,title='flash',nonnegative = T)
+  plot2 = plot.factors(res$output[[i]]$fitted_model$ebpmf$fit_flash,cell.types=cell_names,title='ebpmf',nonnegative = T)
+  grid.arrange(plot1, plot0,plot2, ncol=3)
+}
+```
+
+
+```{r}
+plot0=structure_plot_general(res$sim_data$Loading,res$sim_data$Factor,grouping =cell_names,title = 'True',print_plot = F) 
+for(i in 1:length(res$output)){
+  plot1 = structure_plot_general(res$output[[i]]$fitted_model$flash$L.pm,
+                                 res$output[[i]]$fitted_model$flash$F.pm
+                                 ,grouping=cell_names,
+                                 title='flash',
+                                 print_plot = F)
+  plot2 = structure_plot_general(res$output[[i]]$fitted_model$ebpmf$fit_flash$L.pm,
+                                 res$output[[i]]$fitted_model$ebpmf$fit_flash$F.pm,
+                                 grouping =cell_names,
+                                 title='ebpmf',
+                                 print_plot = F)
+  grid.arrange(plot1, plot0,plot2, nrow=3)
+}
+```
