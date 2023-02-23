@@ -4,7 +4,9 @@
 #
 library(fastTopics)
 library(ggplot2)
-structure_plot_general = function(Lhat,Fhat,grouping,seed=12345,
+structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
+                                  print_plot=TRUE,
+                                  seed=12345,
                                   n_samples = 2000,gap=40,LD = TRUE,
                                   remove_l0f0 = TRUE,
                                   colors = c('#a6cee3',
@@ -39,8 +41,11 @@ structure_plot_general = function(Lhat,Fhat,grouping,seed=12345,
   class(fit_list) <- c("multinom_topic_model_fit", "list")
   p <- structure_plot(fit_list,grouping = grouping,
                       n = n_samples,gap = gap,colors=colors,verbose=F) +
-    labs(y = "loading",color = "dim",fill = "dim")
-  print(p)
+    labs(y = "loading",color = "dim",fill = "dim") + ggtitle(title)
+  if(print_plot){
+    print(p)
+  }
+  return(p)
 }
 
 my_ldf = function(Lhat,Fhat){

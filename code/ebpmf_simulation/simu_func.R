@@ -1,7 +1,36 @@
 #'@title a simulation study function
 #'@importFrom parallel mclapply
 #'@import Matrix
-#'@export
+
+
+library(flashier)
+library(Matrix)
+library(parallel)
+library(ebpmf)
+
+
+
+sim_data_pmf_log = function(L,FF,sigma2,var_type='by_col',n_simu = 10,seed=12345){
+  set.seed(seed)
+  n = nrow(L)
+  p = nrow(FF)
+  Y = list()
+  LF = tcrossprod(L,FF)
+  if(var_type=='by_col'){
+    Sigma2 = matrix(sigma2,n,p,byrow=T)
+  }else if(var_type=='by_row'){
+    Sigma2 = matrix(sigma2,n,p,byrow=F)
+  }else{
+    Sigma2 = sigma2
+  }
+
+  for(i in 1:n_simu){
+    Lambda = exp(LF+matrix(rnorm(n*p,0,sqrt(Sigma2)),nrow=n,ncol=p))
+    Y[[i]] = Matrix(matrix(rpois(n*p,Lambda),nrow=n,ncol=p),sparse = TRUE)
+  }
+  return(list(Y=Y,Factor=FF,Loading=L,n_simu=n_simu))
+}
+
 simu_study_PMF = function(simdata,n_cores = 1,
                           method_list=c('flash','ebpmf'),
                           ebnm_function = ebnm::ebnm_point_normal,
