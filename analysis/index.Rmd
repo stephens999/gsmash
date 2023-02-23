@@ -28,6 +28,7 @@ editor_options:
 * [PMF splitting simulation](PMF_splitting_simulation.html)
 * [Simulation based on PBMC data, 3 cell types](simulation_based_on_pbmc_3cell.html)
 * [Simulation based on PBMC data, 3 cell types, 1 init backfitting](splitting_PMF_1backfitinit.html)
+* [Simulation pbmc data from fasttopics, nonnegtive L and F](simu_pbmc_fasttpoics_nonnegLF.html)
 
 ### On pbmc3k
 
