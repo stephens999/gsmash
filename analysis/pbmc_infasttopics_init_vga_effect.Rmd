@@ -1,0 +1,150 @@
+---
+title: "init vga variance effect on pbmc data"
+author: "DongyueXie"
+date: "2023-02-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Recall the initialization of ebpmf is based on solving an poisson mean problem with normal prior. And when the prior mean is negative, and the data vector is very sparse, the estimated variance tends to be very small. Here I I study how the results differ for different init variance values.
+
+```{r}
+source("code/poisson_STM/structure_plot.R")
+library(fastTopics)
+library(Matrix)
+data("pbmc_facs")
+counts = pbmc_facs$counts
+counts = counts[,colSums(counts!=0)>10]
+```
+
+We start with smallest variances. The scale of $\sigma^2$ is achieved by alternating the convergence tolerance in initialization. The smaller the tolerance, the smaller $\sigma^2$ converges to.
+
+## 1e-10
+
+For the first case I set tol=$1e-10$. I only have 20 iterations because an error occurred.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e10_iter20.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-10,iter20')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+## 1e-8
+
+For the first case I set tol=$1e-8$. I only have 20 iterations because an error occurred.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e8_iter20.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-8,iter20')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+
+## 1e-6
+
+I have 60 iterations. But for comparison, I also include iter=20 results here.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e6_iter20.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-6,iter20')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e6_iter60.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-6,iter60')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+## 1e-4
+
+I have 60 iterations. But for comparison, I also include iter=20 results here.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e4_iter20.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-4,iter20')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e4_iter60.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-4,iter60')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+## 1e-2
+
+I have 60 iterations. But for comparison, I also include iter=20 results here.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e2_iter20.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-2,iter20')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e2_iter60.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-2,iter60')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+## 1e-1
+
+I have 35 iterations. But for comparison, I also include iter=20 results here.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e1_iter20.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-1,iter20')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
+
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/init_tol_effect/nonnegLF_pe_inittol1e1_iter35.rds')
+fit$elbo
+plot(fit$K_trace)
+hist(fit$sigma2,breaks = 100)
+summary(fit$sigma2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,pbmc_facs$samples$subpop,title='1e-1,iter35')
+plot(fit$sigma2,colSums(counts/rowSums(counts)),pch=20,col='grey80')
+```
