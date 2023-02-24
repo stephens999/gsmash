@@ -1,0 +1,134 @@
+---
+title: "flash, glmpca, and topic model fit on pbmc data in fasttopics package"
+author: "DongyueXie"
+date: "2023-02-23"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+I take the pbmc dataset from fasttopics package, and fit flash, glmpca, as well as topic model on the dataset.
+
+```{r}
+library(fastTopics)
+library(flashier)
+library(glmpca)
+library(Matrix)
+data("pbmc_facs")
+counts = pbmc_facs$counts
+counts = counts[,colSums(counts!=0)>10]
+```
+
+```{r}
+source("~/Rpackages/gsmash/code/poisson_STM/structure_plot.R")
+source("~/Rpackages/gsmash/code/poisson_STM/plot_factors_general.R")
+```
+
+
+
+## GLMPCA Poisson
+
+I set K = 10
+
+```{r}
+glmpca_fit_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/othermethods/glmpca_poi.rds')
+```
+
+```{r}
+plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$subpop,title = 'glmpca poisson')
+plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$celltype,title = 'glmpca poisson')
+```
+
+## GLMPCA NB
+
+I set K = 10
+
+```{r}
+glmpca_fit_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/othermethods/glmpca_nb.rds')
+```
+
+```{r}
+plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$subpop,title = 'glmpca NB')
+plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$celltype,title = 'glmpca NB')
+```
+
+## flash sparse
+
+
+```{r}
+flash_sparse = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/othermethods/flash_sparse.rds')
+```
+
+
+```{r}
+plot.factors.general(flash_sparse$L.pm,flash_sparse$F.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash sparse')
+plot.factors.general(flash_sparse$L.pm,flash_sparse$F.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash sparse')
+```
+
+
+## flash nonneg Loadings
+
+
+```{r}
+flash_nonnegL = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/othermethods/flash_nonnegL.rds')
+```
+
+
+```{r}
+plot.factors.general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash nonnegL',nonnegative = T)
+plot.factors.general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash nonnegL',nonnegative = T)
+```
+
+
+```{r}
+structure_plot_general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,grouping = pbmc_facs$samples$subpop,
+                       title='flash nonnegL',remove_l0f0 = FALSE,LD=T)
+structure_plot_general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,grouping = pbmc_facs$samples$celltype,
+                       title='flash nonnegL',remove_l0f0 = FALSE,LD=T)
+```
+
+## flash nonneg Loadings and factors
+
+
+```{r}
+flash_nonnegLF = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/othermethods/flash_nonnegLF.rds')
+```
+
+
+```{r}
+plot.factors.general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash nonnegLF',nonnegative = T)
+plot.factors.general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash nonnegLF',nonnegative = T)
+```
+
+
+```{r}
+structure_plot_general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,grouping = pbmc_facs$samples$subpop,
+                       title='flash nonnegLF',remove_l0f0 = FALSE,LD=T)
+structure_plot_general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,grouping = pbmc_facs$samples$celltype,
+                       title='flash nonnegLF',remove_l0f0 = FALSE,LD=T)
+```
+
+## Topic model
+
+```{r}
+tm = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/othermethods/fasttopics_fit.rds')
+```
+
+
+```{r}
+tm = poisson2multinom(tm)
+plot.factors.general(tm$L,tm$F,cell.types = pbmc_facs$samples$subpop,title = 'topic model',nonnegative = T)
+plot.factors.general(tm$L,tm$F,cell.types = pbmc_facs$samples$celltype,title = 'topic model',nonnegative = T)
+```
+
+```{r}
+structure_plot_general(tm$L,tm$F,grouping = pbmc_facs$samples$subpop,
+                       title='topic model',remove_l0f0 = FALSE,LD=F,topic_model = T)
+structure_plot_general(tm$L,tm$F,grouping = pbmc_facs$samples$celltype,
+                       title='topic model',remove_l0f0 = FALSE,LD=F,topic_model = T)
+```
+
+
+
+
+
