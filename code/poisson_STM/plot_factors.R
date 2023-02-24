@@ -3,6 +3,7 @@ library(ggplot2)
 plot.factors <- function(res,
                          cell.types,
                          kset = NULL,
+                         rm_kset = NULL,
                          max.pt.size = 2,
                          title = NULL,
                          nonnegative = FALSE) {
@@ -10,6 +11,7 @@ plot.factors <- function(res,
   if (is.null(kset)) {
     kset <- setdiff(order(res$pve, decreasing = TRUE), which(res$pve == 0))
   }
+  kset = kset[!kset%in%rm_kset]
 
   if (is.null(res$cell.prescaling.factors)) {
     res$cell.prescaling.factors <- 1

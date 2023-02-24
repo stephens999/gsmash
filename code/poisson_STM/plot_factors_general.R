@@ -13,7 +13,11 @@ plot.factors.general <- function(LL,
 
 
   #cell.prescaling.factors <- 1
-  kset = 1:ncol(LL)
+  if(is.null(kset)){
+    kset = 1:ncol(LL)
+  }
+  LL = LL[,kset]
+
   # Re-normalize loadings so that factors are equally spread out.
   # LL <- res$L.pm[,kset,drop=F]
   #LL <- LL * res$cell.prescaling.factors

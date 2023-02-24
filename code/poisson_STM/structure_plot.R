@@ -5,6 +5,7 @@
 library(fastTopics)
 library(ggplot2)
 structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
+                                  loadings_order = 'embed',
                                   print_plot=TRUE,
                                   seed=12345,
                                   n_samples = 2000,gap=40,LD = TRUE,
@@ -46,6 +47,7 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
   fit_list     <- list(L = Lhat,F = Fhat)
   class(fit_list) <- c("multinom_topic_model_fit", "list")
   p <- structure_plot(fit_list,grouping = grouping,
+                      loadings_order = loadings_order,
                       n = n_samples,gap = gap,colors=colors,verbose=F) +
     labs(y = "loading",color = "dim",fill = "dim") + ggtitle(title)
   if(print_plot){
