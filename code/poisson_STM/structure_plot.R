@@ -9,6 +9,7 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
                                   seed=12345,
                                   n_samples = 2000,gap=40,LD = TRUE,
                                   remove_l0f0 = TRUE,
+                                  topic_model=FALSE,
                                   colors = c('#a6cee3',
                                     '#1f78b4',
                                     '#b2df8a',
@@ -24,7 +25,12 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
   set.seed(seed)
   #s       <- apply(Lhat,2,max)
   #Lhat    <-	t(t(Lhat) / s)
-  ldf = my_ldf(Lhat,Fhat)
+  if(!topic_model){
+    ldf = my_ldf(Lhat,Fhat)
+  }else{
+    ldf = list(l=Lhat,d=1)
+  }
+
   if(LD){
     Lhat = ldf$l%*%diag(ldf$d)
   }else{
