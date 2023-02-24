@@ -33,6 +33,7 @@ editor_options:
 
 ### On pbmc3k
 
+* [pbmc data in fasttopics package, flash, glmpca, and topic model fit](pbmc_infasttopics_othermethods.html)
 * [pbmc3k 10X result](pbmc3k_10X_result2.html)
 * [pbmc in fasttopic results](pbmc3k_infasttopic_result2.html)
 * [pbmc in fasttopic, 3-5 cell types for simulation]()
