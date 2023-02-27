@@ -1,0 +1,135 @@
+---
+title: "Simulation data from fitted model on pbmc data in fasttopics, nonnegtive L and F, true sigma2 = 0"
+author: "DongyueXie"
+date: "2023-02-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+So in a [previous simulation results](simu_study_of_init_variance.html), the true variances are those learnt from data. 
+
+Now I want to see what if true variances are 0? I used the fitted model with relative large variance(init tol 1e-2).
+
+The variances refers to $var(\epsilon_{ij})$ in 
+
+\begin{equation}
+        \begin{split}
+            &y_{ij}\sim Poisson(s_i\lambda_{ij}),
+            \\
+            &\log\lambda_{ij} = f_{j0} + \sum_k l_{ik}f_{jk} + \epsilon_{ij},
+            \\
+            &l_{ik}\sim g_{k} ^{(l)},k=1,2,...,K,
+            \\
+            &f_{jk}\sim g_{k} ^{(f)},k=1,2,...,K.
+        \end{split}
+    \end{equation}
+
+```{r}
+library(fastTopics)
+library(Matrix)
+library(gridExtra)
+source('code/poisson_STM/plot_factors.R')
+source('code/poisson_STM/plot_factors_general.R')
+source('code/poisson_STM/structure_plot.R')
+source('code/poisson_STM/get_loadings_order.R')
+data("pbmc_facs")
+cell_names = pbmc_facs$samples$subpop
+```
+
+## small init variance
+
+```{r}
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k_simulation/simu_pbmc_fasttopics_0_var_small_init_var.rds')
+K_hat = c()
+for(i in c(1,2,3,5)){
+  K_hat = rbind(K_hat,c(res$output[[i]]$fitted_model$flash$n.factors,res$output[[i]]$fitted_model$ebpmf$fit_flash$n.factors,ncol(res$sim_data$Factor)))
+}
+colnames(K_hat) = c('flash','ebpmf','true K')
+K_hat
+```
+
+
+```{r,warning=T}
+loadings_order = get_loadings_order(res$sim_data$Loading,res$sim_data$Factor,grouping = cell_names,n_samples = 5000)
+plot0=structure_plot_general(res$sim_data$Loading,res$sim_data$Factor,grouping =cell_names,title = 'True',print_plot = F,loadings_order=loadings_order) 
+for(i in c(1,2,3,5)){
+  plot1 = structure_plot_general(res$output[[i]]$fitted_model$flash$L.pm,
+                                 res$output[[i]]$fitted_model$flash$F.pm
+                                 ,grouping=cell_names,
+                                 title='flash',
+                                 print_plot = F,
+                                 loadings_order=loadings_order,
+                                 remove_l0f0 = F)
+  plot2 = structure_plot_general(res$output[[i]]$fitted_model$ebpmf$fit_flash$L.pm,
+                                 res$output[[i]]$fitted_model$ebpmf$fit_flash$F.pm,
+                                 grouping =cell_names,
+                                 title='ebpmf',
+                                 print_plot = F,
+                                 loadings_order=loadings_order)
+  grid.arrange(plot1, plot0,plot2, nrow=3)
+}
+```
+
+
+```{r}
+for(i in c(1,2,3,5)){
+  hist(res$output[[i]]$fitted_model$ebpmf$sigma2,breaks = 100,main='',xlab='var')
+}
+```
+
+```{r}
+for(i in c(1,2,3,5)){
+  print(res$output[[i]]$fitted_model$ebpmf$run_time)
+}
+```
+
+## large init variance
+
+I used unimodal-nonnegative prior for this simulation because the point-exponential always ran into errors.
+
+```{r}
+res = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k_simulation/simu_pbmc_fasttopics_0_var_large_init_var.rds')
+K_hat = c()
+for(i in 1:5){
+  K_hat = rbind(K_hat,c(res$output[[i]]$fitted_model$flash$n.factors,res$output[[i]]$fitted_model$ebpmf$fit_flash$n.factors,ncol(res$sim_data$Factor)))
+}
+colnames(K_hat) = c('flash','ebpmf','true K')
+K_hat
+```
+
+```{r,warning=T}
+loadings_order = get_loadings_order(res$sim_data$Loading,res$sim_data$Factor,grouping = cell_names,n_samples = 5000)
+plot0=structure_plot_general(res$sim_data$Loading,res$sim_data$Factor,grouping =cell_names,title = 'True',print_plot = F,loadings_order=loadings_order) 
+for(i in 1:5){
+  plot1 = structure_plot_general(res$output[[i]]$fitted_model$flash$L.pm,
+                                 res$output[[i]]$fitted_model$flash$F.pm
+                                 ,grouping=cell_names,
+                                 title='flash',
+                                 print_plot = F,
+                                 loadings_order=loadings_order,
+                                 remove_l0f0 = F)
+  plot2 = structure_plot_general(res$output[[i]]$fitted_model$ebpmf$fit_flash$L.pm,
+                                 res$output[[i]]$fitted_model$ebpmf$fit_flash$F.pm,
+                                 grouping =cell_names,
+                                 title='ebpmf',
+                                 print_plot = F,
+                                 loadings_order=loadings_order)
+  grid.arrange(plot1, plot0,plot2, nrow=3)
+}
+```
+
+
+```{r}
+for(i in 1:5){
+  hist(res$output[[i]]$fitted_model$ebpmf$sigma2,breaks = 100,main='',xlab='var')
+}
+```
+
+```{r}
+for(i in 1:5){
+  print(res$output[[i]]$fitted_model$ebpmf$run_time)
+}
+```
