@@ -21,7 +21,7 @@ editor_options:
 * [fit K=1 on pbmc data](run_splitting_PMF_K1.html)
 * [point exponential and unimodal nonnegative]
 * [ebpm normal prior init in PMF](vga_init_in_ebpmf.html)
-* [effect of initialization variances](pbmc_infasttopics_init_vga_effect.html)
+
 
 ### Simulation 
 
@@ -31,13 +31,16 @@ editor_options:
 * [Simulation based on PBMC data, 3 cell types, 1 init backfitting](splitting_PMF_1backfitinit.html)
 * [Simulation pbmc data from fasttopics, nonnegtive L and F](simu_pbmc_fasttpoics_nonnegLF.html)
 * [Simulation data from fitted model on pbmc data in fasttopics, nonnegtive L and F](simu_study_of_init_variance.html)
+* [Simulation data from fitted model on pbmc data in fasttopics, nonnegtive L and F, added more models](simu_study_pbmc_truevarlarge.html)
 * [Simulation data from fitted model on pbmc data in fasttopics, nonnegtive L and F, true sigma2 = 0](simu_study_pbmc_truevar0.html)
 
 ### On pbmc3k
 
 * [pbmc data in fasttopics package, flash, glmpca, and topic model fit](pbmc_infasttopics_othermethods.html)
+* [pbmc3k data 10X, flash, glmpca, and topic model fit](pbmc3k_10X_othermethods.html)
 * [pbmc3k 10X result](pbmc3k_10X_result2.html)
 * [pbmc in fasttopic results](pbmc3k_infasttopic_result2.html)
+* [pbmc in fasttopic,effect of initialization variances](pbmc_infasttopics_init_vga_effect.html)
 * [pbmc in fasttopic, 3-5 cell types for simulation]()
 
 Below are some analysis I have done, before putting $l_0,f_0$ as part of flash, and estimating $f_0$.
@@ -62,6 +65,7 @@ Below are some analysis I have done, before putting $l_0,f_0$ as part of flash, 
 ### On Droplet
 
 * [droplet Montoro results](run_PMF_on_droplet.html)
+* [droplet Montoro results, no filtering of genes](droplet_results_full.html)
 
 ### On PBMC purified
 
