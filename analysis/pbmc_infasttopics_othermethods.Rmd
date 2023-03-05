@@ -35,8 +35,8 @@ glmpca_fit_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics
 ```
 
 ```{r}
-plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$subpop,title = 'glmpca poisson')
-plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$celltype,title = 'glmpca poisson')
+plot.factors.general(glmpca_fit_poi$factors,cell.types = pbmc_facs$samples$subpop,title = 'glmpca poisson')
+plot.factors.general(glmpca_fit_poi$factors,cell.types = pbmc_facs$samples$celltype,title = 'glmpca poisson')
 ```
 
 ## GLMPCA NB
@@ -48,8 +48,8 @@ glmpca_fit_poi = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics
 ```
 
 ```{r}
-plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$subpop,title = 'glmpca NB')
-plot.factors.general(glmpca_fit_poi$factors,glmpca_fit_poi$loadings,cell.types = pbmc_facs$samples$celltype,title = 'glmpca NB')
+plot.factors.general(glmpca_fit_poi$factors,cell.types = pbmc_facs$samples$subpop,title = 'glmpca NB')
+plot.factors.general(glmpca_fit_poi$factors,cell.types = pbmc_facs$samples$celltype,title = 'glmpca NB')
 ```
 
 ## flash sparse
@@ -61,8 +61,10 @@ flash_sparse = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/o
 
 
 ```{r}
-plot.factors.general(flash_sparse$L.pm,flash_sparse$F.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash sparse')
-plot.factors.general(flash_sparse$L.pm,flash_sparse$F.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash sparse')
+K_plot = 10
+kset = order(flash_sparse$pve,decreasing = T)[1:K_plot]
+plot.factors.general(flash_sparse$L.pm[,kset],cell.types = pbmc_facs$samples$subpop,title = 'flash sparse')
+plot.factors.general(flash_sparse$L.pm[,kset],cell.types = pbmc_facs$samples$celltype,title = 'flash sparse')
 ```
 
 
@@ -75,17 +77,52 @@ flash_nonnegL = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/
 
 
 ```{r}
-plot.factors.general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash nonnegL',nonnegative = T)
-plot.factors.general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash nonnegL',nonnegative = T)
+plot.factors.general(flash_nonnegL$L.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash nonnegL',nonnegative = T)
+plot.factors.general(flash_nonnegL$L.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash nonnegL',nonnegative = T)
 ```
 
 
 ```{r}
-structure_plot_general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,grouping = pbmc_facs$samples$subpop,
-                       title='flash nonnegL',remove_l0f0 = FALSE,LD=T)
-structure_plot_general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,grouping = pbmc_facs$samples$celltype,
-                       title='flash nonnegL',remove_l0f0 = FALSE,LD=T)
+library(randomcoloR)
+n <- 20
+set.seed(12345)
+palette <- distinctColorPalette(n)
+#kset = order(flash_nonnegL$pve,decreasing = T)[1:K_plot]
+structure_plot_general(flash_nonnegL$L.pm,
+                       flash_nonnegL$F.pm,
+                       grouping = pbmc_facs$samples$subpop, 
+                       title='flash nonnegL',
+                       colors = palette,
+                       remove_l0f0 = FALSE,
+                       print_plot = F,
+                       LD=T)
+# structure_plot_general(flash_nonnegL$L.pm,flash_nonnegL$F.pm,grouping = pbmc_facs$samples$celltype,
+#                        title='flash nonnegL',remove_l0f0 = FALSE,LD=T)
 ```
+
+```{r}
+kset = order(flash_nonnegL$pve,decreasing = T)[1:20]
+structure_plot_general(flash_nonnegL$L.pm[,kset[-c(1,2)]],
+                       flash_nonnegL$F.pm[,kset[-c(1,2)]],
+                       grouping = pbmc_facs$samples$subpop,
+                       title='flash nonnegL',
+                       colors = palette,
+                       remove_l0f0 = FALSE,
+                       print_plot = F,
+                       LD=T)
+```
+
+```{r}
+structure_plot_general(flash_nonnegL$L.pm[,kset[-c(1,2,3)]],
+                       flash_nonnegL$F.pm[,kset[-c(1,2,3)]],
+                       grouping = pbmc_facs$samples$subpop,
+                       title='flash nonnegL',
+                       colors = palette,
+                       remove_l0f0 = FALSE,
+                       LD=T,print_plot = F
+                      )
+```
+
 
 ## flash nonneg Loadings and factors
 
@@ -96,16 +133,36 @@ flash_nonnegLF = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics
 
 
 ```{r}
-plot.factors.general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash nonnegLF',nonnegative = T)
-plot.factors.general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash nonnegLF',nonnegative = T)
+plot.factors.general(flash_nonnegLF$L.pm,cell.types = pbmc_facs$samples$subpop,title = 'flash nonnegLF',nonnegative = T)
+plot.factors.general(flash_nonnegLF$L.pm,cell.types = pbmc_facs$samples$celltype,title = 'flash nonnegLF',nonnegative = T)
 ```
 
 
 ```{r}
-structure_plot_general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,grouping = pbmc_facs$samples$subpop,
-                       title='flash nonnegLF',remove_l0f0 = FALSE,LD=T)
-structure_plot_general(flash_nonnegLF$L.pm,flash_nonnegLF$F.pm,grouping = pbmc_facs$samples$celltype,
-                       title='flash nonnegLF',remove_l0f0 = FALSE,LD=T)
+structure_plot_general(flash_nonnegLF$L.pm,
+                       flash_nonnegLF$F.pm,
+                       grouping = pbmc_facs$samples$subpop,
+                       title='flash nonnegLF',
+                       colors = palette,
+                       print_plot = F,
+                       remove_l0f0 = FALSE,LD=T)
+kset = order(flash_nonnegLF$pve,decreasing = T)[1:20]
+structure_plot_general(flash_nonnegLF$L.pm[,kset[-1]],
+                       flash_nonnegLF$F.pm[,kset[-1]],
+                       grouping = pbmc_facs$samples$subpop,
+                       title='flash nonnegLF',
+                       colors = palette,
+                       print_plot = F,
+                       remove_l0f0 = FALSE,LD=T)
+
+structure_plot_general(flash_nonnegLF$L.pm[,kset[-1]],
+                       flash_nonnegLF$F.pm[,kset[-1]],
+                       grouping = pbmc_facs$samples$celltype,
+                       title='flash nonnegLF',
+                       remove_l0f0 = FALSE,
+                       print_plot = F,
+                       colors = palette,
+                       LD=T)
 ```
 
 ## Topic model
@@ -117,8 +174,8 @@ tm = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc_fasttopics/othermethod
 
 ```{r}
 tm = poisson2multinom(tm)
-plot.factors.general(tm$L,tm$F,cell.types = pbmc_facs$samples$subpop,title = 'topic model',nonnegative = T)
-plot.factors.general(tm$L,tm$F,cell.types = pbmc_facs$samples$celltype,title = 'topic model',nonnegative = T)
+plot.factors.general(tm$L,cell.types = pbmc_facs$samples$subpop,title = 'topic model',nonnegative = T)
+plot.factors.general(tm$L,cell.types = pbmc_facs$samples$celltype,title = 'topic model',nonnegative = T)
 ```
 
 ```{r}
