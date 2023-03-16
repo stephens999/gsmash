@@ -4,13 +4,17 @@
 #
 library(fastTopics)
 library(ggplot2)
+library(gridExtra)
 structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
                                   loadings_order = 'embed',
                                   print_plot=TRUE,
                                   seed=12345,
-                                  n_samples = 2000,gap=40,LD = TRUE,
+                                  n_samples = NULL,
+                                  gap=40,
+                                  LD = TRUE,
                                   remove_l0f0 = TRUE,
                                   topic_model=FALSE,
+                                  show_legend=TRUE,
                                   colors = c('#a6cee3',
                                     '#1f78b4',
                                     '#b2df8a',
@@ -26,10 +30,16 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
   set.seed(seed)
   #s       <- apply(Lhat,2,max)
   #Lhat    <-	t(t(Lhat) / s)
+
+  if(is.null(n_samples)&all(loadings_order == "embed")){
+    n_samples = 2000
+  }
+
   if(!topic_model){
     ldf = my_ldf(Lhat,Fhat)
   }else{
     ldf = list(l=Lhat,d=1)
+    LD=F
   }
 
   if(LD){
@@ -50,6 +60,9 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
                       loadings_order = loadings_order,
                       n = n_samples,gap = gap,colors=colors,verbose=F) +
     labs(y = "loading",color = "dim",fill = "dim") + ggtitle(title)
+  if(!show_legend){
+    p <- p + theme(legend.position="none")
+  }
   if(print_plot){
     print(p)
   }

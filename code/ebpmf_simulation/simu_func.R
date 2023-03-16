@@ -10,7 +10,9 @@ library(ebpmf)
 
 
 
-sim_data_pmf_log = function(L,FF,sigma2,var_type='by_col',n_simu = 10,seed=12345){
+sim_data_pmf_log = function(L,FF,sigma2,
+                            var_type='by_col',
+                            n_simu = 10,seed=12345){
   set.seed(seed)
   n = nrow(L)
   p = nrow(FF)
@@ -32,7 +34,7 @@ sim_data_pmf_log = function(L,FF,sigma2,var_type='by_col',n_simu = 10,seed=12345
 }
 
 simu_study_PMF = function(simdata,n_cores = 1,
-                          method_list=c('flash','ebpmf'),
+                          method_list=c('flash','ebpmf','nmf'),
                           ebnm_function = ebnm::ebnm_point_normal,
                           loadings_sign = 0,
                           factors_sign = 0,
@@ -75,7 +77,18 @@ simu_study_PMF = function(simdata,n_cores = 1,
     Y_normed = log(1+median(S)*simdata$Y[[i]]/S/0.5)
     Y_normed = Matrix(Y_normed,sparse = T)
     print('Fitting flash')
-    fitted_model$flash = try(flash(Y_normed,greedy.Kmax = Kmax,var.type=var.type,verbose = 0,backfit = TRUE,ebnm.fn = ebnm_function))
+
+    fitted_model$flash = try(flash.init(Y_normed,var.type = var.type) %>%
+          flash.set.verbose(0)%>%
+          flash.add.greedy(Kmax = Kmax,ebnm.fn = ebnm_function,
+                           init.fn =function(f) init.fn.default(f, dim.signs = c(loadings_sign, factors_sign))) %>%
+          flash.backfit() %>%
+          flash.nullcheck())
+
+    # fitted_model$flash = try(flash(Y_normed,greedy.Kmax = Kmax,
+    #                                var.type=var.type,verbose = 0,
+    #                                backfit = TRUE,
+    #                                ebnm.fn = ebnm_function))
     print('Fitting ebpmf PMF')
     fitted_model$ebpmf = try(ebpmf_log(simdata$Y[[i]],
                                        flash_control = list(Kmax=Kmax,ebnm.fn=ebnm_function,
