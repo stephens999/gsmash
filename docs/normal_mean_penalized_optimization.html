@@ -13,10 +13,10 @@
 
 <meta name="date" content="2022-05-25" />
 
-<title>Normal mean penalized form optimization - Compound method</title>
+<title>Normal mean penalized form optimization</title>
 
-<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
-<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -40,7 +40,7 @@
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
-<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
 <!-- Add a small amount of space between sections. -->
 <style type="text/css">
 div.section {
@@ -77,7 +77,6 @@ if (window.hljs) {
 
 
 
-
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -98,9 +97,6 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
-}
-details > summary > p:only-child {
-  display: inline;
 }
 pre code {
   padding: 0;
@@ -158,15 +154,11 @@ $(document).ready(function () {
     href = "index.html";
   var menuAnchor = $('a[href="' + href + '"]');
 
-  // mark the anchor link active (and if it's in a dropdown, also mark that active)
-  var dropdown = menuAnchor.closest('li.dropdown');
-  if (window.bootstrap) { // Bootstrap 4+
-    menuAnchor.addClass('active');
-    dropdown.find('> .dropdown-toggle').addClass('active');
-  } else { // Bootstrap 3
-    menuAnchor.parent().addClass('active');
-    dropdown.addClass('active');
-  }
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
 
   // Navbar adjustments
   var navHeight = $(".navbar").first().height() + 15;
@@ -330,7 +322,7 @@ div.tocify {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -366,8 +358,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Normal mean penalized form optimization -
-Compound method</h1>
+<h1 class="title toc-ignore">Normal mean penalized form
+optimization</h1>
 <h4 class="author">Dongyue Xie</h4>
 <h4 class="date">2022-05-25</h4>
 
@@ -398,7 +390,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2022-09-29
+<strong>Last updated:</strong> 2023-03-31
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -413,10 +405,10 @@ title="This is the local directory in which the code in this file was executed."
 </span>
 </p>
 <p>
-This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
 analysis was created with <a
-  href="https://github.com/workflowr/workflowr">workflowr</a> (version
-1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the reproducibility checks
 that were applied when the results were created. The <em>Past
 versions</em> tab lists the development history.
 </p>
@@ -529,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec7c5d5706728dd5f382495527fc5667eeb36ffb6targetblankc7c5d57a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree706f6cd47ab21850b39785e155f6752bdb89fd99targetblank706f6cda">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/c7c5d5706728dd5f382495527fc5667eeb36ffb6" target="_blank">c7c5d57</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/706f6cd47ab21850b39785e155f6752bdb89fd99" target="_blank">706f6cd</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreec7c5d5706728dd5f382495527fc5667eeb36ffb6targetblankc7c5d57a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree706f6cd47ab21850b39785e155f6752bdb89fd99targetblank706f6cda"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -547,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/c7c5d5706728dd5f382495527fc5667eeb36ffb6" target="_blank">c7c5d57</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/706f6cd47ab21850b39785e155f6752bdb89fd99" target="_blank">706f6cd</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -566,12 +558,24 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
-    Untracked:  analysis/normal_mean_penalized_optimization_inversion.Rmd
+    Untracked:  analysis/compare_vga_iterations_pbmc_full.Rmd
+    Untracked:  analysis/droplet_results_full.Rmd
+    Untracked:  analysis/pbmc3k_10X_othermethods.Rmd
+    Untracked:  data/tpm3.rds
+    Untracked:  output/pbmc3k_k1.rds
+    Untracked:  output/pbmc3k_k1_S1.rds
+    Untracked:  output/plots/
+    Untracked:  output/tpm3_fit_fasttopics.rds
+    Untracked:  output/tpm3_fit_stm.rds
+    Untracked:  output/tpm3_fit_stm_slow.rds
 
 Unstaged changes:
     Modified:   analysis/index.Rmd
-    Modified:   code/normal_mean_model_utils.R
-    Modified:   code/poisson_mean/pois_mean_penalized.R
+    Modified:   analysis/normal_mean_penalty.Rmd
+    Modified:   analysis/overdispersed_splitting.Rmd
+    Modified:   analysis/remove_log_in_penalty.Rmd
+    Modified:   code/ebpmf_identity/gtex.R
+    Modified:   code/ebpmf_identity/run_real.R
 
 </code></pre>
 <p>
@@ -618,6 +622,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/706f6cd47ab21850b39785e155f6752bdb89fd99/analysis/normal_mean_penalized_optimization.Rmd" target="_blank">706f6cd</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-03-31
+</td>
+<td>
+wflow_publish("analysis/normal_mean_penalized_optimization.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/90a42fb0adab5f19f725c660148e41888e405f57/docs/normal_mean_penalized_optimization.html" target="_blank">90a42fb</a>
+</td>
+<td>
+Dongyue Xie
+</td>
+<td>
+2022-09-29
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -816,197 +854,78 @@ as</p>
 \frac{1}{2s^2}(y-\theta)^2-c_{g,s^2}(S^{-1}_{g,s^2}(\theta))\]</span></p>
 <p>For the inversion method implementation and illustration, see <a
 href="normal_mean_penalized_optimization_inversion.html">here</a></p>
-<pre class="r"><code># #&#39;log marginal likelihood of normal mean model
-# #&#39;@param x scalar 
-# #&#39;@param g prior, normal mixture
-# l_nm = function(x,s,w,grid){
-#   log(sum(w*dnorm(x,0,sqrt(grid^2+s^2))))
-# }
-# 
-# #&#39;first order derivative of log marginal likelihood of normal mean model
-# #&#39;@param x scalar 
-# #&#39;@param g prior, normal mixture
-# l_nm_d1 = function(x,s,w,grid){
-#   f = sum(w*dnorm(x,0,sqrt(grid^2+s^2)))
-#   f_d1 = sum(w*dnorm(x,0,sqrt(grid^2+s^2))*x/(grid^2+s^2))
-#   f_d1/f
-# }
-# 
-# softmax = function(a){
-#   exp(a-max(a))/sum(exp(a-max(a)))
-# }
-# 
-# #&#39;posterior mean operator
-# S = function(x,s,w,grid){
-#   K = length(w)
-#   g = normalmix(pi=w,mean=rep(0,K),sd=grid)
-#   fit.ash = ash(x,s,g=g,fixg=T)
-#   fit.ash$result$PosteriorMean
-# }
-
-source(&quot;code/normal_mean_model_utils.R&quot;)</code></pre>
+<pre class="r"><code>library(vebpm)</code></pre>
 <p>generate data, and get grid by running ash</p>
 <pre class="r"><code>set.seed(12345)
 n = 200
 w0 = 0.9
-lambda = c(rep(0,round(n*w0)),rep(10,n-round(n*w0)))
+mu = c(rep(0,round(n*w0)),rep(10,n-round(n*w0)))
 w_true = c(w0,1-w0)
 grid_true = c(0.01,7)
 s = rep(1,n)
-y = rnorm(n,lambda,s)
+y = rnorm(n,mu,s)
 library(ashr)
-fit.ash = ashr::ash(y,s,mixcompdist = &#39;normal&#39;)
-#grid = exp(seq(log(s/100),log(sqrt(max(abs(y^2-s^2)))),by=log(sqrt(2))))
-#fit.ash = S(y,s,w_true,grid_true)
-#plot(fit.ash$fitted_g$sd,fit.ash$fitted_g$pi)
-grid = fit.ash$fitted_g$sd
-grid = grid[-1]
-K = length(grid)
+grids = ebnm:::get_ashr_grid(y,s)
 
-#plot(y,main=&#39;ash fit&#39;,col=&#39;grey80&#39;)
-#lines(lambda,col=&#39;grey60&#39;)
-#lines(fit.ash$result$PosteriorMean)
-#legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;ash posteriorMean&#39;),pch=c(1,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
-</div>
-<div id="known-prior" class="section level2">
-<h2>Known prior</h2>
-<p>We start with known prior, when <span
-class="math inline">\(g\)</span> is fully specified.</p>
-<p>When the prior is known, we are able to perform optimization one by
-one.</p>
-<pre class="r"><code>#&#39;objective function with known g
-#&#39;@param theta mu_bar
-#&#39;@param y,s a single observation and its std
-#&#39;@param w
-#&#39;@param grid prior sds
-f_obj_known_g = function(theta,y,s,w,grid){
-  
-  res = (y-theta-s^2*l_nm_d1_z(theta,s,w,grid))^2/2/s^2 - l_nm(theta,s,w,grid) - s^2*(l_nm_d1_z(theta,s,w,grid))^2/2
-  
-  return(res)
-}
+system.time(fit.ash &lt;- ash(y,s,mixcompdist = &#39;normal&#39;,pointmass=FALSE,prior=&#39;uniform&#39;,mixsd=grids))</code></pre>
+<pre><code>   user  system elapsed 
+  0.037   0.000   0.037 </code></pre>
+<pre class="r"><code>system.time(fit_inv &lt;- ebnm_penalized_inversion(y,s,g_init = list(sd=grids)))</code></pre>
+<pre><code>   user  system elapsed 
+  4.014   0.084   4.098 </code></pre>
+<pre class="r"><code>system.time(fit_compound &lt;- ebnm_penalized_compound(y,s,g_init = list(sd=grids)))</code></pre>
+<pre><code>   user  system elapsed 
+ 45.542   0.143  45.685 </code></pre>
+<pre class="r"><code>library(ggplot2)
+library(gridExtra)
 
-ebnm_penalized_compound_known_g = function(x,s,w,grid,z_init = NULL,opt_method = &#39;L-BFGS-B&#39;){
-  n = length(x)
-  z = double(n)
-  if(length(s)==1){
-    s = rep(s,n)
-  }
-  if(is.null(z_init)){
-    z_init = x
-  }
-  for(i in 1:n){
-    z[i] = optim(z_init[i],f_obj_known_g,
-                   y=x[i],
-                   s=s[i],
-                   w=w,
-                   grid=grid,
-                   method = opt_method)$par
-  }
-  posteriorMean = S(z,s,w,grid)
-  return(list(z=z,posteriorMean=posteriorMean))
-}</code></pre>
-<pre class="r"><code>ploter = function(fit,y,lambda,main=&#39;known prior&#39;){
-  plot(y,main=main,col=&#39;grey80&#39;)
-  lines(lambda,col=&#39;grey60&#39;)
-  lines(fit$z,type=&#39;p&#39;,pch=20,col=&#39;grey80&#39;)
-  lines(fit$posteriorMean)
-  legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;z&#39;,&#39;true mean&#39;,&#39;estimated mean&#39;),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c(&#39;grey80&#39;,&#39;grey80&#39;,&#39;grey60&#39;,1))
-}</code></pre>
-<div id="init-z-at-data-y." class="section level3">
-<h3>Init <span class="math inline">\(z\)</span> at data <span
-class="math inline">\(y\)</span>.</h3>
-<pre class="r"><code>fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = y,opt_method = &#39;L-BFGS-B&#39;)</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda,main=&#39;known prior, init z at y&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="init-z-at-0." class="section level3">
-<h3>Init <span class="math inline">\(z\)</span> at 0.</h3>
-<pre class="r"><code>fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = double(n),opt_method = &#39;L-BFGS-B&#39;)</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda,main=&#39;known prior, init z at 0&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="estimate-prior" class="section level2">
-<h2>Estimate prior</h2>
-<pre class="r"><code>#&#39;objective function
-#&#39;@param theta (mu_bar,w)
-#&#39;@param grid prior sds
-f_obj = function(theta,y,s,grid){
-  n = length(y)
-  w = softmax(theta[-(1:n)])
-  z = theta[1:n]
-  
-  res = sum((y-z-s^2*l_nm_d1_z(z,s,w,grid))^2/2/s^2 - l_nm(z,s,w,grid) - s^2*(l_nm_d1_z(z,s,w,grid))^2/2)
+# plot 1
+p1 &lt;- ggplot() + 
+  geom_point(aes(x = 1:length(y), y = y), col = &#39;grey80&#39;, pch = 20) + 
+  geom_line(aes(x = 1:length(mu), y = mu), col = &#39;grey60&#39;) + 
+  geom_line(aes(x = 1:length(fit.ash$result$PosteriorMean), y = fit.ash$result$PosteriorMean)) + 
+  labs(title = &#39;ash&#39;, x = &#39;&#39;, y = &#39;&#39;) +
+  scale_color_manual(values = c(&#39;grey80&#39;, &#39;grey60&#39;, &#39;black&#39;)) +
+  guides(colour = guide_legend(override.aes = list(pch = c(20, NA, NA), lty = c(NA, 1, 1)))) +
+  theme_bw()
 
-  return(res)
-}
+# plot 2
+p2 &lt;- ggplot() + 
+  geom_point(aes(x = 1:length(y), y = y), col = &#39;grey80&#39;, pch = 20) + 
+  geom_line(aes(x = 1:length(mu), y = mu), col = &#39;grey60&#39;) + 
+  geom_line(aes(x = 1:length(fit_inv$posterior$mean), y = fit_inv$posterior$mean)) + 
+  labs(title = &#39;inversion&#39;, x = &#39;&#39;, y = &#39;&#39;) +
+  scale_color_manual(values = c(&#39;grey80&#39;, &#39;grey60&#39;, &#39;black&#39;)) +
+  guides(colour = guide_legend(override.aes = list(pch = c(20, NA, NA), lty = c(NA, 1, 1)))) +
+  theme_bw()
 
-#&#39;objective function
-#&#39;@param theta (mu_bar,w)
-#&#39;@param grid prior sds
-f_obj_grad = function(theta,y,s,grid){
-  n = length(y)
-  a = theta[-(1:n)]
-  w = softmax(a)
-  z = theta[1:n]
-  
-  grad_z = (1+s^2*l_nm_d2_z(z,s,w,grid))*(z-y)/s^2
-  grad_a = colSums((s^2*l_nm_d1_z(z,s,w,grid)-y+z)*l_nm_d2_za(z,s,a,grid) - l_nm_d1_a(z,s,a,grid) - s^2*l_nm_d1_z(z,s,w,grid)*l_nm_d2_za(z,s,a,grid))
+# plot 3
+p3 &lt;- ggplot() + 
+  geom_point(aes(x = 1:length(y), y = y), col = &#39;grey80&#39;, pch = 20) + 
+  geom_line(aes(x = 1:length(mu), y = mu), col = &#39;grey60&#39;) + 
+  geom_line(aes(x = 1:length(fit_compound$posterior$mean), y = fit_compound$posterior$mean)) + 
+  labs(title = &#39;compound&#39;, x = &#39;&#39;, y = &#39;&#39;) +
+  scale_color_manual(values = c(&#39;grey80&#39;, &#39;grey60&#39;, &#39;black&#39;)) +
+  guides(colour = guide_legend(override.aes = list(pch = c(20, NA, NA), lty = c(NA, 1, 1)))) +
+  theme_bw()
 
-  return(c(grad_z,c(grad_a)))
-}
-
-ebnm_penalized_compound = function(x,s,grid,z_init = NULL,w_init=NULL,opt_method = &#39;L-BFGS-B&#39;){
-  n = length(x)
-  K = length(grid)
-  if(is.null(w_init)){
-    w_init = rep(1/K,K)
-  }
-  if(length(s)==1){
-    s = rep(s,n)
-  }
-  if(is.null(z_init)){
-    z_init = x
-  }
-  out = optim(c(z_init,w_init),fn=f_obj,
-              #gr=f_obj_grad,
-              method=opt_method,
-              y=y,grid=grid,s=s)
-  z = out$par[1:n]
-  w = softmax(out$par[-(1:n)])
-  posteriorMean = S(z,s,w,grid)
-  return(list(z=z,w=w,posteriorMean=posteriorMean,opt_res = out))
-}</code></pre>
-<div id="init-at-y" class="section level3">
-<h3>init at y</h3>
-<pre class="r"><code>fit = ebnm_penalized_compound(y,s,grid,z_init = y)
-plot(grid,fit$w,ylab=&#39;w hat&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$opt_res$value</code></pre>
-<pre><code>[1] 408.2915</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda,main=&#39;estimate prior, init z at y&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-<div id="init-at-0" class="section level3">
-<h3>init at 0</h3>
-<pre class="r"><code>fit = ebnm_penalized_compound(y,s,grid,z_init = rep(0,n))
-plot(grid,fit$w,ylab=&#39;w hat&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>fit$opt_res$value</code></pre>
-<pre><code>[1] 408.6266</code></pre>
-<pre class="r"><code>ploter(fit,y,lambda,main=&#39;estimate prior, init z at 0&#39;)</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
-</div>
-</div>
-<div id="ash-fit" class="section level2">
-<h2>ash fit</h2>
-<pre class="r"><code>fit.ash = ash(y,s,mixcompdist = &#39;normal&#39;,pointmass=FALSE,prior=&#39;uniform&#39;,mixsd=grid)
-plot(y,main=&#39;ash fit&#39;,col=&#39;grey80&#39;)
-lines(lambda,col=&#39;grey60&#39;)
-lines(fit.ash$result$PosteriorMean)
-legend(&#39;topleft&#39;,c(&#39;data&#39;,&#39;true mean&#39;,&#39;ash posteriorMean&#39;),pch=c(1,NA,NA),lty=c(NA,1,1),col=c(&#39;grey80&#39;,&#39;grey60&#39;,1))</code></pre>
-<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+# arrange the plots
+grid.arrange(p1, p2, p3, ncol = 1)</code></pre>
+<p><img src="figure/normal_mean_penalized_optimization.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit.ash$fitted_g$pi</code></pre>
+<pre><code> [1] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.6639519 0.1973092
+ [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+[15] 0.1387388 0.0000000 0.0000000 0.0000000</code></pre>
+<pre class="r"><code>fit_inv$fitted_g$pi</code></pre>
+<pre><code> [1] 1.741773e-07 3.162366e-07 5.916218e-07 2.294661e-06 5.728518e-05
+ [6] 6.641689e-01 1.970535e-01 6.278710e-07 4.399936e-10 4.788833e-12
+[11] 1.370181e-12 3.243880e-12 8.503757e-13 9.971222e-12 1.387154e-01
+[16] 8.939451e-07 2.017274e-10 4.877657e-11</code></pre>
+<pre class="r"><code>fit_compound$fitted_g$pi</code></pre>
+<pre><code> [1] 2.029749e-08 5.524990e-08 1.504608e-07 1.124650e-06 6.832218e-05
+ [6] 6.641200e-01 1.970686e-01 7.464503e-11 9.854802e-21 1.171594e-27
+[11] 6.139681e-31 9.358840e-32 1.014260e-30 1.005443e-24 1.387417e-01
+[16] 1.946484e-16 1.105745e-24 2.119400e-28</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1016,46 +935,52 @@ Session information
 </p>
 <div id="workflowr-sessioninfo" class="collapse">
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>R version 4.2.1 (2022-06-23 ucrt)
-Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 22000)
+<pre><code>R version 4.1.0 (2021-05-18)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS Linux 7 (Core)
 
 Matrix products: default
+BLAS:   /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRblas.so
+LAPACK: /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRlapack.so
 
 locale:
-[1] LC_COLLATE=English_United States.utf8 
-[2] LC_CTYPE=English_United States.utf8   
-[3] LC_MONETARY=English_United States.utf8
-[4] LC_NUMERIC=C                          
-[5] LC_TIME=English_United States.utf8    
+ [1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C         LC_TIME=C           
+ [4] LC_COLLATE=C         LC_MONETARY=C        LC_MESSAGES=C       
+ [7] LC_PAPER=C           LC_NAME=C            LC_ADDRESS=C        
+[10] LC_TELEPHONE=C       LC_MEASUREMENT=C     LC_IDENTIFICATION=C 
 
 attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ashr_2.2-54     workflowr_1.7.0
+[1] gridExtra_2.3   ggplot2_3.4.1   ashr_2.2-54     vebpm_0.4.7    
+[5] workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.9       highr_0.9        compiler_4.2.1   pillar_1.8.1    
- [5] bslib_0.4.0      later_1.3.0      git2r_0.30.1     jquerylib_0.1.4 
- [9] tools_4.2.1      getPass_0.2-2    digest_0.6.29    lattice_0.20-45 
-[13] jsonlite_1.8.0   evaluate_0.16    tibble_3.1.8     lifecycle_1.0.2 
-[17] pkgconfig_2.0.3  rlang_1.0.5      Matrix_1.4-1     cli_3.3.0       
-[21] rstudioapi_0.14  yaml_2.3.5       xfun_0.32        fastmap_1.1.0   
-[25] invgamma_1.1     httr_1.4.4       stringr_1.4.1    knitr_1.40      
-[29] fs_1.5.2         vctrs_0.4.1      sass_0.4.2       grid_4.2.1      
-[33] rprojroot_2.0.3  glue_1.6.2       R6_2.5.1         processx_3.7.0  
-[37] fansi_1.0.3      rmarkdown_2.16   mixsqp_0.3-43    irlba_2.3.5     
-[41] callr_3.7.2      magrittr_2.0.3   whisker_0.4      ps_1.7.1        
-[45] promises_1.2.0.1 htmltools_0.5.3  httpuv_1.6.5     utf8_1.2.2      
-[49] stringi_1.7.8    truncnorm_1.0-8  SQUAREM_2021.1   cachem_1.0.6    </code></pre>
+ [1] Rcpp_1.0.10        horseshoe_0.2.0    invgamma_1.1       lattice_0.20-44   
+ [5] rprojroot_2.0.2    digest_0.6.31      utf8_1.2.3         truncnorm_1.0-8   
+ [9] R6_2.5.1           evaluate_0.14      highr_0.9          pillar_1.8.1      
+[13] rlang_1.0.6        rstudioapi_0.13    ebnm_1.0-11        irlba_2.3.5.1     
+[17] whisker_0.4        jquerylib_0.1.4    nloptr_1.2.2.2     Matrix_1.5-3      
+[21] rmarkdown_2.9      labeling_0.4.2     splines_4.1.0      stringr_1.5.0     
+[25] munsell_0.5.0      mixsqp_0.3-48      compiler_4.1.0     httpuv_1.6.1      
+[29] xfun_0.24          pkgconfig_2.0.3    SQUAREM_2021.1     htmltools_0.5.4   
+[33] tidyselect_1.2.0   tibble_3.1.8       matrixStats_0.59.0 fansi_1.0.4       
+[37] dplyr_1.1.0        withr_2.5.0        later_1.3.0        grid_4.1.0        
+[41] jsonlite_1.8.4     gtable_0.3.1       lifecycle_1.0.3    git2r_0.28.0      
+[45] magrittr_2.0.3     scales_1.2.1       cli_3.6.0          stringi_1.6.2     
+[49] ebpm_0.0.1.3       farver_2.1.1       fs_1.5.0           promises_1.2.0.1  
+[53] bslib_0.2.5.1      generics_0.1.3     vctrs_0.5.2        trust_0.1-8       
+[57] tools_4.1.0        glue_1.6.2         parallel_4.1.0     fastmap_1.1.0     
+[61] yaml_2.3.7         colorspace_2.1-0   deconvolveR_1.2-1  knitr_1.33        
+[65] sass_0.4.0        </code></pre>
 </div>
 </div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
 TeX fonts only; see
-https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
 the presentation more consistent at the cost of the webpage sometimes
 taking slightly longer to load. Note that this only works because the
 footer is added to webpages before the MathJax javascript. -->
