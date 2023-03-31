@@ -1,5 +1,5 @@
 ---
-title: "Normal mean penalized form optimization - Compound method"
+title: "Normal mean penalized form optimization"
 author: "Dongyue Xie"
 date: "2022-05-25"
 output: workflowr::wflow_html
@@ -48,35 +48,7 @@ For the inversion method implementation and illustration, see [here](normal_mean
 
 
 ```{r}
-# #'log marginal likelihood of normal mean model
-# #'@param x scalar 
-# #'@param g prior, normal mixture
-# l_nm = function(x,s,w,grid){
-#   log(sum(w*dnorm(x,0,sqrt(grid^2+s^2))))
-# }
-# 
-# #'first order derivative of log marginal likelihood of normal mean model
-# #'@param x scalar 
-# #'@param g prior, normal mixture
-# l_nm_d1 = function(x,s,w,grid){
-#   f = sum(w*dnorm(x,0,sqrt(grid^2+s^2)))
-#   f_d1 = sum(w*dnorm(x,0,sqrt(grid^2+s^2))*x/(grid^2+s^2))
-#   f_d1/f
-# }
-# 
-# softmax = function(a){
-#   exp(a-max(a))/sum(exp(a-max(a)))
-# }
-# 
-# #'posterior mean operator
-# S = function(x,s,w,grid){
-#   K = length(w)
-#   g = normalmix(pi=w,mean=rep(0,K),sd=grid)
-#   fit.ash = ash(x,s,g=g,fixg=T)
-#   fit.ash$result$PosteriorMean
-# }
-
-source("code/normal_mean_model_utils.R")
+library(vebpm)
 ```
 
 generate data, and get grid by running ash
@@ -85,188 +57,62 @@ generate data, and get grid by running ash
 set.seed(12345)
 n = 200
 w0 = 0.9
-lambda = c(rep(0,round(n*w0)),rep(10,n-round(n*w0)))
+mu = c(rep(0,round(n*w0)),rep(10,n-round(n*w0)))
 w_true = c(w0,1-w0)
 grid_true = c(0.01,7)
 s = rep(1,n)
-y = rnorm(n,lambda,s)
+y = rnorm(n,mu,s)
 library(ashr)
-fit.ash = ashr::ash(y,s,mixcompdist = 'normal')
-#grid = exp(seq(log(s/100),log(sqrt(max(abs(y^2-s^2)))),by=log(sqrt(2))))
-#fit.ash = S(y,s,w_true,grid_true)
-#plot(fit.ash$fitted_g$sd,fit.ash$fitted_g$pi)
-grid = fit.ash$fitted_g$sd
-grid = grid[-1]
-K = length(grid)
+grids = ebnm:::get_ashr_grid(y,s)
 
-#plot(y,main='ash fit',col='grey80')
-#lines(lambda,col='grey60')
-#lines(fit.ash$result$PosteriorMean)
-#legend('topleft',c('data','true mean','ash posteriorMean'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey60',1))
-```
-
-## Known prior
-
-We start with known prior, when $g$ is fully specified.
-
-When the prior is known, we are able to perform optimization one by one.
-
-```{r}
-#'objective function with known g
-#'@param theta mu_bar
-#'@param y,s a single observation and its std
-#'@param w
-#'@param grid prior sds
-f_obj_known_g = function(theta,y,s,w,grid){
-  
-  res = (y-theta-s^2*l_nm_d1_z(theta,s,w,grid))^2/2/s^2 - l_nm(theta,s,w,grid) - s^2*(l_nm_d1_z(theta,s,w,grid))^2/2
-  
-  return(res)
-}
-
-ebnm_penalized_compound_known_g = function(x,s,w,grid,z_init = NULL,opt_method = 'L-BFGS-B'){
-  n = length(x)
-  z = double(n)
-  if(length(s)==1){
-    s = rep(s,n)
-  }
-  if(is.null(z_init)){
-    z_init = x
-  }
-  for(i in 1:n){
-    z[i] = optim(z_init[i],f_obj_known_g,
-                   y=x[i],
-                   s=s[i],
-                   w=w,
-                   grid=grid,
-                   method = opt_method)$par
-  }
-  posteriorMean = S(z,s,w,grid)
-  return(list(z=z,posteriorMean=posteriorMean))
-}
+system.time(fit.ash <- ash(y,s,mixcompdist = 'normal',pointmass=FALSE,prior='uniform',mixsd=grids))
+system.time(fit_inv <- ebnm_penalized_inversion(y,s,g_init = list(sd=grids)))
+system.time(fit_compound <- ebnm_penalized_compound(y,s,g_init = list(sd=grids)))
 ```
 
 ```{r}
-ploter = function(fit,y,lambda,main='known prior'){
-  plot(y,main=main,col='grey80')
-  lines(lambda,col='grey60')
-  lines(fit$z,type='p',pch=20,col='grey80')
-  lines(fit$posteriorMean)
-  legend('topleft',c('data','z','true mean','estimated mean'),pch=c(1,20,NA,NA),lty=c(NA,NA,1,1),col=c('grey80','grey80','grey60',1))
-}
-```
 
-### Init $z$ at data $y$.
+library(ggplot2)
+library(gridExtra)
 
-```{r}
-fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = y,opt_method = 'L-BFGS-B')
-```
+# plot 1
+p1 <- ggplot() + 
+  geom_point(aes(x = 1:length(y), y = y), col = 'grey80', pch = 20) + 
+  geom_line(aes(x = 1:length(mu), y = mu), col = 'grey60') + 
+  geom_line(aes(x = 1:length(fit.ash$result$PosteriorMean), y = fit.ash$result$PosteriorMean)) + 
+  labs(title = 'ash', x = '', y = '') +
+  scale_color_manual(values = c('grey80', 'grey60', 'black')) +
+  guides(colour = guide_legend(override.aes = list(pch = c(20, NA, NA), lty = c(NA, 1, 1)))) +
+  theme_bw()
 
-```{r}
-ploter(fit,y,lambda,main='known prior, init z at y')
-```
+# plot 2
+p2 <- ggplot() + 
+  geom_point(aes(x = 1:length(y), y = y), col = 'grey80', pch = 20) + 
+  geom_line(aes(x = 1:length(mu), y = mu), col = 'grey60') + 
+  geom_line(aes(x = 1:length(fit_inv$posterior$mean), y = fit_inv$posterior$mean)) + 
+  labs(title = 'inversion', x = '', y = '') +
+  scale_color_manual(values = c('grey80', 'grey60', 'black')) +
+  guides(colour = guide_legend(override.aes = list(pch = c(20, NA, NA), lty = c(NA, 1, 1)))) +
+  theme_bw()
 
+# plot 3
+p3 <- ggplot() + 
+  geom_point(aes(x = 1:length(y), y = y), col = 'grey80', pch = 20) + 
+  geom_line(aes(x = 1:length(mu), y = mu), col = 'grey60') + 
+  geom_line(aes(x = 1:length(fit_compound$posterior$mean), y = fit_compound$posterior$mean)) + 
+  labs(title = 'compound', x = '', y = '') +
+  scale_color_manual(values = c('grey80', 'grey60', 'black')) +
+  guides(colour = guide_legend(override.aes = list(pch = c(20, NA, NA), lty = c(NA, 1, 1)))) +
+  theme_bw()
 
-### Init $z$ at 0.
+# arrange the plots
+grid.arrange(p1, p2, p3, ncol = 1)
 
-```{r}
-fit = ebnm_penalized_compound_known_g(y,s,w_true,grid_true,z_init = double(n),opt_method = 'L-BFGS-B')
-```
-
-```{r}
-ploter(fit,y,lambda,main='known prior, init z at 0')
-```
-
-## Estimate prior
-
-```{r}
-#'objective function
-#'@param theta (mu_bar,w)
-#'@param grid prior sds
-f_obj = function(theta,y,s,grid){
-  n = length(y)
-  w = softmax(theta[-(1:n)])
-  z = theta[1:n]
-  
-  res = sum((y-z-s^2*l_nm_d1_z(z,s,w,grid))^2/2/s^2 - l_nm(z,s,w,grid) - s^2*(l_nm_d1_z(z,s,w,grid))^2/2)
-
-  return(res)
-}
-
-#'objective function
-#'@param theta (mu_bar,w)
-#'@param grid prior sds
-f_obj_grad = function(theta,y,s,grid){
-  n = length(y)
-  a = theta[-(1:n)]
-  w = softmax(a)
-  z = theta[1:n]
-  
-  grad_z = (1+s^2*l_nm_d2_z(z,s,w,grid))*(z-y)/s^2
-  grad_a = colSums((s^2*l_nm_d1_z(z,s,w,grid)-y+z)*l_nm_d2_za(z,s,a,grid) - l_nm_d1_a(z,s,a,grid) - s^2*l_nm_d1_z(z,s,w,grid)*l_nm_d2_za(z,s,a,grid))
-
-  return(c(grad_z,c(grad_a)))
-}
-
-ebnm_penalized_compound = function(x,s,grid,z_init = NULL,w_init=NULL,opt_method = 'L-BFGS-B'){
-  n = length(x)
-  K = length(grid)
-  if(is.null(w_init)){
-    w_init = rep(1/K,K)
-  }
-  if(length(s)==1){
-    s = rep(s,n)
-  }
-  if(is.null(z_init)){
-    z_init = x
-  }
-  out = optim(c(z_init,w_init),fn=f_obj,
-              #gr=f_obj_grad,
-              method=opt_method,
-              y=y,grid=grid,s=s)
-  z = out$par[1:n]
-  w = softmax(out$par[-(1:n)])
-  posteriorMean = S(z,s,w,grid)
-  return(list(z=z,w=w,posteriorMean=posteriorMean,opt_res = out))
-}
-
-```
-
-### init at y
-
-```{r}
-fit = ebnm_penalized_compound(y,s,grid,z_init = y)
-plot(grid,fit$w,ylab='w hat')
-fit$opt_res$value
-```
-
-
-```{r}
-ploter(fit,y,lambda,main='estimate prior, init z at y')
-```
-
-### init at 0
-
-```{r}
-fit = ebnm_penalized_compound(y,s,grid,z_init = rep(0,n))
-plot(grid,fit$w,ylab='w hat')
-fit$opt_res$value
 ```
 
 ```{r}
-ploter(fit,y,lambda,main='estimate prior, init z at 0')
+fit.ash$fitted_g$pi
+fit_inv$fitted_g$pi
+fit_compound$fitted_g$pi
 ```
-
-## ash fit
-
-```{r,warning=FALSE}
-fit.ash = ash(y,s,mixcompdist = 'normal',pointmass=FALSE,prior='uniform',mixsd=grid)
-plot(y,main='ash fit',col='grey80')
-lines(lambda,col='grey60')
-lines(fit.ash$result$PosteriorMean)
-legend('topleft',c('data','true mean','ash posteriorMean'),pch=c(1,NA,NA),lty=c(NA,1,1),col=c('grey80','grey60',1))
-```
-
-
-
 
