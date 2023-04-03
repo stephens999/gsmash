@@ -1,0 +1,41 @@
+---
+title: "Old results on Poisson smoothing in 2022"
+author: "DongyueXie"
+date: "2023-04-02"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I benchmarked methods on the following smooth functions.
+
+* [Angles](smooth_angles_benchmark_new.html)
+* [Bursts](smooth_bursts_benchmark_new.html)
+* [heavisine](smooth_heavisine_benchmark_new.html)
+* [simple blocks](smooth_sblocks_benchmark_new.html)
+* [clipped blocks](smooth_cblocks_benchmark_new.html)
+* [Spike](smooth_spike_benchmark_new.html)
+
+Below are some old results. Specifically the smooth functions are in the log-space. (So after exp they may look different than their name originally suggest.)
+
+I picked up some methods that are performing better and reduce the plot size for better illustration.
+
+* [Angles](smooth_angles_benchmark_simplified.html)
+* [simple blocks](smooth_sblocks_benchmark_simplified.html)
+* [spike](smooth_spike_benchmark_simplified.html)
+
+First Run:
+
+* [heavisine](smooth_heavi_benchmark.html)
+* [blocks](smooth_blocks_benchmark.html)
+
+Second Run:
+
+* [Angles](smooth_angles_benchmark.html)
+* [Bursts](smooth_bursts_benchmark.html)
+* [heavisine](smooth_heavisine_benchmark.html)
+* [simple blocks](smooth_sblocks_benchmark.html)
+* [clipped blocks](smooth_cblocks_benchmark.html)
+* [Spike](smooth_spike_benchmark.html)
