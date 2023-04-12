@@ -1,0 +1,56 @@
+---
+title: "droplet multiple run"
+author: "DongyueXie"
+date: "2023-04-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## 3000 genes
+
+
+Original data-set has 7193 cells and 18288 genes.
+
+I fit gene specific variance EBPMF method to the matrix.
+
+I set init tol to be $0.01,0.001,0.0001,0.00001$, because each tol gives different initial $\sigma^2$.
+
+```{r}
+load('/project2/mstephens/pcarbo/git/single-cell-topics/data/droplet.RData')
+source("~/Rpackages/gsmash/code/poisson_STM/structure_plot.R")
+library(Matrix)
+```
+
+```{r,fig.width=11,fig.height=6}
+init_tol_list = c(1e-2,1e-3,1e-4,1e-5)
+
+for(init_tol in init_tol_list){
+    res = readRDS(file=paste('/project2/mstephens/dongyue/poisson_mf/droplet/droplet_iteration_results/ebpmf_droplet_3000gene_nonnegLF_inittol',init_tol,'_iter60.rds',sep=''))
+    print(res$elbo/7193/3000)
+    structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,LD=T,remove_l0f0 = T,title = paste('init tol=',init_tol),n_samples = 2000)
+}
+
+```
+
+
+## full genes
+
+```{r,fig.width=11,fig.height=6}
+colors = randomcoloR::distinctColorPalette(k=17,runTsne = T)
+init_tol_list = c(0.1,1e-2,"1e3",1e-4)
+
+for(init_tol in init_tol_list){
+    res = readRDS(file=paste('/project2/mstephens/dongyue/poisson_mf/droplet/droplet_iteration_results/ebpmf_droplet_full_nonnegLF_inittol',init_tol,'_iter60.rds',sep=''))
+    print(res$elbo/7193/3000)
+    structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,LD=T,remove_l0f0 = T,title = paste('init tol=',init_tol),n_samples = 2000,colors = colors)
+}
+
+```
+
+```{r,eval=F}
+ldf2 = my_ldf(res$fit_flash$L.pm,res$fit_flash$F.pm)
+round(colMeans((ldf2$l%*%diag(ldf2$d))[samples$tissue=='Ionocyte',]),2)
+```
+
+
