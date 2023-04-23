@@ -1,0 +1,60 @@
+---
+title: "Try gene selection methods on droplet data"
+author: "DongyueXie"
+date: "2023-04-08"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+I want to select genes to reduce dimension of the dataset.
+
+```{r}
+load('/project2/mstephens/pcarbo/git/single-cell-topics/data/droplet.RData')
+library(Matrix)
+```
+
+## rliger
+
+```{r}
+library(rliger)
+ligerex <- createLiger(list(rna=t(counts)))
+ligerex <- normalize(ligerex)
+ligerex <- selectGenes(ligerex,do.plot=T,num.genes=3000)
+selected_genes_rliger = ligerex@var.genes
+```
+
+## Seurat
+
+```{r}
+library(Seurat)
+datax = CreateSeuratObject(counts = t(counts))
+datax = NormalizeData(datax)
+datax = FindVariableFeatures(datax, selection.method = "vst", nfeatures = 3000)
+selected_genes_seurat <- VariableFeatures(datax)
+```
+
+
+## Seurat + Townes
+
+According to: Sheng, Jie, and Wei Vivian Li. "Selecting gene features for unsupervised analysis of single-cell gene expression data." Briefings in bioinformatics 22, no. 6 (2021): bbab295.
+
+This method is the best on data with relatively high sparsity and is robust.
+
+```{r}
+library(Seurat)
+library(SeuratData)
+library(SeuratWrappers)
+library(glmpca)
+library(scry)
+```
+
+```{r}
+devs <- scry::devianceFeatureSelection(t(counts))
+dev_ranked_genes <- colnames(counts)[order(devs, decreasing = TRUE)]
+topdev <- head(dev_ranked_genes, 2000)
+```
+
+
+
+

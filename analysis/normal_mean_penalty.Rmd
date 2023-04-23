@@ -104,15 +104,15 @@ source('code/normal_mean_model_utils.R')
 #   out
 # }
 
-
-plot_penalty = function(x,s=1,w,grid){
+library(vebpm)
+plot_penalty = function(x,s=1,w,mu=0,grid){
 
   # plot compound penalty
-  compound_penalty = nm_penalty_compound(x,s,w,grid)
-  original_penalty = nm_penalty(x,s,w,grid)
+  compound_penalty = nm_penalty_compound(x,s,w,mu,grid)
+  original_penalty = nm_penalty(x,s,w,mu,grid)
   
   plot(x,compound_penalty,type='l',xlab='theta',ylab='penalty',ylim=range(c(compound_penalty,original_penalty)),
-       main=paste('w=(',paste(w,collapse = ", "),'); grid=(',paste(grid,collapse = ", "),')',sep=''))
+       main=(paste(pi,'=(',paste(w,collapse = ", "),'); ',sigma,'=(',paste(grid,collapse = ", "),')',sep='')))
   lines(x,original_penalty,col='blue',lty=2)
   legend('bottomright',c(expression(rho(S(theta))),expression(rho(theta))),lty=c(1,2),col=c(1,'blue'))
 }
@@ -129,25 +129,162 @@ plot_penalty_hess = function(x,s=1,w,grid){
   legend('topright',c(expression(rho^"''"*(S(theta))),expression(rho^"''"*(theta))),lty=c(1,2),col=c(1,'blue'))
 }
 
+library(ggplot2)
 ```
 
-```{r,fig.height=12,fig.width=12}
+```{r,fig.height=4,fig.width=4}
 n = 101
 x = seq(-10,10,length.out = n)
 s = rep(1,n)
 w = c(0.9,0.1)
 par(mfrow=c(2,2))
 grid_list=c(1,2,3,5)
-for(gg in grid_list){
-  plot_penalty(x,s,w,c(0,gg))
-}
+# for(gg in grid_list){
+#   plot_penalty(x,s,w,0,c(0,gg))
+# }
 
-for(gg in grid_list){
-  plot_penalty_hess(x,s,w,c(0,gg))
-}
+
+gg = 1
+compound_penalty = nm_penalty_compound(x,s,w,mu=0,c(0,gg))
+original_penalty = nm_penalty(x,s,w,mu=0,c(0,gg))
+
+
+
+# Create data frame with x, compound_penalty, and original_penalty columns
+df <- data.frame(x, compound_penalty, original_penalty)
+
+# Create the ggplot with type='l' (lines)
+p1 = ggplot(df, aes(x=x)) + 
+  geom_line(aes(y=compound_penalty), color="black", linetype="solid") +
+  geom_line(aes(y=original_penalty), color="blue", linetype="dashed") +
+  
+  # Add x and y labels
+  xlab(expression(theta)) + ylab("penalty") + 
+  
+  # Set the y-axis limits to range of compound_penalty and original_penalty
+  ylim(range(c(df$compound_penalty, df$original_penalty))) +
+  
+  # Add title
+  ggtitle(expression(paste(pi,'=(0.9, 0.1); ',sigma,'=(0, 1)',sep='')))
 
 ```
 
+```{r,fig.height=4,fig.width=4}
+n = 101
+x = seq(-10,10,length.out = n)
+s = rep(1,n)
+w = c(0.9,0.1)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+# for(gg in grid_list){
+#   plot_penalty(x,s,w,0,c(0,gg))
+# }
+
+
+gg = 2
+compound_penalty = nm_penalty_compound(x,s,w,mu=0,c(0,gg))
+original_penalty = nm_penalty(x,s,w,mu=0,c(0,gg))
+
+
+
+# Create data frame with x, compound_penalty, and original_penalty columns
+df <- data.frame(x, compound_penalty, original_penalty)
+
+# Create the ggplot with type='l' (lines)
+p2 = ggplot(df, aes(x=x)) + 
+  geom_line(aes(y=compound_penalty), color="black", linetype="solid") +
+  geom_line(aes(y=original_penalty), color="blue", linetype="dashed") +
+  
+  # Add x and y labels
+  xlab(expression(theta)) + ylab("penalty") + 
+  
+  # Set the y-axis limits to range of compound_penalty and original_penalty
+  ylim(range(c(df$compound_penalty, df$original_penalty))) +
+  
+  # Add title
+  ggtitle(expression(paste(pi,'=(0.9, 0.1); ',sigma,'=(0, 2)',sep='')))
+
+```
+
+
+```{r,fig.height=4,fig.width=4}
+n = 101
+x = seq(-10,10,length.out = n)
+s = rep(1,n)
+w = c(0.5,0.5)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+# for(gg in grid_list){
+#   plot_penalty(x,s,w,0,c(0,gg))
+# }
+
+
+gg = 1
+compound_penalty = nm_penalty_compound(x,s,w,mu=0,c(0,gg))
+original_penalty = nm_penalty(x,s,w,mu=0,c(0,gg))
+
+
+
+# Create data frame with x, compound_penalty, and original_penalty columns
+df <- data.frame(x, compound_penalty, original_penalty)
+
+# Create the ggplot with type='l' (lines)
+p3 = ggplot(df, aes(x=x)) + 
+  geom_line(aes(y=compound_penalty), color="black", linetype="solid") +
+  geom_line(aes(y=original_penalty), color="blue", linetype="dashed") +
+  
+  # Add x and y labels
+  xlab(expression(theta)) + ylab("penalty") + 
+  
+  # Set the y-axis limits to range of compound_penalty and original_penalty
+  ylim(range(c(df$compound_penalty, df$original_penalty))) +
+  
+  # Add title
+  ggtitle(expression(paste(pi,'=(0.5, 0.5); ',sigma,'=(0, 1)',sep='')))
+
+```
+
+```{r,fig.height=4,fig.width=4}
+n = 101
+x = seq(-10,10,length.out = n)
+s = rep(1,n)
+w = c(0.5,0.5)
+par(mfrow=c(2,2))
+grid_list=c(1,2,3,5)
+# for(gg in grid_list){
+#   plot_penalty(x,s,w,0,c(0,gg))
+# }
+
+
+gg = 2
+compound_penalty = nm_penalty_compound(x,s,w,mu=0,c(0,gg))
+original_penalty = nm_penalty(x,s,w,mu=0,c(0,gg))
+
+
+
+# Create data frame with x, compound_penalty, and original_penalty columns
+df <- data.frame(x, compound_penalty, original_penalty)
+
+# Create the ggplot with type='l' (lines)
+p4 = ggplot(df, aes(x=x)) + 
+  geom_line(aes(y=compound_penalty), color="black", linetype="solid") +
+  geom_line(aes(y=original_penalty), color="blue", linetype="dashed") +
+  
+  # Add x and y labels
+  xlab(expression(theta)) + ylab("penalty") + 
+  
+  # Set the y-axis limits to range of compound_penalty and original_penalty
+  ylim(range(c(df$compound_penalty, df$original_penalty))) +
+  
+  # Add title
+  ggtitle(expression(paste(pi,'=(0.5, 0.5); ',sigma,'=(0, 2)',sep='')))
+
+```
+
+```{r}
+library(gridExtra)
+grid.arrange(p1,p2,p3,p4,nrow=2)
+```
 
 ```{r,fig.height=12,fig.width=12}
 n = 101

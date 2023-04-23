@@ -1,0 +1,170 @@
+---
+title: "vebpm simulation plots for thesis"
+author: "DongyueXie"
+date: "2023-04-03"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+ library(ggplot2)
+get_summary_runtime = function(out,rm_method = NULL,include_log_res = TRUE,log_runtime = TRUE){
+  runtime = c()
+  for(i in 1:length(out$output)){
+    runtime = rbind(runtime,out$output[[i]]$run_times)
+  }
+  method_names = colnames(runtime)
+  if(!is.null(rm_method)){
+    rm_idx = match(rm_method,method_names)
+    rm_idx = rm_idx[!is.na(rm_idx)]
+    runtime = runtime[,-rm_idx]
+  }
+  runtime_mean = apply(runtime,2,median,na.rm=T)
+  runtime_sd = apply(runtime,2,sd,na.rm=T)
+  order_idx = order(runtime_mean)
+  res = cbind(runtime_mean[order_idx],runtime_sd[order_idx])
+  colnames(res) = c('median','sd')
+  print(knitr::kable(round(res,3)))
+
+
+
+  # plot runtime vs mse
+
+  mse_all = c()
+  for(i in 1:length(out$output)){
+    mse_all = rbind(mse_all,out$output[[i]]$MSE_mean)
+  }
+  method_names = colnames(mse_all)
+  if(!is.null(rm_method)){
+    rm_idx = match(rm_method,method_names)
+    rm_idx = rm_idx[!is.na(rm_idx)]
+    mse_all = mse_all[,-rm_idx]
+    method_names = method_names[-rm_idx]
+  }
+  n_method = length(method_names)
+  mse_mle = apply((out$sim_data$X-out$sim_data$Mean)^2,1,mean)
+  mse_relative = mse_all/mse_mle
+  mse_mean = apply(mse_relative,2,mean,na.rm=T)
+  #mse_sd = apply(mse_all,2,sd,na.rm=T)
+
+  if(log_runtime){
+          # Define a set of shapes to use for each unique 'method' value
+    shapes <- c(1, 2, 3, 4, 5, 6, 15, 17, 18, 19)
+    
+    # Create a data frame with the data used in the plot
+    df <- data.frame(x = log2(runtime_mean), y = mse_mean, 
+                     method = method_names)
+    
+    # Create the plot
+    p1 = ggplot(df, aes(x = x, y = y, color = factor(method), shape = factor(method))) +
+        geom_point(size = 3) +
+        scale_color_discrete(name = "Method") +
+        scale_shape_manual(name = "Method", values = shapes) +
+        xlab("Run time (log2 seconds)") +
+        ylab("MSE (relative to MLE)") +
+        geom_hline(yintercept = 1, linetype = "dashed", color = "grey80") +
+        labs(title = "") +
+        guides(shape = guide_legend(override.aes = list(fill = NA)))
+    print(p1)
+  }else{
+    plot(runtime_mean,mse_mean,xlab='run time',ylab='mse relative to mle',pch = 1:n_method,col=1:n_method, main='mean estimation')
+    legend('topright',method_names,pch=1:n_method,col=1:n_method)
+    abline(h=1,lty=2,col='grey80')
+  }
+
+
+  if(include_log_res){
+    # plot runtime vs mse_log
+    mse_all = c()
+    for(i in 1:length(out$output)){
+      mse_all = rbind(mse_all,out$output[[i]]$MSE_log_mean)
+    }
+    method_names = colnames(mse_all)
+    if(!is.null(rm_method)){
+      rm_idx = match(rm_method,method_names)
+      rm_idx = rm_idx[!is.na(rm_idx)]
+      mse_all = mse_all[,-rm_idx]
+      method_names = method_names[-rm_idx]
+    }
+    mse_mean = apply(mse_all,2,mean,na.rm=T)
+    mse_sd = apply(mse_all,2,sd,na.rm=T)
+    if(log_runtime){
+      shapes <- c(1, 2, 3, 4, 5, 6, 15, 17, 18, 19)
+    
+    # Create a data frame with the data used in the plot
+    df <- data.frame(x = log2(runtime_mean), y = mse_mean, 
+                     method = method_names)
+    
+    # Create the plot
+    ggplot(df, aes(x = x, y = y, color = factor(method), shape = factor(method))) +
+        geom_point(size = 3) +
+        scale_color_discrete(name = "Method") +
+        scale_shape_manual(name = "Method", values = shapes) +
+        xlab("Run time (log2 seconds)") +
+        ylab("MSE") +
+        labs(title = "") +
+        guides(shape = guide_legend(override.aes = list(fill = NA)))
+    }else{
+      plot(runtime_mean,mse_mean,xlab='run time',ylab='mse',pch = 1:n_method,col=1:n_method, main='log mean estimation')
+      legend('topright',method_names,pch=1:n_method,col=1:n_method)
+    }
+
+  }
+
+
+}
+
+
+
+```
+
+```{r}
+rm_method = c('GMGM_pointmass','split_mixture','nb_lb')
+```
+
+## Exponential prior
+
+```{r}
+# /project2/mstephens/dongyue/poisson_mean/simu_2022
+out = readRDS('/project2/mstephens/dongyue/poisson_mean/simu_2022/exp_prior32_n_1000_mean_1.rds')
+```
+
+
+```{r}
+# /project2/mstephens/dongyue/poisson_mean/simu_2022
+out = readRDS('/project2/mstephens/dongyue/poisson_mean/simu_2022/exp_prior32_n_1000_mean_10.rds')
+```
+
+
+```{r}
+get_summary_runtime(out,rm_method)
+```
+
+```{r}
+# /project2/mstephens/dongyue/poisson_mean/simu_2022
+out = readRDS('/project2/mstephens/dongyue/poisson_mean/simu_2022/point_exp_prior32_n_1000_mean10.rds')
+get_summary_runtime(out,rm_method,include_log_res = FALSE)
+```
+
+
+
+## log link
+
+```{r}
+out = readRDS('/project2/mstephens/dongyue/poisson_mean/simu_2022/log_link32_n_1000_priormean_0_priorvar1_2_priorw_0.rds')
+get_summary_runtime(out,rm_method)
+```
+
+
+```{r}
+out = readRDS('/project2/mstephens/dongyue/poisson_mean/simu_2022/log_link32_n_1000_priormean_0_priorvar1_2_priorw_8.rds')
+get_summary_runtime(out,rm_method)
+```
+
+```{r}
+out = readRDS('/project2/mstephens/dongyue/poisson_mean/simu_2022/log_link32_n_1000_priormean_5_priorvar1_2_priorw_8.rds')
+get_summary_runtime(out,rm_method)
+```
+
+

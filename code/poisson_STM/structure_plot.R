@@ -15,6 +15,7 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
                                   remove_l0f0 = TRUE,
                                   topic_model=FALSE,
                                   show_legend=TRUE,
+                                  K = NULL,
                                   colors = c('#a6cee3',
                                     '#1f78b4',
                                     '#b2df8a',
@@ -36,7 +37,11 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
   }
 
   if(!topic_model){
-    ldf = my_ldf(Lhat,Fhat)
+    if(remove_l0f0){
+      ldf = my_ldf(Lhat[,-c(1,2)],Fhat[,-c(1,2)])
+    }else{
+      ldf = my_ldf(Lhat,Fhat)
+    }
   }else{
     ldf = list(l=Lhat,d=1)
     LD=F
@@ -47,8 +52,9 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
   }else{
     Lhat = ldf$l
   }
-  if(remove_l0f0){
-    Lhat = Lhat[,-c(1,2),drop=F]
+  if(!is.null(K)){
+    Lhat = Lhat[,1:K]
+    Fhat = Fhat[,1:K]
   }
   Fhat = matrix(1,nrow=3,ncol=ncol(Lhat))
   if(is.null(colnames(Lhat))){
@@ -72,7 +78,13 @@ structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
 my_ldf = function(Lhat,Fhat){
   dl = apply(Lhat,2,norm,type='2')
   df = apply(Fhat,2,norm,type='2')
-  return(list(l = apply(Lhat,2,function(z){z/norm(z,'2')}),
-              f = apply(Fhat,2,function(z){z/norm(z,'2')}),
-              d = dl*df))
+  d = df*df
+  ord = order(d,decreasing = T)
+  return(list(l = apply(Lhat,2,function(z){z/norm(z,'2')})[,ord],
+              f = apply(Fhat,2,function(z){z/norm(z,'2')})[,ord],
+              d = d[ord]))
 }
+
+
+
+

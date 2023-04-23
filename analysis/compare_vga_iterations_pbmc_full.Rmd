@@ -1,0 +1,115 @@
+---
+title: "compare vga iterations on pbmc data, full"
+author: "DongyueXie"
+date: "2023-01-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Does 1 iter vga differ from 1000 iter vga? how differ?
+
+
+## unconstrained LF
+
+```{r}
+fit1 = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/pbmc_splitting_point_normal_vga1.rds')
+fit1000 = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/pbmc_splitting_point_normal_vga1000.rds')
+```
+
+PLot elbo
+
+```{r}
+plot(fit1$elbo_trace,type='l',col=2,lwd=2,ylab='elbo')
+lines(fit1000$elbo_trace,type='l',col=4,lwd=2)
+legend('bottomright',c('1000 iter', '1 iter'),col=c(4,2),lwd=c(2,2))
+```
+
+Run time
+```{r}
+fit1$run_time
+fit1000$run_time
+
+plot(fit1$run_time_break_down$run_time_vga,xlab='iterations',ylab='time in second',main='1 iter')
+plot(fit1000$run_time_break_down$run_time_vga,xlab='iterations',ylab='time in second',main='1000 iter')
+```
+
+```{r}
+source('code/poisson_STM/plot_factors.R')
+library(fastTopics)
+library(Matrix)
+data(pbmc_facs)
+```
+
+```{r}
+plot.factors(fit1$fit_flash,pbmc_facs$samples$subpop,title = '1 iteration')
+plot.factors(fit1000$fit_flash,pbmc_facs$samples$subpop,title = '1000 iteration')
+```
+
+## nonnegative L
+
+```{r}
+fit1 = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/pbmc_splitting_nonnegativeL_vga1.rds')
+fit1000 = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/pbmc_splitting_nonnegativeL_vga1000.rds')
+```
+
+PLot elbo
+
+```{r}
+plot(fit1$elbo_trace,type='l',col=2,lwd=2,ylab='elbo')
+lines(fit1000$elbo_trace,type='l',col=4,lwd=2)
+legend('bottomright',c('1000 iter', '1 iter'),col=c(4,2),lwd=c(2,2))
+```
+
+Run time
+```{r}
+fit1$run_time
+fit1000$run_time
+
+plot(fit1$run_time_break_down$run_time_vga,xlab='iterations',ylab='time in second',main='1 iter')
+plot(fit1000$run_time_break_down$run_time_vga,xlab='iterations',ylab='time in second',main='1000 iter')
+```
+
+```{r}
+plot.factors(fit1$fit_flash,pbmc_facs$samples$subpop,title = '1 iteration')
+plot.factors(fit1000$fit_flash,pbmc_facs$samples$subpop,title = '1000 iteration')
+```
+
+## nonnegative LF
+
+```{r}
+fit1 = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/pbmc_splitting_nonnegativeLF_vga1.rds')
+fit1000 = readRDS('/project2/mstephens/dongyue/poisson_mf/pbmc3k/pbmc_splitting_nonnegativeLF_vga1000.rds')
+```
+
+PLot elbo
+
+```{r}
+plot(fit1$elbo_trace,type='l',col=2,lwd=2,ylab='elbo')
+lines(fit1000$elbo_trace,type='l',col=4,lwd=2)
+legend('bottomright',c('1000 iter', '1 iter'),col=c(4,2),lwd=c(2,2))
+```
+
+
+```{r}
+plot(fit1$elbo_trace,type='l',col=2,lwd=2,ylab='elbo',ylim=c(-9400000,-9200000))
+lines(fit1000$elbo_trace,type='l',col=4,lwd=2)
+legend('bottomright',c('1000 iter', '1 iter'),col=c(4,2),lwd=c(2,2))
+```
+
+Run time
+```{r}
+fit1$run_time
+fit1000$run_time
+
+plot(fit1$run_time_break_down$run_time_vga,xlab='iterations',ylab='time in second',main='1 iter')
+plot(fit1000$run_time_break_down$run_time_vga,xlab='iterations',ylab='time in second',main='1000 iter')
+```
+
+```{r}
+plot.factors(fit1$fit_flash,pbmc_facs$samples$subpop,title = '1 iteration')
+plot.factors(fit1000$fit_flash,pbmc_facs$samples$subpop,title = '1000 iteration')
+```
+

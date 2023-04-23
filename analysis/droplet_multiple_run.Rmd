@@ -31,8 +31,29 @@ for(init_tol in init_tol_list){
     structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,LD=T,remove_l0f0 = T,title = paste('init tol=',init_tol),n_samples = 2000)
 }
 
+init_tol=0.01
+res = readRDS(file=paste('/project2/mstephens/dongyue/poisson_mf/droplet/droplet_iteration_results/ebpmf_droplet_3000gene_nonnegLF_inittol',init_tol,'_iter60.rds',sep=''))
+structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,
+                       LD=F,remove_l0f0 = T,title = paste('init tol=',init_tol),
+                       n_samples = 2000,K=7,print_plot = F)
+colnames(counts)[order(my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[,2])[1:10]]
 ```
 
+
+```{r}
+devs <- scry::devianceFeatureSelection(t(counts))
+dev_ranked_genes <- colnames(counts)[order(devs, decreasing = TRUE)]
+topdev <- head(dev_ranked_genes, 3000)
+counts = counts[,colnames(counts)%in%topdev]
+counts = counts[,colSums(counts!=0)>10]
+
+tm_fit  = fit_poisson_nmf(counts,7)
+saveRDS(tm_fit,file='/project2/mstephens/dongyue/poisson_mf/droplet/fasttopics_nmf_3000gene_fit.rds')
+structure_plot(tm_fit,grouping = samples$tissue,gap = 40,
+               colors = c("#4daf4a", "#984ea3", "#ff7f00", "#ffff33",
+    "#a65628", "#f781bf", "#999999"))
+
+```
 
 ## full genes
 
@@ -46,11 +67,31 @@ for(init_tol in init_tol_list){
     structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,LD=T,remove_l0f0 = T,title = paste('init tol=',init_tol),n_samples = 2000,colors = colors)
 }
 
+init_tol=0.01
+res = readRDS(file=paste('/project2/mstephens/dongyue/poisson_mf/droplet/droplet_iteration_results/ebpmf_droplet_full_nonnegLF_inittol',init_tol,'_iter60.rds',sep=''))
+structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,
+                       LD=T,remove_l0f0 = T,title = paste('init tol=',init_tol),
+                       n_samples = 2000,K=7)
+
+
+
+k = 6
+colnames(counts)[order(my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[,k],decreasing = T)[1:10]]
+plot(log10(colMeans(counts)),my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[,k],col='grey80')
+identified_points <- identify(log10(colMeans(counts)),
+                              my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[,k])
+colnames(counts)[identified_points]
+
+lines(log10(colMeans(counts))[15789],
+      my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[15789,k],type='p',col=4)
 ```
 
 ```{r,eval=F}
 ldf2 = my_ldf(res$fit_flash$L.pm,res$fit_flash$F.pm)
 round(colMeans((ldf2$l%*%diag(ldf2$d))[samples$tissue=='Ionocyte',]),2)
 ```
+
+
+
 
 

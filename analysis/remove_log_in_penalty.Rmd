@@ -59,6 +59,75 @@ for(gg in grid_list){
 }
 ```
 
+```{r}
+library(ggplot2)
+n = 101
+x = seq(-3,3,length.out = n)
+mu = 0
+w = c(0.9,0.1)
+penalty = pois_penalty(x,w,mu,c(0,1))
+df <- data.frame(x, penalty)
+# Plot the line
+ggplot(df, aes(x, penalty)) +
+  geom_line(color = "black", linetype = "solid") +
+  xlab(expression(theta)) +
+  ylab("penalty") +
+  ggtitle(expression(paste(pi,' = (0.9,0.1); ',sigma,' = (0,1)',sep=''))) +
+  # Add a vertical line at x = 0
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey60")
+```
+
+```{r}
+n = 101
+x = seq(-9,9,length.out = n)
+mu = 0
+w = c(0.9,0.1)
+penalty = pois_penalty(x,w,mu,c(0,3))
+df <- data.frame(x, penalty)
+# Plot the line
+ggplot(df, aes(x, penalty)) +
+  geom_line(color = "black", linetype = "solid") +
+  xlab(expression(theta)) +
+  ylab("penalty") +
+  ggtitle(expression(paste(pi,' = (0.9,0.1); ',sigma,' = (0,3)',sep=''))) +
+  # Add a vertical line at x = 0
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey60")
+```
+
+```{r}
+n = 101
+x = seq(-3,3,length.out = n)
+mu = 0
+w = c(0.5,0.5)
+penalty = pois_penalty(x,w,mu,c(0,1))
+df <- data.frame(x, penalty)
+# Plot the line
+ggplot(df, aes(x, penalty)) +
+  geom_line(color = "black", linetype = "solid") +
+  xlab(expression(theta)) +
+  ylab("penalty") +
+  ggtitle(expression(paste(pi,' = (0.5,0.5); ',sigma,' = (0,1)',sep=''))) +
+  # Add a vertical line at x = 0
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey60")
+```
+
+```{r}
+n = 101
+x = seq(-9,9,length.out = n)
+mu = 0
+w = c(0.5,0.5)
+penalty = pois_penalty(x,w,mu,c(0,3))
+df <- data.frame(x, penalty)
+# Plot the line
+ggplot(df, aes(x, penalty)) +
+  geom_line(color = "black", linetype = "solid") +
+  xlab(expression(theta)) +
+  ylab("penalty") +
+  ggtitle(expression(paste(pi,' = (0.5,0.5); ',sigma,' = (0,3)',sep=''))) +
+  # Add a vertical line at x = 0
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey60")
+```
+
 ## w = c(0.9,0.1), mu = 3
 
 ```{r,fig.height=12,fig.width=12}

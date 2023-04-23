@@ -1,0 +1,97 @@
+---
+title: "pbmc purified data, filtergene by deviance, multiple run"
+author: "DongyueXie"
+date: "2023-04-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Original dataset has 94655 cells and 21952 genes.
+
+I used deviance method for selecting top 3000 variable genes.
+
+Then I fit model with different init tolerance, because they lead to different initial $\sigma^2$.
+
+```{r}
+load('/project2/mstephens/pcarbo/git/single-cell-topics/data/pbmc_purified.RData')
+source("~/Rpackages/gsmash/code/poisson_STM/structure_plot.R")
+library(Matrix)
+```
+
+```{r}
+cell_names = samples$celltype
+cell_names = as.character(cell_names)
+cell_names[cell_names=='CD8+ Cytotoxic T'] = 'CD8+ T cells'
+cell_names[cell_names%in%c('CD4+ T Helper2','CD4+/CD45RO+ Memory','CD8+/CD45RA+ Naive Cytotoxic','CD4+/CD45RA+/CD25- Naive T','CD4+/CD25 T Reg')] = 'Other T cells'
+table(cell_names)
+cell_names = as.factor(cell_names)
+```
+
+```{r}
+init_tol_list = c(0.1,0.01,0.001,1e-4,1e-5)
+for(init_tol in init_tol_list){
+    res = readRDS(file=paste('/project2/mstephens/dongyue/poisson_mf/pbmc_purified/ebpmf_pbmc_3000gene_nonnegLF_inittol',init_tol,'.rds',sep=''))
+    print(res$elbo/94655/3000)
+    structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,cell_names,LD=T,remove_l0f0 = T,title = paste('init tol=',init_tol),n_samples = 5000)
+}
+```
+
+
+I chose init tol is 0.0001 one. It identifies K = 7 topics(in addition to the baseline ones).
+
+
+```{r}
+res = readRDS(file=paste('/project2/mstephens/dongyue/poisson_mf/pbmc_purified/ebpmf_pbmc_3000gene_nonnegLF_inittol',1e-4,'.rds',sep=''))
+```
+
+```{r}
+structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,cell_names,LD=T,remove_l0f0 = T,title = "EBPMF",n_samples = 5000)
+```
+
+
+```{r}
+devs <- scry::devianceFeatureSelection(t(counts))
+dev_ranked_genes <- colnames(counts)[order(devs, decreasing = TRUE)]
+topdev <- head(dev_ranked_genes, 3000)
+gene_idx = colnames(counts)%in%topdev
+gene_names = genes$symbol[gene_idx]
+#counts = counts[,gene_idx]
+#counts = counts[,colSums(counts!=0)>10]
+```
+
+```{r}
+cols = rep('grey80',length(gene_names))
+cols[which(gene_names%in%gene_names[order(res$fit_flash$F.pm[,3],decreasing = T)][1:10])] = 'red'
+# cols[which(gene_names=='GNLY')] = 'red'
+# cols[which(gene_names=='CCL5')] = 'red'
+# cols[which(gene_names=='NKG7')] = 'red'
+# cols[which(gene_names=='GZMB')] = 'red'
+# cols[which(gene_names=='FGFBP2')] = 'red'
+plot(res$fit_flash$F.pm[,3],xlab = '',
+     pch=20,ylab='',col=cols,
+     axes = F)
+axis(2,at=c(0,1,2,3,4,5),labels = c(0,1,2,3,4,5))
+text(which(gene_names=='GNLY')+100,res$fit_flash$F.pm[which(gene_names=='GNLY'),3],label='GNLY',cex=0.8)
+text(which(gene_names=='CCL5')+100,res$fit_flash$F.pm[which(gene_names=='CCL5'),3],label='CCL5',cex=0.8)
+text(which(gene_names=='NKG7')+100,res$fit_flash$F.pm[which(gene_names=='NKG7'),3],label='NKG7',cex=0.8)
+text(which(gene_names=='GZMB')+100,res$fit_flash$F.pm[which(gene_names=='GZMB'),3],label='GZMB',cex=0.8)
+text(which(gene_names=='TYROBP')+100,res$fit_flash$F.pm[which(gene_names=='TYROBP'),3],label='TYROBP',cex=0.8)
+text(which(gene_names=='FGFBP2'),res$fit_flash$F.pm[which(gene_names=='FGFBP2'),3]+0.2,label='FGFBP2',cex=0.8)
+text(which(gene_names=='GZMA')+100,res$fit_flash$F.pm[which(gene_names=='GZMA'),3],label='GZMA',cex=0.8)
+text(which(gene_names=='GZMH')+100,res$fit_flash$F.pm[which(gene_names=='GZMH'),3],label='GZMH',cex=0.8)
+text(which(gene_names=='CST7')+100,res$fit_flash$F.pm[which(gene_names=='CST7'),3],label='CST7',cex=0.8)
+text(which(gene_names=='CLIC3')+100,res$fit_flash$F.pm[which(gene_names=='CLIC3'),3],label='CLIC3',cex=0.8)
+```
+
+
+```{r}
+counts_filter = counts[,gene_idx]
+plot(log10(colMeans(counts_filter)),res$fit_flash$F.pm[,3],pch=19,col='grey80')
+
+
+```
+
+

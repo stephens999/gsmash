@@ -1,0 +1,106 @@
+---
+title: "run ebpmf on full droplet data "
+author: "DongyueXie"
+date: "2023-03-01"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+I ran ebpmf on droplet data. The dataset is  “droplet” UMI count data from Montoro et al (2018)—these are gene expression profiles of trachea epithelial cells in C57BL/6 mice obtained using droplet-based 3’ single-cell RNA-seq—for topic modeling analysis.
+
+See [here](https://stephenslab.github.io/single-cell-topics/prepare_droplet.html) for data preparations.
+
+## nonnegative L, F
+
+I did not filter out any genes. And I set init tol for vga to be 1e-3.
+
+```{r}
+load('/project2/mstephens/pcarbo/git/single-cell-topics/data/droplet.RData')
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_full_nonnegLF_inittol1e3.rds')
+fit$elbo
+hist(fit$sigma2,breaks = 100)
+```
+
+```{r}
+source('code/poisson_STM/structure_plot.R')
+```
+
+
+```{r}
+library(randomcoloR)
+n <- 17
+set.seed(12345)
+palette <- distinctColorPalette(n)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,samples$tissue,remove_l0f0 = T,colors = palette)
+```
+
+```{r}
+cell_types = samples$tissue
+rare_idx = cell_types%in%c('Tuft', 'Neuroendocrine', 'Ionocyte', 'Goblet')
+abundance_idx = !(cell_types%in%c('Tuft', 'Neuroendocrine', 'Ionocyte', 'Goblet'))
+cell_types = rep('abundant',length(cell_types))
+cell_types[rare_idx] = 'rare'
+cell_types = as.factor(cell_types)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,grouping=cell_types,remove_l0f0 = T,colors = palette)
+```
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/droplet_iteration_results/ebpmf_droplet_full_nonnegLF_iter100.rds')
+fit$elbo
+hist(fit$sigma2,breaks = 100)
+```
+
+smaller init variance:
+
+```{r}
+set.seed(12345)
+palette <- distinctColorPalette(ncol(fit$fit_flash$L.pm)-2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,samples$tissue,remove_l0f0 = T,colors = palette)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,cell_types,remove_l0f0 = T,colors = palette)
+```
+
+## nonnegative L, sparse F
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/ebpmf_droplet_full_nonnegL_inittol1e3.rds')
+fit$elbo
+hist(fit$sigma2,breaks = 100)
+```
+
+```{r}
+set.seed(12345)
+palette <- distinctColorPalette(ncol(fit$fit_flash$L.pm)-2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,samples$tissue,remove_l0f0 = T,colors = palette)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,cell_types,remove_l0f0 = T,colors = palette)
+```
+
+smaller init variance.
+
+```{r}
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/droplet_iteration_results/ebpmf_droplet_full_nonnegL_iter85.rds')
+fit$elbo
+hist(fit$sigma2,breaks = 100)
+```
+
+```{r}
+set.seed(12345)
+palette <- distinctColorPalette(ncol(fit$fit_flash$L.pm)-2)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,samples$tissue,remove_l0f0 = T,colors = palette)
+structure_plot_general(fit$fit_flash$L.pm,fit$fit_flash$F.pm,cell_types,remove_l0f0 = T,colors = palette)
+```
+
+## fasttopic fit
+
+```{r}
+library(fastTopics)
+fit = readRDS('/project2/mstephens/dongyue/poisson_mf/droplet/fasttopics_fit.rds')
+structure_plot(fit,grouping = samples$tissue,colors = palette,gap=40,verbose=F)
+structure_plot(fit,grouping = cell_types,colors = palette,gap=40,verbose=F)
+```
+
+
+
+
+
+

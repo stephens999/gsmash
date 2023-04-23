@@ -16,34 +16,189 @@ Fitted Model is
 where $s_{ij}=l_{0i}f_{0j}$ is the background frequency.
 
 ```{r}
-source('code/poisson_STM/splitting_PMF.R')
+library(ebpmf)
+
+my_ldf = function(Lhat,Fhat){
+  dl = apply(Lhat,2,norm,type='2')
+  df = apply(Fhat,2,norm,type='2')
+  d = dl*df
+  ord = order(d,decreasing = T)
+  d = d[ord]
+  l = apply(Lhat,2,function(z){z/norm(z,'2')})
+  l = l[,ord]
+  f = apply(Fhat,2,function(z){z/norm(z,'2')})
+  f = f[,ord]
+  return(list(l = l,
+              f=f,
+              d = d))
+}
+
+plot.factors.general = function(LL,
+         groups,
+         ylims=c(-1,1),
+         kset = NULL,
+         max.pt.size = 2,
+         title = NULL,
+         nonnegative = FALSE) {
+
+    if(is.null(kset)){
+        kset = 1:ncol(LL)
+    }
+    LL = LL[,kset]
+    
+    # # Re-normalize loadings so that factors are equally spread out.
+    # # LL <- res$L.pm[,kset,drop=F]
+    # #LL <- LL * res$cell.prescaling.factors
+    # 
+    LL <- t(t(LL) / apply(abs(LL), 2, max))
+    # 
+    # To make it easier to compare factors, flip them to make the largest
+    #   loadings positive.
+    flip <- 2 * (colSums(LL > 0.75) > colSums(LL < -0.75)) - 1
+    LL <- t(t(LL) * flip)
+    
+    # Make the size of the point depend on how many of that type there are.
+    sizes <- max.pt.size / sqrt(table(groups) / min(table(groups)))
+    
+    # if (nonnegative) {
+    #     ylims <- c(-0.05, 1.05)
+    # } else {
+    #     ylims <- c(-1.05, 1.05)
+    # }
+    
+    df <- reshape2::melt(LL, value.name = "loading")
+    df$groups <- rep(as.factor(groups), length(kset))
+    ggplot(df, aes(x = Var2, y = loading, color = groups)) +
+        geom_jitter(position = position_jitter(height=0, width=0.4),
+                    size = rep(sizes[groups], length(kset))) +
+        labs(title = title, x = NULL) +
+        lims(y = ylims)
+}
 ```
 
 ```{r}
-set.seed(12345)
-N = 100
-p = 50
-K = 2
+set.seed(12344)
+N = 300
+p = 100
+K = 3
 Ftrue = matrix(0,nrow=p,ncol=K)
-Ftrue[1:20,1] = 1
-Ftrue[21:40,2] = 1
+Ftrue[1:20,1] = 1+runif(20,0.5,1)
+Ftrue[21:40,2] = -2+runif(20,0.5,1)
+Ftrue[41:60,3] = 3+runif(20,0.5,1)
+sigma2 = 1
 Ltrue = matrix(rnorm(N*K), ncol=K)
 
-l0 = runif(N,1,2)
-f0 = runif(p,1,2)
-S0 = tcrossprod(l0,f0)
-
-Lambda = S0*exp(tcrossprod(Ltrue,Ftrue))
-
+Lambda = exp(tcrossprod(Ltrue,Ftrue) + matrix(rnorm(N*p,0,sqrt(sigma2)),nrow=N))
 Y = matrix(rpois(N*p,Lambda),nrow=N,ncol=p)
-
-fit = splitting_PMF(Y,S0)
-plot(fit$obj,type='l',ylab = 'ELBO')
-fit$fit_flash$nfactors
-
-plot(fit$fit_flash$fitted_values,tcrossprod(Ltrue,Ftrue),xlab='fitted',ylab='true',col='grey80')
-abline(a=0,b=1)
-
-plot(fit$fit_flash$ldf$f[,1])
-plot(fit$fit_flash$ldf$f[,2])
 ```
+
+
+```{r}
+Y = t(Y)
+LF = list(L=Ltrue,F=Ftrue)
+Ltrue = LF$F
+Ftrue = LF$L
+clusters = c(rep(1,20),rep(2,20),rep(3,20),rep(4,p-60))
+
+ldf_true = my_ldf(Ltrue,Ftrue)
+plot(ldf_true$f[,1])
+plot(ldf_true$f[,2])
+plot(ldf_true$f[,3])
+ldf_true$d
+plot.factors.general(ldf_true$l,clusters,ylims = c(-0.55,1.05),title = 'True Loadings')
+```
+
+
+```{r}
+fit = ebpmf_log(Y,l0=0,f0=0,flash_control=list(fix_f0=T,fix_l0=T),
+                var_type = 'constant',
+                sigma2_control = list(return_sigma2_trace=T),
+                general_control = list(maxiter=100))
+plot(fit$elbo_trace,type='l',ylab = 'ELBO')
+plot(fit$K_trace)
+plot(fit$sigma2_trace,ylab=expression(sigma^2),xlab='iteration',type='l',col=2,lwd=2)
+fit$sigma2
+# plot(fitted(fit$fit_flash),tcrossprod(Ltrue,Ftrue),xlab='fitted',ylab='true',col='grey80')
+# abline(a=0,b=1)
+
+
+
+
+ldf_split = my_ldf(fit$fit_flash$L.pm[,-c(1,2)],fit$fit_flash$F.pm[,-c(1,2)])
+#plot(ldf_split$f[,1])
+#plot(ldf_split$f[,2])
+#plot(ldf_split$f[,3])
+plot.factors.general(ldf_split$l,clusters,ylims = c(-0.55,1.05),title = 'EBPMF')
+```
+
+fit GLMPCA
+
+```{r}
+library(glmpca)
+set.seed(12345)
+n_rep = 10
+smallest_dev = Inf
+for(i in 1:n_rep){
+  fit_glmpca = glmpca(Y,L=3,fam='poi',sz=rep(1,N))
+  if(fit_glmpca$dev[length(fit_glmpca$dev)]<smallest_dev){
+    smallest_dev = fit_glmpca$dev[length(fit_glmpca$dev)]
+    fit_glmpca_best = fit_glmpca
+  }
+}
+
+ldf_glmpca = my_ldf(fit_glmpca_best$loadings,fit_glmpca_best$factors)
+#plot(ldf_glmpca$f[,1])
+#plot(ldf_glmpca$f[,2])
+#plot(ldf_glmpca$f[,3])
+
+plot.factors.general(ldf_glmpca$l,clusters,ylims = c(-0.55,1.05),title = 'GLM-PCA')
+```
+
+
+fit log1p + ebnmf
+
+```{r}
+library(flashier)
+fit_flash = flash(log(1+Y),var.type = 0,greedy.Kmax = 3)
+ldf_flash = my_ldf(fit_flash$L.pm,fit_flash$F.pm)
+plot(ldf_flash$f[,1])
+plot(ldf_flash$f[,2])
+plot(ldf_flash$f[,3])
+#plot(ldf_flash$f[,4])
+plot.factors.general(ldf_flash$l,clusters,ylims = c(-0.55,1.05),title = 'log(1+Y) EBMF')
+
+fit_flash = flash(log(0.1+Y),var.type = 0,greedy.Kmax = 3)
+ldf_flash = my_ldf(fit_flash$L.pm,fit_flash$F.pm)
+plot(ldf_flash$f[,1])
+plot(ldf_flash$f[,2])
+plot(ldf_flash$f[,3])
+#plot(ldf_flash$f[,4])
+plot.factors.general(ldf_flash$l,clusters,ylims = c(-0.55,1.05),title = 'log(0.1+Y) EBMF')
+```
+
+fit Poisson PCA
+
+```{r}
+library(PoissonPCA)
+fit_ppca=PoissonPCA::Poisson_Corrected_PCA(Y,3,transformation = 'log')
+ldf_ppca = my_ldf(fit_ppca$scores,fit_ppca$loadings)
+plot(ldf_ppca$f[,1])
+plot(ldf_ppca$f[,2])
+plot(ldf_ppca$f[,3])
+plot.factors.general(ldf_ppca$l,clusters,ylims = c(-0.55,1.05),title = 'Poisson PCA')
+```
+
+
+fit generalized PCA. Very slow.
+
+```{r}
+library(generalizedPCA)
+fit_gpca = generalizedPCA(Y,3,family = 'poisson')
+ldf_gpca = my_ldf(fit_gpca$PCs,fit_gpca$U)
+plot.factors.general(ldf_gpca$l,clusters,ylims = c(-0.55,1.05),title = 'Generalized PCA')
+```
+
+
+
+
+

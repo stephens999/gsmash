@@ -25,6 +25,7 @@ simu_func = function(n_simu=10,n,sigma2,prior_mean=0,w=0.8,prior_var = 2,seed = 
   mse_b = c()
   mse_exp_b = c()
   for(i in 1:n_simu){
+
     b = c(rep(prior_mean,round(n*w)) , rnorm(round(n*(1-w)),prior_mean,sqrt(prior_var)))
     mu = rnorm(n,b,sigma2)
     y = rpois(n,exp(mu))

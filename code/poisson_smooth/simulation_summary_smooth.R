@@ -51,7 +51,7 @@ get_runtime = function(out,rm_method=NULL){
   res_mean = colMeans(res,na.rm=T)
   res_time_mean = colMeans(res_time,na.rm=T)
 
-  plot(log2(res_time_mean),res_mean,xlab='run time(log2)',ylab='mse',pch = 1:n_methods,col=1:n_methods, main='mean estimation')
+  plot(log2(res_time_mean),res_mean,xlab='run time(log2)',ylab='mse',pch = 1:n_methods,col=1:n_methods, main='')
   legend('topright',methods,pch=1:n_methods,col=1:n_methods)
   #abline(h=1,lty=2,col='grey80')
 
