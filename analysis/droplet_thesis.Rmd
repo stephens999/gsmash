@@ -26,6 +26,9 @@ We plot K = 7
 load('/project2/mstephens/pcarbo/git/single-cell-topics/data/droplet.RData')
 source("~/Rpackages/gsmash/code/poisson_STM/structure_plot.R")
 library(Matrix)
+library(ggplot2)
+library(dplyr)
+library(ggrepel)
 ```
 
 ```{r}
@@ -51,20 +54,23 @@ colors = c('#a6cee3',
 init_tol=0.01
 res = readRDS(file=paste('/project2/mstephens/dongyue/poisson_mf/droplet/droplet_iteration_results/ebpmf_droplet_full_nonnegLF_inittol',init_tol,'_iter60.rds',sep=''))
 dim(res$fit_flash$L.pm)
-structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,
+p = structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,
                        LD=T,remove_l0f0 = T,title = 'EBPMF',
-                       n_samples = 2000,K=7,print_plot = F)
+                       n_samples = 2000,K=7,print_plot = T)
+ggsave(filename = "output/plots/droplet_k7_structure_plot.pdf", plot = p, device = "pdf", width = 10, height = 4.5, units = "in")
+# structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,
+#                        LD=T,remove_l0f0 = T,title = 'EBPMF',
+#                        n_samples = 2000,K=9,print_plot = F)
+# structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,
+#                        LD=T,remove_l0f0 = T,title = 'EBPMF',
+#                        n_samples = 2000,K=12,print_plot = F,colors = colors)
 
-
-structure_plot_general(res$fit_flash$L.pm,res$fit_flash$F.pm,samples$tissue,
-                       LD=T,remove_l0f0 = T,title = 'EBPMF',
-                       n_samples = 2000,K=12,print_plot = F,colors = colors)
 ```
 
 Zoom in rare cell factors
 
 ```{r}
-kset=14
+kset=11
 
 ldf = my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])
 Lhat = ldf$l%*%diag(ldf$d)
@@ -77,10 +83,11 @@ if(is.null(colnames(Lhat))){
 fit_list     <- list(L = Lhat,F = Fhat)
 class(fit_list) <- c("multinom_topic_model_fit", "list")
 rare_cell_type = as.factor(as.character(samples$tissue[rare_idx]))
-structure_plot(fit_list,grouping = rare_cell_type,
+p = structure_plot(fit_list,grouping = rare_cell_type,
                     loadings_order = 'embed',
                     n = 2000,gap = 5,colors=colors,verbose=F) +
-  labs(y = "loading",color = "dim",fill = "dim") 
+  labs(y = "loading",color = "dim",fill = "dim") +ggtitle("EBPMF, rare cell types")
+ggsave(filename = "output/plots/droplet_k11_structure_plot_rare.pdf", plot = p, device = "pdf", width = 10, height = 4.5, units = "in")
 ```
 
 ## Abandunt vs rare?
@@ -108,31 +115,64 @@ The topic 1 is for ciliated cells.
 
 ```{r}
 k = 1
+mean_exp_log = log10(colMeans(counts/rowSums(counts)))
 colnames(counts)[order(ldf$f[,k],decreasing = T)[1:100]]
-plot(log10(colMeans(counts/rowSums(counts))),ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
-#identified_points <- identify(log10(colMeans(counts/rowSums(counts))),ldf$f[,k+2])
-#colnames(counts)[identified_points]
 
-# Foxj1, Ccdc153, Ccdc113, Mlf1, Lztfl1
+# Create a data frame for plotting
+plot_data <- data.frame(
+    mean_exp_log = mean_exp_log,
+    gene_exp_program = ldf$f[, k],
+    gene = colnames(counts)
+)
 
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Cdhr3')],
-      ldf$f[which(colnames(counts)=='Cdhr3'),k],type='p',col=4,pch=19)
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Foxj1')],
-      ldf$f[which(colnames(counts)=='Foxj1'),k],type='p',col=4,pch=19)
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Ccdc153')],
-      ldf$f[which(colnames(counts)=='Ccdc153'),k],type='p',col=4,pch=19)
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Ccdc113')],
-      ldf$f[which(colnames(counts)=='Ccdc113'),k],type='p',col=4,pch=19)
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Mlf1')],
-      ldf$f[which(colnames(counts)=='Mlf1'),k],type='p',col=4,pch=19)
-# lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Lztfl1')],
-#       ldf$f[which(colnames(counts)=='Lztfl1'),k],type='p',col=4,pch=19)
+# Define custom colors
+custom_colors <- c("Cdhr3" = "black", "Foxj1" = "black", "Ccdc153" = "black", "Ccdc113" = "black", "Mlf1" = "black")
 
-text(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Cdhr3')]+0.2,ldf$f[which(colnames(counts)=='Cdhr3'),k],label='Cdhr3',cex=0.8)
-text(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Foxj1')]+0.2,ldf$f[which(colnames(counts)=='Foxj1'),k],label='Foxj1',cex=0.8)
-text(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Ccdc153')]+0.3,ldf$f[which(colnames(counts)=='Ccdc153'),k],label='Ccdc153',cex=0.8)
-text(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Ccdc113')]-0.3,ldf$f[which(colnames(counts)=='Ccdc113'),k],label='Ccdc113',cex=0.8)
-text(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Mlf1')]+0.2,ldf$f[which(colnames(counts)=='Mlf1'),k],label='Mlf1',cex=0.8)
+
+# Add a new column to the dataset with the appropriate colors
+plot_data <- plot_data %>%
+  mutate(color = ifelse(gene %in% names(custom_colors), custom_colors[gene], "grey80")) %>%
+  arrange(desc(color))  # Sort the data frame based on the 'color' column
+
+# Create the ggplot2 plot
+p <- ggplot(plot_data, aes(x = mean_exp_log, y = gene_exp_program, color = color, shape = color)) +
+    geom_point(size = 1) +
+    scale_color_identity() +
+    scale_shape_manual(values = c("grey80" = 19, "black" = 19, "red" = 19)) +
+    theme_minimal() +
+    labs(x = "Gene mean expression(log10)", y = "Gene expression program") +
+    theme(legend.position = "none") +
+    geom_text_repel(
+        aes(label = gene),
+        data = filter(plot_data, gene %in% c("Cdhr3", "Foxj1", "Ccdc153", "Ccdc113", "Mlf1")),
+        size = 3,
+        color='black'
+    )+ggtitle('Factor 1')
+
+# Print the plot
+print(p)
+ggsave(filename = paste('output/plots/droplet_k',k,'_factor.pdf',sep=''), plot = p, device = "pdf", width = 8, height = 5, units = "in")
+# plot(mean_exp_log,ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
+# # Foxj1, Ccdc153, Ccdc113, Mlf1, Lztfl1
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Cdhr3')],
+#       ldf$f[which(colnames(counts)=='Cdhr3'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Foxj1')],
+#       ldf$f[which(colnames(counts)=='Foxj1'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Ccdc153')],
+#       ldf$f[which(colnames(counts)=='Ccdc153'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Ccdc113')],
+#       ldf$f[which(colnames(counts)=='Ccdc113'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Mlf1')],
+#       ldf$f[which(colnames(counts)=='Mlf1'),k],type='p',col=4,pch=19)
+# # lines(mean_exp_log[which(colnames(counts)=='Lztfl1')],
+# #       ldf$f[which(colnames(counts)=='Lztfl1'),k],type='p',col=4,pch=19)
+# 
+# text(mean_exp_log[which(colnames(counts)=='Cdhr3')]+0.2,ldf$f[which(colnames(counts)=='Cdhr3'),k],label='Cdhr3',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Foxj1')]+0.2,ldf$f[which(colnames(counts)=='Foxj1'),k],label='Foxj1',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Ccdc153')]+0.3,ldf$f[which(colnames(counts)=='Ccdc153'),k],label='Ccdc153',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Ccdc113')]-0.3,ldf$f[which(colnames(counts)=='Ccdc113'),k],label='Ccdc113',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Mlf1')]+0.2,ldf$f[which(colnames(counts)=='Mlf1'),k],label='Mlf1',cex=0.8)
 ```
 
 topic 2 is for Basal cell
@@ -140,51 +180,320 @@ topic 2 is for Basal cell
 ```{r}
 k = 2
 colnames(counts)[order(my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[,k],decreasing = T)[1:10]]
-plot(log10(colMeans(counts/rowSums(counts))),ldf$f[,k+2],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
-identified_points <- identify(log10(colMeans(counts/rowSums(counts))),ldf$f[,k+2])
-colnames(counts)[identified_points]
 
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Krt5')],
-      ldf$f[which(colnames(counts)=='Krt5'),k+2],type='p',col=4,pch=19)
 
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Krt17')],
-      ldf$f[which(colnames(counts)=='Krt17'),k+2],type='p',col=4,pch=19)
+plot_data <- data.frame(
+    mean_exp_log = mean_exp_log,
+    gene_exp_program = ldf$f[, k],
+    gene = colnames(counts)
+)
+
+# Define custom colors
+custom_colors <- c("Krt5" = "black", "Krt17" = "black", "Aqp3" = "black", "Dapl1" = "black", "Hspa1a" = "black","Trp63" = "black")
+
+
+# Add a new column to the dataset with the appropriate colors
+plot_data <- plot_data %>%
+  mutate(color = ifelse(gene %in% names(custom_colors), custom_colors[gene], "grey80")) %>%
+  arrange(desc(color))  # Sort the data frame based on the 'color' column
+
+# Create the ggplot2 plot
+p <- ggplot(plot_data, aes(x = mean_exp_log, y = gene_exp_program, color = color, shape = color)) +
+    geom_point(size = 1) +
+    scale_color_identity() +
+    scale_shape_manual(values = c("grey80" = 19, "black" = 19, "red" = 19)) +
+    theme_minimal() +
+    labs(x = "Gene mean expression(log10)", y = "Gene expression program") +
+    theme(legend.position = "none") +
+    geom_text_repel(
+        aes(label = gene),
+        data = filter(plot_data, gene %in% c("Krt5", "Krt17", "Aqp3", "Dapl1", "Hspa1a",'Trp63')),
+        size = 3,
+        color = "black"
+    )+ggtitle(paste('Factor ',k,sep=''))
+
+# Print the plot
+print(p)
+ggsave(filename = paste('output/plots/droplet_k',k,'_factor.pdf',sep=''), plot = p, device = "pdf", width = 8, height = 5, units = "in")
+# plot(mean_exp_log,ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
+# #identified_points <- identify(mean_exp_log,ldf$f[,k+2])
+# #colnames(counts)[identified_points]
+# 
+# #aqp3, kRT5, dAPL1, hSPA1A,tRP63
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Krt5')],
+#       ldf$f[which(colnames(counts)=='Krt5'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Krt17')],
+#       ldf$f[which(colnames(counts)=='Krt17'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Aqp3')],
+#       ldf$f[which(colnames(counts)=='Aqp3'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Dapl1')],
+#       ldf$f[which(colnames(counts)=='Dapl1'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Hspa1a')],
+#       ldf$f[which(colnames(counts)=='Hspa1a'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Trp63')],
+#       ldf$f[which(colnames(counts)=='Trp63'),k],type='p',col=4,pch=19)
+# 
+# text(mean_exp_log[which(colnames(counts)=='Krt5')]+0.2,ldf$f[which(colnames(counts)=='Krt5'),k],label='Krt5',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Krt17')]+0.2,ldf$f[which(colnames(counts)=='Krt17'),k],label='Krt17',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Aqp3')]+0.2,ldf$f[which(colnames(counts)=='Aqp3'),k],label='Aqp3',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Dapl1')]+0.2,ldf$f[which(colnames(counts)=='Dapl1'),k],label='Dapl1',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Hspa1a')]+0.3,ldf$f[which(colnames(counts)=='Hspa1a'),k],label='Hspa1a',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Trp63')]+0.2,ldf$f[which(colnames(counts)=='Trp63'),k],label='Trp63',cex=0.8)
 ```
 
-topic 3 is for tuft, neuroendocrine, and ionocyte.
+topic 3 is for tuft, neuroendocrine, and ionocyte.?? mainly for tuft
 
 ```{r}
-# Rgs13 (tuft cells)
+# Rgs13 (tuft cells), Dclk 1, Chga, Ascl3
 k = 3
-colnames(counts)[order(my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[,k],decreasing = T)[1:50]]
-plot(log10(colMeans(counts/rowSums(counts))),ldf$f[,k+2],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
-identified_points <- identify(log10(colMeans(counts/rowSums(counts))),ldf$f[,k+2])
-colnames(counts)[identified_points]
+colnames(counts)[order(ldf$f[,k],decreasing = T)[1:50]]
+plot_data <- data.frame(
+    mean_exp_log = mean_exp_log,
+    gene_exp_program = ldf$f[, k],
+    gene = colnames(counts)
+)
 
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Rgs13')],
-      ldf$f[which(colnames(counts)=='Rgs13'),k+2],type='p',col=4,pch=19)
+# Define custom colors
+custom_colors <- c("Dclk1" = "black", "Rgs13" = "black")
+
+
+# Add a new column to the dataset with the appropriate colors
+plot_data <- plot_data %>%
+  mutate(color = ifelse(gene %in% names(custom_colors), custom_colors[gene], "grey80")) %>%
+  arrange(desc(color))  # Sort the data frame based on the 'color' column
+
+# Create the ggplot2 plot
+p <- ggplot(plot_data, aes(x = mean_exp_log, y = gene_exp_program, color = color, shape = color)) +
+    geom_point(size = 1) +
+    scale_color_identity() +
+    scale_shape_manual(values = c("grey80" = 19, "black" = 19, "red" = 19)) +
+    theme_minimal() +
+    labs(x = "Gene mean expression(log10)", y = "Gene expression program") +
+    theme(legend.position = "none") +
+    geom_text_repel(
+        aes(label = gene),
+        data = filter(plot_data, gene %in% c("Dclk1", "Rgs13")),
+        size = 3,
+        color = "black"
+    )+ggtitle(paste('Factor ',k,sep=''))
+
+# Print the plot
+print(p)
+ggsave(filename = paste('output/plots/droplet_k',k,'_factor.pdf',sep=''), plot = p, device = "pdf", width = 8, height = 5, units = "in")
+
+# plot(mean_exp_log,ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
+# #identified_points <- identify(mean_exp_log,ldf$f[,k+2])
+# #colnames(counts)[identified_points]
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Dclk1')],
+#       ldf$f[which(colnames(counts)=='Dclk1'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Rgs13')],
+#       ldf$f[which(colnames(counts)=='Rgs13'),k],type='p',col=4,pch=19)
+# # lines(mean_exp_log[which(colnames(counts)=='Ascl3')],
+# #       ldf$f[which(colnames(counts)=='Ascl3'),k],type='p',col=4,pch=19)
+```
+
+topic 11 is for globlet
+
+```{r}
+# Gp2: marker
+# Goblet-1 cells are enriched for the expression of genes encoding key mucosal proteins (Tff1, Tff2 and Muc5b19, FDR <0.001, LRT) and secretory regulators (for example, Lman1l or P2rx427, FDR <0.1, LRT).
+# Goblet-2 cells specifically express Dcpp1, Dcpp2 and Dcpp3, orthologues of ZG16B, which codes for a lectin-like secreted protein that aggregates bacteria28, and Lipf, a secreted gastric lipase that hydrolyses triglycerides.
+k = 11
+colnames(counts)[order(ldf$f[,k],decreasing = T)[1:50]]
+
+colnames(counts)[order(ldf$f[,k],decreasing = T)[1:50]]
+plot_data <- data.frame(
+    mean_exp_log = mean_exp_log,
+    gene_exp_program = ldf$f[, k],
+    gene = colnames(counts)
+)
+
+# Define custom colors
+custom_colors <- c("Gp2" = "black", "Tff1" = "red","Tff2" = "red","Lman1l" = "red","Muc5b" = "red",
+                   "Dcpp1" = "blue","Dcpp2" = "blue","Dcpp3" = "blue","Lipf" = "blue")
+
+
+# Add a new column to the dataset with the appropriate colors
+plot_data <- plot_data %>%
+  mutate(color = ifelse(gene %in% names(custom_colors), custom_colors[gene], "grey80")) %>%
+  arrange(desc(color))  # Sort the data frame based on the 'color' column
+
+# Create the ggplot2 plot
+p <- ggplot(plot_data, aes(x = mean_exp_log, y = gene_exp_program, color = color, shape = color)) +
+    geom_point(size = 1) +
+    scale_color_identity() +
+    scale_shape_manual(values = c("grey80" = 19, "black" = 19, "red" = 19,"blue" = 19)) +
+    theme_minimal() +
+    labs(x = "Gene mean expression(log10)", y = "Gene expression program") +
+    theme(legend.position = "none") +
+    geom_text_repel(
+        aes(label = gene),
+        data = filter(plot_data, gene %in% c("Gp2","Tff1","Tff2","Lman1l","Muc5b","Dcpp1","Dcpp2","Dcpp3","Lipf")),
+        size = 3,
+        color = "black"
+    )+ggtitle(paste('Factor ',k,sep=''))
+
+# Print the plot
+print(p)
+ggsave(filename = paste('output/plots/droplet_k',k,'_factor.pdf',sep=''), plot = p, device = "pdf", width = 8, height = 5, units = "in")
+
+
+# plot(mean_exp_log,ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
+# #identified_points <- identify(mean_exp_log,ldf$f[,k+2])
+# #colnames(counts)[identified_points]
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Gp2')],
+#       ldf$f[which(colnames(counts)=='Gp2'),k],type='p',col=4,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Gp2')]+0.2,ldf$f[which(colnames(counts)=='Gp2'),k],label='Gp2',cex=0.8)
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Tff1')],ldf$f[which(colnames(counts)=='Tff1'),k],type='p',col=4,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Tff1')]+0.2,ldf$f[which(colnames(counts)=='Tff1'),k],label='Tff1',cex=0.8)
+# lines(mean_exp_log[which(colnames(counts)=='Tff2')],ldf$f[which(colnames(counts)=='Tff2'),k],type='p',col=4,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Tff2')]+0.2,ldf$f[which(colnames(counts)=='Tff2'),k],label='Tff2',cex=0.8)
+# lines(mean_exp_log[which(colnames(counts)=='Lman1l')], ldf$f[which(colnames(counts)=='Lman1l'),k],type='p',col=4,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Lman1l')]+0.2,ldf$f[which(colnames(counts)=='Lman1l'),k],label='Lman1l',cex=0.8)
+# lines(mean_exp_log[which(colnames(counts)=='Muc5b')], ldf$f[which(colnames(counts)=='Muc5b'),k],type='p',col=4,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Muc5b')]+0.2,ldf$f[which(colnames(counts)=='Muc5b'),k],label='Muc5b',cex=0.8)
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Dcpp1')],
+#       ldf$f[which(colnames(counts)=='Dcpp1'),k],type='p',col=2,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Dcpp2')],
+#       ldf$f[which(colnames(counts)=='Dcpp2'),k],type='p',col=2,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Dcpp3')],
+#       ldf$f[which(colnames(counts)=='Dcpp3'),k],type='p',col=2,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Lipf')],
+#       ldf$f[which(colnames(counts)=='Lipf'),k],type='p',col=2,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Dcpp1')]+0.2,ldf$f[which(colnames(counts)=='Dcpp1'),k],label='Dcpp1',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Dcpp2')]+0.2,ldf$f[which(colnames(counts)=='Dcpp2'),k],label='Dcpp2',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Dcpp3')]+0.2,ldf$f[which(colnames(counts)=='Dcpp3'),k],label='Dcpp3',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Lipf')]+0.2,ldf$f[which(colnames(counts)=='Lipf'),k],label='Lipf',cex=0.8)
 ```
 
 topic 6 specific to neuroendocrine
 
 ```{r}
 k = 6
-colnames(counts)[order(my_ldf(res$fit_flash$L.pm[,-c(1,2)],res$fit_flash$F.pm[,-c(1,2)])$f[,k],decreasing = T)[1:50]]
-plot(log10(colMeans(counts/rowSums(counts))),ldf$f[,k+2],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
-identified_points <- identify(log10(colMeans(counts/rowSums(counts))),ldf$f[,k+2])
-colnames(counts)[identified_points]
+colnames(counts)[order(ldf$f[,k],decreasing = T)[1:50]]
 
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Chga')],
-      ldf$f[which(colnames(counts)=='Chga'),k+2],type='p',col=4,pch=19)
+plot_data <- data.frame(
+    mean_exp_log = mean_exp_log,
+    gene_exp_program = ldf$f[, k],
+    gene = colnames(counts)
+)
 
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Ascl1')],
-      ldf$f[which(colnames(counts)=='Ascl1'),k+2],type='p',col=4,pch=19)
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Ascl2')],
-      ldf$f[which(colnames(counts)=='Ascl2'),k+2],type='p',col=4,pch=19)
-lines(log10(colMeans(counts/rowSums(counts)))[which(colnames(counts)=='Ascl3')],
-      ldf$f[which(colnames(counts)=='Ascl3'),k+2],type='p',col=4,pch=19)
+# Define custom colors
+custom_colors <- c("Chga" = "black", "Calca" = "red","Cxcl13" = "red",
+                   "Ly6h"="red","Pkib"="red","Tmem163"="red",  
+                   "Ddc"="red","Pcsk1" ="red",
+                   "Tcerg1l"="red",  "Scg2"="red",     "Scn9a"="red",   "Stmn3"="red",    "Chgb"="red")
+
+
+# Add a new column to the dataset with the appropriate colors
+plot_data <- plot_data %>%
+  mutate(color = ifelse(gene %in% names(custom_colors), custom_colors[gene], "grey80")) %>%
+  arrange(desc(color))  # Sort the data frame based on the 'color' column
+
+# Create the ggplot2 plot
+p <- ggplot(plot_data, aes(x = mean_exp_log, y = gene_exp_program, color = color, shape = color)) +
+    geom_point(size = 1) +
+    scale_color_identity() +
+    scale_shape_manual(values = c("grey80" = 19, "black" = 19, "red" = 19)) +
+    theme_minimal() +
+    labs(x = "Gene mean expression(log10)", y = "Gene expression program") +
+    theme(legend.position = "none") +
+    geom_text_repel(
+        aes(label = gene),
+        data = filter(plot_data, gene %in% c("Chga", "Calca","Cxcl13","Ly6h" , "Pkib"  ,   "Tmem163" , "Ddc"    ,  "Pcsk1","Tcerg1l" , "Scg2" ,  "Scn9a" ,   "Stmn3"  ,  "Chgb" )),
+        size = 3,
+        color = "black",
+        max.overlaps = 100
+    )+ggtitle(paste('Factor ',k,sep=''))
+
+# Print the plot
+print(p)
+ggsave(filename = paste('output/plots/droplet_k',k,'_factor.pdf',sep=''), plot = p, device = "pdf", width = 8, height = 5, units = "in")
+
+
+# plot(mean_exp_log,ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
+# #identified_points <- identify(mean_exp_log,ldf$f[,k+2])
+# #colnames(counts)[identified_points]
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Chga')],ldf$f[which(colnames(counts)=='Chga'),k],type='p',col=4,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Chga')]+0.2,ldf$f[which(colnames(counts)=='Chga'),k],label='Chga',cex=0.8)
+
 ```
 
+topic 9 specific to ionocyte
+
+```{r}
+k = 9
+colnames(counts)[order(ldf$f[,k],decreasing = T)[1:50]]
+
+
+# Create a data frame for plotting
+plot_data <- data.frame(
+    mean_exp_log = mean_exp_log,
+    gene_exp_program = ldf$f[, k],
+    gene = colnames(counts)
+)
+
+# Define custom colors
+custom_colors <- c("Foxi1" = "black", "Ascl3" = "black", "Cftr" = "black",
+                   "Gm933"="red","Moxd1"="red",   "Stap1"="red",    "Syn2"="red",     "Atp6v0d2"="red", "Coch" ="red", "Tfcp2l1"="red",
+                   "Nrip3"="red")
+
+plot_data <- plot_data %>%
+  mutate(color = ifelse(gene %in% names(custom_colors), custom_colors[gene], "grey80")) %>%
+  arrange(desc(color))  # Sort the data frame based on the 'color' column
+
+# Create the ggplot2 plot
+p <- ggplot(plot_data, aes(x = mean_exp_log, y = gene_exp_program, color = color, shape = color)) +
+    geom_point(size = 1) +
+    scale_color_identity() +
+    scale_shape_manual(values = c("grey80" = 19, "black" = 19, "red" = 19)) +
+    theme_minimal() +
+    labs(x = "Gene mean expression(log10)", y = "Gene expression program") +
+    theme(legend.position = "none") +
+    geom_text_repel(
+        aes(label = gene),
+        data = filter(plot_data, gene %in% c("Foxi1", "Ascl3", "Cftr","Gm933","Moxd1",   "Stap1",    "Syn2",     "Atp6v0d2", "Coch" , "Tfcp2l1","Nrip3")),
+        size = 3,
+        color='black',
+        max.overlaps = 100
+    )+ggtitle(paste('Factor ',k,sep=''))
+
+# Print the plot
+print(p)
+ggsave(filename = paste('output/plots/droplet_k',k,'_factor.pdf',sep=''), plot = p, device = "pdf", width = 8, height = 5, units = "in")
+
+# plot(mean_exp_log,ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Foxi1')],ldf$f[which(colnames(counts)=='Foxi1'),k],type='p',col=4,pch=19)
+# lines(mean_exp_log[which(colnames(counts)=='Ascl3')],ldf$f[which(colnames(counts)=='Ascl3'),k],type='p',col=4,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Foxi1')]+0.2,ldf$f[which(colnames(counts)=='Foxi1'),k],label='Foxi1',cex=0.8)
+# text(mean_exp_log[which(colnames(counts)=='Ascl3')]+0.2,ldf$f[which(colnames(counts)=='Ascl3'),k],label='Ascl3',cex=0.8)
+# 
+# lines(mean_exp_log[which(colnames(counts)=='Cftr')],ldf$f[which(colnames(counts)=='Cftr'),k],type='p',col=2,pch=19)
+# text(mean_exp_log[which(colnames(counts)=='Cftr')]+0.2,ldf$f[which(colnames(counts)=='Cftr'),k],label='Cftr',cex=0.8)
+
+```
+
+
+k = 7 is for club cells? 
+
+```{r}
+k = 7
+colnames(counts)[order(ldf$f[,k],decreasing = T)[1:50]]
+plot(mean_exp_log,ldf$f[,k],col='grey80',pch=19,xlab='Gene mean expression(log10)',ylab='Gene expression program')
+#identified_points <- identify(mean_exp_log,ldf$f[,k+2])
+#colnames(counts)[identified_points]
+
+lines(mean_exp_log[which(colnames(counts)=='Nfia')],
+      ldf$f[which(colnames(counts)=='Nfia'),k],type='p',col=4,pch=19)
+text(mean_exp_log[which(colnames(counts)=='Nfia')]+0.2,ldf$f[which(colnames(counts)=='Nfia'),k],label='Nfia',cex=0.8)
+```
 
 ## pulse seq 66k cells, gene selected as union of scry:deviance and seurat
 
