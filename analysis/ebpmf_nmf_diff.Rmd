@@ -1,0 +1,258 @@
+---
+title: "Study the difference between ebpmf(log link), and NMF(topic model) model fitting"
+author: "Dongyue Xie"
+date: "2023-07-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+We explore the difference between EBPMF log link, and NMF or topic model, when fitting to an example where data are generated using log-link function.
+
+We set $N=p=300$. For the loadings, let $l_0= 1_N, l_1 = (1_{N/2},0_{N/2}), l_2 = (0_{N/2},1_{N/2}), l_3=(0_{N/4},1_{N/2},0_{N/4})$. SO this gives 4 groups, and their loadings are $(1,0,0),(1,0,1),(0,1,1),(0,1,0)$. The factors $f_1,f_2,f_3$ are drawn from $0.5\delta_0 + 0.5\text{Exponential}(1)$, and the elements of intercept $f_0$ are drawn iid from $N(0,1)$.
+
+SO L is $N\times 4$ and F is $p\times 4$. Then $\Lambda = \exp(LF')$, and it is row-normalized such that its row-sums are 1: $\Lambda 1_p = 1_N$. Then $y_{ij}\sim \text{Pois}(s_i\Lambda_{ij})$ where $s$ is the "document size". Here we set $s_i=5000$.
+
+```{r}
+library(fastTopics)
+library(ebpmf)
+library(topicmodels)
+library(NNLM)
+library(ggplot2)
+library(tidyverse)
+library(flashier)
+
+plot_factor_1by1_ggplot <- function(LL, title = NULL, points = FALSE) {
+  
+  # Convert the matrix to a data frame
+  LL_df <- as.data.frame(LL)
+  
+  # Add a row number column, which will serve as the x-axis
+  LL_df$rn <- 1:nrow(LL_df)
+  
+  # Convert the data to a 'long' format
+  LL_long <- LL_df %>% 
+    gather(key = "variable", value = "value", -rn)
+  
+  # Generate the plots
+  p <- ggplot(LL_long, aes(x = rn, y = value))
+  
+  # Add either points or lines based on the 'points' argument
+  if (points) {
+    p <- p + geom_point()
+  } else {
+    p <- p + geom_line(linewidth = 1)
+  }
+  
+  p <- p +
+    facet_wrap(~ variable, scales = "free_y", ncol = 1, strip.position = "bottom") +
+    theme(strip.text = element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          strip.background = element_rect(fill = NA, color = NA, size = 0, linetype = 0),  # Make the strip background transparent
+          panel.spacing = unit(2, "lines"))  # Increase the spacing between panels
+  
+  # Add title if provided
+  if (!is.null(title)) {
+    p <- p + ggtitle(title)
+  }
+  
+  return(p)
+}
+
+
+
+
+n = 300
+p = 300
+K = 3
+l_intensity = 1
+#f_intensity = 2
+l0 = rep(1,n)
+l1 = c(rep(l_intensity,n/2),rep(0,n/2))
+l2 = c(rep(0,n/2),rep(l_intensity,n/2))
+l3 = c(rep(0,n/4),rep(l_intensity,n/4*2),rep(0,n/4))
+
+Ltrue = cbind(l0,l1,l2,l3)
+image(t(Ltrue),main='TRUE Loadings')
+plot_factor_1by1_ggplot(Ltrue,title='TRUE Loadings')
+set.seed(12345)
+# draw F from point-exponential?
+draw_point_exp = function(n,pi0,l){
+  res = rexp(n,l)
+  res[rbinom(n,1,pi0)==0] = 0
+  res
+}
+f1 = draw_point_exp(p,0.5,1)
+f2 = draw_point_exp(p,0.5,1)
+f3 = draw_point_exp(p,0.5,1)
+Ftrue = cbind(f1,f2,f3)
+
+# make sure no row is all 0's
+for(i in which(rowSums(Ftrue)==0)){
+  Ftrue[i,sample(K,1)] = rexp(1)
+}
+
+# draw intercept
+f0 = rnorm(p)
+Ftrue = cbind(f0,Ftrue)
+image(t(Ftrue),main='F')
+plot_factor_1by1_ggplot(Ftrue,title='TRUE Factors',points = T)
+cov2cor(crossprod(Ftrue))
+#Ftrue = matrix(rnorm(p*(K+1)), ncol=K+1)
+# f0 = rep(f_intensity,p)
+# f1 = c(rep(f_intensity,p/3),rep(0,p/3*2))
+# f2 = c(rep(0,p/3),rep(f_intensity,p/3),rep(0,p/3))
+# f3 = c(rep(0,p/3*2),rep(f_intensity,p/3))
+# Ftrue = cbind(f0,f1,f2,f3)
+
+
+```
+
+Draw Y:
+
+```{r}
+set.seed(12345)
+Lambda = exp(tcrossprod(Ltrue,Ftrue))
+Lambda = Lambda/rowSums(Lambda)
+s = 5000
+Y = matrix(rpois(n*p,s*Lambda),nrow=n,ncol=p)
+```
+
+Fit models:
+
+```{r}
+fit_tm = fit_topic_model(Y,k=4)
+plot_factor_1by1_ggplot(fit_tm$L,points=TRUE,title='Topic model(fastTopics), Loadings')
+plot_factor_1by1_ggplot(fit_tm$F,points=TRUE,title='Topic model(fastTopics), Factors')
+
+# 
+# 
+# fit_nmf = NNLM::nnmf(Y,k=4,loss = 'mkl',method = 'lee')
+# plot_factor_1by1_ggplot(fit_nmf$W,points=TRUE,title='NMF (nnmf), Loadings')
+# plot_factor_1by1_ggplot(t(fit_nmf$W),points=TRUE,title='NMF (nnmf), Factors')
+
+fit_ebpmf = ebpmf_log(Y,flash_control=list(Kmax=10,
+                                         ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),
+                                         loadings_sign=1,
+                                         factors_sign = 1),
+                      var_type = 'constant',
+                      sigma2_control = list(return_sigma2_trace=T),
+                      general_control = list(maxiter=100,conv_tol=1e-5))
+plot(fit_ebpmf$sigma2_trace,type='l',xlab='iterations',ylab='sigma2')
+abline(h=0,lty=2)
+plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$L.pm,points = T,title='EBPMF, Loadings')
+plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$F.pm,points = T,title='EBPMF, Factors')
+
+# fit EBNMF + log transformation?
+
+Y_tilde = log(1+median(rowSums(Y))/0.5*Y/rowSums(Y))
+# fit_ebnmf = flash(Y_tilde,ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),greedy.Kmax = 10,var.type = 2,backfit = TRUE)
+# plot_factor_1by1_ggplot(fit_ebnmf$L.pm,points = T,title='EBNMF(col-specific var), Loadings')
+# plot_factor_1by1_ggplot(fit_ebnmf$F.pm,points = T,title='EBNMF(col-specific var), Factors')
+
+fit_ebnmf = flash(Y_tilde,ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),greedy.Kmax = 10,backfit = TRUE,var.type = 2)
+plot_factor_1by1_ggplot(fit_ebnmf$L.pm,points = T,title='EBNMF, Loadings')
+plot_factor_1by1_ggplot(fit_ebnmf$F.pm,points = T,title='EBNMF, Factors')
+# # fit GLMPCA
+# library(glmpca)
+# fit_glmpca = glmpca(Y,L=4,fam='poi')
+# plot(fit_glmpca$loadings[,1])
+# plot(fit_glmpca$loadings[,2])
+# plot(fit_glmpca$loadings[,3])
+# plot(fit_glmpca$loadings[,4])
+# 
+# # fit Poisson PCA
+# library(PoissonPCA)
+# fit_ppca = Poisson_Corrected_PCA(Y,k=4)
+# plot(fit_ppca$scores[,1])
+# plot(fit_ppca$scores[,2])
+# plot(fit_ppca$scores[,3])
+# plot(fit_ppca$scores[,4])
+
+```
+
+
+## Factors more visualizable?
+
+Here we set factors to be more visualizable so that we can tell what the model actually fits.
+
+We set $f_1 = (1_{N/3},0_{N/3\times2}),f_2 = (0_{N/3},1_{N/3},0_{N/3}),f_1 = (0_{N/3\times 2},1_{N/3})$. Again the intercept $f_0$ is drawn from N(0,1).
+
+```{r}
+f_intensity = 2
+f1 = c(rep(f_intensity,p/3),rep(0,p/3*2))
+f2 = c(rep(0,p/3),rep(f_intensity,p/3),rep(0,p/3))
+f3 = c(rep(0,p/3*2),rep(f_intensity,p/3))
+Ftrue = cbind(f0,f1,f2,f3)
+image(t(Ftrue),main='F')
+plot_factor_1by1_ggplot(Ftrue,title='TRUE Factors',points = T)
+cov2cor(crossprod(Ftrue))
+```
+
+Draw Y:
+
+```{r}
+set.seed(12345)
+Lambda = exp(tcrossprod(Ltrue,Ftrue))
+Lambda = Lambda/rowSums(Lambda)
+s = 5000
+Y = matrix(rpois(n*p,s*Lambda),nrow=n,ncol=p)
+```
+
+Fit models:
+
+```{r}
+fit_tm = fit_topic_model(Y,k=4)
+plot_factor_1by1_ggplot(fit_tm$L,points=TRUE,title='Topic model(fastTopics), Loadings')
+plot_factor_1by1_ggplot(fit_tm$F,points=TRUE,title='Topic model(fastTopics), Factors')
+
+fit_lda = LDA(Y,k=4)
+plot_factor_1by1_ggplot(fit_lda@gamma,points=TRUE,title='LDA, Loadings')
+# 
+# 
+# fit_nmf = NNLM::nnmf(Y,k=4,loss = 'mkl',method = 'lee')
+# plot_factor_1by1_ggplot(fit_nmf$W,points=TRUE,title='NMF (nnmf), Loadings')
+# plot_factor_1by1_ggplot(t(fit_nmf$W),points=TRUE,title='NMF (nnmf), Factors')
+
+fit_ebpmf = ebpmf_log(Y,flash_control=list(Kmax=10,
+                                         ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),
+                                         loadings_sign=1,
+                                         factors_sign = 1),
+                      var_type = 'constant',
+                      sigma2_control = list(return_sigma2_trace=T),
+                      general_control = list(maxiter=70,conv_tol=1e-5))
+plot(fit_ebpmf$sigma2_trace,type='l',xlab='iterations',ylab='sigma2')
+abline(h=0,lty=2)
+plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$L.pm,points = T,title='EBPMF, Loadings')
+plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$F.pm,points = T,title='EBPMF, Factors')
+
+# fit EBNMF + log transformation?
+
+Y_tilde = log(1+median(rowSums(Y))/0.5*Y/rowSums(Y))
+fit_ebnmf = flash(Y_tilde,ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),greedy.Kmax = 10,backfit = TRUE,var.type = 2)
+plot_factor_1by1_ggplot(fit_ebnmf$L.pm,points = T,title='EBNMF, Loadings')
+plot_factor_1by1_ggplot(fit_ebnmf$F.pm,points = T,title='EBNMF, Factors')
+# # fit GLMPCA
+# library(glmpca)
+# fit_glmpca = glmpca(Y,L=4,fam='poi')
+# plot(fit_glmpca$loadings[,1])
+# plot(fit_glmpca$loadings[,2])
+# plot(fit_glmpca$loadings[,3])
+# plot(fit_glmpca$loadings[,4])
+# 
+# # fit Poisson PCA
+# library(PoissonPCA)
+# fit_ppca = Poisson_Corrected_PCA(Y,k=4)
+# plot(fit_ppca$scores[,1])
+# plot(fit_ppca$scores[,2])
+# plot(fit_ppca$scores[,3])
+# plot(fit_ppca$scores[,4])
+
+```
+
+
+
+
