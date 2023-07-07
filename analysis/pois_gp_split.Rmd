@@ -1,0 +1,100 @@
+---
+title: "pois gp splitting"
+author: "DongyueXie"
+date: "2023-06-25"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(smashrgen)
+library(ggplot2)
+set.seed(12345)
+n = 500
+mu = sin(2 * pi * (1:n)/n)
+mu = mu - min(mu)
+mu = mu * 200+ 0.1
+x = rpois(length(mu),mu)
+fit = Pois_GP(x,maxiter=200)
+
+plot(fit$elbo_trace,type='l')
+plot(fit$fitted_g$sigma2_trace,type='l',ylim=c(-0.1,max(fit$fitted_g$sigma2_trace)))
+fit$fitted_g$sigma2
+```
+
+```{r}
+n <- length(x)  # assuming x is your data vector
+df <- data.frame(
+  x = (1:n) / n,
+  y = x,
+  mu = mu,  # assuming mu is your mean vector
+  y_fit = exp(fit$posterior$mean_b + diag(fit$posterior$var_b) / 2)  # fit data
+)
+
+p_fitted = ggplot(df, aes(x = x)) +
+  geom_point(aes(y = y), color = 'grey80') +
+  geom_line(aes(y = mu), color = 'grey50') +
+  geom_line(aes(y = y_fit), color = 'blue', size = 1)
+ggsave(p_fitted, filename = 'output/plots/fitted_pois_gp.pdf',width = 5,height = 3.5)
+```
+
+```{r}
+fit0 = Pois_GP(x,maxiter=1)
+
+n <- length(x)  # assuming x is your data vector
+df <- data.frame(
+  x = (1:n) / n,
+  y = x,
+  mu = mu,  # assuming mu is your mean vector
+  y_fit = exp(fit0$posterior$mean_b + diag(fit0$posterior$var_b) / 2)  # fit data
+)
+
+ggplot(df, aes(x = x)) +
+  geom_point(aes(y = y), color = 'grey80') +
+  geom_line(aes(y = mu), color = 'grey50') +
+  geom_line(aes(y = y_fit), color = 'blue', size = 1)
+```
+
+
+```{r}
+plot_conf_bands <- function(mean1, sd1, mean2, sd2, true_mean, ylim_range) {
+  n <- length(mean1)
+  df <- data.frame(
+    x = 1:n,
+    lower1 = mean1 - 2*sd1,
+    upper1 = mean1 + 2*sd1,
+    mean1 = mean1,
+    lower2 = mean2 - 2*sd2,
+    upper2 = mean2 + 2*sd2,
+    mean2 = mean2,
+    true_mean = true_mean
+  )
+
+  ggplot(df, aes(x = x)) +
+    geom_ribbon(aes(ymin = lower1, ymax = upper1), fill = "red", alpha = 0.2) +
+    geom_line(aes(y = mean1), color = "red") +
+    geom_ribbon(aes(ymin = lower2, ymax = upper2), fill = "blue", alpha = 0.2) +
+    geom_line(aes(y = mean2), color = "blue") +
+    geom_line(aes(y = true_mean), color = "grey80", lty = 2) +
+    coord_cartesian(ylim = ylim_range) +
+    #theme_minimal() +
+    theme(axis.title = element_blank())
+}
+
+
+p_iter0 = plot_conf_bands(fit0$posterior$mean_log,sqrt(fit0$posterior$var_log),
+                fit0$posterior$mean_b,sqrt(diag(fit0$posterior$var_b)),
+                log(mu),
+                c(-3,7))
+ggsave(p_iter0, filename = 'output/plots/fitted_pois_gp_band0.pdf',width = 5,height = 3.5)
+
+p_iter1 = plot_conf_bands(fit$posterior$mean_log,sqrt(fit$posterior$var_log),
+                fit$posterior$mean_b,sqrt(diag(fit$posterior$var_b)),
+                log(mu),
+                c(-3,7))
+ggsave(p_iter1, filename = 'output/plots/fitted_pois_gp_band_converged.pdf',width = 5,height = 3.5)
+```
+
