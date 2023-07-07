@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dongyue Xie" />
+
+<meta name="date" content="2023-07-05" />
+
+<title>Study the difference between ebpmf(log link), and NMF(topic model) model fitting</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gsmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Study the difference between ebpmf(log
+link), and NMF(topic model) model fitting</h1>
+<h4 class="author">Dongyue Xie</h4>
+<h4 class="date">2023-07-05</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-07-06
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>gsmash/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree6b1d3d630e02c7fe0246e5929ce5011e57a43f05targetblank6b1d3d6a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/6b1d3d630e02c7fe0246e5929ce5011e57a43f05" target="_blank">6b1d3d6</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree6b1d3d630e02c7fe0246e5929ce5011e57a43f05targetblank6b1d3d6a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/6b1d3d630e02c7fe0246e5929ce5011e57a43f05" target="_blank">6b1d3d6</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/pois_gp_split.Rmd
+    Untracked:  chipexo_rep1_reverse.rds
+    Untracked:  code/eb_spline.R
+    Untracked:  code/my_gp.R
+    Untracked:  code/plot_densities.R
+    Untracked:  data/Citation.RData
+    Untracked:  data/abstract.txt
+    Untracked:  data/abstract.vocab.txt
+    Untracked:  data/ap.txt
+    Untracked:  data/ap.vocab.txt
+    Untracked:  data/text.R
+    Untracked:  data/tpm3.rds
+    Untracked:  output/plots/
+    Untracked:  output/tpm3_fit_fasttopics.rds
+    Untracked:  output/tpm3_fit_stm.rds
+    Untracked:  output/tpm3_fit_stm_slow.rds
+
+Unstaged changes:
+    Modified:   analysis/PMF_splitting.Rmd
+    Modified:   analysis/poisson_smoothing_benchmark.Rmd
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/ebpmf_nmf_diff.Rmd</code>) and
+HTML (<code>docs/ebpmf_nmf_diff.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/6b1d3d630e02c7fe0246e5929ce5011e57a43f05/analysis/ebpmf_nmf_diff.Rmd" target="_blank">6b1d3d6</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-07-06
+</td>
+<td>
+wflow_publish("analysis/ebpmf_nmf_diff.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>We explore the difference between EBPMF log link, and NMF or topic
+model, when fitting to an example where data are generated using
+log-link function.</p>
+<p>We set <span class="math inline">\(N=p=300\)</span>. For the
+loadings, let <span class="math inline">\(l_0= 1_N, l_1 =
+(1_{N/2},0_{N/2}), l_2 = (0_{N/2},1_{N/2}),
+l_3=(0_{N/4},1_{N/2},0_{N/4})\)</span>. SO this gives 4 groups, and
+their loadings are <span
+class="math inline">\((1,0,0),(1,0,1),(0,1,1),(0,1,0)\)</span>. The
+factors <span class="math inline">\(f_1,f_2,f_3\)</span> are drawn from
+<span class="math inline">\(0.5\delta_0 +
+0.5\text{Exponential}(1)\)</span>, and the elements of intercept <span
+class="math inline">\(f_0\)</span> are drawn iid from <span
+class="math inline">\(N(0,1)\)</span>.</p>
+<p>SO L is <span class="math inline">\(N\times 4\)</span> and F is <span
+class="math inline">\(p\times 4\)</span>. Then <span
+class="math inline">\(\Lambda = \exp(LF&#39;)\)</span>, and it is
+row-normalized such that its row-sums are 1: <span
+class="math inline">\(\Lambda 1_p = 1_N\)</span>. Then <span
+class="math inline">\(y_{ij}\sim \text{Pois}(s_i\Lambda_{ij})\)</span>
+where <span class="math inline">\(s\)</span> is the “document size”.
+Here we set <span class="math inline">\(s_i=5000\)</span>.</p>
+<pre class="r"><code>library(fastTopics)
+library(ebpmf)
+library(topicmodels)
+library(NNLM)
+library(ggplot2)
+library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+<pre><code>✔ tibble  3.2.1     ✔ dplyr   1.1.0
+✔ tidyr   1.3.0     ✔ stringr 1.5.0
+✔ readr   1.4.0     ✔ forcats 0.5.1
+✔ purrr   1.0.1     </code></pre>
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(flashier)</code></pre>
+<pre><code>Loading required package: magrittr</code></pre>
+<pre><code>
+Attaching package: &#39;magrittr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    set_names</code></pre>
+<pre><code>The following object is masked from &#39;package:tidyr&#39;:
+
+    extract</code></pre>
+<pre class="r"><code>plot_factor_1by1_ggplot &lt;- function(LL, title = NULL, points = FALSE) {
+  
+  # Convert the matrix to a data frame
+  LL_df &lt;- as.data.frame(LL)
+  
+  # Add a row number column, which will serve as the x-axis
+  LL_df$rn &lt;- 1:nrow(LL_df)
+  
+  # Convert the data to a &#39;long&#39; format
+  LL_long &lt;- LL_df %&gt;% 
+    gather(key = &quot;variable&quot;, value = &quot;value&quot;, -rn)
+  
+  # Generate the plots
+  p &lt;- ggplot(LL_long, aes(x = rn, y = value))
+  
+  # Add either points or lines based on the &#39;points&#39; argument
+  if (points) {
+    p &lt;- p + geom_point()
+  } else {
+    p &lt;- p + geom_line(linewidth = 1)
+  }
+  
+  p &lt;- p +
+    facet_wrap(~ variable, scales = &quot;free_y&quot;, ncol = 1, strip.position = &quot;bottom&quot;) +
+    theme(strip.text = element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),
+          strip.background = element_rect(fill = NA, color = NA, size = 0, linetype = 0),  # Make the strip background transparent
+          panel.spacing = unit(2, &quot;lines&quot;))  # Increase the spacing between panels
+  
+  # Add title if provided
+  if (!is.null(title)) {
+    p &lt;- p + ggtitle(title)
+  }
+  
+  return(p)
+}
+
+
+
+
+n = 300
+p = 300
+K = 3
+l_intensity = 1
+#f_intensity = 2
+l0 = rep(1,n)
+l1 = c(rep(l_intensity,n/2),rep(0,n/2))
+l2 = c(rep(0,n/2),rep(l_intensity,n/2))
+l3 = c(rep(0,n/4),rep(l_intensity,n/4*2),rep(0,n/4))
+
+Ltrue = cbind(l0,l1,l2,l3)
+image(t(Ltrue),main=&#39;TRUE Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(Ltrue,title=&#39;TRUE Loadings&#39;)</code></pre>
+<pre><code>Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2
+3.4.0.
+
+Warning: Please use the `linewidth` argument instead.</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-1-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>set.seed(12345)
+# draw F from point-exponential?
+draw_point_exp = function(n,pi0,l){
+  res = rexp(n,l)
+  res[rbinom(n,1,pi0)==0] = 0
+  res
+}
+f1 = draw_point_exp(p,0.5,1)
+f2 = draw_point_exp(p,0.5,1)
+f3 = draw_point_exp(p,0.5,1)
+Ftrue = cbind(f1,f2,f3)
+
+# make sure no row is all 0&#39;s
+for(i in which(rowSums(Ftrue)==0)){
+  Ftrue[i,sample(K,1)] = rexp(1)
+}
+
+# draw intercept
+f0 = rnorm(p)
+Ftrue = cbind(f0,Ftrue)
+image(t(Ftrue),main=&#39;F&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-1-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(Ftrue,title=&#39;TRUE Factors&#39;,points = T)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-1-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cov2cor(crossprod(Ftrue))</code></pre>
+<pre><code>            f0          f1          f2          f3
+f0  1.00000000 -0.03566202 -0.01184522 -0.03276669
+f1 -0.03566202  1.00000000  0.23692146  0.29511880
+f2 -0.01184522  0.23692146  1.00000000  0.16472268
+f3 -0.03276669  0.29511880  0.16472268  1.00000000</code></pre>
+<pre class="r"><code>#Ftrue = matrix(rnorm(p*(K+1)), ncol=K+1)
+# f0 = rep(f_intensity,p)
+# f1 = c(rep(f_intensity,p/3),rep(0,p/3*2))
+# f2 = c(rep(0,p/3),rep(f_intensity,p/3),rep(0,p/3))
+# f3 = c(rep(0,p/3*2),rep(f_intensity,p/3))
+# Ftrue = cbind(f0,f1,f2,f3)</code></pre>
+<p>Draw Y:</p>
+<pre class="r"><code>set.seed(12345)
+Lambda = exp(tcrossprod(Ltrue,Ftrue))
+Lambda = Lambda/rowSums(Lambda)
+s = 5000
+Y = matrix(rpois(n*p,s*Lambda),nrow=n,ncol=p)</code></pre>
+<p>Fit models:</p>
+<pre class="r"><code>fit_tm = fit_topic_model(Y,k=4)</code></pre>
+<pre><code>Initializing factors using Topic SCORE algorithm.
+Initializing loadings by running 10 SCD updates.
+Fitting rank-4 Poisson NMF to 300 x 300 dense matrix.
+Running 100 EM updates, without extrapolation (fastTopics 0.6-142).
+Refining model fit.
+Fitting rank-4 Poisson NMF to 300 x 300 dense matrix.
+Running 100 SCD updates, with extrapolation (fastTopics 0.6-142).</code></pre>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_tm$L,points=TRUE,title=&#39;Topic model(fastTopics), Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_tm$F,points=TRUE,title=&#39;Topic model(fastTopics), Factors&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-3-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># 
+# 
+# fit_nmf = NNLM::nnmf(Y,k=4,loss = &#39;mkl&#39;,method = &#39;lee&#39;)
+# plot_factor_1by1_ggplot(fit_nmf$W,points=TRUE,title=&#39;NMF (nnmf), Loadings&#39;)
+# plot_factor_1by1_ggplot(t(fit_nmf$W),points=TRUE,title=&#39;NMF (nnmf), Factors&#39;)
+
+fit_ebpmf = ebpmf_log(Y,flash_control=list(Kmax=10,
+                                         ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),
+                                         loadings_sign=1,
+                                         factors_sign = 1),
+                      var_type = &#39;constant&#39;,
+                      sigma2_control = list(return_sigma2_trace=T),
+                      general_control = list(maxiter=100,conv_tol=1e-5))</code></pre>
+<pre><code>Initializing M...Solving VGA constant...For large matrix this may require large memory usage
+running initial flash fit</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Running iterations...
+iter 10, avg elbo=-2.17769, K=5
+iter 20, avg elbo=-2.10072, K=5
+iter 30, avg elbo=-2.07259, K=5
+iter 40, avg elbo=-2.05847, K=5
+iter 50, avg elbo=-2.05, K=5
+iter 60, avg elbo=-2.04445, K=5
+iter 70, avg elbo=-2.04051, K=5
+iter 80, avg elbo=-2.03753, K=5
+iter 90, avg elbo=-2.03516, K=5
+iter 100, avg elbo=-2.03321, K=5</code></pre>
+<pre class="r"><code>plot(fit_ebpmf$sigma2_trace,type=&#39;l&#39;,xlab=&#39;iterations&#39;,ylab=&#39;sigma2&#39;)
+abline(h=0,lty=2)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-3-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$L.pm,points = T,title=&#39;EBPMF, Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-3-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$F.pm,points = T,title=&#39;EBPMF, Factors&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-3-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># fit EBNMF + log transformation?
+
+Y_tilde = log(1+median(rowSums(Y))/0.5*Y/rowSums(Y))
+# fit_ebnmf = flash(Y_tilde,ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),greedy.Kmax = 10,var.type = 2,backfit = TRUE)
+# plot_factor_1by1_ggplot(fit_ebnmf$L.pm,points = T,title=&#39;EBNMF(col-specific var), Loadings&#39;)
+# plot_factor_1by1_ggplot(fit_ebnmf$F.pm,points = T,title=&#39;EBNMF(col-specific var), Factors&#39;)
+
+fit_ebnmf = flash(Y_tilde,ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),greedy.Kmax = 10,backfit = TRUE,var.type = 2)</code></pre>
+<pre><code>Adding factor 1 to flash object...
+Adding factor 2 to flash object...
+Adding factor 3 to flash object...
+Adding factor 4 to flash object...</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
+Wrapping up...
+Done.
+Backfitting 3 factors (tolerance: 1.34e-03)...
+  Difference between iterations is within 1.0e+03...
+  Difference between iterations is within 1.0e+02...
+  Difference between iterations is within 1.0e+01...
+  Difference between iterations is within 1.0e+00...
+  Difference between iterations is within 1.0e-01...
+  Difference between iterations is within 1.0e-02...
+  Difference between iterations is within 1.0e-03...
+Wrapping up...
+Done.
+Nullchecking 3 factors...
+Done.</code></pre>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebnmf$L.pm,points = T,title=&#39;EBNMF, Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-3-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebnmf$F.pm,points = T,title=&#39;EBNMF, Factors&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-3-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># # fit GLMPCA
+# library(glmpca)
+# fit_glmpca = glmpca(Y,L=4,fam=&#39;poi&#39;)
+# plot(fit_glmpca$loadings[,1])
+# plot(fit_glmpca$loadings[,2])
+# plot(fit_glmpca$loadings[,3])
+# plot(fit_glmpca$loadings[,4])
+# 
+# # fit Poisson PCA
+# library(PoissonPCA)
+# fit_ppca = Poisson_Corrected_PCA(Y,k=4)
+# plot(fit_ppca$scores[,1])
+# plot(fit_ppca$scores[,2])
+# plot(fit_ppca$scores[,3])
+# plot(fit_ppca$scores[,4])</code></pre>
+</div>
+<div id="factors-more-visualizable" class="section level2">
+<h2>Factors more visualizable?</h2>
+<p>Here we set factors to be more visualizable so that we can tell what
+the model actually fits.</p>
+<p>We set <span class="math inline">\(f_1 = (1_{N/3},0_{N/3\times2}),f_2
+= (0_{N/3},1_{N/3},0_{N/3}),f_1 = (0_{N/3\times 2},1_{N/3})\)</span>.
+Again the intercept <span class="math inline">\(f_0\)</span> is drawn
+from N(0,1).</p>
+<pre class="r"><code>f_intensity = 2
+f1 = c(rep(f_intensity,p/3),rep(0,p/3*2))
+f2 = c(rep(0,p/3),rep(f_intensity,p/3),rep(0,p/3))
+f3 = c(rep(0,p/3*2),rep(f_intensity,p/3))
+Ftrue = cbind(f0,f1,f2,f3)
+image(t(Ftrue),main=&#39;F&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(Ftrue,title=&#39;TRUE Factors&#39;,points = T)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cov2cor(crossprod(Ftrue))</code></pre>
+<pre><code>            f0          f1          f2         f3
+f0  1.00000000 -0.06650863 -0.03186764 0.01186282
+f1 -0.06650863  1.00000000  0.00000000 0.00000000
+f2 -0.03186764  0.00000000  1.00000000 0.00000000
+f3  0.01186282  0.00000000  0.00000000 1.00000000</code></pre>
+<p>Draw Y:</p>
+<pre class="r"><code>set.seed(12345)
+Lambda = exp(tcrossprod(Ltrue,Ftrue))
+Lambda = Lambda/rowSums(Lambda)
+s = 5000
+Y = matrix(rpois(n*p,s*Lambda),nrow=n,ncol=p)</code></pre>
+<p>Fit models:</p>
+<pre class="r"><code>fit_tm = fit_topic_model(Y,k=4)</code></pre>
+<pre><code>Initializing factors using Topic SCORE algorithm.
+Initializing loadings by running 10 SCD updates.
+Fitting rank-4 Poisson NMF to 300 x 300 dense matrix.
+Running 100 EM updates, without extrapolation (fastTopics 0.6-142).
+Refining model fit.
+Fitting rank-4 Poisson NMF to 300 x 300 dense matrix.
+Running 100 SCD updates, with extrapolation (fastTopics 0.6-142).</code></pre>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_tm$L,points=TRUE,title=&#39;Topic model(fastTopics), Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_tm$F,points=TRUE,title=&#39;Topic model(fastTopics), Factors&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fit_lda = LDA(Y,k=4)
+plot_factor_1by1_ggplot(fit_lda@gamma,points=TRUE,title=&#39;LDA, Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># 
+# 
+# fit_nmf = NNLM::nnmf(Y,k=4,loss = &#39;mkl&#39;,method = &#39;lee&#39;)
+# plot_factor_1by1_ggplot(fit_nmf$W,points=TRUE,title=&#39;NMF (nnmf), Loadings&#39;)
+# plot_factor_1by1_ggplot(t(fit_nmf$W),points=TRUE,title=&#39;NMF (nnmf), Factors&#39;)
+
+fit_ebpmf = ebpmf_log(Y,flash_control=list(Kmax=10,
+                                         ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),
+                                         loadings_sign=1,
+                                         factors_sign = 1),
+                      var_type = &#39;constant&#39;,
+                      sigma2_control = list(return_sigma2_trace=T),
+                      general_control = list(maxiter=70,conv_tol=1e-5))</code></pre>
+<pre><code>Initializing M...Solving VGA constant...For large matrix this may require large memory usage
+running initial flash fit</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>No new structure found yet. Re-trying... 1</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Running iterations...</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.
+
+Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.
+
+Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>iter 10, avg elbo=-2.52561, K=5
+iter 20, avg elbo=-2.47286, K=5
+iter 30, avg elbo=-2.458, K=5
+iter 40, avg elbo=-2.45151, K=5
+iter 50, avg elbo=-2.44791, K=5
+iter 60, avg elbo=-2.44559, K=5
+iter 70, avg elbo=-2.44394, K=5</code></pre>
+<pre class="r"><code>plot(fit_ebpmf$sigma2_trace,type=&#39;l&#39;,xlab=&#39;iterations&#39;,ylab=&#39;sigma2&#39;)
+abline(h=0,lty=2)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$L.pm,points = T,title=&#39;EBPMF, Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebpmf$fit_flash$F.pm,points = T,title=&#39;EBPMF, Factors&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># fit EBNMF + log transformation?
+
+Y_tilde = log(1+median(rowSums(Y))/0.5*Y/rowSums(Y))
+fit_ebnmf = flash(Y_tilde,ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),greedy.Kmax = 10,backfit = TRUE,var.type = 2)</code></pre>
+<pre><code>Adding factor 1 to flash object...
+Adding factor 2 to flash object...
+Adding factor 3 to flash object...
+Adding factor 4 to flash object...</code></pre>
+<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
+failed to find a non-zero factor.</code></pre>
+<pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
+Wrapping up...
+Done.
+Backfitting 3 factors (tolerance: 1.34e-03)...
+  Difference between iterations is within 1.0e+04...
+  Difference between iterations is within 1.0e+03...
+  Difference between iterations is within 1.0e+02...
+  Difference between iterations is within 1.0e+01...
+  Difference between iterations is within 1.0e+00...
+  Difference between iterations is within 1.0e-01...
+  Difference between iterations is within 1.0e-02...
+  Difference between iterations is within 1.0e-03...
+Wrapping up...
+Done.
+Nullchecking 3 factors...
+Done.</code></pre>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebnmf$L.pm,points = T,title=&#39;EBNMF, Loadings&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot_factor_1by1_ggplot(fit_ebnmf$F.pm,points = T,title=&#39;EBNMF, Factors&#39;)</code></pre>
+<p><img src="figure/ebpmf_nmf_diff.Rmd/unnamed-chunk-6-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># # fit GLMPCA
+# library(glmpca)
+# fit_glmpca = glmpca(Y,L=4,fam=&#39;poi&#39;)
+# plot(fit_glmpca$loadings[,1])
+# plot(fit_glmpca$loadings[,2])
+# plot(fit_glmpca$loadings[,3])
+# plot(fit_glmpca$loadings[,4])
+# 
+# # fit Poisson PCA
+# library(PoissonPCA)
+# fit_ppca = Poisson_Corrected_PCA(Y,k=4)
+# plot(fit_ppca$scores[,1])
+# plot(fit_ppca$scores[,2])
+# plot(fit_ppca$scores[,3])
+# plot(fit_ppca$scores[,4])</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.0 (2021-05-18)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS Linux 7 (Core)
+
+Matrix products: default
+BLAS:   /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRblas.so
+LAPACK: /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRlapack.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C         LC_TIME=C           
+ [4] LC_COLLATE=C         LC_MONETARY=C        LC_MESSAGES=C       
+ [7] LC_PAPER=C           LC_NAME=C            LC_ADDRESS=C        
+[10] LC_TELEPHONE=C       LC_MEASUREMENT=C     LC_IDENTIFICATION=C 
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] flashier_0.2.36    magrittr_2.0.3     forcats_0.5.1      stringr_1.5.0     
+ [5] dplyr_1.1.0        purrr_1.0.1        readr_1.4.0        tidyr_1.3.0       
+ [9] tibble_3.2.1       tidyverse_1.3.1    ggplot2_3.4.1      NNLM_0.4.4        
+[13] topicmodels_0.2-14 ebpmf_2.1.9        fastTopics_0.6-142 workflowr_1.6.2   
+
+loaded via a namespace (and not attached):
+  [1] Rtsne_0.16         ebpm_0.0.1.3       colorspace_2.1-0  
+  [4] smashr_1.3-6       ellipsis_0.3.2     modeltools_0.2-23 
+  [7] mr.ash_0.1-87      rprojroot_2.0.2    fs_1.5.0          
+ [10] rstudioapi_0.13    farver_2.1.1       MatrixModels_0.5-1
+ [13] ggrepel_0.9.3      lubridate_1.7.10   fansi_1.0.4       
+ [16] mvtnorm_1.1-2      xml2_1.3.2         codetools_0.2-18  
+ [19] splines_4.1.0      cachem_1.0.5       knitr_1.33        
+ [22] jsonlite_1.8.4     nloptr_1.2.2.2     mcmc_0.9-7        
+ [25] broom_0.7.8        dbplyr_2.1.1       ashr_2.2-54       
+ [28] smashrgen_1.2.4    uwot_0.1.14        compiler_4.1.0    
+ [31] httr_1.4.5         backports_1.2.1    assertthat_0.2.1  
+ [34] RcppZiggurat_0.1.6 Matrix_1.5-3       fastmap_1.1.0     
+ [37] lazyeval_0.2.2     cli_3.6.1          later_1.3.0       
+ [40] htmltools_0.5.4    quantreg_5.94      prettyunits_1.1.1 
+ [43] tools_4.1.0        NLP_0.2-1          coda_0.19-4       
+ [46] gtable_0.3.1       glue_1.6.2         Rcpp_1.0.10       
+ [49] softImpute_1.4-1   slam_0.1-48        cellranger_1.1.0  
+ [52] jquerylib_0.1.4    vctrs_0.6.2        iterators_1.0.13  
+ [55] wavethresh_4.7.2   xfun_0.24          rvest_1.0.0       
+ [58] trust_0.1-8        lifecycle_1.0.3    irlba_2.3.5.1     
+ [61] MASS_7.3-54        scales_1.2.1       hms_1.1.2         
+ [64] promises_1.2.0.1   parallel_4.1.0     SparseM_1.81      
+ [67] yaml_2.3.7         pbapply_1.7-0      sass_0.4.0        
+ [70] stringi_1.6.2      SQUAREM_2021.1     highr_0.9         
+ [73] deconvolveR_1.2-1  foreach_1.5.1      caTools_1.18.2    
+ [76] truncnorm_1.0-8    shape_1.4.6        horseshoe_0.2.0   
+ [79] rlang_1.1.1        pkgconfig_2.0.3    matrixStats_0.59.0
+ [82] bitops_1.0-7       ebnm_1.0-11        evaluate_0.14     
+ [85] lattice_0.20-44    invgamma_1.1       labeling_0.4.2    
+ [88] htmlwidgets_1.6.1  Rfast_2.0.7        cowplot_1.1.1     
+ [91] tidyselect_1.2.0   R6_2.5.1           generics_0.1.3    
+ [94] DBI_1.1.1          haven_2.4.1        withr_2.5.0       
+ [97] pillar_1.8.1       whisker_0.4        survival_3.2-11   
+[100] mixsqp_0.3-48      modelr_0.1.8       crayon_1.5.2      
+[103] utf8_1.2.3         plotly_4.10.1      rmarkdown_2.9     
+[106] progress_1.2.2     readxl_1.3.1       grid_4.1.0        
+[109] data.table_1.14.8  git2r_0.28.0       reprex_2.0.0      
+[112] digest_0.6.31      vebpm_0.4.8        tm_0.7-8          
+[115] httpuv_1.6.1       MCMCpack_1.6-3     RcppParallel_5.1.7
+[118] stats4_4.1.0       munsell_0.5.0      glmnet_4.1-2      
+[121] viridisLite_0.4.1  bslib_0.4.2        quadprog_1.5-8    </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
