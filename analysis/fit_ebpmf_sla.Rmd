@@ -1,0 +1,112 @@
+---
+title: "Fit ebpmf on statisticalpaper abstracts (SLA) data"
+author: "DongyueXie"
+date: "2023-07-05"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Dataset is from \url{https://github.com/ZhengTracyKe/TopicSCORE/tree/main/Statistical%20Literature%20Abstracts%20data}
+
+
+
+```{r}
+library(flashier)
+data <- read.table('data/abstract.txt')
+data <- as.matrix(data)
+vocab <- read.table('data/abstract.vocab.txt',colClasses = "character")[[1]]
+
+# D_count is word by document matrix
+D_count <- matrix(0,max(data[,2]),max(data[,1]))
+for (t in 1:dim(data)[1]){
+  D_count[data[t,2], data[t,1]] <-data[t,3]
+}
+
+p <- dim(D_count)[1]
+n <- dim(D_count)[2]
+
+# Set some thresholds
+w_num <- 3000        #number of words to keep
+d_percent <- 0.6     #percentage of docs to keep
+Mquantile <- 1     #Truncate quantile of M
+
+#Only keep d_percent% longest documents
+doc_count <- colSums(D_count)
+doc_keep <- which(rank(-doc_count, ties.method = 'first')<=round(d_percent*n))
+D_count <- D_count[,doc_keep]
+
+#Only keep top w_num most frequent words
+word_count <- rowSums(D_count)
+word_keep <- which(rank(-word_count, ties.method = 'first')<=w_num)
+D_count <- D_count[word_keep,]
+vocab <- vocab[word_keep]
+
+dim(D_count)
+hist(colSums(D_count),breaks = 100)
+
+## run ebpmf
+library(ebpmf)
+fit = ebpmf_log(t(D_count),flash_control=list(Kmax=10,
+                                               ebnm.fn=c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),
+                                               loadings_sign=1,
+                                               factors_sign = 1),
+                var_type = 'by_col',
+                init_control = list(init_tol=1e-4,single_gene_expmix=TRUE,deal_with_no_init_factor='...'),
+                sigma2_control = list(return_sigma2_trace=T),
+                general_control = list(maxiter=1,conv_tol=1e-5,save_init_val=TRUE,save_latent_M=T))
+```
+
+## Why no factor is added?
+
+We see in the ebpmf fit that at the initialization, the model fails to find new factors, other than the intercepts. 
+
+We first extract the flash object, and reproduce the results.
+
+```{r}
+hist(fit$init_val$sigma2_init,breaks = 100)
+range(fit$init_val$M_init)
+# re-produce that flash could not add any more dimensions.
+fit.flash = fit$fit_flash$flash.fit
+fit.flash  = flash.add.greedy(fit.flash, Kmax = 10,ebnm.fn = ebnm::ebnm_point_exponential,verbose = 1)
+```
+
+How about just supply latent data to flash, and do not provide variances?
+
+```{r}
+fit_flash = flash.init(fit$init_val$M_init,S=NULL,var.type = 2)
+l0 = log(rowMeans(t(D_count)))
+n = ncol(D_count)
+p = nrow(D_count)
+ebnm.fixed.l0 = function(x,s,g_init,fix_g,output){
+    return(list(posterior=list(mean=l0,second_moment = l0^2),
+                fitted_g = NULL,
+                log_likelihood=sum(dnorm(x,l0,s,log=T))))
+  }
+fit_flash = flash.init.factors(fit_flash,list(cbind(l0), cbind(rep(1,p))),ebnm.fn = ebnm.fixed.l0) %>%
+    flash.fix.factors(kset = 1, mode = 2)
+f0 = log(cbind(colSums(t(D_count))/sum(exp(l0))))
+  fit_flash = flash.init.factors(fit_flash,list(cbind(rep(1,n)), f0),ebnm.fn = ebnm::ebnm_normal) %>%
+    flash.fix.factors(kset = 2, mode = 1)
+
+fit_flash = flash.add.greedy(fit_flash, Kmax = 10,ebnm.fn = ebnm::ebnm_point_exponential)
+hist(fit_flash$residuals.sd,breaks = 100)
+```
+
+
+Still not work. So maybe for this dataset, after accounting for the Document size and background word frequency, there's no new multiplicative factor?
+
+What if we subtract Document size and background word frequency from the latent data, and fit flash?
+
+```{r}
+y = fit$init_val$M_init - tcrossprod(cbind(l0),cbind(rep(1,p))) - tcrossprod(cbind(rep(1,n)),cbind(f0))
+res = flash(y,ebnm.fn = ebnm::ebnm_point_exponential,var.type = 2,backfit = T,greedy.Kmax = 10)
+```
+
+```{r}
+plot(svd(y)$d)
+```
+
+
