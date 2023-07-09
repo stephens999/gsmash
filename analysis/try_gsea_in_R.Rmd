@@ -1,0 +1,37 @@
+---
+title: "try gsea in R"
+author: "DongyueXie"
+date: "2023-07-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Here i try to use R package `clusterProfiler` for GSEA.
+
+```{r}
+library(clusterProfiler)
+library(org.Mm.eg.db)
+library(org.Hs.eg.db)
+data(geneList, package="DOSE")
+
+genes <- c("BRCA1", "BRCA2", "TP53")
+gene_ids <- mapIds(org.Hs.eg.db, keys = genes, column = "ENTREZID", keytype = "SYMBOL", multiVals = "first")
+
+#In the enrichGO function, the ont parameter specifies the ontology to use for the enrichment analysis. 
+#The options are "BP" for Biological Process, "CC" for Cellular Component, and "MF" for Molecular Function.
+
+ego <- enrichGO(gene          = gene_ids,
+                universe      = names(geneList),
+                OrgDb         = org.Hs.eg.db,
+                ont           = "BP",
+                pAdjustMethod = "BH",
+                pvalueCutoff  = 0.01,
+                qvalueCutoff  = 0.05,
+                readable      = TRUE)
+head(ego)
+dotplot(ego, showCategory = 10)
+```
+
