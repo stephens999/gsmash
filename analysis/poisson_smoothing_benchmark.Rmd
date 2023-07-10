@@ -354,10 +354,10 @@ extract_counts_CTCF <- function(filename){
 ```
 
 ```{r}
-files = list.files('/home/dyxie/Rpackages/smash-gen/data/chipexo_examples')
-file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipexo_examples/",files[1],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+files = list.files('/home/dyxie/Rpackages/smash-gen/data/chipseq_examples')
+file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[1],sep='')
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 
 
 
@@ -377,8 +377,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 1, Forward')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
@@ -397,9 +397,9 @@ legend("topright", # places a legend at the appropriate place
 
 
 ```{r}
-file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipexo_examples/",files[2],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[2],sep='')
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 
 fit_vst = smash_gen_pois(y,transformation='vst',smoother='smash',
                                           filter.number = 1,family = 'DaubExPhase',
@@ -416,8 +416,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 1, Reverse')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
@@ -438,9 +438,9 @@ legend("topleft", # places a legend at the appropriate place
 
 
 ```{r}
-file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipexo_examples/",files[3],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[3],sep='')
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 
 fit_vst = smash_gen_pois(y,transformation='vst',smoother='smash',
                                           filter.number = 1,family = 'DaubExPhase',
@@ -457,8 +457,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 2, Forward')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
@@ -477,9 +477,9 @@ legend("topright", # places a legend at the appropriate place
 
 
 ```{r}
-file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipexo_examples/",files[4],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[4],sep='')
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 
 fit_vst = smash_gen_pois(y,transformation='vst',smoother='smash',
                                           filter.number = 1,family = 'DaubExPhase',
@@ -496,8 +496,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 2, Reverse')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
@@ -535,8 +535,8 @@ extract_counts_CTCF <- function(filename){
 ```{r}
 files = list.files('/home/dyxie/Rpackages/smash-gen/data/chipseq_examples')
 file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[3],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 
 
 
@@ -556,8 +556,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 1, Forward')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
@@ -576,8 +576,8 @@ legend("topright", # places a legend at the appropriate place
 
 ```{r}
 file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[5],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 
 
 
@@ -597,8 +597,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 2, Forward')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
@@ -618,8 +618,8 @@ legend("topright", # places a legend at the appropriate place
 
 ```{r}
 file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[4],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 sum(y==0)/length(y)
 
 
@@ -639,8 +639,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 1, Reverse')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
@@ -660,8 +660,8 @@ legend("topright", # places a legend at the appropriate place
 
 ```{r}
 file.name = paste("/home/dyxie/Rpackages/smash-gen/data/chipseq_examples/",files[6],sep='')
-chipexo1 = extract_counts_CTCF(file.name)
-y = chipexo1$counts
+chipseq1 = extract_counts_CTCF(file.name)
+y = chipseq1$counts
 sum(y==0)/length(y)
 
 
@@ -681,8 +681,8 @@ fit_lik_exp = smash_gen_pois(y,transformation='lik_expan',smoother='smash',
 fit_two_step = smash_two_step(y,homoskedastic=FALSE)
 
 plot(y, col = "gray80", type = "p", pch=20,ylab = "counts", xlab = 'Chr 1',xaxt='n', main = 'Rep 2, Reverse')
-xlab.idx = round(seq(1,length(chipexo1$counts),length.out = 5))
-axis(1, at = xlab.idx,labels = round(seq(chipexo1$start,chipexo1$end,length.out = 5)))
+xlab.idx = round(seq(1,length(chipseq1$counts),length.out = 5))
+axis(1, at = xlab.idx,labels = round(seq(chipseq1$start,chipseq1$end,length.out = 5)))
 
 lines(smash.poiss(y), col = "grey70", lwd = 1)
 lines(fit_vst$posterior$mean_smooth,col=3,lwd=1)
