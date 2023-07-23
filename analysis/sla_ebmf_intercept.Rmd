@@ -12,7 +12,7 @@ editor_options:
 
 We fit EBNMF model on SLA data, but fix the intercept (of factors) as:
 
-colSums(Y)
+colMeans(data_matrix)
 
 ```{r}
 library(Matrix)
@@ -29,7 +29,7 @@ Recall that the transformation for EBNMF for count data is
 ```{r}
 library(ebpmf)
 Y_tilde = log_for_ebmf(datax$data)
-f0 = colSums(Y_tilde)
+f0 = colMeans(Y_tilde)
 plot(f0)
 ```
 
@@ -46,5 +46,22 @@ library(flashier)
 fit = flash(Y,ebnm=ebnm::ebnm_point_exponential,greedy.Kmax = 6,var.type = 2,backfit = T)
 ```
 
-No more factor found!
+
+```{r}
+colnames(datax$data)[order(fit$F.pm[,1],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,2],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,3],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,4],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,5],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,6],decreasing = T)[1:10]]
+```
+
+
+
+
+
+
+
+
+
 
