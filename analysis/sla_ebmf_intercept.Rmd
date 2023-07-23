@@ -1,0 +1,50 @@
+---
+title: "sla data, ebmf fit with known intercept"
+author: "DongyueXie"
+date: "2023-07-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+
+We fit EBNMF model on SLA data, but fix the intercept (of factors) as:
+
+colSums(Y)
+
+```{r}
+library(Matrix)
+datax = readRDS('data/sla_2000.rds')
+dim(datax$data)
+sum(datax$data==0)/prod(dim(datax$data))
+datax$data = Matrix(datax$data,sparse = TRUE)
+```
+
+Recall that the transformation for EBNMF for count data is 
+
+\[\log ( 1+ \frac{median(s_i)}{0.5}\frac{y_{ij}}{s_i}).\]
+
+```{r}
+library(ebpmf)
+Y_tilde = log_for_ebmf(datax$data)
+f0 = colSums(Y_tilde)
+plot(f0)
+```
+
+Then we subtract $1f_0^T$ to remove this intercept.
+
+```{r}
+Y = Y_tilde - rep(1,nrow(Y_tilde))%*%t(f0)
+```
+
+Then we fit EBNMF
+
+```{r}
+library(flashier)
+fit = flash(Y,ebnm=ebnm::ebnm_point_exponential,greedy.Kmax = 6,var.type = 2,backfit = T)
+```
+
+No more factor found!
+
