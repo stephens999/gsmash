@@ -521,15 +521,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeebbef438f22f96617ded4359954d788a0236fe4etargetblankebbef43a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree4e4601f945da97d5efe4585936a3c05fdce1281atargetblank4e4601fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/ebbef438f22f96617ded4359954d788a0236fe4e" target="_blank">ebbef43</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/4e4601f945da97d5efe4585936a3c05fdce1281a" target="_blank">4e4601f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreeebbef438f22f96617ded4359954d788a0236fe4etargetblankebbef43a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree4e4601f945da97d5efe4585936a3c05fdce1281atargetblank4e4601fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -539,7 +539,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/ebbef438f22f96617ded4359954d788a0236fe4e" target="_blank">ebbef43</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/4e4601f945da97d5efe4585936a3c05fdce1281a" target="_blank">4e4601f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -637,6 +637,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/DongyueXie/gsmash/blob/4e4601f945da97d5efe4585936a3c05fdce1281a/analysis/sla_ebmf_intercept.Rmd" target="_blank">4e4601f</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-07-23
+</td>
+<td>
+wflow_publish("analysis/sla_ebmf_intercept.Rmd")
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/371c6529a42c15c2b5e77c099c0079dff31b68f6/docs/sla_ebmf_intercept.html" target="_blank">371c652</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-07-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/DongyueXie/gsmash/blob/ebbef438f22f96617ded4359954d788a0236fe4e/analysis/sla_ebmf_intercept.Rmd" target="_blank">ebbef43</a>
 </td>
 <td>
@@ -660,7 +694,7 @@ wflow_publish("analysis/sla_ebmf_intercept.Rmd")
 <h2>Introduction</h2>
 <p>We fit EBNMF model on SLA data, but fix the intercept (of factors)
 as:</p>
-<p>colSums(Y)</p>
+<p>colMeans(data_matrix)</p>
 <pre class="r"><code>library(Matrix)
 datax = readRDS(&#39;data/sla_2000.rds&#39;)
 dim(datax$data)</code></pre>
@@ -673,9 +707,46 @@ dim(datax$data)</code></pre>
 \frac{median(s_i)}{0.5}\frac{y_{ij}}{s_i}).\]</span></p>
 <pre class="r"><code>library(ebpmf)
 Y_tilde = log_for_ebmf(datax$data)
-f0 = colSums(Y_tilde)
+f0 = colMeans(Y_tilde)
 plot(f0)</code></pre>
 <p><img src="figure/sla_ebmf_intercept.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/371c6529a42c15c2b5e77c099c0079dff31b68f6/docs/figure/sla_ebmf_intercept.Rmd/unnamed-chunk-2-1.png" target="_blank">371c652</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-07-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Then we subtract <span class="math inline">\(1f_0^T\)</span> to
 remove this intercept.</p>
 <pre class="r"><code>Y = Y_tilde - rep(1,nrow(Y_tilde))%*%t(f0)</code></pre>
@@ -683,15 +754,41 @@ remove this intercept.</p>
 <pre class="r"><code>library(flashier)</code></pre>
 <pre><code>Loading required package: magrittr</code></pre>
 <pre class="r"><code>fit = flash(Y,ebnm=ebnm::ebnm_point_exponential,greedy.Kmax = 6,var.type = 2,backfit = T)</code></pre>
-<pre><code>Adding factor 1 to flash object...</code></pre>
-<pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
-failed to find a non-zero factor.</code></pre>
-<pre><code>Factor doesn&#39;t significantly increase objective and won&#39;t be added.
+<pre><code>Adding factor 1 to flash object...
+Adding factor 2 to flash object...
+Adding factor 3 to flash object...
+Adding factor 4 to flash object...
+Adding factor 5 to flash object...
+Adding factor 6 to flash object...
 Wrapping up...
 Done.
-No factors have been added. Skipping backfit.
-No factors have been added. Skipping nullcheck.</code></pre>
-<p>No more factor found!</p>
+Backfitting 6 factors (tolerance: 8.01e-02)...
+  Difference between iterations is within 1.0e+02...
+  Difference between iterations is within 1.0e+01...
+  Difference between iterations is within 1.0e+00...
+  Difference between iterations is within 1.0e-01...
+Wrapping up...
+Done.
+Nullchecking 6 factors...
+Done.</code></pre>
+<pre class="r"><code>colnames(datax$data)[order(fit$F.pm[,1],decreasing = T)[1:10]]</code></pre>
+<pre><code> [1] &quot;trial&quot;     &quot;clinic&quot;    &quot;treatment&quot; &quot;patient&quot;   &quot;random&quot;    &quot;outcom&quot;   
+ [7] &quot;design&quot;    &quot;effect&quot;    &quot;arm&quot;       &quot;control&quot;  </code></pre>
+<pre class="r"><code>colnames(datax$data)[order(fit$F.pm[,2],decreasing = T)[1:10]]</code></pre>
+<pre><code> [1] &quot;hazard&quot;  &quot;proport&quot; &quot;surviv&quot;  &quot;time&quot;    &quot;model&quot;   &quot;cox&quot;     &quot;covari&quot; 
+ [8] &quot;failur&quot;  &quot;censor&quot;  &quot;baselin&quot;</code></pre>
+<pre class="r"><code>colnames(datax$data)[order(fit$F.pm[,3],decreasing = T)[1:10]]</code></pre>
+<pre><code> [1] &quot;semiparametr&quot; &quot;estim&quot;        &quot;model&quot;        &quot;effici&quot;       &quot;nonparametr&quot; 
+ [6] &quot;parametr&quot;     &quot;asymptot&quot;     &quot;propos&quot;       &quot;regress&quot;      &quot;paramet&quot;     </code></pre>
+<pre class="r"><code>colnames(datax$data)[order(fit$F.pm[,4],decreasing = T)[1:10]]</code></pre>
+<pre><code> [1] &quot;markov&quot;    &quot;chain&quot;     &quot;mont&quot;      &quot;carlo&quot;     &quot;algorithm&quot; &quot;bayesian&quot; 
+ [7] &quot;model&quot;     &quot;posterior&quot; &quot;prior&quot;     &quot;infer&quot;    </code></pre>
+<pre class="r"><code>colnames(datax$data)[order(fit$F.pm[,5],decreasing = T)[1:10]]</code></pre>
+<pre><code> [1] &quot;absolut&quot;  &quot;deviat&quot;   &quot;clip&quot;     &quot;smooth&quot;   &quot;select&quot;   &quot;oracl&quot;   
+ [7] &quot;variabl&quot;  &quot;penalti&quot;  &quot;properti&quot; &quot;consist&quot; </code></pre>
+<pre class="r"><code>colnames(datax$data)[order(fit$F.pm[,6],decreasing = T)[1:10]]</code></pre>
+<pre><code> [1] &quot;spline&quot;      &quot;smooth&quot;      &quot;regress&quot;     &quot;penal&quot;       &quot;function&quot;   
+ [6] &quot;penalti&quot;     &quot;squar&quot;       &quot;polynomi&quot;    &quot;knot&quot;        &quot;nonparametr&quot;</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
