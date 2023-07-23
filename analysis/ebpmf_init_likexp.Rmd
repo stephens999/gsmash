@@ -1,0 +1,80 @@
+---
+title: "ebpmf init using liklihood expansion"
+author: "DongyueXie"
+date: "2023-07-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+
+Consider a Poisson distribution, $y\sim Poisson(s\exp(\mu))$, the log likelihood of $\mu$ is 
+\[l(\mu) = y\mu - s\exp\mu\]
+
+A second order Taylor series expansion of $\mu$ around 0 is 
+\[\tilde l(\mu) = -s + (y-s)\mu - \frac{s}{2}\mu^2 = -\frac{s}{2}(\mu-\frac{y-s}{s})^2.\]
+
+So the ``pseudo-data'' are $(y-s)/s$.
+
+Remark:
+
+If in another model $y\sim Poisson(\exp\mu)$, and we want to perform a 2nd order Taylor series expansion of $\mu$ around $\alpha$, then the ``pseudo-data'' are $\alpha + \frac{y-\exp(\alpha)}{\exp(\alpha)}$.
+
+We can fit an EBMF model to the pseudo-data as initialization.
+
+```{r}
+library(Matrix)
+datax = readRDS('data/sla_2000.rds')
+dim(datax$data)
+sum(datax$data==0)/prod(dim(datax$data))
+datax$data = Matrix(datax$data,sparse = TRUE)
+```
+
+```{r}
+l0 = log(rowMeans(datax$data))
+f0 = log(colSums(datax$data)/sum(exp(l0)))
+alpha = l0%*%t(rep(1,ncol(datax$data))) + rep(1,nrow(datax$data))%*%t(f0)
+Y_tilde = as.matrix((datax$data - exp(alpha))/exp(alpha))
+```
+
+
+```{r}
+library(flashier)
+fit = flash(as.matrix(Y_tilde),ebnm=ebnm::ebnm_point_exponential,greedy.Kmax = 6,var.type = 2,backfit = T,S = sqrt(1/exp(alpha)))
+```
+
+
+
+```{r}
+colnames(datax$data)[order(fit$F.pm[,1],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,2],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,3],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,4],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,5],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit$F.pm[,6],decreasing = T)[1:10]]
+```
+
+
+
+
+```{r}
+fit1 = flash(as.matrix(Y_tilde)/sqrt(1/exp(alpha)),ebnm=ebnm::ebnm_point_exponential,greedy.Kmax = 6,var.type = 2,backfit = T)
+```
+
+
+```{r}
+colnames(datax$data)[order(fit1$F.pm[,1],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit1$F.pm[,2],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit1$F.pm[,3],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit1$F.pm[,4],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit1$F.pm[,5],decreasing = T)[1:10]]
+colnames(datax$data)[order(fit1$F.pm[,6],decreasing = T)[1:10]]
+```
+
+## summary
+
+
+Does not work well. exp(alpha) can be very small. so pesudo-data can be very large.
+
