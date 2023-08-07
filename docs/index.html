@@ -309,7 +309,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2023-07-06
+<strong>Last updated:</strong> 2023-08-07
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -356,15 +356,15 @@ results.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree1a93f11bce477f23ea55c85613907d8db4ad4b02targetblank1a93f11a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed0c82244599b59bd05f06aedb87671a92591ed4etargetblankd0c8224a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/DongyueXie/gsmash/tree/1a93f11bce477f23ea55c85613907d8db4ad4b02" target="_blank">1a93f11</a>
+<a href="https://github.com/DongyueXie/gsmash/tree/d0c82244599b59bd05f06aedb87671a92591ed4e" target="_blank">d0c8224</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree1a93f11bce477f23ea55c85613907d8db4ad4b02targetblank1a93f11a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed0c82244599b59bd05f06aedb87671a92591ed4etargetblankd0c8224a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -374,7 +374,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/DongyueXie/gsmash/tree/1a93f11bce477f23ea55c85613907d8db4ad4b02" target="_blank">1a93f11</a>.
+<a href="https://github.com/DongyueXie/gsmash/tree/d0c82244599b59bd05f06aedb87671a92591ed4e" target="_blank">d0c8224</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -393,22 +393,35 @@ Ignored files:
     Ignored:    .Rproj.user/
 
 Untracked files:
+    Untracked:  analysis/GO_ORA_montoro.Rmd
+    Untracked:  analysis/GO_ORA_pbmc_purified.Rmd
+    Untracked:  analysis/fit_ebpmf_sla_2000.Rmd
+    Untracked:  analysis/poisson_deviance.Rmd
+    Untracked:  analysis/sla_data.Rmd
     Untracked:  chipexo_rep1_reverse.rds
     Untracked:  data/Citation.RData
+    Untracked:  data/SLA/
     Untracked:  data/abstract.txt
     Untracked:  data/abstract.vocab.txt
     Untracked:  data/ap.txt
     Untracked:  data/ap.vocab.txt
+    Untracked:  data/sla_2000.rds
+    Untracked:  data/sla_full.rds
     Untracked:  data/text.R
     Untracked:  data/tpm3.rds
+    Untracked:  output/driving_gene_pbmc.rds
+    Untracked:  output/pbmc_gsea.rds
     Untracked:  output/plots/
     Untracked:  output/tpm3_fit_fasttopics.rds
     Untracked:  output/tpm3_fit_stm.rds
     Untracked:  output/tpm3_fit_stm_slow.rds
+    Untracked:  sla.rds
 
 Unstaged changes:
     Modified:   analysis/PMF_splitting.Rmd
-    Modified:   analysis/poisson_smoothing_benchmark.Rmd
+    Modified:   analysis/fit_ebpmf_sla.Rmd
+    Modified:   code/poisson_STM/structure_plot.R
+    Modified:   code/poisson_mean/pois_log_normal_mle.R
 
 </code></pre>
 <p>
@@ -453,6 +466,41 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/d0c82244599b59bd05f06aedb87671a92591ed4e/analysis/index.Rmd" target="_blank">d0c8224</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-08-07
+</td>
+<td>
+wflow_publish(c("analysis/fit_ebpmf_sla_nonneg.Rmd",
+"analysis/fit_ebpmf_sla_full_nonneg.Rmd",
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/DongyueXie/gsmash/5b924fb2fc170384945f10645fe1e1f07ad8525f/docs/index.html" target="_blank">5b924fb</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-07-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2809,6 +2857,7 @@ convergence speed</a></li>
 <li><a href="vga_init_in_ebpmf.html">ebpm normal prior init in
 PMF</a></li>
 <li><a href="ebpmf_nmf_diff.html">ebpmf vs topic model</a></li>
+<li><a href="poisson_deviance.html">Poisson deviance</a></li>
 </ul>
 </div>
 <div id="simulation" class="section level3">
@@ -2831,6 +2880,28 @@ models</a></li>
 model on pbmc data in fasttopics, nonnegtive L and F, true sigma2 =
 0</a></li>
 </ul>
+</div>
+<div id="on-text-data" class="section level3">
+<h3>On text data</h3>
+<div id="sla-data-set" class="section level4">
+<h4>SLA data set</h4>
+<ul>
+<li><a href="fit_ebpmf_sla.html">EBPMF does not find factors?</a></li>
+<li><a href="sla_data.html">Pre-processing SLA data</a></li>
+<li><a href="fit_ebpmf_sla_2000.html">EBPMF does not find
+factors?</a></li>
+<li><a href="sla_ebmf_intercept.html">log transformation + EBNMF on SLA
+data</a></li>
+<li><a href="ebpmf_init_likexp.html">ebpmf init using liklihood
+expansion</a></li>
+<li><a href="fit_ebpmf_sla_full_nonneg.html">methods fit on sla 2000
+data</a></li>
+<li><a href="fit_ebpmf_sla_full_nonneg.html">methods fit on sla full
+data, filter out words in less than 5 doc</a></li>
+<li><a href="fit_ebpmf_sla_full_nonneg2.html">methods fit on sla full
+data, filter out words in less than 3 doc</a></li>
+</ul>
+</div>
 </div>
 <div id="on-pbmc3k" class="section level3">
 <h3>On pbmc3k</h3>

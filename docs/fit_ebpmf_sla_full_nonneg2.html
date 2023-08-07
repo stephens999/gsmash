@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="DongyueXie" />
+
+<meta name="date" content="2023-08-06" />
+
+<title>fit ebpmf to sla full data with non-negative constraints, new version with different baseline</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gsmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">fit ebpmf to sla full data with
+non-negative constraints, new version with different baseline</h1>
+<h4 class="author">DongyueXie</h4>
+<h4 class="date">2023-08-06</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-08-07
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>gsmash/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed0c82244599b59bd05f06aedb87671a92591ed4etargetblankd0c8224a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/d0c82244599b59bd05f06aedb87671a92591ed4e" target="_blank">d0c8224</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtreed0c82244599b59bd05f06aedb87671a92591ed4etargetblankd0c8224a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/d0c82244599b59bd05f06aedb87671a92591ed4e" target="_blank">d0c8224</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/GO_ORA_montoro.Rmd
+    Untracked:  analysis/GO_ORA_pbmc_purified.Rmd
+    Untracked:  analysis/fit_ebpmf_sla_2000.Rmd
+    Untracked:  analysis/poisson_deviance.Rmd
+    Untracked:  analysis/sla_data.Rmd
+    Untracked:  chipexo_rep1_reverse.rds
+    Untracked:  data/Citation.RData
+    Untracked:  data/SLA/
+    Untracked:  data/abstract.txt
+    Untracked:  data/abstract.vocab.txt
+    Untracked:  data/ap.txt
+    Untracked:  data/ap.vocab.txt
+    Untracked:  data/sla_2000.rds
+    Untracked:  data/sla_full.rds
+    Untracked:  data/text.R
+    Untracked:  data/tpm3.rds
+    Untracked:  output/driving_gene_pbmc.rds
+    Untracked:  output/pbmc_gsea.rds
+    Untracked:  output/plots/
+    Untracked:  output/tpm3_fit_fasttopics.rds
+    Untracked:  output/tpm3_fit_stm.rds
+    Untracked:  output/tpm3_fit_stm_slow.rds
+    Untracked:  sla.rds
+
+Unstaged changes:
+    Modified:   analysis/PMF_splitting.Rmd
+    Modified:   analysis/fit_ebpmf_sla.Rmd
+    Modified:   code/poisson_STM/structure_plot.R
+    Modified:   code/poisson_mean/pois_log_normal_mle.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/fit_ebpmf_sla_full_nonneg2.Rmd</code>) and HTML
+(<code>docs/fit_ebpmf_sla_full_nonneg2.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/d0c82244599b59bd05f06aedb87671a92591ed4e/analysis/fit_ebpmf_sla_full_nonneg2.Rmd" target="_blank">d0c8224</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-08-07
+</td>
+<td>
+wflow_publish(c("analysis/fit_ebpmf_sla_nonneg.Rmd",
+"analysis/fit_ebpmf_sla_full_nonneg.Rmd",
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><a href="fit_ebpmf_sla_full_nonneg.html">Previously</a> i filtered
+out words that appear in less than 5 documents. That resulted in around
+2000 words</p>
+<p>Here i filtered out words that appear in less than 3 documents. This
+resulted in around 4000 words</p>
+<pre class="r"><code>library(Matrix)
+datax = readRDS(&#39;data/sla_full.rds&#39;)
+dim(datax$data)</code></pre>
+<pre><code>[1]  3207 10104</code></pre>
+<pre class="r"><code>sum(datax$data==0)/prod(dim(datax$data))</code></pre>
+<pre><code>[1] 0.9948157</code></pre>
+<pre class="r"><code>datax$data = Matrix(datax$data,sparse = TRUE)</code></pre>
+</div>
+<div id="data-filtering" class="section level2">
+<h2>Data filtering</h2>
+<p>filter out some documents</p>
+<pre class="r"><code>doc_to_use = order(rowSums(datax$data),decreasing = T)[1:round(nrow(datax$data)*0.6)]
+mat = datax$data[doc_to_use,]
+samples = datax$samples
+samples = lapply(samples, function(z){z[doc_to_use]})</code></pre>
+<pre class="r"><code>word_to_use = which(colSums(mat&gt;0)&gt;=3)
+mat = mat[,word_to_use]</code></pre>
+</div>
+<div id="model-fitting" class="section level2">
+<h2>model fitting</h2>
+<div id="topic-model" class="section level3">
+<h3>Topic model</h3>
+<pre class="r"><code>library(fastTopics)
+fit_tm = fit_topic_model(mat,k=6)</code></pre>
+<pre><code>Initializing factors using Topic SCORE algorithm.
+Initializing loadings by running 10 SCD updates.
+Fitting rank-6 Poisson NMF to 1924 x 3034 sparse matrix.
+Running 100 EM updates, without extrapolation (fastTopics 0.6-142).
+Refining model fit.
+Fitting rank-6 Poisson NMF to 1924 x 3034 sparse matrix.
+Running 100 SCD updates, with extrapolation (fastTopics 0.6-142).</code></pre>
+<pre class="r"><code>structure_plot(fit_tm,grouping = samples$journal,gap = 40)</code></pre>
+<pre><code>Running tsne on 508 x 6 matrix.</code></pre>
+<pre><code>Read the 508 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.17 seconds (sparsity = 0.735686)!
+Learning embedding...
+Iteration 50: error is 48.624059 (50 iterations in 0.07 seconds)
+Iteration 100: error is 48.624059 (50 iterations in 0.07 seconds)
+Iteration 150: error is 48.624059 (50 iterations in 0.07 seconds)
+Iteration 200: error is 48.624059 (50 iterations in 0.08 seconds)
+Iteration 250: error is 48.624059 (50 iterations in 0.08 seconds)
+Iteration 300: error is 0.629805 (50 iterations in 0.07 seconds)
+Iteration 350: error is 0.627235 (50 iterations in 0.06 seconds)
+Iteration 400: error is 0.627244 (50 iterations in 0.06 seconds)
+Iteration 450: error is 0.627246 (50 iterations in 0.06 seconds)
+Iteration 500: error is 0.627246 (50 iterations in 0.06 seconds)
+Iteration 550: error is 0.627247 (50 iterations in 0.07 seconds)
+Iteration 600: error is 0.627244 (50 iterations in 0.06 seconds)
+Iteration 650: error is 0.627244 (50 iterations in 0.07 seconds)
+Iteration 700: error is 0.627245 (50 iterations in 0.06 seconds)
+Iteration 750: error is 0.627244 (50 iterations in 0.06 seconds)
+Iteration 800: error is 0.627244 (50 iterations in 0.06 seconds)
+Iteration 850: error is 0.627244 (50 iterations in 0.06 seconds)
+Iteration 900: error is 0.627245 (50 iterations in 0.06 seconds)
+Iteration 950: error is 0.627244 (50 iterations in 0.06 seconds)
+Iteration 1000: error is 0.627244 (50 iterations in 0.07 seconds)
+Fitting performed in 1.31 seconds.</code></pre>
+<pre><code>Running tsne on 280 x 6 matrix.</code></pre>
+<pre><code>Read the 280 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 92.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.08 seconds (sparsity = 0.996250)!
+Learning embedding...
+Iteration 50: error is 42.308315 (50 iterations in 0.03 seconds)
+Iteration 100: error is 42.298743 (50 iterations in 0.03 seconds)
+Iteration 150: error is 42.305444 (50 iterations in 0.03 seconds)
+Iteration 200: error is 42.301437 (50 iterations in 0.03 seconds)
+Iteration 250: error is 42.307227 (50 iterations in 0.03 seconds)
+Iteration 300: error is 0.460297 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.459706 (50 iterations in 0.03 seconds)
+Iteration 400: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 450: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 500: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 550: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 600: error is 0.459717 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.459717 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.459717 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.459717 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 850: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 900: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 950: error is 0.459717 (50 iterations in 0.03 seconds)
+Iteration 1000: error is 0.459717 (50 iterations in 0.02 seconds)
+Fitting performed in 0.55 seconds.</code></pre>
+<pre><code>Running tsne on 885 x 6 matrix.</code></pre>
+<pre><code>Read the 885 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 100.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.32 seconds (sparsity = 0.426042)!
+Learning embedding...
+Iteration 50: error is 55.411741 (50 iterations in 0.15 seconds)
+Iteration 100: error is 53.843041 (50 iterations in 0.14 seconds)
+Iteration 150: error is 53.702830 (50 iterations in 0.14 seconds)
+Iteration 200: error is 53.702753 (50 iterations in 0.14 seconds)
+Iteration 250: error is 53.702748 (50 iterations in 0.14 seconds)
+Iteration 300: error is 0.794966 (50 iterations in 0.14 seconds)
+Iteration 350: error is 0.746091 (50 iterations in 0.13 seconds)
+Iteration 400: error is 0.738957 (50 iterations in 0.14 seconds)
+Iteration 450: error is 0.738239 (50 iterations in 0.14 seconds)
+Iteration 500: error is 0.738171 (50 iterations in 0.14 seconds)
+Iteration 550: error is 0.738167 (50 iterations in 0.14 seconds)
+Iteration 600: error is 0.738168 (50 iterations in 0.13 seconds)
+Iteration 650: error is 0.738168 (50 iterations in 0.14 seconds)
+Iteration 700: error is 0.738168 (50 iterations in 0.14 seconds)
+Iteration 750: error is 0.738168 (50 iterations in 0.14 seconds)
+Iteration 800: error is 0.738169 (50 iterations in 0.14 seconds)
+Iteration 850: error is 0.738168 (50 iterations in 0.14 seconds)
+Iteration 900: error is 0.738168 (50 iterations in 0.14 seconds)
+Iteration 950: error is 0.738168 (50 iterations in 0.14 seconds)
+Iteration 1000: error is 0.738168 (50 iterations in 0.14 seconds)
+Fitting performed in 2.79 seconds.</code></pre>
+<pre><code>Running tsne on 251 x 6 matrix.</code></pre>
+<pre><code>Read the 251 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 82.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.06 seconds (sparsity = 0.995508)!
+Learning embedding...
+Iteration 50: error is 42.570451 (50 iterations in 0.03 seconds)
+Iteration 100: error is 42.563046 (50 iterations in 0.03 seconds)
+Iteration 150: error is 42.576891 (50 iterations in 0.03 seconds)
+Iteration 200: error is 42.564532 (50 iterations in 0.02 seconds)
+Iteration 250: error is 42.558228 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.537460 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.535626 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.535610 (50 iterations in 0.03 seconds)
+Iteration 450: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.535612 (50 iterations in 0.03 seconds)
+Iteration 750: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.535612 (50 iterations in 0.03 seconds)
+Iteration 900: error is 0.535612 (50 iterations in 0.03 seconds)
+Iteration 950: error is 0.535612 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.535612 (50 iterations in 0.02 seconds)
+Fitting performed in 0.47 seconds.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>structure_plot(fit_tm,grouping = samples$year,gap = 40)</code></pre>
+<pre><code>Running tsne on 152 x 6 matrix.</code></pre>
+<pre><code>Read the 152 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 49.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.02 seconds (sparsity = 0.992382)!
+Learning embedding...
+Iteration 50: error is 45.481774 (50 iterations in 0.01 seconds)
+Iteration 100: error is 45.543350 (50 iterations in 0.02 seconds)
+Iteration 150: error is 45.005751 (50 iterations in 0.01 seconds)
+Iteration 200: error is 45.433866 (50 iterations in 0.02 seconds)
+Iteration 250: error is 46.800353 (50 iterations in 0.01 seconds)
+Iteration 300: error is 0.682721 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.557092 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.550732 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.550728 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 650: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 700: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.550727 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.550727 (50 iterations in 0.01 seconds)
+Fitting performed in 0.23 seconds.</code></pre>
+<pre><code>Running tsne on 181 x 6 matrix.</code></pre>
+<pre><code>Read the 181 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 59.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.03 seconds (sparsity = 0.994109)!
+Learning embedding...
+Iteration 50: error is 44.663381 (50 iterations in 0.01 seconds)
+Iteration 100: error is 44.179587 (50 iterations in 0.01 seconds)
+Iteration 150: error is 42.735786 (50 iterations in 0.01 seconds)
+Iteration 200: error is 42.844862 (50 iterations in 0.02 seconds)
+Iteration 250: error is 43.195054 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.688789 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.606633 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.606531 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.606530 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.606530 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.606530 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.606530 (50 iterations in 0.01 seconds)
+Iteration 650: error is 0.606530 (50 iterations in 0.01 seconds)
+Iteration 700: error is 0.606530 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.606530 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.606530 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.606530 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.606530 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.606530 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.606530 (50 iterations in 0.01 seconds)
+Fitting performed in 0.27 seconds.</code></pre>
+<pre><code>Running tsne on 187 x 6 matrix.</code></pre>
+<pre><code>Read the 187 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 61.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.03 seconds (sparsity = 0.994252)!
+Learning embedding...
+Iteration 50: error is 42.998573 (50 iterations in 0.02 seconds)
+Iteration 100: error is 43.005192 (50 iterations in 0.02 seconds)
+Iteration 150: error is 43.328294 (50 iterations in 0.02 seconds)
+Iteration 200: error is 43.363071 (50 iterations in 0.02 seconds)
+Iteration 250: error is 43.009872 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.478377 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.475423 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.475437 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.475437 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.475437 (50 iterations in 0.01 seconds)
+Iteration 550: error is 0.475437 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.475437 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.475437 (50 iterations in 0.01 seconds)
+Iteration 700: error is 0.475437 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.475437 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.475437 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.475437 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.475437 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.475437 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.475436 (50 iterations in 0.01 seconds)
+Fitting performed in 0.33 seconds.</code></pre>
+<pre><code>Running tsne on 189 x 6 matrix.</code></pre>
+<pre><code>Read the 189 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 61.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.03 seconds (sparsity = 0.993757)!
+Learning embedding...
+Iteration 50: error is 42.980711 (50 iterations in 0.02 seconds)
+Iteration 100: error is 43.465452 (50 iterations in 0.02 seconds)
+Iteration 150: error is 43.119741 (50 iterations in 0.02 seconds)
+Iteration 200: error is 43.722308 (50 iterations in 0.02 seconds)
+Iteration 250: error is 43.317550 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.556605 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.550586 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.550116 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.550117 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.550117 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.550117 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.550117 (50 iterations in 0.01 seconds)
+Iteration 650: error is 0.550117 (50 iterations in 0.03 seconds)
+Iteration 700: error is 0.550117 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.550117 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.550117 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.550117 (50 iterations in 0.01 seconds)
+Iteration 900: error is 0.550117 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.550117 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.550117 (50 iterations in 0.02 seconds)
+Fitting performed in 0.33 seconds.</code></pre>
+<pre><code>Running tsne on 206 x 6 matrix.</code></pre>
+<pre><code>Read the 206 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 67.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.04 seconds (sparsity = 0.994580)!
+Learning embedding...
+Iteration 50: error is 43.603362 (50 iterations in 0.02 seconds)
+Iteration 100: error is 43.532992 (50 iterations in 0.03 seconds)
+Iteration 150: error is 43.133348 (50 iterations in 0.02 seconds)
+Iteration 200: error is 43.496997 (50 iterations in 0.02 seconds)
+Iteration 250: error is 43.241726 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.505280 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.501990 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.501982 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.501982 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.501982 (50 iterations in 0.01 seconds)
+Iteration 1000: error is 0.501982 (50 iterations in 0.01 seconds)
+Fitting performed in 0.38 seconds.</code></pre>
+<pre><code>Running tsne on 230 x 6 matrix.</code></pre>
+<pre><code>Read the 230 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 75.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.05 seconds (sparsity = 0.995236)!
+Learning embedding...
+Iteration 50: error is 43.308417 (50 iterations in 0.02 seconds)
+Iteration 100: error is 43.056575 (50 iterations in 0.03 seconds)
+Iteration 150: error is 42.603595 (50 iterations in 0.03 seconds)
+Iteration 200: error is 42.596436 (50 iterations in 0.03 seconds)
+Iteration 250: error is 42.595335 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.416353 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.414936 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.414936 (50 iterations in 0.02 seconds)
+Fitting performed in 0.43 seconds.</code></pre>
+<pre><code>Running tsne on 266 x 6 matrix.</code></pre>
+<pre><code>Read the 266 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 87.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.07 seconds (sparsity = 0.995916)!
+Learning embedding...
+Iteration 50: error is 42.594675 (50 iterations in 0.03 seconds)
+Iteration 100: error is 42.579899 (50 iterations in 0.03 seconds)
+Iteration 150: error is 42.595014 (50 iterations in 0.03 seconds)
+Iteration 200: error is 42.577592 (50 iterations in 0.03 seconds)
+Iteration 250: error is 42.578009 (50 iterations in 0.03 seconds)
+Iteration 300: error is 0.561961 (50 iterations in 0.03 seconds)
+Iteration 350: error is 0.561519 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.560708 (50 iterations in 0.03 seconds)
+Iteration 450: error is 0.560723 (50 iterations in 0.03 seconds)
+Iteration 500: error is 0.560719 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.560719 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 650: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 700: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 750: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 800: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 850: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 900: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 950: error is 0.560719 (50 iterations in 0.03 seconds)
+Iteration 1000: error is 0.560719 (50 iterations in 0.03 seconds)
+Fitting performed in 0.57 seconds.</code></pre>
+<pre><code>Running tsne on 222 x 6 matrix.</code></pre>
+<pre><code>Read the 222 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 72.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.04 seconds (sparsity = 0.994806)!
+Learning embedding...
+Iteration 50: error is 42.677605 (50 iterations in 0.02 seconds)
+Iteration 100: error is 42.715635 (50 iterations in 0.02 seconds)
+Iteration 150: error is 42.688011 (50 iterations in 0.03 seconds)
+Iteration 200: error is 42.684076 (50 iterations in 0.02 seconds)
+Iteration 250: error is 42.687816 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.560556 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.559813 (50 iterations in 0.01 seconds)
+Iteration 450: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.559813 (50 iterations in 0.01 seconds)
+Iteration 750: error is 0.559814 (50 iterations in 0.01 seconds)
+Iteration 800: error is 0.559814 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.559809 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.559813 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.559813 (50 iterations in 0.02 seconds)
+Fitting performed in 0.37 seconds.</code></pre>
+<pre><code>Running tsne on 208 x 6 matrix.</code></pre>
+<pre><code>Read the 208 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 68.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.03 seconds (sparsity = 0.994869)!
+Learning embedding...
+Iteration 50: error is 42.651238 (50 iterations in 0.02 seconds)
+Iteration 100: error is 42.643615 (50 iterations in 0.02 seconds)
+Iteration 150: error is 42.630252 (50 iterations in 0.02 seconds)
+Iteration 200: error is 42.655191 (50 iterations in 0.02 seconds)
+Iteration 250: error is 42.631064 (50 iterations in 0.02 seconds)
+Iteration 300: error is 0.518707 (50 iterations in 0.02 seconds)
+Iteration 350: error is 0.516471 (50 iterations in 0.02 seconds)
+Iteration 400: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 450: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 500: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 550: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 600: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 650: error is 0.516475 (50 iterations in 0.02 seconds)
+Iteration 700: error is 0.516475 (50 iterations in 0.02 seconds)
+Iteration 750: error is 0.516475 (50 iterations in 0.02 seconds)
+Iteration 800: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 850: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 900: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 950: error is 0.516474 (50 iterations in 0.02 seconds)
+Iteration 1000: error is 0.516475 (50 iterations in 0.02 seconds)
+Fitting performed in 0.40 seconds.</code></pre>
+<pre><code>Running tsne on 83 x 6 matrix.</code></pre>
+<pre><code>Read the 83 x 6 data matrix successfully!
+OpenMP is working. 1 threads.
+Using no_dims = 1, perplexity = 26.000000, and theta = 0.100000
+Computing input similarities...
+Building tree...
+Done in 0.01 seconds (sparsity = 0.983307)!
+Learning embedding...
+Iteration 50: error is 49.960200 (50 iterations in 0.00 seconds)
+Iteration 100: error is 52.048786 (50 iterations in 0.00 seconds)
+Iteration 150: error is 53.640281 (50 iterations in 0.01 seconds)
+Iteration 200: error is 52.654343 (50 iterations in 0.00 seconds)
+Iteration 250: error is 49.554401 (50 iterations in 0.01 seconds)
+Iteration 300: error is 1.257606 (50 iterations in 0.00 seconds)
+Iteration 350: error is 0.667181 (50 iterations in 0.01 seconds)
+Iteration 400: error is 0.656387 (50 iterations in 0.00 seconds)
+Iteration 450: error is 0.656350 (50 iterations in 0.01 seconds)
+Iteration 500: error is 0.656351 (50 iterations in 0.00 seconds)
+Iteration 550: error is 0.656350 (50 iterations in 0.01 seconds)
+Iteration 600: error is 0.656350 (50 iterations in 0.00 seconds)
+Iteration 650: error is 0.656350 (50 iterations in 0.00 seconds)
+Iteration 700: error is 0.656350 (50 iterations in 0.00 seconds)
+Iteration 750: error is 0.656350 (50 iterations in 0.00 seconds)
+Iteration 800: error is 0.656350 (50 iterations in 0.01 seconds)
+Iteration 850: error is 0.656350 (50 iterations in 0.00 seconds)
+Iteration 900: error is 0.656350 (50 iterations in 0.01 seconds)
+Iteration 950: error is 0.656350 (50 iterations in 0.00 seconds)
+Iteration 1000: error is 0.656350 (50 iterations in 0.00 seconds)
+Fitting performed in 0.07 seconds.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-4-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>for(k in 1:6){
+  print(colnames(mat)[order(fit_tm$F[,k],decreasing = T)[1:20]])
+}</code></pre>
+<pre><code> [1] &quot;test&quot;      &quot;procedur&quot;  &quot;statist&quot;   &quot;distribut&quot; &quot;power&quot;     &quot;control&quot;  
+ [7] &quot;asymptot&quot;  &quot;null&quot;      &quot;bootstrap&quot; &quot;hypothesi&quot; &quot;rate&quot;      &quot;propos&quot;   
+[13] &quot;problem&quot;   &quot;sampl&quot;     &quot;base&quot;      &quot;method&quot;    &quot;detect&quot;    &quot;fals&quot;     
+[19] &quot;confid&quot;    &quot;altern&quot;   
+ [1] &quot;studi&quot;     &quot;treatment&quot; &quot;data&quot;      &quot;random&quot;    &quot;method&quot;    &quot;effect&quot;   
+ [7] &quot;outcom&quot;    &quot;design&quot;    &quot;estim&quot;     &quot;trial&quot;     &quot;popul&quot;     &quot;analysi&quot;  
+[13] &quot;cancer&quot;    &quot;diseas&quot;    &quot;model&quot;     &quot;observ&quot;    &quot;patient&quot;   &quot;risk&quot;     
+[19] &quot;survey&quot;    &quot;individu&quot; 
+ [1] &quot;method&quot;    &quot;select&quot;    &quot;estim&quot;     &quot;regress&quot;   &quot;model&quot;     &quot;variabl&quot;  
+ [7] &quot;problem&quot;   &quot;optim&quot;     &quot;sampl&quot;     &quot;propos&quot;    &quot;design&quot;    &quot;algorithm&quot;
+[13] &quot;perform&quot;   &quot;number&quot;    &quot;predict&quot;   &quot;linear&quot;    &quot;predictor&quot; &quot;adapt&quot;    
+[19] &quot;simul&quot;     &quot;size&quot;     
+ [1] &quot;function&quot;  &quot;estim&quot;     &quot;densiti&quot;   &quot;distribut&quot; &quot;random&quot;    &quot;problem&quot;  
+ [7] &quot;sampl&quot;     &quot;asymptot&quot;  &quot;matrix&quot;    &quot;space&quot;     &quot;paramet&quot;   &quot;point&quot;    
+[13] &quot;observ&quot;    &quot;set&quot;       &quot;case&quot;      &quot;rate&quot;      &quot;curv&quot;      &quot;converg&quot;  
+[19] &quot;bound&quot;     &quot;class&quot;    
+ [1] &quot;model&quot;     &quot;data&quot;      &quot;process&quot;   &quot;bayesian&quot;  &quot;method&quot;    &quot;time&quot;     
+ [7] &quot;distribut&quot; &quot;prior&quot;     &quot;spatial&quot;   &quot;approach&quot;  &quot;comput&quot;    &quot;markov&quot;   
+[13] &quot;posterior&quot; &quot;algorithm&quot; &quot;propos&quot;    &quot;carlo&quot;     &quot;mont&quot;      &quot;structur&quot; 
+[19] &quot;cluster&quot;   &quot;analysi&quot;  
+ [1] &quot;estim&quot;       &quot;model&quot;       &quot;propos&quot;      &quot;data&quot;        &quot;likelihood&quot; 
+ [6] &quot;function&quot;    &quot;method&quot;      &quot;regress&quot;     &quot;paramet&quot;     &quot;covari&quot;     
+[11] &quot;studi&quot;       &quot;asymptot&quot;    &quot;distribut&quot;   &quot;nonparametr&quot; &quot;simul&quot;      
+[16] &quot;effici&quot;      &quot;approach&quot;    &quot;general&quot;     &quot;linear&quot;      &quot;time&quot;       </code></pre>
+<p>perform de analysis to find driving genes for each cluster</p>
+<pre class="r"><code>de = de_analysis(fit_tm,mat)</code></pre>
+<pre><code>Fitting 3034 Poisson models with k=6 using method=&quot;scd&quot;.
+Computing log-fold change statistics from 3034 Poisson models with k=6.
+Stabilizing posterior log-fold change estimates using adaptive shrinkage.</code></pre>
+<pre class="r"><code>saveRDS(list(fit_tm=fit_tm,de=de),file=&#39;/project2/mstephens/dongyue/poisson_mf/sla/sla_full_tm_fit_w3.rds&#39;)
+
+for(k in 1:6){
+  dat &lt;- data.frame(postmean = de$postmean[,k],
+                  z        = de$z[,k],
+                  lfsr     = de$lfsr[,k])
+rownames(dat) &lt;- colnames(mat)
+dat &lt;- subset(dat,lfsr &lt; 0.01)
+dat &lt;- dat[order(dat$postmean,decreasing = TRUE),]
+print(head(dat,n=10))
+print(tail(dat,n=10))
+
+  #print(colnames(datax$data)[order(temp$lfsr[,k],decreasing = F)[1:10]])
+}</code></pre>
+<pre><code>        postmean         z         lfsr
+power   4.160204 11.276361 8.249676e-28
+confid  3.312390  9.079762 2.336386e-17
+detect  2.636281  9.629694 3.039016e-19
+conserv 2.585438  4.502628 5.916119e-04
+resampl 2.521939  4.584298 4.561056e-04
+interv  2.501495  6.585533 1.195959e-08
+shift   2.166048  4.009285 2.903511e-03
+block   2.142925  3.877538 3.918418e-03
+critic  2.108076  5.227761 3.454846e-05
+formula 2.101984  3.811435 4.531006e-03
+         postmean         z         lfsr
+formula  2.101984  3.811435 4.531006e-03
+procedur 2.024595 13.056927 7.885598e-36
+statist  2.018728 13.863256 1.622205e-40
+altern   1.848044  7.415730 5.796307e-11
+control  1.805739 12.119941 1.079589e-30
+sequenti 1.628459  4.983620 1.265348e-04
+ratio    1.542885  5.924435 1.042817e-06
+rank     1.484279  5.312290 2.776564e-05
+multipl  1.383647  4.027696 3.006176e-03
+valid    1.038529  3.976431 3.092879e-03
+           postmean        z         lfsr
+assign     3.961965 6.603757 1.299230e-09
+clinic     3.556808 7.406548 1.216056e-11
+instrument 2.855662 4.365055 7.969606e-04
+sensit     2.582189 5.350734 1.419823e-05
+prevent    2.451624 4.572185 4.949116e-04
+heart      2.438302 3.600126 6.384354e-03
+propens    2.386969 5.758286 1.841871e-06
+status     2.326396 4.429766 8.575141e-04
+event      2.236792 7.688787 6.295895e-12
+adjust     2.126826 5.894134 9.913858e-07
+            postmean           z         lfsr
+effect     1.1691502    6.416187 5.727151e-08
+risk       0.8438634    6.761301 4.154832e-09
+error     -0.6593077  -16.796150 0.000000e+00
+time      -0.6653684  -16.570688 0.000000e+00
+miss      -0.7898867 -107.927426 0.000000e+00
+trend     -0.9693631   -5.197883 3.868989e-05
+model     -1.0602626  -10.350348 0.000000e+00
+estim     -1.5968427   -7.470094 4.278267e-11
+control   -1.8057385  -12.119941 1.110223e-16
+distribut -2.0115811  -45.205978 0.000000e+00
+          postmean         z         lfsr
+select    3.336466 10.351516 1.106642e-22
+dimension 2.769589  7.478573 2.071947e-11
+classifi  2.516610  4.990449 8.481279e-05
+predictor 2.483349  5.594347 4.244913e-06
+reduct    2.339292  5.624712 3.944049e-06
+bandwidth 2.260510  3.595671 6.669997e-03
+optim     2.053143  8.886002 3.958868e-16
+fast      2.052927  3.795430 4.717475e-03
+solut     2.003312  5.646151 4.176386e-06
+choic     1.705542  4.877042 1.968473e-04
+           postmean         z         lfsr
+choic     1.7055420  4.877042 1.968473e-04
+variabl   1.3788009 13.773192 7.101085e-40
+adapt     1.1900014  4.511849 7.593234e-04
+achiev    1.1519314  3.497199 8.202185e-03
+high      1.1160161  3.836255 4.326231e-03
+model     1.0848604 10.295746 8.399924e-22
+perform   0.9454902  4.533670 5.860754e-04
+predict   0.6647933  4.143902 1.395385e-03
+method    0.6225513  6.132097 9.777663e-08
+asymptot -1.8513853 -4.690888 3.994326e-04
+         postmean        z         lfsr
+theorem  3.149735 4.814447 1.052895e-04
+beta     3.136865 4.539268 3.317388e-04
+matric   3.006546 3.348622 8.386012e-03
+curv     2.869921 6.375726 3.332196e-08
+definit  2.524392 6.055003 3.082176e-07
+bound    2.416781 6.740909 4.603137e-09
+invari   2.206601 3.721100 5.323767e-03
+satisfi  2.204368 5.272107 2.650769e-05
+princip  2.179660 5.638650 3.994924e-06
+gaussian 1.932677 9.149637 4.018161e-17
+                postmean           z         lfsr
+uniform        1.3171426    3.954091 3.520474e-03
+transform      1.2563043    5.107259 7.317658e-05
+point          1.2006961    6.795998 5.061422e-09
+unknown        1.1149727    5.634814 5.034475e-06
+function       0.9587833   10.937975 9.286406e-25
+paramet        0.4199830    7.480741 1.855855e-11
+rate          -0.2381620   -6.898450 3.733975e-09
+highdimension -0.5207637 -213.222001 0.000000e+00
+adapt         -1.1452391   -5.535680 8.614225e-06
+imag          -1.2071217   -5.580734 6.973902e-06
+         postmean        z         lfsr
+bayesian 3.642790 5.897915 1.896035e-07
+price    2.887066 4.748112 1.841144e-04
+mont     2.549975 9.879169 2.915954e-20
+carlo    2.549645 9.029408 8.223951e-17
+site     2.363606 4.693033 3.272670e-04
+gene     2.242204 5.915088 8.274081e-07
+captur   2.030773 5.652906 3.976380e-06
+prior    1.996720 6.565220 1.818837e-08
+process  1.508486 8.746347 1.662678e-15
+structur 1.411899 5.284221 3.207260e-05
+              postmean          z         lfsr
+prior        1.9967205   6.565220 1.818837e-08
+process      1.5084855   8.746347 1.662678e-15
+structur     1.4118985   5.284221 3.207260e-05
+cluster      1.2958976   5.700693 3.728320e-06
+detect       0.8473609   6.423631 3.577870e-08
+factor      -0.3046235  -4.926348 1.910552e-04
+predict     -0.6647933  -4.143902 1.395385e-03
+nonparametr -0.7378801  -5.807886 9.152752e-07
+human       -0.9568054 -16.289250 0.000000e+00
+paper       -0.9599626 -21.483433 0.000000e+00
+            postmean         z         lfsr
+likelihood  2.726655 10.286339 4.365425e-22
+equat       2.694016  5.153628 3.470808e-05
+hazard      2.444796  4.246940 1.436469e-03
+parametr    2.345180  5.605167 4.367706e-06
+nonparametr 1.932978  6.675058 9.215526e-09
+covari      1.702887  7.939562 1.182525e-12
+margin      1.447340  4.475438 8.936854e-04
+robust      1.178930  3.572040 7.248075e-03
+varianc     1.132425  4.224567 1.747583e-03
+effici      1.091473  3.764331 4.961223e-03
+            postmean          z         lfsr
+varianc    1.1324248   4.224567 1.747583e-03
+effici     1.0914732   3.764331 4.961223e-03
+estim      1.0748743  13.788489 6.149956e-40
+illustr    1.0431311   3.918374 3.531181e-03
+paramet    1.0118190   7.788797 4.066687e-12
+propos     0.8573053   7.932773 1.016213e-12
+simul      0.7557374   4.600455 3.315268e-04
+function  -0.9587833 -10.937975 0.000000e+00
+transform -1.2545587  -5.168569 5.507170e-05
+associ    -1.5726865 -97.805546 0.000000e+00</code></pre>
+</div>
+</div>
+<div id="ebnmf-fit" class="section level2">
+<h2>EBNMF fit</h2>
+<pre class="r"><code>library(flashier)</code></pre>
+<pre><code>Loading required package: magrittr</code></pre>
+<pre><code>Loading required package: ebnm</code></pre>
+<pre class="r"><code>library(ebpmf)
+
+Y_tilde = log_for_ebmf(mat)
+fit_flash = flash(Y_tilde,ebnm_fn = ebnm::ebnm_point_exponential,var_type = 2,backfit = T,greedy_Kmax = 10)</code></pre>
+<pre><code>Adding factor 1 to flash object...
+Adding factor 2 to flash object...
+Adding factor 3 to flash object...
+Adding factor 4 to flash object...
+Adding factor 5 to flash object...
+Adding factor 6 to flash object...
+Adding factor 7 to flash object...
+Adding factor 8 to flash object...
+Adding factor 9 to flash object...
+Adding factor 10 to flash object...
+Wrapping up...
+Done.
+Backfitting 10 factors (tolerance: 8.70e-02)...
+  --Estimate of factor 4 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 1 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  Difference between iterations is within 1.0e+04...
+  --Estimate of factor 1 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  Difference between iterations is within 1.0e+03...
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  Difference between iterations is within 1.0e+02...
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  Difference between iterations is within 1.0e+01...
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  Difference between iterations is within 1.0e+00...
+  --Estimate of factor 1 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  --Estimate of factor 3 is numerically zero!
+  --Estimate of factor 5 is numerically zero!
+  Difference between iterations is within 1.0e-01...
+Wrapping up...
+Done.
+Nullchecking 10 factors...
+  One factor is identically zero.
+Wrapping up...
+  Removed one factor.
+Done.</code></pre>
+<pre class="r"><code>for(k in 1:fit_flash$n_factors){
+  print(colnames(mat)[order(fit_flash$F_pm[,k],decreasing = T)[1:20]])
+}</code></pre>
+<pre><code> [1] &quot;model&quot;     &quot;estim&quot;     &quot;data&quot;      &quot;method&quot;    &quot;propos&quot;    &quot;studi&quot;    
+ [7] &quot;function&quot;  &quot;distribut&quot; &quot;simul&quot;     &quot;sampl&quot;     &quot;paramet&quot;   &quot;approach&quot; 
+[13] &quot;asymptot&quot;  &quot;statist&quot;   &quot;problem&quot;   &quot;base&quot;      &quot;regress&quot;   &quot;general&quot;  
+[19] &quot;test&quot;      &quot;analysi&quot;  
+ [1] &quot;hazard&quot;     &quot;acut&quot;       &quot;cox&quot;        &quot;surviv&quot;     &quot;work&quot;      
+ [6] &quot;proport&quot;    &quot;transplant&quot; &quot;censor&quot;     &quot;transit&quot;    &quot;quantil&quot;   
+[11] &quot;basic&quot;      &quot;stroke&quot;     &quot;integr&quot;     &quot;overcom&quot;    &quot;leukaemia&quot; 
+[16] &quot;freeli&quot;     &quot;ying&quot;       &quot;bone&quot;       &quot;aalen&quot;      &quot;multist&quot;   
+ [1] &quot;treatment&quot; &quot;random&quot;    &quot;trial&quot;     &quot;assign&quot;    &quot;effect&quot;    &quot;complianc&quot;
+ [7] &quot;placebo&quot;   &quot;assumpt&quot;   &quot;patient&quot;   &quot;causal&quot;    &quot;outcom&quot;    &quot;drug&quot;     
+[13] &quot;adher&quot;     &quot;noncompli&quot; &quot;subject&quot;   &quot;clinic&quot;    &quot;arm&quot;       &quot;dose&quot;     
+[19] &quot;infer&quot;     &quot;receiv&quot;   
+ [1] &quot;fals&quot;      &quot;procedur&quot;  &quot;control&quot;   &quot;test&quot;      &quot;rate&quot;      &quot;reject&quot;   
+ [7] &quot;discoveri&quot; &quot;hypothes&quot;  &quot;null&quot;      &quot;multipl&quot;   &quot;pvalu&quot;     &quot;number&quot;   
+[13] &quot;fdr&quot;       &quot;statist&quot;   &quot;depend&quot;    &quot;error&quot;     &quot;kfwer&quot;     &quot;stepdown&quot; 
+[19] &quot;hochberg&quot;  &quot;familywis&quot;
+ [1] &quot;empir&quot;         &quot;confid&quot;        &quot;ratio&quot;         &quot;likelihood&quot;   
+ [5] &quot;region&quot;        &quot;limit&quot;         &quot;selfscal&quot;      &quot;plugin&quot;       
+ [9] &quot;invari&quot;        &quot;accuraci&quot;      &quot;undersmooth&quot;   &quot;correct&quot;      
+[13] &quot;need&quot;          &quot;chisquar&quot;      &quot;likelihoodbas&quot; &quot;attack&quot;       
+[17] &quot;nconsist&quot;      &quot;bias&quot;          &quot;distort&quot;       &quot;biascorrect&quot;  
+ [1] &quot;simex&quot;              &quot;measur&quot;             &quot;error&quot;             
+ [4] &quot;simulationextrapol&quot; &quot;undersmooth&quot;        &quot;asymptot&quot;          
+ [7] &quot;longer&quot;             &quot;presenc&quot;            &quot;unobserv&quot;          
+[10] &quot;simul&quot;              &quot;polynomi&quot;           &quot;errorpron&quot;         
+[13] &quot;frailti&quot;            &quot;principl&quot;           &quot;repeat&quot;            
+[16] &quot;easi&quot;               &quot;method&quot;             &quot;finitesampl&quot;       
+[19] &quot;cook&quot;               &quot;nutrit&quot;            
+ [1] &quot;asymptot&quot;     &quot;densiti&quot;      &quot;rank&quot;         &quot;hallin&quot;       &quot;sign&quot;        
+ [6] &quot;rankbas&quot;      &quot;assumpt&quot;      &quot;base&quot;         &quot;semiparametr&quot; &quot;ellipt&quot;      
+[11] &quot;classic&quot;      &quot;innov&quot;        &quot;effici&quot;       &quot;requir&quot;       &quot;uniform&quot;     
+[16] &quot;radial&quot;       &quot;ordinari&quot;     &quot;consid&quot;       &quot;cam&quot;          &quot;bernoulli&quot;   
+ [1] &quot;plasma&quot;          &quot;patient&quot;         &quot;varyingcoeffici&quot; &quot;viral&quot;          
+ [5] &quot;covariateadjust&quot; &quot;mutat&quot;           &quot;virus&quot;           &quot;resist&quot;         
+ [9] &quot;therapi&quot;         &quot;drug&quot;            &quot;multipl&quot;         &quot;determin&quot;       
+[13] &quot;clone&quot;           &quot;pathway&quot;         &quot;serum&quot;           &quot;thought&quot;        
+[17] &quot;sequenc&quot;         &quot;fashion&quot;         &quot;bodi&quot;            &quot;mass&quot;           
+ [1] &quot;pseudoparti&quot; &quot;likelihood&quot;  &quot;failur&quot;      &quot;conduct&quot;     &quot;local&quot;      
+ [6] &quot;onestep&quot;     &quot;hazard&quot;      &quot;propos&quot;      &quot;multivari&quot;   &quot;coeffici&quot;   
+[11] &quot;penalis&quot;     &quot;compromis&quot;   &quot;save&quot;        &quot;burden&quot;      &quot;attempt&quot;    
+[16] &quot;analyz&quot;      &quot;surviv&quot;      &quot;nconsist&quot;    &quot;accomplish&quot;  &quot;framingham&quot; </code></pre>
+<pre class="r"><code># input: fit, topics, grouping
+
+# poisson2multinom
+#
+library(fastTopics)
+library(ggplot2)
+library(gridExtra)
+structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
+                                  loadings_order = &#39;embed&#39;,
+                                  print_plot=TRUE,
+                                  seed=12345,
+                                  n_samples = NULL,
+                                  gap=40,
+                                  std_L_method = &#39;sum_to_1&#39;,
+                                  show_legend=TRUE,
+                                  K = NULL,
+                                  colors = c(&#39;#a6cee3&#39;,
+                                    &#39;#1f78b4&#39;,
+                                    &#39;#b2df8a&#39;,
+                                    &#39;#33a02c&#39;,
+                                    &#39;#fb9a99&#39;,
+                                    &#39;#e31a1c&#39;,
+                                    &#39;#fdbf6f&#39;,
+                                    &#39;#ff7f00&#39;,
+                                    &#39;#cab2d6&#39;,
+                                    &#39;#6a3d9a&#39;,
+                                    &#39;#ffff99&#39;,
+                                    &#39;#b15928&#39;)){
+  set.seed(seed)
+  #s       &lt;- apply(Lhat,2,max)
+  #Lhat    &lt;-   t(t(Lhat) / s)
+
+  if(is.null(n_samples)&amp;all(loadings_order == &quot;embed&quot;)){
+    n_samples = 2000
+  }
+
+  if(std_L_method==&#39;sum_to_1&#39;){
+    Lhat = Lhat/rowSums(Lhat)
+  }
+  if(std_L_method==&#39;row_max_1&#39;){
+    Lhat = Lhat/c(apply(Lhat,1,max))
+  }
+  if(std_L_method==&#39;col_max_1&#39;){
+    Lhat = apply(Lhat,2,function(z){z/max(z)})
+  }
+  if(std_L_method==&#39;col_norm_1&#39;){
+    Lhat = apply(Lhat,2,function(z){z/norm(z,&#39;2&#39;)})
+  }
+  
+  if(!is.null(K)){
+    Lhat = Lhat[,1:K]
+    Fhat = Fhat[,1:K]
+  }
+  Fhat = matrix(1,nrow=3,ncol=ncol(Lhat))
+  if(is.null(colnames(Lhat))){
+    colnames(Lhat) &lt;- paste0(&quot;k&quot;,1:ncol(Lhat))
+  }
+  fit_list     &lt;- list(L = Lhat,F = Fhat)
+  class(fit_list) &lt;- c(&quot;multinom_topic_model_fit&quot;, &quot;list&quot;)
+  p &lt;- structure_plot(fit_list,grouping = grouping,
+                      loadings_order = loadings_order,
+                      n = n_samples,gap = gap,colors=colors,verbose=F) +
+    labs(y = &quot;loading&quot;,color = &quot;dim&quot;,fill = &quot;dim&quot;) + ggtitle(title)
+  if(!show_legend){
+    p &lt;- p + theme(legend.position=&quot;none&quot;)
+  }
+  if(print_plot){
+    print(p)
+  }
+  return(p)
+}</code></pre>
+<pre class="r"><code>p1=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;sum_to_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 9 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p2=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;row_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 9 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p3=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_norm_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 9 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p4=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 9 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ebpmf-fit" class="section level2">
+<h2>EBPMF fit</h2>
+<div id="init-1" class="section level3">
+<h3>Init 1</h3>
+<pre class="r"><code>library(ebpmf)
+fit_ebpmf1 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=8),
+                      init_control = list(n_cores=5,flash_est_sigma2=F,log_init_for_non0y=T),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))</code></pre>
+<pre><code>Initializing
+Solving VGA for column 1...
+Running initial EBMF fit
+Running iterations...
+iter 10, avg elbo=-0.09779, K=10
+iter 20, avg elbo=-0.09641, K=10
+iter 30, avg elbo=-0.09575, K=10
+iter 40, avg elbo=-0.09524, K=9
+iter 50, avg elbo=-0.09499, K=9
+iter 60, avg elbo=-0.09479, K=9
+iter 70, avg elbo=-0.09463, K=9
+iter 80, avg elbo=-0.09449, K=9
+iter 90, avg elbo=-0.09437, K=9</code></pre>
+<pre class="r"><code>#fit_ebpmf1 = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds&#39;)
+saveRDS(fit_ebpmf1,file=&#39;/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_w3_init1.rds&#39;)</code></pre>
+<pre class="r"><code>plot(fit_ebpmf1$elbo_trace)</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit_ebpmf1$sigma2_trace[,100])</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>for(k in 3:fit_ebpmf1$fit_flash$n_factors){
+  print(colnames(mat)[order(fit_ebpmf1$fit_flash$F_pm[,k],decreasing = T)[1:15]])
+}</code></pre>
+<pre><code> [1] &quot;treatment&quot;  &quot;trial&quot;      &quot;causal&quot;     &quot;placebo&quot;    &quot;assign&quot;    
+ [6] &quot;complianc&quot;  &quot;depress&quot;    &quot;arm&quot;        &quot;patient&quot;    &quot;adher&quot;     
+[11] &quot;noncompli&quot;  &quot;outcom&quot;     &quot;clinic&quot;     &quot;dose&quot;       &quot;instrument&quot;
+ [1] &quot;materi&quot;        &quot;onlin&quot;         &quot;supplementari&quot; &quot;supplement&quot;   
+ [5] &quot;proof&quot;         &quot;articl&quot;        &quot;test&quot;          &quot;data&quot;         
+ [9] &quot;structur&quot;      &quot;null&quot;          &quot;correl&quot;        &quot;protein&quot;      
+[13] &quot;summari&quot;       &quot;imag&quot;          &quot;screen&quot;       
+ [1] &quot;health&quot;  &quot;agenc&quot;   &quot;climat&quot;  &quot;mortal&quot;  &quot;air&quot;     &quot;pollut&quot;  &quot;qualiti&quot;
+ [8] &quot;nation&quot;  &quot;ozon&quot;    &quot;year&quot;    &quot;monitor&quot; &quot;trend&quot;   &quot;public&quot;  &quot;tempor&quot; 
+[15] &quot;chang&quot;  
+ [1] &quot;fdr&quot;       &quot;fals&quot;      &quot;discoveri&quot; &quot;reject&quot;    &quot;pvalu&quot;     &quot;stepdown&quot; 
+ [7] &quot;stepup&quot;    &quot;kfwer&quot;     &quot;hochberg&quot;  &quot;hypothes&quot;  &quot;fdp&quot;       &quot;fwer&quot;     
+[13] &quot;control&quot;   &quot;benjamini&quot; &quot;familywis&quot;
+ [1] &quot;chain&quot;     &quot;markov&quot;    &quot;mont&quot;      &quot;carlo&quot;     &quot;mcmc&quot;      &quot;posterior&quot;
+ [7] &quot;sampler&quot;   &quot;algorithm&quot; &quot;bayesian&quot;  &quot;prior&quot;     &quot;hierarch&quot;  &quot;infer&quot;    
+[13] &quot;comput&quot;    &quot;model&quot;     &quot;mixtur&quot;   
+ [1] &quot;gene&quot;       &quot;microarray&quot; &quot;express&quot;    &quot;cdna&quot;       &quot;array&quot;     
+ [6] &quot;differenti&quot; &quot;biolog&quot;     &quot;thousand&quot;   &quot;experi&quot;     &quot;identifi&quot;  
+[11] &quot;challeng&quot;   &quot;detect&quot;     &quot;cluster&quot;    &quot;cancer&quot;     &quot;shrinkag&quot;  
+ [1] &quot;asa&quot;          &quot;statistician&quot; &quot;polici&quot;       &quot;today&quot;        &quot;scienc&quot;      
+ [6] &quot;maker&quot;        &quot;bring&quot;        &quot;technolog&quot;    &quot;scientist&quot;    &quot;live&quot;        
+[11] &quot;communic&quot;     &quot;scientif&quot;     &quot;role&quot;         &quot;decis&quot;        &quot;engin&quot;       </code></pre>
+<pre class="r"><code>p1=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;sum_to_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 7 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p2=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;row_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 7 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p3=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_norm_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 7 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p4=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 7 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-12-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="init-2" class="section level3">
+<h3>Init 2</h3>
+<pre class="r"><code>library(ebpmf)
+fit_ebpmf2 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=8),
+                      init_control = list(n_cores=5,flash_est_sigma2=T,log_init_for_non0y=F),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))</code></pre>
+<pre><code>Initializing
+Solving VGA for column 1...
+Running initial EBMF fit
+Running iterations...
+iter 10, avg elbo=-0.11589, K=10
+iter 20, avg elbo=-0.11048, K=10
+iter 30, avg elbo=-0.10693, K=10
+iter 40, avg elbo=-0.10472, K=9
+iter 50, avg elbo=-0.10338, K=9
+iter 60, avg elbo=-0.10235, K=9
+iter 70, avg elbo=-0.10151, K=9
+iter 80, avg elbo=-0.10082, K=9
+iter 90, avg elbo=-0.10024, K=9
+iter 100, avg elbo=-0.09974, K=9
+iter 110, avg elbo=-0.09931, K=9
+iter 120, avg elbo=-0.09892, K=9
+iter 130, avg elbo=-0.09858, K=9
+iter 140, avg elbo=-0.09828, K=9
+iter 150, avg elbo=-0.098, K=9
+iter 160, avg elbo=-0.09775, K=9
+iter 170, avg elbo=-0.09752, K=9
+iter 180, avg elbo=-0.09731, K=9
+iter 190, avg elbo=-0.09712, K=9
+iter 200, avg elbo=-0.09693, K=9
+iter 210, avg elbo=-0.09677, K=9
+iter 220, avg elbo=-0.09661, K=9
+iter 230, avg elbo=-0.09646, K=9
+iter 240, avg elbo=-0.09632, K=9
+iter 250, avg elbo=-0.09619, K=9
+iter 260, avg elbo=-0.09607, K=9
+iter 270, avg elbo=-0.09595, K=9
+iter 280, avg elbo=-0.09584, K=9</code></pre>
+<pre class="r"><code>#fit_ebpmf1 = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds&#39;)
+saveRDS(fit_ebpmf2,file=&#39;/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_w3_init2.rds&#39;)</code></pre>
+<pre class="r"><code>plot(fit_ebpmf2$elbo_trace)</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit_ebpmf2$sigma2_trace[,10])</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-14-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>for(k in 3:fit_ebpmf2$fit_flash$n_factors){
+  print(colnames(mat)[order(fit_ebpmf2$fit_flash$F_pm[,k],decreasing = T)[1:15]])
+}</code></pre>
+<pre><code> [1] &quot;fdr&quot;       &quot;discoveri&quot; &quot;pvalu&quot;     &quot;reject&quot;    &quot;fals&quot;      &quot;hypothes&quot; 
+ [7] &quot;fdp&quot;       &quot;kfwer&quot;     &quot;fwer&quot;      &quot;benjamini&quot; &quot;control&quot;   &quot;hochberg&quot; 
+[13] &quot;efdp&quot;      &quot;pfdp&quot;      &quot;stepdown&quot; 
+ [1] &quot;treatment&quot;        &quot;causal&quot;           &quot;placebo&quot;          &quot;complianc&quot;       
+ [5] &quot;adher&quot;            &quot;depress&quot;          &quot;trial&quot;            &quot;noncompli&quot;       
+ [9] &quot;arm&quot;              &quot;intentiontotreat&quot; &quot;intenttotreat&quot;    &quot;assign&quot;          
+[13] &quot;feldman&quot;          &quot;patient&quot;          &quot;estimand&quot;        
+ [1] &quot;mate&quot;    &quot;partner&quot; &quot;men&quot;     &quot;adult&quot;   &quot;attend&quot;  &quot;marit&quot;   &quot;opposit&quot;
+ [8] &quot;prefer&quot;  &quot;freeli&quot;  &quot;colleg&quot;  &quot;affili&quot;  &quot;sex&quot;     &quot;pairwis&quot; &quot;parent&quot; 
+[15] &quot;twosid&quot; 
+ [1] &quot;toxic&quot;      &quot;dose&quot;       &quot;dosefind&quot;   &quot;deescal&quot;    &quot;phase&quot;     
+ [6] &quot;escal&quot;      &quot;prespecif&quot;  &quot;ethic&quot;      &quot;reassess&quot;   &quot;trial&quot;     
+[11] &quot;prespecifi&quot; &quot;coher&quot;      &quot;bma&quot;        &quot;target&quot;     &quot;patient&quot;   
+ [1] &quot;fdr&quot;          &quot;fnr&quot;          &quot;nondiscoveri&quot; &quot;sidak&quot;        &quot;multipletest&quot;
+ [6] &quot;fdrcontrol&quot;   &quot;storey&quot;       &quot;singlestep&quot;   &quot;bonferroni&quot;   &quot;fals&quot;        
+[11] &quot;configur&quot;     &quot;hypothes&quot;     &quot;modifi&quot;       &quot;procedur&quot;     &quot;rate&quot;        
+ [1] &quot;inadmiss&quot;   &quot;admiss&quot;     &quot;endpoint&quot;   &quot;pearson&quot;    &quot;lehmann&quot;   
+ [6] &quot;action&quot;     &quot;satur&quot;      &quot;intraclass&quot; &quot;resurg&quot;     &quot;companion&quot; 
+[11] &quot;devot&quot;      &quot;shrinkag&quot;   &quot;math&quot;       &quot;loss&quot;       &quot;risk&quot;      
+ [1] &quot;holm&quot;        &quot;sime&quot;        &quot;stepdown&quot;    &quot;bonferroni&quot;  &quot;stepup&quot;     
+ [6] &quot;intersect&quot;   &quot;familywis&quot;   &quot;cut&quot;         &quot;hochberg&quot;    &quot;corner&quot;     
+[11] &quot;partit&quot;      &quot;pvalu&quot;       &quot;critic&quot;      &quot;probabilist&quot; &quot;inequ&quot;      </code></pre>
+<pre class="r"><code>p1=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;sum_to_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 8 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 8 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 8 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 8 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p2=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;row_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 7 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-16-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p3=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_norm_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 7 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-16-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p4=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 7 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 7 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-16-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="init-3" class="section level3">
+<h3>Init 3</h3>
+<pre class="r"><code>library(ebpmf)
+fit_ebpmf3 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=10),
+                      init_control = list(n_cores=5,flash_est_sigma2=T,log_init_for_non0y=T),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))</code></pre>
+<pre><code>Initializing
+Solving VGA for column 1...
+Running initial EBMF fit
+Running iterations...
+iter 10, avg elbo=-0.10097, K=12
+iter 20, avg elbo=-0.09913, K=12
+iter 30, avg elbo=-0.09816, K=12
+iter 40, avg elbo=-0.09758, K=11
+iter 50, avg elbo=-0.09723, K=11
+iter 60, avg elbo=-0.09693, K=11
+iter 70, avg elbo=-0.09668, K=11
+iter 80, avg elbo=-0.09646, K=11
+iter 90, avg elbo=-0.09626, K=11
+iter 100, avg elbo=-0.09609, K=11
+iter 110, avg elbo=-0.09593, K=11
+iter 120, avg elbo=-0.09579, K=11
+iter 130, avg elbo=-0.09566, K=11
+iter 140, avg elbo=-0.09554, K=11
+iter 150, avg elbo=-0.09544, K=11</code></pre>
+<pre class="r"><code>#fit_ebpmf1 = readRDS(&#39;/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds&#39;)
+saveRDS(fit_ebpmf3,file=&#39;/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_w3_init3.rds&#39;)</code></pre>
+<pre class="r"><code>plot(fit_ebpmf3$elbo_trace)</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-18-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plot(fit_ebpmf3$sigma2_trace[,10])</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-18-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>for(k in 3:fit_ebpmf3$fit_flash$n_factors){
+  print(colnames(mat)[order(fit_ebpmf3$fit_flash$F_pm[,k],decreasing = T)[1:20]])
+}</code></pre>
+<pre><code> [1] &quot;fdr&quot;        &quot;fals&quot;       &quot;reject&quot;     &quot;discoveri&quot;  &quot;stepup&quot;    
+ [6] &quot;stepdown&quot;   &quot;kfwer&quot;      &quot;hochberg&quot;   &quot;pvalu&quot;      &quot;hypothes&quot;  
+[11] &quot;fdp&quot;        &quot;fwer&quot;       &quot;benjamini&quot;  &quot;control&quot;    &quot;sime&quot;      
+[16] &quot;singlestep&quot; &quot;familywis&quot;  &quot;soc&quot;        &quot;ser&quot;        &quot;holm&quot;      
+ [1] &quot;treatment&quot;        &quot;causal&quot;           &quot;placebo&quot;          &quot;complianc&quot;       
+ [5] &quot;depress&quot;          &quot;adher&quot;            &quot;trial&quot;            &quot;noncompli&quot;       
+ [9] &quot;intentiontotreat&quot; &quot;arm&quot;              &quot;intenttotreat&quot;    &quot;patient&quot;         
+[13] &quot;assign&quot;           &quot;feldman&quot;          &quot;estimand&quot;         &quot;elder&quot;           
+[17] &quot;outcom&quot;           &quot;placebocontrol&quot;   &quot;children&quot;         &quot;meet&quot;            
+ [1] &quot;virus&quot;        &quot;immunodefici&quot; &quot;hiv&quot;          &quot;viral&quot;        &quot;human&quot;       
+ [6] &quot;vaccin&quot;       &quot;resist&quot;       &quot;infect&quot;       &quot;riemannian&quot;   &quot;therapi&quot;     
+[11] &quot;pressur&quot;      &quot;mutat&quot;        &quot;transmiss&quot;    &quot;syndrom&quot;      &quot;plasma&quot;      
+[16] &quot;antiretrovir&quot; &quot;evolutionari&quot; &quot;clone&quot;        &quot;immun&quot;        &quot;efficaci&quot;    
+ [1] &quot;ambient&quot;     &quot;symptom&quot;     &quot;diamet&quot;      &quot;infant&quot;      &quot;respiratori&quot;
+ [6] &quot;air&quot;         &quot;humid&quot;       &quot;mother&quot;      &quot;particul&quot;    &quot;pollut&quot;     
+[11] &quot;etiolog&quot;     &quot;sulfat&quot;      &quot;sick&quot;        &quot;carolina&quot;    &quot;morbid&quot;     
+[16] &quot;prepar&quot;      &quot;press&quot;       &quot;undertaken&quot;  &quot;constitu&quot;    &quot;spend&quot;      
+ [1] &quot;hazard&quot;      &quot;surviv&quot;      &quot;censor&quot;      &quot;failur&quot;      &quot;event&quot;      
+ [6] &quot;recurr&quot;      &quot;cure&quot;        &quot;frailti&quot;     &quot;cox&quot;         &quot;lengthbias&quot; 
+[11] &quot;rightcensor&quot; &quot;incid&quot;       &quot;cancer&quot;      &quot;transplant&quot;  &quot;termin&quot;     
+[16] &quot;logrank&quot;     &quot;baselin&quot;     &quot;cumul&quot;       &quot;breast&quot;      &quot;cohort&quot;     
+ [1] &quot;gase&quot;       &quot;greenhous&quot;  &quot;climat&quot;     &quot;warm&quot;       &quot;solar&quot;     
+ [6] &quot;earth&quot;      &quot;radiat&quot;     &quot;aerosol&quot;    &quot;ocean&quot;      &quot;atmospher&quot; 
+[11] &quot;temperatur&quot; &quot;stimul&quot;     &quot;obscur&quot;     &quot;winter&quot;     &quot;station&quot;   
+[16] &quot;skill&quot;      &quot;carbon&quot;     &quot;land&quot;       &quot;gather&quot;     &quot;opposit&quot;   
+ [1] &quot;voter&quot;      &quot;vote&quot;       &quot;campaign&quot;   &quot;elect&quot;      &quot;talli&quot;     
+ [6] &quot;court&quot;      &quot;green&quot;      &quot;polit&quot;      &quot;testimoni&quot;  &quot;presidenti&quot;
+[11] &quot;invalid&quot;    &quot;west&quot;       &quot;highqual&quot;   &quot;incent&quot;     &quot;modelth&quot;   
+[16] &quot;florida&quot;    &quot;refus&quot;      &quot;media&quot;      &quot;compli&quot;     &quot;weakest&quot;   
+ [1] &quot;asa&quot;           &quot;commit&quot;        &quot;disciplin&quot;     &quot;centuri&quot;      
+ [5] &quot;polici&quot;        &quot;rival&quot;         &quot;invalu&quot;        &quot;infrastructur&quot;
+ [9] &quot;opportun&quot;      &quot;statistician&quot;  &quot;vital&quot;         &quot;medicin&quot;      
+[13] &quot;fund&quot;          &quot;capit&quot;         &quot;poverti&quot;       &quot;action&quot;       
+[17] &quot;speak&quot;         &quot;text&quot;          &quot;guess&quot;         &quot;war&quot;          
+ [1] &quot;markov&quot;    &quot;chain&quot;     &quot;mcmc&quot;      &quot;mont&quot;      &quot;carlo&quot;     &quot;hidden&quot;   
+ [7] &quot;posterior&quot; &quot;revers&quot;    &quot;sampler&quot;   &quot;jump&quot;      &quot;updat&quot;     &quot;gibb&quot;     
+[13] &quot;prior&quot;     &quot;bayesian&quot;  &quot;ergod&quot;     &quot;algorithm&quot; &quot;dirichlet&quot; &quot;hierarch&quot; 
+[19] &quot;transit&quot;   &quot;parallel&quot; </code></pre>
+<pre class="r"><code>p1=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;sum_to_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 10 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 10 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 10 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 10 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-20-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p2=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;row_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 9 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-20-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p3=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_norm_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 9 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-20-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p4=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = &#39;col_max_1&#39;)</code></pre>
+<pre><code>Running tsne on 508 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 280 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 885 x 9 matrix.</code></pre>
+<pre><code>Running tsne on 251 x 9 matrix.</code></pre>
+<p><img src="figure/fit_ebpmf_sla_full_nonneg2.Rmd/unnamed-chunk-20-4.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.1.0 (2021-05-18)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: CentOS Linux 7 (Core)
+
+Matrix products: default
+BLAS:   /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRblas.so
+LAPACK: /software/R-4.1.0-no-openblas-el7-x86_64/lib64/R/lib/libRlapack.so
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8 LC_NUMERIC=C         LC_TIME=C           
+ [4] LC_COLLATE=C         LC_MONETARY=C        LC_MESSAGES=C       
+ [7] LC_PAPER=C           LC_NAME=C            LC_ADDRESS=C        
+[10] LC_TELEPHONE=C       LC_MEASUREMENT=C     LC_IDENTIFICATION=C 
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] gridExtra_2.3      ggplot2_3.4.1      ebpmf_2.3.1        flashier_0.2.51   
+[5] ebnm_1.0-54        magrittr_2.0.3     fastTopics_0.6-142 Matrix_1.5-3      
+[9] workflowr_1.6.2   
+
+loaded via a namespace (and not attached):
+  [1] Rtsne_0.16         ebpm_0.0.1.3       colorspace_2.1-0  
+  [4] smashr_1.3-6       ellipsis_0.3.2     mr.ash_0.1-87     
+  [7] rprojroot_2.0.2    fs_1.5.0           rstudioapi_0.13   
+ [10] farver_2.1.1       MatrixModels_0.5-1 ggrepel_0.9.3     
+ [13] fansi_1.0.4        mvtnorm_1.1-2      codetools_0.2-18  
+ [16] splines_4.1.0      cachem_1.0.5       knitr_1.33        
+ [19] jsonlite_1.8.4     nloptr_1.2.2.2     mcmc_0.9-7        
+ [22] ashr_2.2-54        smashrgen_1.2.4    uwot_0.1.14       
+ [25] compiler_4.1.0     httr_1.4.5         RcppZiggurat_0.1.6
+ [28] fastmap_1.1.0      lazyeval_0.2.2     cli_3.6.1         
+ [31] later_1.3.0        htmltools_0.5.4    quantreg_5.94     
+ [34] prettyunits_1.1.1  tools_4.1.0        coda_0.19-4       
+ [37] gtable_0.3.1       glue_1.6.2         dplyr_1.1.0       
+ [40] Rcpp_1.0.10        softImpute_1.4-1   jquerylib_0.1.4   
+ [43] vctrs_0.6.2        iterators_1.0.13   wavethresh_4.7.2  
+ [46] xfun_0.24          stringr_1.5.0      trust_0.1-8       
+ [49] lifecycle_1.0.3    irlba_2.3.5.1      MASS_7.3-54       
+ [52] scales_1.2.1       hms_1.1.2          promises_1.2.0.1  
+ [55] parallel_4.1.0     SparseM_1.81       yaml_2.3.7        
+ [58] pbapply_1.7-0      sass_0.4.0         stringi_1.6.2     
+ [61] SQUAREM_2021.1     highr_0.9          deconvolveR_1.2-1 
+ [64] foreach_1.5.1      caTools_1.18.2     truncnorm_1.0-8   
+ [67] shape_1.4.6        horseshoe_0.2.0    rlang_1.1.1       
+ [70] pkgconfig_2.0.3    matrixStats_0.59.0 bitops_1.0-7      
+ [73] evaluate_0.14      lattice_0.20-44    invgamma_1.1      
+ [76] purrr_1.0.1        htmlwidgets_1.6.1  labeling_0.4.2    
+ [79] Rfast_2.0.7        cowplot_1.1.1      tidyselect_1.2.0  
+ [82] R6_2.5.1           generics_0.1.3     pillar_1.8.1      
+ [85] whisker_0.4        withr_2.5.0        survival_3.2-11   
+ [88] mixsqp_0.3-48      tibble_3.2.1       crayon_1.5.2      
+ [91] utf8_1.2.3         plotly_4.10.1      rmarkdown_2.9     
+ [94] progress_1.2.2     grid_4.1.0         data.table_1.14.8 
+ [97] git2r_0.28.0       digest_0.6.31      vebpm_0.4.8       
+[100] tidyr_1.3.0        httpuv_1.6.1       MCMCpack_1.6-3    
+[103] RcppParallel_5.1.7 munsell_0.5.0      glmnet_4.1-2      
+[106] viridisLite_0.4.1  bslib_0.4.2        quadprog_1.5-8    </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
