@@ -22,6 +22,7 @@ editor_options:
 * [point exponential and unimodal nonnegative]
 * [ebpm normal prior init in PMF](vga_init_in_ebpmf.html)
 * [ebpmf vs topic model](ebpmf_nmf_diff.html)
+* [Poisson deviance](poisson_deviance.html)
 
 
 ### Simulation 
@@ -33,6 +34,20 @@ editor_options:
 * [Simulation data from fitted model on pbmc data in fasttopics, nonnegtive L and F](simu_study_of_init_variance.html)
 * [Simulation data from fitted model on pbmc data in fasttopics, nonnegtive L and F, added more models](simu_study_pbmc_truevarlarge.html)
 * [Simulation data from fitted model on pbmc data in fasttopics, nonnegtive L and F, true sigma2 = 0](simu_study_pbmc_truevar0.html)
+
+### On text data
+
+#### SLA data set
+
+* [EBPMF does not find factors?](fit_ebpmf_sla.html)
+* [Pre-processing SLA data](sla_data.html)
+* [EBPMF does not find factors?](fit_ebpmf_sla_2000.html)
+* [log transformation + EBNMF on SLA data](sla_ebmf_intercept.html)
+* [ebpmf init using liklihood expansion](ebpmf_init_likexp.html)
+* [methods fit on sla 2000 data](fit_ebpmf_sla_full_nonneg.html)
+* [methods fit on sla full data, filter out words in less than 5 doc](fit_ebpmf_sla_full_nonneg.html)
+* [methods fit on sla full data, filter out words in less than 3 doc](fit_ebpmf_sla_full_nonneg2.html)
+
 
 ### On pbmc3k
 

@@ -1,0 +1,273 @@
+---
+title: "fit ebpmf to sla full data with non-negative constraints, new version with different baseline"
+author: "DongyueXie"
+date: "2023-08-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(Matrix)
+datax = readRDS('data/sla_full.rds')
+dim(datax$data)
+sum(datax$data==0)/prod(dim(datax$data))
+datax$data = Matrix(datax$data,sparse = TRUE)
+```
+
+## Data filtering
+
+filter out some documents: use top 60% longest ones as in Ke and Wang 2022.
+
+```{r}
+doc_to_use = order(rowSums(datax$data),decreasing = T)[1:round(nrow(datax$data)*0.6)]
+mat = datax$data[doc_to_use,]
+samples = datax$samples
+samples = lapply(samples, function(z){z[doc_to_use]})
+```
+
+i filtered out words that appear in less than 5 documents. This results in around 2000 words
+
+```{r}
+word_to_use = which(colSums(mat>0)>=5)
+mat = mat[,word_to_use]
+```
+
+## model fitting
+
+### Topic model
+
+
+```{r}
+library(fastTopics)
+fit_tm = fit_topic_model(mat,k=6)
+structure_plot(fit_tm,grouping = samples$journal,gap = 40)
+structure_plot(fit_tm,grouping = samples$year,gap = 40)
+```
+
+perform de analysis to find driving genes for each cluster
+```{r}
+de = de_analysis(fit_tm,mat)
+
+saveRDS(list(fit_tm=fit_tm,de=de),file='/project2/mstephens/dongyue/poisson_mf/sla/sla_full_tm_fit_w5.rds')
+
+for(k in 1:6){
+  dat <- data.frame(postmean = de$postmean[,k],
+                  z        = de$z[,k],
+                  lfsr     = de$lfsr[,k])
+rownames(dat) <- colnames(mat)
+dat <- subset(dat,lfsr < 0.01)
+dat <- dat[order(dat$postmean,decreasing = TRUE),]
+print(head(dat,n=10))
+print(tail(dat,n=10))
+
+  #print(colnames(datax$data)[order(temp$lfsr[,k],decreasing = F)[1:10]])
+}
+
+```
+
+## EBNMF fit
+
+```{r}
+library(flashier)
+library(ebpmf)
+
+Y_tilde = log_for_ebmf(mat)
+fit_flash = flash(Y_tilde,ebnm_fn = ebnm::ebnm_point_exponential,var_type = 2,backfit = T,greedy_Kmax = 10)
+for(k in 1:fit_flash$n_factors){
+  print(colnames(mat)[order(fit_flash$F_pm[,k],decreasing = T)[1:20]])
+}
+```
+
+
+```{r}
+# input: fit, topics, grouping
+
+# poisson2multinom
+#
+library(fastTopics)
+library(ggplot2)
+library(gridExtra)
+structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
+                                  loadings_order = 'embed',
+                                  print_plot=TRUE,
+                                  seed=12345,
+                                  n_samples = NULL,
+                                  gap=40,
+                                  std_L_method = 'sum_to_1',
+                                  show_legend=TRUE,
+                                  K = NULL,
+                                  colors = c('#a6cee3',
+                                    '#1f78b4',
+                                    '#b2df8a',
+                                    '#33a02c',
+                                    '#fb9a99',
+                                    '#e31a1c',
+                                    '#fdbf6f',
+                                    '#ff7f00',
+                                    '#cab2d6',
+                                    '#6a3d9a',
+                                    '#ffff99',
+                                    '#b15928')){
+  set.seed(seed)
+  #s       <- apply(Lhat,2,max)
+  #Lhat    <-	t(t(Lhat) / s)
+
+  if(is.null(n_samples)&all(loadings_order == "embed")){
+    n_samples = 2000
+  }
+
+  if(std_L_method=='sum_to_1'){
+    Lhat = Lhat/rowSums(Lhat)
+  }
+  if(std_L_method=='row_max_1'){
+    Lhat = Lhat/c(apply(Lhat,1,max))
+  }
+  if(std_L_method=='col_max_1'){
+    Lhat = apply(Lhat,2,function(z){z/max(z)})
+  }
+  if(std_L_method=='col_norm_1'){
+    Lhat = apply(Lhat,2,function(z){z/norm(z,'2')})
+  }
+  
+  if(!is.null(K)){
+    Lhat = Lhat[,1:K]
+    Fhat = Fhat[,1:K]
+  }
+  Fhat = matrix(1,nrow=3,ncol=ncol(Lhat))
+  if(is.null(colnames(Lhat))){
+    colnames(Lhat) <- paste0("k",1:ncol(Lhat))
+  }
+  fit_list     <- list(L = Lhat,F = Fhat)
+  class(fit_list) <- c("multinom_topic_model_fit", "list")
+  p <- structure_plot(fit_list,grouping = grouping,
+                      loadings_order = loadings_order,
+                      n = n_samples,gap = gap,colors=colors,verbose=F) +
+    labs(y = "loading",color = "dim",fill = "dim") + ggtitle(title)
+  if(!show_legend){
+    p <- p + theme(legend.position="none")
+  }
+  if(print_plot){
+    print(p)
+  }
+  return(p)
+}
+```
+
+
+```{r}
+p1=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = 'sum_to_1')
+p2=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = 'row_max_1')
+p3=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_norm_1')
+p4=structure_plot_general(fit_flash$L_pm,fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_max_1')
+```
+
+
+
+## EBPMF fit 
+
+### Init 1
+
+```{r}
+library(ebpmf)
+fit_ebpmf1 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=10),
+                      init_control = list(n_cores=5,flash_est_sigma2=F,log_init_for_non0y=T),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))
+#fit_ebpmf1 = readRDS('/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds')
+saveRDS(fit_ebpmf1,file='/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_w5_init1.rds')
+```
+
+```{r}
+plot(fit_ebpmf1$elbo_trace)
+plot(fit_ebpmf1$sigma2_trace[,100])
+```
+
+
+```{r}
+for(k in 3:fit_ebpmf1$fit_flash$n_factors){
+  print(colnames(mat)[order(fit_ebpmf1$fit_flash$F_pm[,k],decreasing = T)[1:20]])
+}
+```
+
+```{r}
+p1=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'sum_to_1')
+p2=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'row_max_1')
+p3=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_norm_1')
+p4=structure_plot_general(fit_ebpmf1$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_max_1')
+```
+
+### Init 2
+
+```{r}
+library(ebpmf)
+fit_ebpmf2 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=10),
+                      init_control = list(n_cores=5,flash_est_sigma2=T,log_init_for_non0y=F),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))
+#fit_ebpmf1 = readRDS('/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds')
+saveRDS(fit_ebpmf2,file='/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_w5_init2.rds')
+```
+
+```{r}
+plot(fit_ebpmf2$elbo_trace)
+plot(fit_ebpmf2$sigma2_trace[,10])
+```
+
+
+```{r}
+for(k in 3:fit_ebpmf2$fit_flash$n_factors){
+  print(colnames(mat)[order(fit_ebpmf2$fit_flash$F_pm[,k],decreasing = T)[1:20]])
+}
+```
+
+```{r}
+p1=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'sum_to_1')
+p2=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'row_max_1')
+p3=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_norm_1')
+p4=structure_plot_general(fit_ebpmf2$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_max_1')
+```
+
+
+
+### Init 3
+
+```{r}
+library(ebpmf)
+fit_ebpmf3 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=10),
+                      init_control = list(n_cores=5,flash_est_sigma2=T,log_init_for_non0y=T),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))
+#fit_ebpmf1 = readRDS('/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds')
+saveRDS(fit_ebpmf3,file='/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_w5_init3.rds')
+```
+
+```{r}
+plot(fit_ebpmf3$elbo_trace)
+plot(fit_ebpmf3$sigma2_trace[,10])
+```
+
+
+```{r}
+for(k in 3:fit_ebpmf3$fit_flash$n_factors){
+  print(colnames(mat)[order(fit_ebpmf3$fit_flash$F_pm[,k],decreasing = T)[1:20]])
+}
+```
+
+```{r}
+p1=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'sum_to_1')
+p2=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'row_max_1')
+p3=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_norm_1')
+p4=structure_plot_general(fit_ebpmf3$fit_flash$L_pm[,-c(1,2)],fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_max_1')
+```
