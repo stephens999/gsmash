@@ -1,0 +1,113 @@
+---
+title: "smallman example"
+author: "DongyueXie"
+date: "2023-08-14"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Summary
+
+I don't quite get the point of this example. There is no "true" L and F. Not sure what to tell.
+
+## Introduction
+
+Try examples studied in Luke Smallman's [thesis](https://orca.cardiff.ac.uk/id/eprint/130420/1/SMALLMAN%20thesis%20final.pdf).
+
+
+
+```{r}
+sim_data1 = function(n,seed=12345){
+  set.seed(seed)
+  v1 = rpois(n,25)
+  v2 = rpois(n,30)
+  v3 = v1 + 3*v2
+  lambda = cbind(v1,v1,v1,v1,v2,v2,v2,v2,v3,v3)
+  Y = matrix(rpois(n*10,lambda),nrow=n)
+  return(list(lambda=lambda,Y=Y))
+}
+```
+
+```{r}
+datax=  sim_data1(100)
+```
+
+## NMF
+
+```{r}
+res = NNLM::nnmf(datax$Y,k=2,loss = 'mkl')
+plot(res$W[,1])
+plot(res$W[,2])
+plot(res$H[1,])
+plot(res$H[2,])
+```
+
+## topic model
+
+```{r}
+res = fastTopics::fit_topic_model(datax$Y,2)
+plot(res$L[,1])
+plot(res$L[,2])
+plot(res$F[,1])
+plot(res$F[,2])
+```
+
+## GLMPCA
+
+```{r}
+res = glmpca::glmpca(datax$Y,2,'poi',sz=1)
+plot(res$loadings[,1])
+plot(res$loadings[,2])
+plot(res$factors[,1])
+plot(res$factors[,2])
+```
+
+## log + ebmf
+
+```{r}
+res = flashier::flash(log(datax$Y),var_type = 2,greedy_Kmax = 2,backfit = T)
+plot(res$L_pm[,1])
+plot(res$L_pm[,2])
+plot(res$F_pm[,1])
+plot(res$F_pm[,2])
+```
+
+## log + ebnmf
+
+```{r}
+res = flashier::flash(log(datax$Y),var_type = 1,greedy_Kmax = 2,backfit = T,ebnm_fn = ebnm::ebnm_point_exponential)
+plot(res$L_pm[,1])
+plot(res$F_pm[,1])
+plot(res$F_pm[,2])
+```
+
+
+## log + nmf
+
+```{r}
+res = NNLM::nnmf(log(datax$Y),k=2,loss = 'mse')
+plot(res$W[,1])
+plot(res$W[,2])
+plot(res$H[1,])
+plot(res$H[2,])
+```
+
+## svd on lambda
+
+```{r}
+res = svd(datax$lambda)
+plot(res$d)
+plot(res$v[,1])
+plot(res$v[,2])
+```
+
+## svd on log lambda
+
+```{r}
+res = svd(log(datax$lambda))
+plot(res$d)
+plot(res$v[,1])
+plot(res$v[,2])
+plot(res$v[,3])
+```
