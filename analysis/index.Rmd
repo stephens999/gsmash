@@ -23,6 +23,8 @@ editor_options:
 * [ebpm normal prior init in PMF](vga_init_in_ebpmf.html)
 * [ebpmf vs topic model](ebpmf_nmf_diff.html)
 * [Poisson deviance](poisson_deviance.html)
+* [Multiplicative vs additive](multiplicative_additive.html)
+* [smallman example](smallman_example.html)
 
 
 ### Simulation 
