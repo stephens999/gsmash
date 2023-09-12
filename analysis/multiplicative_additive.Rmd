@@ -1,0 +1,119 @@
+---
+title: "multiplicative vs additive PMF"
+author: "DongyueXie"
+date: "2023-08-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I want to find a simple example to illustrate the difference between multiplicative and additive methods.
+
+The multiplicative effects come with the log link in Poisson model can be understood as follows:
+
+Let $\boldsymbol{x}_i$ denote the a data vector, then we can write $\mathbb{E}(\boldsymbol{x}_i) = \exp(\boldsymbol{\mu} + \sum_kl_{ik}\boldsymbol{f}_k)=\exp(\boldsymbol{\mu})\prod_k \exp(l_{ik}\boldsymbol{f}_k).$
+
+Here I start with a very simple example where the two factors look like:
+
+$\boldsymbol{f}_1 = (1,1,1,1,0,0,0,0), \boldsymbol{f}_2=(1,1,0,0,1,1,0,0)$.
+
+So for the $i$th sample, its mean is $background\times \exp(l_{i1}\boldsymbol{f}_1)\times \exp(l_{i2}\boldsymbol{f}_2)$.
+
+WLOG let's set background to be all 1's. The observations(elements) of $i$th sample would be $\exp(l_{i1})\exp(l_{i2}),\exp(l_{i1}),\exp(l_{i2}),1$.
+
+Let's set the following loadings:
+
+1. $l_1=l_2=0$; 2. $l_1=2, l_2=0$; 3. $l_1=0,l_2=2$; 4. $l_1=4,l_2=2$.
+
+The corresponding Poisson rates are 
+
+$(1,1,1,1),(\exp(2),\exp(2),1,1),(\exp(2),1,\exp(2),1), (\exp(6),\exp(4),\exp(2),1)$.
+
+
+
+```{r}
+N = 100
+Ftrue = cbind(c(1,1,1,1,0,0,0,0),c(1,1,0,0,1,1,0,0))
+set.seed(12345)
+#Ltrue = matrix(rexp(N*2,1),nrow=N)
+Ltrue = cbind(rep(c(0,2,0,4),each=N/4),rep(c(0,0,2,2),each=N/4))
+mu = tcrossprod(Ltrue,Ftrue)
+lambda = exp(mu)
+Y = matrix(rpois(N*nrow(Ftrue),lambda),nrow=N)
+
+Ftrue
+plot(Ltrue[,1])
+plot(Ltrue[,2])
+```
+
+Can NMF recover Ltrue and Ftrue, if we directly apply NMF on $LF$?
+
+```{r}
+nmf_fit = NNLM::nnmf(mu,k=2,loss='mse')
+plot(nmf_fit$H[1,])
+plot(nmf_fit$H[2,])
+
+```
+
+Looks good.
+
+How about running EBNMF on $LF$? It is not working because "The data matrix must not have any rows or columns whose entries are either identically zero or all missing."
+
+```{r,eval=F}
+ebnmf_fit = flashier::flash(mu,ebnm_fn = c(ebnm::ebnm_unimodal_nonnegative,ebnm::ebnm_unimodal_nonnegative),var_type = 0,backfit = T)
+```
+
+Now we fit NMF to the data matrix Y:
+
+Let's start with k=2
+
+```{r}
+fit0 = fastTopics::fit_poisson_nmf(Y,2)
+plot(fit0$F[,1])
+plot(fit0$F[,2])
+
+plot(fit0$L[,1])
+plot(fit0$L[,2])
+```
+
+Then k = 3
+
+```{r}
+fit0 = fastTopics::fit_poisson_nmf(Y,3)
+plot(fit0$F[,1])
+plot(fit0$F[,2])
+plot(fit0$F[,3])
+
+plot(fit0$L[,1])
+plot(fit0$L[,2])
+plot(fit0$L[,3])
+```
+
+Now we try to fit ebnmf on log transformed data:
+
+```{r}
+fit2 = flashier::flash(log(1+Y),ebnm_fn = c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),var_type = 0,backfit = T)
+plot(fit2$F_pm[,1])
+plot(fit2$F_pm[,2])
+plot(fit2$F_pm[,3])
+
+plot(fit2$L_pm[,1])
+plot(fit2$L_pm[,2])
+plot(fit2$L_pm[,3])
+```
+
+```{r}
+fit2 = flashier::flash(log(0.5+Y),ebnm_fn = c(ebnm::ebnm_point_exponential,ebnm::ebnm_point_exponential),var_type = 0,backfit = T)
+plot(fit2$F_pm[,1])
+plot(fit2$F_pm[,2])
+```
+
+```{r}
+fit1 = ebpmf::ebpmf_log(Y,l0=0,f0=0,var_type = 'constant',
+                        flash_control = list(fix_l0=T,fix_f0=T,ebnm.fn=c(ebnm::ebnm_unimodal_nonnegative,ebnm::ebnm_unimodal_nonnegative),
+                                                                         loadings_sign=1,factors_sign =1))
+```
+
+
