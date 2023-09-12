@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="DongyueXie" />
+
+<meta name="date" content="2023-07-12" />
+
+<title>sla_data</title>
+
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/journal.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">gsmash</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/DongyueXie/gsmash">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">sla_data</h1>
+<h4 class="author">DongyueXie</h4>
+<h4 class="date">2023-07-12</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-09-12
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>gsmash/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version
+1.6.2). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20220606code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20220606)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20220606code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20220606)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree4e69db78c3b635194ebc8e48e394e888c6396829targetblank4e69db7a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/DongyueXie/gsmash/tree/4e69db78c3b635194ebc8e48e394e888c6396829" target="_blank">4e69db7</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomDongyueXiegsmashtree4e69db78c3b635194ebc8e48e394e888c6396829targetblank4e69db7a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/DongyueXie/gsmash/tree/4e69db78c3b635194ebc8e48e394e888c6396829" target="_blank">4e69db7</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/GO_ORA_montoro.Rmd
+    Untracked:  analysis/GO_ORA_pbmc_purified.Rmd
+    Untracked:  analysis/fit_ebpmf_sla_2000.Rmd
+    Untracked:  chipexo_rep1_reverse.rds
+    Untracked:  data/Citation.RData
+    Untracked:  data/SLA/
+    Untracked:  data/abstract.txt
+    Untracked:  data/abstract.vocab.txt
+    Untracked:  data/ap.txt
+    Untracked:  data/ap.vocab.txt
+    Untracked:  data/sla_2000.rds
+    Untracked:  data/sla_full.rds
+    Untracked:  data/text.R
+    Untracked:  data/tpm3.rds
+    Untracked:  output/driving_gene_pbmc.rds
+    Untracked:  output/pbmc_gsea.rds
+    Untracked:  output/plots/
+    Untracked:  output/tpm3_fit_fasttopics.rds
+    Untracked:  output/tpm3_fit_stm.rds
+    Untracked:  output/tpm3_fit_stm_slow.rds
+    Untracked:  sla.rds
+
+Unstaged changes:
+    Modified:   analysis/PMF_splitting.Rmd
+    Modified:   analysis/fit_ebpmf_sla.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   code/poisson_STM/structure_plot.R
+    Modified:   code/poisson_mean/pois_log_normal_mle.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/sla_data.Rmd</code>) and HTML
+(<code>docs/sla_data.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/DongyueXie/gsmash/blob/4e69db78c3b635194ebc8e48e394e888c6396829/analysis/sla_data.Rmd" target="_blank">4e69db7</a>
+</td>
+<td>
+DongyueXie
+</td>
+<td>
+2023-09-12
+</td>
+<td>
+wflow_publish("analysis/sla_data.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Processing SLA data from <a
+href="https://www.stat.uga.edu/sites/default/files/psji/SCC2016-with-abs.zip"
+class="uri">https://www.stat.uga.edu/sites/default/files/psji/SCC2016-with-abs.zip</a></p>
+<pre class="r"><code>rm(list = ls())
+library(readr)
+library(tm)
+library(Matrix)</code></pre>
+<p><strong>journal category</strong>:</p>
+<p>DOI start with 10.1111, or with j. are from jrssb</p>
+<p>start with 10.1198, 10.1080, or with jasa are from jasa</p>
+<p>start with 10.1214 or with aos are from aos</p>
+<p>so it seems to me that 1 - 953 are from AOS, 954 - 1703 are from
+biometrica, 1704 - 2803 are from jasa, and the rest are from jrssb</p>
+<p><strong>data cleaning</strong>:</p>
+<p>remove numbers, remove Punctuation, to lower case, remove stop words,
+word stemming</p>
+<pre class="r"><code>sla &lt;- read_csv(&quot;data/SLA/SCC2016/Data/paperList.txt&quot;)
+sla &lt;- sla[!is.na(sla$abstract),]
+str(sla)
+
+abs_source &lt;- VectorSource(sla$abstract)
+# Make a volatile corpus: tweets_corpus
+abs_corpus &lt;- VCorpus(abs_source)
+# Print out the tweets_corpus
+abs_corpus
+
+stopword_list = stopwords(&quot;en&quot;)
+stopword_list2 = c(&quot;0o&quot;, &quot;0s&quot;, &quot;3a&quot;, &quot;3b&quot;, &quot;3d&quot;, &quot;6b&quot;, &quot;6o&quot;, &quot;a&quot;, &quot;a1&quot;, &quot;a2&quot;, &quot;a3&quot;, &quot;a4&quot;, &quot;ab&quot;, &quot;able&quot;, &quot;about&quot;, &quot;above&quot;, &quot;abst&quot;, &quot;ac&quot;, &quot;accordance&quot;, &quot;according&quot;, &quot;accordingly&quot;, &quot;across&quot;, &quot;act&quot;, &quot;actually&quot;, &quot;ad&quot;, &quot;added&quot;, &quot;adj&quot;, &quot;ae&quot;, &quot;af&quot;, &quot;affected&quot;, &quot;affecting&quot;, &quot;affects&quot;, &quot;after&quot;, &quot;afterwards&quot;, &quot;ag&quot;, &quot;again&quot;, &quot;against&quot;, &quot;ah&quot;, &quot;ain&quot;, &quot;ain&#39;t&quot;, &quot;aj&quot;, &quot;al&quot;, &quot;all&quot;, &quot;allow&quot;, &quot;allows&quot;, &quot;almost&quot;, &quot;alone&quot;, &quot;along&quot;, &quot;already&quot;, &quot;also&quot;, &quot;although&quot;, &quot;always&quot;, &quot;am&quot;, &quot;among&quot;, &quot;amongst&quot;, &quot;amoungst&quot;, &quot;amount&quot;, &quot;an&quot;, &quot;and&quot;, &quot;announce&quot;, &quot;another&quot;, &quot;any&quot;, &quot;anybody&quot;, &quot;anyhow&quot;, &quot;anymore&quot;, &quot;anyone&quot;, &quot;anything&quot;, &quot;anyway&quot;, &quot;anyways&quot;, &quot;anywhere&quot;, &quot;ao&quot;, &quot;ap&quot;, &quot;apart&quot;, &quot;apparently&quot;, &quot;appear&quot;, &quot;appreciate&quot;, &quot;appropriate&quot;, &quot;approximately&quot;, &quot;ar&quot;, &quot;are&quot;, &quot;aren&quot;, &quot;arent&quot;, &quot;aren&#39;t&quot;, &quot;arise&quot;, &quot;around&quot;, &quot;as&quot;, &quot;a&#39;s&quot;, &quot;aside&quot;, &quot;ask&quot;, &quot;asking&quot;, &quot;associated&quot;, &quot;at&quot;, &quot;au&quot;, &quot;auth&quot;, &quot;av&quot;, &quot;available&quot;, &quot;aw&quot;, &quot;away&quot;, &quot;awfully&quot;, &quot;ax&quot;, &quot;ay&quot;, &quot;az&quot;, &quot;b&quot;, &quot;b1&quot;, &quot;b2&quot;, &quot;b3&quot;, &quot;ba&quot;, &quot;back&quot;, &quot;bc&quot;, &quot;bd&quot;, &quot;be&quot;, &quot;became&quot;, &quot;because&quot;, &quot;become&quot;, &quot;becomes&quot;, &quot;becoming&quot;, &quot;been&quot;, &quot;before&quot;, &quot;beforehand&quot;, &quot;begin&quot;, &quot;beginning&quot;, &quot;beginnings&quot;, &quot;begins&quot;, &quot;behind&quot;, &quot;being&quot;, &quot;believe&quot;, &quot;below&quot;, &quot;beside&quot;, &quot;besides&quot;, &quot;best&quot;, &quot;better&quot;, &quot;between&quot;, &quot;beyond&quot;, &quot;bi&quot;, &quot;bill&quot;, &quot;biol&quot;, &quot;bj&quot;, &quot;bk&quot;, &quot;bl&quot;, &quot;bn&quot;, &quot;both&quot;, &quot;bottom&quot;, &quot;bp&quot;, &quot;br&quot;, &quot;brief&quot;, &quot;briefly&quot;, &quot;bs&quot;, &quot;bt&quot;, &quot;bu&quot;, &quot;but&quot;, &quot;bx&quot;, &quot;by&quot;, &quot;c&quot;, &quot;c1&quot;, &quot;c2&quot;, &quot;c3&quot;, &quot;ca&quot;, &quot;call&quot;, &quot;came&quot;, &quot;can&quot;, &quot;cannot&quot;, &quot;cant&quot;, &quot;can&#39;t&quot;, &quot;cause&quot;, &quot;causes&quot;, &quot;cc&quot;, &quot;cd&quot;, &quot;ce&quot;, &quot;certain&quot;, &quot;certainly&quot;, &quot;cf&quot;, &quot;cg&quot;, &quot;ch&quot;, &quot;changes&quot;, &quot;ci&quot;, &quot;cit&quot;, &quot;cj&quot;, &quot;cl&quot;, &quot;clearly&quot;, &quot;cm&quot;, &quot;c&#39;mon&quot;, &quot;cn&quot;, &quot;co&quot;, &quot;com&quot;, &quot;come&quot;, &quot;comes&quot;, &quot;con&quot;, &quot;concerning&quot;, &quot;consequently&quot;, &quot;consider&quot;, &quot;considering&quot;, &quot;contain&quot;, &quot;containing&quot;, &quot;contains&quot;, &quot;corresponding&quot;, &quot;could&quot;, &quot;couldn&quot;, &quot;couldnt&quot;, &quot;couldn&#39;t&quot;, &quot;course&quot;, &quot;cp&quot;, &quot;cq&quot;, &quot;cr&quot;, &quot;cry&quot;, &quot;cs&quot;, &quot;c&#39;s&quot;, &quot;ct&quot;, &quot;cu&quot;, &quot;currently&quot;, &quot;cv&quot;, &quot;cx&quot;, &quot;cy&quot;, &quot;cz&quot;, &quot;d&quot;, &quot;d2&quot;, &quot;da&quot;, &quot;date&quot;, &quot;dc&quot;, &quot;dd&quot;, &quot;de&quot;, &quot;definitely&quot;, &quot;describe&quot;, &quot;described&quot;, &quot;despite&quot;, &quot;detail&quot;, &quot;df&quot;, &quot;di&quot;, &quot;did&quot;, &quot;didn&quot;, &quot;didn&#39;t&quot;, &quot;different&quot;, &quot;dj&quot;, &quot;dk&quot;, &quot;dl&quot;, &quot;do&quot;, &quot;does&quot;, &quot;doesn&quot;, &quot;doesn&#39;t&quot;, &quot;doing&quot;, &quot;don&quot;, &quot;done&quot;, &quot;don&#39;t&quot;, &quot;down&quot;, &quot;downwards&quot;, &quot;dp&quot;, &quot;dr&quot;, &quot;ds&quot;, &quot;dt&quot;, &quot;du&quot;, &quot;due&quot;, &quot;during&quot;, &quot;dx&quot;, &quot;dy&quot;, &quot;e&quot;, &quot;e2&quot;, &quot;e3&quot;, &quot;ea&quot;, &quot;each&quot;, &quot;ec&quot;, &quot;ed&quot;, &quot;edu&quot;, &quot;ee&quot;, &quot;ef&quot;, &quot;effect&quot;, &quot;eg&quot;, &quot;ei&quot;, &quot;eight&quot;, &quot;eighty&quot;, &quot;either&quot;, &quot;ej&quot;, &quot;el&quot;, &quot;eleven&quot;, &quot;else&quot;, &quot;elsewhere&quot;, &quot;em&quot;, &quot;empty&quot;, &quot;en&quot;, &quot;end&quot;, &quot;ending&quot;, &quot;enough&quot;, &quot;entirely&quot;, &quot;eo&quot;, &quot;ep&quot;, &quot;eq&quot;, &quot;er&quot;, &quot;es&quot;, &quot;especially&quot;, &quot;est&quot;, &quot;et&quot;, &quot;et-al&quot;, &quot;etc&quot;, &quot;eu&quot;, &quot;ev&quot;, &quot;even&quot;, &quot;ever&quot;, &quot;every&quot;, &quot;everybody&quot;, &quot;everyone&quot;, &quot;everything&quot;, &quot;everywhere&quot;, &quot;ex&quot;, &quot;exactly&quot;, &quot;example&quot;, &quot;except&quot;, &quot;ey&quot;, &quot;f&quot;, &quot;f2&quot;, &quot;fa&quot;, &quot;far&quot;, &quot;fc&quot;, &quot;few&quot;, &quot;ff&quot;, &quot;fi&quot;, &quot;fifteen&quot;, &quot;fifth&quot;, &quot;fify&quot;, &quot;fill&quot;, &quot;find&quot;, &quot;fire&quot;, &quot;first&quot;, &quot;five&quot;, &quot;fix&quot;, &quot;fj&quot;, &quot;fl&quot;, &quot;fn&quot;, &quot;fo&quot;, &quot;followed&quot;, &quot;following&quot;, &quot;follows&quot;, &quot;for&quot;, &quot;former&quot;, &quot;formerly&quot;, &quot;forth&quot;, &quot;forty&quot;, &quot;found&quot;, &quot;four&quot;, &quot;fr&quot;, &quot;from&quot;, &quot;front&quot;, &quot;fs&quot;, &quot;ft&quot;, &quot;fu&quot;, &quot;full&quot;, &quot;further&quot;, &quot;furthermore&quot;, &quot;fy&quot;, &quot;g&quot;, &quot;ga&quot;, &quot;gave&quot;, &quot;ge&quot;, &quot;get&quot;, &quot;gets&quot;, &quot;getting&quot;, &quot;gi&quot;, &quot;give&quot;, &quot;given&quot;, &quot;gives&quot;, &quot;giving&quot;, &quot;gj&quot;, &quot;gl&quot;, &quot;go&quot;, &quot;goes&quot;, &quot;going&quot;, &quot;gone&quot;, &quot;got&quot;, &quot;gotten&quot;, &quot;gr&quot;, &quot;greetings&quot;, &quot;gs&quot;, &quot;gy&quot;, &quot;h&quot;, &quot;h2&quot;, &quot;h3&quot;, &quot;had&quot;, &quot;hadn&quot;, &quot;hadn&#39;t&quot;, &quot;happens&quot;, &quot;hardly&quot;, &quot;has&quot;, &quot;hasn&quot;, &quot;hasnt&quot;, &quot;hasn&#39;t&quot;, &quot;have&quot;, &quot;haven&quot;, &quot;haven&#39;t&quot;, &quot;having&quot;, &quot;he&quot;, &quot;hed&quot;, &quot;he&#39;d&quot;, &quot;he&#39;ll&quot;, &quot;hello&quot;, &quot;help&quot;, &quot;hence&quot;, &quot;her&quot;, &quot;here&quot;, &quot;hereafter&quot;, &quot;hereby&quot;, &quot;herein&quot;, &quot;heres&quot;, &quot;here&#39;s&quot;, &quot;hereupon&quot;, &quot;hers&quot;, &quot;herself&quot;, &quot;hes&quot;, &quot;he&#39;s&quot;, &quot;hh&quot;, &quot;hi&quot;, &quot;hid&quot;, &quot;him&quot;, &quot;himself&quot;, &quot;his&quot;, &quot;hither&quot;, &quot;hj&quot;, &quot;ho&quot;, &quot;home&quot;, &quot;hopefully&quot;, &quot;how&quot;, &quot;howbeit&quot;, &quot;however&quot;, &quot;how&#39;s&quot;, &quot;hr&quot;, &quot;hs&quot;, &quot;http&quot;, &quot;hu&quot;, &quot;hundred&quot;, &quot;hy&quot;, &quot;i&quot;, &quot;i2&quot;, &quot;i3&quot;, &quot;i4&quot;, &quot;i6&quot;, &quot;i7&quot;, &quot;i8&quot;, &quot;ia&quot;, &quot;ib&quot;, &quot;ibid&quot;, &quot;ic&quot;, &quot;id&quot;, &quot;i&#39;d&quot;, &quot;ie&quot;, &quot;if&quot;, &quot;ig&quot;, &quot;ignored&quot;, &quot;ih&quot;, &quot;ii&quot;, &quot;ij&quot;, &quot;il&quot;, &quot;i&#39;ll&quot;, &quot;im&quot;, &quot;i&#39;m&quot;, &quot;immediate&quot;, &quot;immediately&quot;, &quot;importance&quot;, &quot;important&quot;, &quot;in&quot;, &quot;inasmuch&quot;, &quot;inc&quot;, &quot;indeed&quot;, &quot;index&quot;, &quot;indicate&quot;, &quot;indicated&quot;, &quot;indicates&quot;, &quot;information&quot;, &quot;inner&quot;, &quot;insofar&quot;, &quot;instead&quot;, &quot;interest&quot;, &quot;into&quot;, &quot;invention&quot;, &quot;inward&quot;, &quot;io&quot;, &quot;ip&quot;, &quot;iq&quot;, &quot;ir&quot;, &quot;is&quot;, &quot;isn&quot;, &quot;isn&#39;t&quot;, &quot;it&quot;, &quot;itd&quot;, &quot;it&#39;d&quot;, &quot;it&#39;ll&quot;, &quot;its&quot;, &quot;it&#39;s&quot;, &quot;itself&quot;, &quot;iv&quot;, &quot;i&#39;ve&quot;, &quot;ix&quot;, &quot;iy&quot;, &quot;iz&quot;)
+
+stopword_list3 = c(&quot;j&quot;, &quot;jj&quot;, &quot;jr&quot;, &quot;js&quot;, &quot;jt&quot;, &quot;ju&quot;, &quot;just&quot;, &quot;k&quot;, &quot;ke&quot;, &quot;keep&quot;, &quot;keeps&quot;, &quot;kept&quot;, &quot;kg&quot;, &quot;kj&quot;, &quot;km&quot;, &quot;know&quot;, &quot;known&quot;, &quot;knows&quot;, &quot;ko&quot;, &quot;l&quot;, &quot;l2&quot;, &quot;la&quot;, &quot;largely&quot;, &quot;last&quot;, &quot;lately&quot;, &quot;later&quot;, &quot;latter&quot;, &quot;latterly&quot;, &quot;lb&quot;, &quot;lc&quot;, &quot;le&quot;, &quot;least&quot;, &quot;les&quot;, &quot;less&quot;, &quot;lest&quot;, &quot;let&quot;, &quot;lets&quot;, &quot;let&#39;s&quot;, &quot;lf&quot;, &quot;like&quot;, &quot;liked&quot;, &quot;likely&quot;, &quot;line&quot;, &quot;little&quot;, &quot;lj&quot;, &quot;ll&quot;, &quot;ll&quot;, &quot;ln&quot;, &quot;lo&quot;, &quot;look&quot;, &quot;looking&quot;, &quot;looks&quot;, &quot;los&quot;, &quot;lr&quot;, &quot;ls&quot;, &quot;lt&quot;, &quot;ltd&quot;, &quot;m&quot;, &quot;m2&quot;, &quot;ma&quot;, &quot;made&quot;, &quot;mainly&quot;, &quot;make&quot;, &quot;makes&quot;, &quot;many&quot;, &quot;may&quot;, &quot;maybe&quot;, &quot;me&quot;, &quot;mean&quot;, &quot;means&quot;, &quot;meantime&quot;, &quot;meanwhile&quot;, &quot;merely&quot;, &quot;mg&quot;, &quot;might&quot;, &quot;mightn&quot;, &quot;mightn&#39;t&quot;, &quot;mill&quot;, &quot;million&quot;, &quot;mine&quot;, &quot;miss&quot;, &quot;ml&quot;, &quot;mn&quot;, &quot;mo&quot;, &quot;more&quot;, &quot;moreover&quot;, &quot;most&quot;, &quot;mostly&quot;, &quot;move&quot;, &quot;mr&quot;, &quot;mrs&quot;, &quot;ms&quot;, &quot;mt&quot;, &quot;mu&quot;, &quot;much&quot;, &quot;mug&quot;, &quot;must&quot;, &quot;mustn&quot;, &quot;mustn&#39;t&quot;, &quot;my&quot;, &quot;myself&quot;, &quot;n&quot;, &quot;n2&quot;, &quot;na&quot;, &quot;name&quot;, &quot;namely&quot;, &quot;nay&quot;, &quot;nc&quot;, &quot;nd&quot;, &quot;ne&quot;, &quot;near&quot;, &quot;nearly&quot;, &quot;necessarily&quot;, &quot;necessary&quot;, &quot;need&quot;, &quot;needn&quot;, &quot;needn&#39;t&quot;, &quot;needs&quot;, &quot;neither&quot;, &quot;never&quot;, &quot;nevertheless&quot;, &quot;new&quot;, &quot;next&quot;, &quot;ng&quot;, &quot;ni&quot;, &quot;nine&quot;, &quot;ninety&quot;, &quot;nj&quot;, &quot;nl&quot;, &quot;nn&quot;, &quot;no&quot;, &quot;nobody&quot;, &quot;non&quot;, &quot;none&quot;, &quot;nonetheless&quot;, &quot;noone&quot;, &quot;nor&quot;, &quot;normally&quot;, &quot;nos&quot;, &quot;not&quot;, &quot;noted&quot;, &quot;nothing&quot;, &quot;novel&quot;, &quot;now&quot;, &quot;nowhere&quot;, &quot;nr&quot;, &quot;ns&quot;, &quot;nt&quot;, &quot;ny&quot;, &quot;o&quot;, &quot;oa&quot;, &quot;ob&quot;, &quot;obtain&quot;, &quot;obtained&quot;, &quot;obviously&quot;, &quot;oc&quot;, &quot;od&quot;, &quot;of&quot;, &quot;off&quot;, &quot;often&quot;, &quot;og&quot;, &quot;oh&quot;, &quot;oi&quot;, &quot;oj&quot;, &quot;ok&quot;, &quot;okay&quot;, &quot;ol&quot;, &quot;old&quot;, &quot;om&quot;, &quot;omitted&quot;, &quot;on&quot;, &quot;once&quot;, &quot;one&quot;, &quot;ones&quot;, &quot;only&quot;, &quot;onto&quot;, &quot;oo&quot;, &quot;op&quot;, &quot;oq&quot;, &quot;or&quot;, &quot;ord&quot;, &quot;os&quot;, &quot;ot&quot;, &quot;other&quot;, &quot;others&quot;, &quot;otherwise&quot;, &quot;ou&quot;, &quot;ought&quot;, &quot;our&quot;, &quot;ours&quot;, &quot;ourselves&quot;, &quot;out&quot;, &quot;outside&quot;, &quot;over&quot;, &quot;overall&quot;, &quot;ow&quot;, &quot;owing&quot;, &quot;own&quot;, &quot;ox&quot;, &quot;oz&quot;, &quot;p&quot;, &quot;p1&quot;, &quot;p2&quot;, &quot;p3&quot;, &quot;page&quot;, &quot;pagecount&quot;, &quot;pages&quot;, &quot;par&quot;, &quot;part&quot;, &quot;particular&quot;, &quot;particularly&quot;, &quot;pas&quot;, &quot;past&quot;, &quot;pc&quot;, &quot;pd&quot;, &quot;pe&quot;, &quot;per&quot;, &quot;perhaps&quot;, &quot;pf&quot;, &quot;ph&quot;, &quot;pi&quot;, &quot;pj&quot;, &quot;pk&quot;, &quot;pl&quot;, &quot;placed&quot;, &quot;please&quot;, &quot;plus&quot;, &quot;pm&quot;, &quot;pn&quot;, &quot;po&quot;, &quot;poorly&quot;, &quot;possible&quot;, &quot;possibly&quot;, &quot;potentially&quot;, &quot;pp&quot;, &quot;pq&quot;, &quot;pr&quot;, &quot;predominantly&quot;, &quot;present&quot;, &quot;presumably&quot;, &quot;previously&quot;, &quot;primarily&quot;, &quot;probably&quot;, &quot;promptly&quot;, &quot;proud&quot;, &quot;provides&quot;, &quot;ps&quot;, &quot;pt&quot;, &quot;pu&quot;, &quot;put&quot;, &quot;py&quot;, &quot;q&quot;, &quot;qj&quot;, &quot;qu&quot;, &quot;que&quot;, &quot;quickly&quot;, &quot;quite&quot;, &quot;qv&quot;, &quot;r&quot;, &quot;r2&quot;, &quot;ra&quot;, &quot;ran&quot;, &quot;rather&quot;, &quot;rc&quot;, &quot;rd&quot;, &quot;re&quot;, &quot;readily&quot;, &quot;really&quot;, &quot;reasonably&quot;, &quot;recent&quot;, &quot;recently&quot;, &quot;ref&quot;, &quot;refs&quot;, &quot;regarding&quot;, &quot;regardless&quot;, &quot;regards&quot;, &quot;related&quot;, &quot;relatively&quot;, &quot;research&quot;, &quot;research-articl&quot;, &quot;respectively&quot;, &quot;resulted&quot;, &quot;resulting&quot;, &quot;results&quot;)
+
+stopword_list4=c(&quot;rf&quot;, &quot;rh&quot;, &quot;ri&quot;, &quot;right&quot;, &quot;rj&quot;, &quot;rl&quot;, &quot;rm&quot;, &quot;rn&quot;, &quot;ro&quot;, &quot;rq&quot;, &quot;rr&quot;, &quot;rs&quot;, &quot;rt&quot;, &quot;ru&quot;, &quot;run&quot;, &quot;rv&quot;, &quot;ry&quot;, &quot;s&quot;, &quot;s2&quot;, &quot;sa&quot;, &quot;said&quot;, &quot;same&quot;, &quot;saw&quot;, &quot;say&quot;, &quot;saying&quot;, &quot;says&quot;, &quot;sc&quot;, &quot;sd&quot;, &quot;se&quot;, &quot;sec&quot;, &quot;second&quot;, &quot;secondly&quot;, &quot;section&quot;, &quot;see&quot;, &quot;seeing&quot;, &quot;seem&quot;, &quot;seemed&quot;, &quot;seeming&quot;, &quot;seems&quot;, &quot;seen&quot;, &quot;self&quot;, &quot;selves&quot;, &quot;sensible&quot;, &quot;sent&quot;, &quot;serious&quot;, &quot;seriously&quot;, &quot;seven&quot;, &quot;several&quot;, &quot;sf&quot;, &quot;shall&quot;, &quot;shan&quot;, &quot;shan&#39;t&quot;, &quot;she&quot;, &quot;shed&quot;, &quot;she&#39;d&quot;, &quot;she&#39;ll&quot;, &quot;shes&quot;, &quot;she&#39;s&quot;, &quot;should&quot;, &quot;shouldn&quot;, &quot;shouldn&#39;t&quot;, &quot;should&#39;ve&quot;, &quot;show&quot;, &quot;showed&quot;, &quot;shown&quot;, &quot;showns&quot;, &quot;shows&quot;, &quot;si&quot;, &quot;side&quot;, &quot;significant&quot;, &quot;significantly&quot;, &quot;similar&quot;, &quot;similarly&quot;, &quot;since&quot;, &quot;sincere&quot;, &quot;six&quot;, &quot;sixty&quot;, &quot;sj&quot;, &quot;sl&quot;, &quot;slightly&quot;, &quot;sm&quot;, &quot;sn&quot;, &quot;so&quot;, &quot;some&quot;, &quot;somebody&quot;, &quot;somehow&quot;, &quot;someone&quot;, &quot;somethan&quot;, &quot;something&quot;, &quot;sometime&quot;, &quot;sometimes&quot;, &quot;somewhat&quot;, &quot;somewhere&quot;, &quot;soon&quot;, &quot;sorry&quot;, &quot;sp&quot;, &quot;specifically&quot;, &quot;specified&quot;, &quot;specify&quot;, &quot;specifying&quot;, &quot;sq&quot;, &quot;sr&quot;, &quot;ss&quot;, &quot;st&quot;, &quot;still&quot;, &quot;stop&quot;, &quot;strongly&quot;, &quot;sub&quot;, &quot;substantially&quot;, &quot;successfully&quot;, &quot;such&quot;, &quot;sufficiently&quot;, &quot;suggest&quot;, &quot;sup&quot;, &quot;sure&quot;, &quot;sy&quot;, &quot;system&quot;, &quot;sz&quot;, &quot;t&quot;, &quot;t1&quot;, &quot;t2&quot;, &quot;t3&quot;, &quot;take&quot;, &quot;taken&quot;, &quot;taking&quot;, &quot;tb&quot;, &quot;tc&quot;, &quot;td&quot;, &quot;te&quot;, &quot;tell&quot;, &quot;ten&quot;, &quot;tends&quot;, &quot;tf&quot;, &quot;th&quot;, &quot;than&quot;, &quot;thank&quot;, &quot;thanks&quot;, &quot;thanx&quot;, &quot;that&quot;, &quot;that&#39;ll&quot;, &quot;thats&quot;, &quot;that&#39;s&quot;, &quot;that&#39;ve&quot;, &quot;the&quot;, &quot;their&quot;, &quot;theirs&quot;, &quot;them&quot;, &quot;themselves&quot;, &quot;then&quot;, &quot;thence&quot;, &quot;there&quot;, &quot;thereafter&quot;, &quot;thereby&quot;, &quot;thered&quot;, &quot;therefore&quot;, &quot;therein&quot;, &quot;there&#39;ll&quot;, &quot;thereof&quot;, &quot;therere&quot;, &quot;theres&quot;, &quot;there&#39;s&quot;, &quot;thereto&quot;, &quot;thereupon&quot;, &quot;there&#39;ve&quot;, &quot;these&quot;, &quot;they&quot;, &quot;theyd&quot;, &quot;they&#39;d&quot;, &quot;they&#39;ll&quot;, &quot;theyre&quot;, &quot;they&#39;re&quot;, &quot;they&#39;ve&quot;, &quot;thickv&quot;, &quot;thin&quot;, &quot;think&quot;, &quot;third&quot;, &quot;this&quot;, &quot;thorough&quot;, &quot;thoroughly&quot;, &quot;those&quot;, &quot;thou&quot;, &quot;though&quot;, &quot;thoughh&quot;, &quot;thousand&quot;, &quot;three&quot;, &quot;throug&quot;, &quot;through&quot;, &quot;throughout&quot;, &quot;thru&quot;, &quot;thus&quot;, &quot;ti&quot;, &quot;til&quot;, &quot;tip&quot;, &quot;tj&quot;, &quot;tl&quot;, &quot;tm&quot;, &quot;tn&quot;, &quot;to&quot;, &quot;together&quot;, &quot;too&quot;, &quot;took&quot;, &quot;top&quot;, &quot;toward&quot;, &quot;towards&quot;, &quot;tp&quot;, &quot;tq&quot;, &quot;tr&quot;, &quot;tried&quot;, &quot;tries&quot;, &quot;truly&quot;, &quot;try&quot;, &quot;trying&quot;, &quot;ts&quot;, &quot;t&#39;s&quot;, &quot;tt&quot;, &quot;tv&quot;, &quot;twelve&quot;, &quot;twenty&quot;, &quot;twice&quot;, &quot;two&quot;, &quot;tx&quot;, &quot;u&quot;, &quot;u201d&quot;, &quot;ue&quot;, &quot;ui&quot;, &quot;uj&quot;, &quot;uk&quot;, &quot;um&quot;, &quot;un&quot;, &quot;under&quot;, &quot;unfortunately&quot;, &quot;unless&quot;, &quot;unlike&quot;, &quot;unlikely&quot;, &quot;until&quot;, &quot;unto&quot;, &quot;uo&quot;, &quot;up&quot;, &quot;upon&quot;, &quot;ups&quot;, &quot;ur&quot;, &quot;us&quot;, &quot;use&quot;, &quot;used&quot;, &quot;useful&quot;, &quot;usefully&quot;, &quot;usefulness&quot;, &quot;uses&quot;, &quot;using&quot;, &quot;usually&quot;, &quot;ut&quot;, &quot;v&quot;, &quot;va&quot;, &quot;value&quot;, &quot;various&quot;, &quot;vd&quot;, &quot;ve&quot;, &quot;ve&quot;, &quot;very&quot;, &quot;via&quot;, &quot;viz&quot;, &quot;vj&quot;, &quot;vo&quot;, &quot;vol&quot;, &quot;vols&quot;, &quot;volumtype&quot;, &quot;vq&quot;, &quot;vs&quot;, &quot;vt&quot;, &quot;vu&quot;, &quot;w&quot;, &quot;wa&quot;, &quot;want&quot;, &quot;wants&quot;, &quot;was&quot;, &quot;wasn&quot;, &quot;wasnt&quot;, &quot;wasn&#39;t&quot;, &quot;way&quot;, &quot;we&quot;, &quot;wed&quot;, &quot;we&#39;d&quot;, &quot;welcome&quot;, &quot;well&quot;, &quot;we&#39;ll&quot;, &quot;well-b&quot;, &quot;went&quot;, &quot;were&quot;, &quot;we&#39;re&quot;, &quot;weren&quot;, &quot;werent&quot;, &quot;weren&#39;t&quot;, &quot;we&#39;ve&quot;, &quot;what&quot;, &quot;whatever&quot;, &quot;what&#39;ll&quot;, &quot;whats&quot;, &quot;what&#39;s&quot;, &quot;when&quot;, &quot;whence&quot;, &quot;whenever&quot;, &quot;when&#39;s&quot;, &quot;where&quot;, &quot;whereafter&quot;, &quot;whereas&quot;, &quot;whereby&quot;, &quot;wherein&quot;, &quot;wheres&quot;, &quot;where&#39;s&quot;, &quot;whereupon&quot;, &quot;wherever&quot;, &quot;whether&quot;, &quot;which&quot;, &quot;while&quot;, &quot;whim&quot;, &quot;whither&quot;, &quot;who&quot;, &quot;whod&quot;, &quot;whoever&quot;, &quot;whole&quot;, &quot;who&#39;ll&quot;, &quot;whom&quot;, &quot;whomever&quot;, &quot;whos&quot;, &quot;who&#39;s&quot;, &quot;whose&quot;, &quot;why&quot;, &quot;why&#39;s&quot;, &quot;wi&quot;, &quot;widely&quot;, &quot;will&quot;, &quot;willing&quot;, &quot;wish&quot;, &quot;with&quot;, &quot;within&quot;, &quot;without&quot;, &quot;wo&quot;, &quot;won&quot;, &quot;wonder&quot;, &quot;wont&quot;, &quot;won&#39;t&quot;, &quot;words&quot;, &quot;world&quot;, &quot;would&quot;, &quot;wouldn&quot;, &quot;wouldnt&quot;, &quot;wouldn&#39;t&quot;, &quot;www&quot;, &quot;x&quot;, &quot;x1&quot;, &quot;x2&quot;, &quot;x3&quot;, &quot;xf&quot;, &quot;xi&quot;, &quot;xj&quot;, &quot;xk&quot;, &quot;xl&quot;, &quot;xn&quot;, &quot;xo&quot;, &quot;xs&quot;, &quot;xt&quot;, &quot;xv&quot;, &quot;xx&quot;, &quot;y&quot;, &quot;y2&quot;, &quot;yes&quot;, &quot;yet&quot;, &quot;yj&quot;, &quot;yl&quot;, &quot;you&quot;, &quot;youd&quot;, &quot;you&#39;d&quot;, &quot;you&#39;ll&quot;, &quot;your&quot;, &quot;youre&quot;, &quot;you&#39;re&quot;, &quot;yours&quot;, &quot;yourself&quot;, &quot;yourselves&quot;, &quot;you&#39;ve&quot;, &quot;yr&quot;, &quot;ys&quot;, &quot;yt&quot;, &quot;z&quot;, &quot;zero&quot;, &quot;zi&quot;, &quot;zz&quot;)
+
+s_words = c(stopword_list,stopword_list2,stopword_list3,stopword_list4)
+clean_corpus &lt;- function(corpus){
+  corpus &lt;- tm_map(corpus, stripWhitespace)
+  corpus &lt;- tm_map(corpus, removePunctuation)
+  corpus &lt;- tm_map(corpus, removeNumbers) 
+  corpus &lt;- tm_map(corpus, content_transformer(tolower))
+  corpus &lt;- tm_map(corpus, removeWords, s_words)
+  corpus &lt;- tm_map(corpus, stemDocument)
+  # ## remove words that appear only once (this method seems to have memory issue?)
+  # tdm &lt;- TermDocumentMatrix(corpus)
+  # tokens_to_remove       &lt;- findFreqTerms(tdm, 1, 1)
+  # corpus &lt;- tm_map(corpus, content_transformer(removeWords), tokens_to_remove[1:5000])
+  return(corpus)
+}
+# Apply  customized function to the abs_corpus: clean_corp
+clean_corp &lt;- clean_corpus(abs_corpus)</code></pre>
+<pre class="r"><code>abs_dtm &lt;- DocumentTermMatrix(clean_corp)
+abs_m &lt;- as.matrix(abs_dtm)</code></pre>
+<p><strong>select highly variable words?</strong></p>
+<pre class="r"><code>library(dplyr)
+library(Seurat)
+words =CreateSeuratObject(counts = t(abs_m), project = &quot;sla&quot;, min.cells = 10, min.features = 10)
+words &lt;- NormalizeData(words, normalization.method = &quot;LogNormalize&quot;, scale.factor = 10000)
+words &lt;- FindVariableFeatures(words, selection.method = &quot;vst&quot;, nfeatures = 2000)
+word_to_use = VariableFeatures(words)
+head(word_to_use,10)</code></pre>
+<pre class="r"><code>mat = abs_m[,colnames(abs_m)%in%word_to_use]</code></pre>
+<pre class="r"><code>w_num &lt;- 2000        #number of words to keep
+mat = abs_m[,order(colSums(abs_m),decreasing = T)[1:w_num]]</code></pre>
+<pre class="r"><code>range(colSums(mat))
+hist(colSums(mat),breaks = 100)
+colnames(mat)[order(colSums(mat),decreasing = T)]</code></pre>
+<p><strong>save document attribute</strong></p>
+<pre class="r"><code>sla$journal = c(rep(&#39;AOS&#39;,953),rep(&#39;Biometrika&#39;,750),rep(&#39;JASA&#39;,1100),rep(&#39;JRSSB&#39;,404))
+saveRDS(list(data = mat,samples=sla,words = colnames(mat)),file=&#39;data/sla_2000.rds&#39;)</code></pre>
+<pre class="r"><code>saveRDS(list(data = abs_m,samples=sla,words = colnames(abs_m)),file=&#39;data/sla_full.rds&#39;)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
