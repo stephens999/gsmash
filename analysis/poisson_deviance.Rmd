@@ -1,0 +1,50 @@
+---
+title: "poisson_deviance"
+author: "DongyueXie"
+date: "2023-08-02"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Try the nullResiduals function from [scry package](https://www.bioconductor.org/packages//release/bioc/manuals/scry/man/scry.pdf)
+
+
+```{r}
+library(scry)
+```
+
+```{r}
+ncells <- 100
+n_genes = 200
+
+u <- matrix(rpois(20000, 5), ncol=ncells)
+sce <- SingleCellExperiment::SingleCellExperiment(assays=list(counts=u))
+sce = nullResiduals(sce)
+```
+
+
+```{r}
+fitted_glmpca = glmpca::glmpca(u,L=3,fam='poi')
+fitted_pca = svd(sce@assays@data$binomial_deviance_residuals)
+```
+
+
+```{r}
+plot(c(fitted_glmpca$coefX$V1))
+```
+
+```{r}
+plot(fitted_glmpca$loadings$dim1)
+```
+
+```{r}
+plot(rowMeans(sce@assays@data$binomial_deviance_residuals))
+```
+
+```{r}
+plot(fitted_pca$v[,1],fitted_pca$v[,2])
+plot(fitted_glmpca$factors[,1],fitted_glmpca$factors[,2])
+```
