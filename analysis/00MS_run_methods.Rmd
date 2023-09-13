@@ -1,0 +1,72 @@
+---
+title: "00MS_run_methods"
+author: "Matthew Stephens"
+date: "2023-09-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+This file uses Dongyue Xie's code to run EBPMF and topic models on the  SLA data from https://www.stat.uga.edu/sites/default/files/psji/SCC2016-with-abs.zip processed
+as (here)[sla_data.html].
+
+```{r}
+library(Matrix)
+library(readr)
+library(tm)
+library(fastTopics)
+library(flashier)
+library(ebpmf)
+
+datax = readRDS('data/sla_full.rds')
+dim(datax$data)
+sum(datax$data==0)/prod(dim(datax$data))
+datax$data = Matrix(datax$data,sparse = TRUE)
+```
+
+## Data filtering
+
+filter out some documents: use top 60% longest ones as in Ke and Wang 2022.
+
+```{r}
+doc_to_use = order(rowSums(datax$data),decreasing = T)[1:round(nrow(datax$data)*0.6)]
+mat = datax$data[doc_to_use,]
+samples = datax$samples
+samples = lapply(samples, function(z){z[doc_to_use]})
+```
+
+Filter out words that appear in less than 5 documents. This results in around 2000 words
+
+```{r}
+word_to_use = which(colSums(mat>0)>=5)
+mat = mat[,word_to_use]
+```
+
+## model fitting
+
+### Topic model
+
+
+```{r}
+set.seed(1)
+fit_tm_k20 = fit_topic_model(mat,k=20)
+de_tm_k20 = de_analysis(fit_tm_k20,mat,lfc.stat = "vsnull")
+saveRDS(list(fit=fit_tm_k20,de=de_tm_k20),file='output/fit_tm_k20.rds')
+```
+
+```{r}
+set.seed(1)
+fit_ebpmf_K20 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=20),
+                      init_control = list(n_cores=5,flash_est_sigma2=F,log_init_for_non0y=T),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))
+
+#fit_ebpmf1 = readRDS('/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds')
+saveRDS(fit_ebpmf_K20,file='output/fit_ebpmf_K20.rds')
+```
+
