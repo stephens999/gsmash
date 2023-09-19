@@ -1,0 +1,51 @@
+---
+title: "00MS_ebpmf_residuals"
+author: "Matthew Stephens"
+date: "2023-09-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I want to run a version of EBPMF with K=1 (or K=0?) just to get the residuals so I can run flash on those and explore their structure.
+I follow the same procedure as in [here](00MS_run_methods.html)
+
+```{r}
+library(Matrix)
+library(readr)
+library(tm)
+library(fastTopics)
+library(flashier)
+library(ebpmf)
+
+datax = readRDS('data/sla_full.rds')
+dim(datax$data)
+sum(datax$data==0)/prod(dim(datax$data))
+datax$data = Matrix(datax$data,sparse = TRUE)
+
+doc_to_use = order(rowSums(datax$data),decreasing = T)[1:round(nrow(datax$data)*0.6)]
+mat = datax$data[doc_to_use,]
+samples = datax$samples
+samples = lapply(samples, function(z){z[doc_to_use]})
+
+word_to_use = which(colSums(mat>0)>=5)
+mat = mat[,word_to_use]
+
+```
+
+
+```{r}
+set.seed(1)
+fit_ebpmf_K1 = ebpmf_log(mat,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=1),
+                      init_control = list(n_cores=5,flash_est_sigma2=F,log_init_for_non0y=T),
+                      general_control = list(maxiter=100,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))
+
+#fit_ebpmf1 = readRDS('/project2/mstephens/dongyue/poisson_mf/sla/slafull_ebnmf_fit_init1.rds')
+saveRDS(fit_ebpmf_K1,file='output/fit_ebpmf_K1.rds')
+```
