@@ -1,0 +1,168 @@
+---
+title: "01MS_ebpmf_residuals"
+author: "Matthew Stephens"
+date: "2023-09-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(flashier)
+library(ggplot2)
+library(Matrix)
+library(readr)
+library(tm)
+library(fastTopics)
+library(ebpmf)
+```
+
+## Introduction
+
+I wanted to look at the residuals from a basic EBPMF fit that I generated [here](00MS_ebmf_residuals.html), and analyze them using flashier.
+
+Read in the original data and the fit.
+
+```{r}
+sla <- read_csv("data/SLA/SCC2016/Data/paperList.txt")
+sla <- sla[!is.na(sla$abstract),]
+sla$docnum = 1:nrow(sla)
+datax = readRDS('data/sla_full.rds')
+dim(datax$data)
+sum(datax$data==0)/prod(dim(datax$data))
+datax$data = Matrix(datax$data,sparse = TRUE)
+doc_to_use = order(rowSums(datax$data),decreasing = T)[1:round(nrow(datax$data)*0.6)]
+mat = datax$data[doc_to_use,]
+samples = datax$samples
+samples = lapply(samples, function(z){z[doc_to_use]})
+word_to_use = which(colSums(mat>0)>=5)
+mat = mat[,word_to_use]
+sla = sla[doc_to_use,]
+
+fit_ebpmf_k1 = readRDS("output/fit_ebpmf_K1.rds")
+resid  = flashier:::residuals.flash(fit_ebpmf_k1$fit_flash)
+```
+
+## Run flash
+
+I'm interested in non-negative fits, so here I try that.
+One concern is that the residuals are often negative, so it's a bit
+counter intuitive to fit a non-negative model to them. However the normal errors do mean that the observations can be negative even when L and F are both non-negative. Further, empirically the results seem to make sense (see below).  It may be worth coming back to this...
+
+Note that I am estimating the residual variance using flash, rather than fixing it to the values obtained from the VGA.  
+I believe this is equivalent to using the results of the VGA to fix q_mu to a point mass at the posterior mean, and then optimizing the ELBO over q_L,q_F,sigma with q_mu fixed to that point mass. (A natural thing to do would be then to iterate, and re-estimate q_mu, sigma as non-point mass distributions; this could be useful to look at in future.)
+
+
+It turns out that this fits a *lot* more factors than if we fix
+the residual variance to the values estimated from the VGA (commented out code). Fixing the residual variance estimated only 1 factor whereas estimating it adds all 100 that I allowed (removes 6 at the end).
+```{r}
+set.seed(1)
+fit.nn = flash(resid,ebnm_fn = ebnm_point_exponential,var_type=2,greedy_Kmax = 100)
+#fit.nn2 = flash(resid,S = sqrt(fit_ebpmf_k1$sigma2),ebnm_fn = ebnm_point_exponential,var_type=NULL)
+```
+
+```{r}
+L= fit.nn$L_pm
+F_pm = fit.nn$F_pm
+rownames(L)<-1:nrow(L)
+
+Lnorm = t(t(L)/apply(L,2,max))
+Fnorm = t(t(F_pm)*apply(L,2,max))
+khat = apply(Lnorm,1,which.max)
+Lmax = apply(Lnorm,1,max)
+plot(Lmax)
+khat[Lmax<0.1] = 0
+keyw.nn =list()
+
+for(k in 1:ncol(Fnorm)){
+   key = Fnorm[,k]>log(2)
+   keyw.nn[[k]] = (colnames(mat)[key])[order(Fnorm[key,k],decreasing = T)]
+}
+print(keyw.nn)
+```
+
+
+Most of the keywords look pretty sensible. But some not so much.
+eg factor 43 looks a bit random, so I looked at the abstracts - indeed it looks a bit random.
+```{r}
+ which(khat==43)
+sla[180,]$abstract
+sla[465,]$abstract
+sla[823,]$abstract
+```
+
+On the other hand 37 looks very coherent (network, graph, node).
+It was a surprise when some abstracts had only one of these words, "network", and indeed many of these abstracts seem to have this property. On the other hand the residuals for these words are correlated so the model is picking up something real. It just seems to me that the loadings are wrong.. the abstracts that only contain "network" should maybe be explained by a change in mu rather than a membership in the factor? Maybe my simplistic fitting procedure is not allowing that...
+```{r}
+which(khat==37)
+sla[42,]$abstract
+mat[42,"network"]
+mat[42,"graph"]
+mat[42,"node"]
+resid[42,"network"]
+resid[42,"graph"]
+plot(resid[,"network"],resid[,"graph"])
+cor(resid[,"network"],resid[,"graph"])
+```
+
+## Structure plot
+
+
+```{r}
+structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
+                                  loadings_order = 'embed',
+                                  print_plot=FALSE,
+                                  seed=12345,
+                                  n_samples = NULL,
+                                  gap=40,
+                                  std_L_method = 'sum_to_1',
+                                  show_legend=TRUE,
+                                  K = NULL
+                                  ){
+  set.seed(seed)
+  #s       <- apply(Lhat,2,max)
+  #Lhat    <-	t(t(Lhat) / s)
+
+  if(is.null(n_samples)&all(loadings_order == "embed")){
+    n_samples = 2000
+  }
+
+  if(std_L_method=='sum_to_1'){
+    Lhat = Lhat/rowSums(Lhat)
+  }
+  if(std_L_method=='row_max_1'){
+    Lhat = Lhat/c(apply(Lhat,1,max))
+  }
+  if(std_L_method=='col_max_1'){
+    Lhat = apply(Lhat,2,function(z){z/max(z)})
+  }
+  if(std_L_method=='col_norm_1'){
+    Lhat = apply(Lhat,2,function(z){z/norm(z,'2')})
+  }
+  
+  if(!is.null(K)){
+    Lhat = Lhat[,1:K]
+    Fhat = Fhat[,1:K]
+  }
+  Fhat = matrix(1,nrow=3,ncol=ncol(Lhat))
+  if(is.null(colnames(Lhat))){
+    colnames(Lhat) <- paste0("k",1:ncol(Lhat))
+  }
+  fit_list     <- list(L = Lhat,F = Fhat)
+  class(fit_list) <- c("multinom_topic_model_fit", "list")
+  p <- structure_plot(fit_list,grouping = grouping,
+                      loadings_order = loadings_order,
+                      n = n_samples,gap = gap,verbose=F) +
+    labs(y = "loading",color = "dim",fill = "dim") + ggtitle(title)
+  if(!show_legend){
+    p <- p + theme(legend.position="none")
+  }
+  if(print_plot){
+    print(p)
+  }
+  return(p)
+}
+
+structure_plot_general(Lnorm,Fnorm,grouping = samples$journal,std_L_method = 'col_max_1')
+```
+
