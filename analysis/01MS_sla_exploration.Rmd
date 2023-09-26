@@ -1,0 +1,543 @@
+---
+title: "sla_exploration_MS"
+author: "Matthew Stephens"
+date: "2023-09-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(readr)
+library(tm)
+library(Matrix)
+library(fastTopics)
+library(ggplot2)
+```
+
+## Introduction
+
+I wanted to take a closer look at the text results that Dongyue produced using EBPMF.
+
+I saved the results from his init1 in fit_ebpmf_sla_full_nonneg.Rmd and also 
+a longer run with Kmax=20 and maxiter = 10 to the `output` directory.
+Here I read them in and take a closer look at the results.
+
+
+## Read in data
+
+Read in the original data and the fits
+
+```{r}
+sla <- read_csv("data/SLA/SCC2016/Data/paperList.txt")
+sla <- sla[!is.na(sla$abstract),]
+sla$docnum = 1:nrow(sla)
+datax = readRDS('data/sla_full.rds')
+dim(datax$data)
+sum(datax$data==0)/prod(dim(datax$data))
+datax$data = Matrix(datax$data,sparse = TRUE)
+doc_to_use = order(rowSums(datax$data),decreasing = T)[1:round(nrow(datax$data)*0.6)]
+mat = datax$data[doc_to_use,]
+samples = datax$samples
+samples = lapply(samples, function(z){z[doc_to_use]})
+word_to_use = which(colSums(mat>0)>=5)
+mat = mat[,word_to_use]
+sla = sla[doc_to_use,]
+
+fit_ebpmf_k20 = readRDS("output/fit_ebpmf_k20.rds")
+fit_tm_k20 = readRDS("output/fit_tm_k20.rds")$fit
+de = readRDS("output/fit_tm_k20.rds")$de
+```
+
+
+## Structure plot
+
+This is Dongyue's code (but I removed the colors because fasttopics now deals with this automatically)
+```{r}
+structure_plot_general = function(Lhat,Fhat,grouping,title=NULL,
+                                  loadings_order = 'embed',
+                                  print_plot=FALSE,
+                                  seed=12345,
+                                  n_samples = NULL,
+                                  gap=40,
+                                  std_L_method = 'sum_to_1',
+                                  show_legend=TRUE,
+                                  K = NULL
+                                  ){
+  set.seed(seed)
+  #s       <- apply(Lhat,2,max)
+  #Lhat    <-	t(t(Lhat) / s)
+
+  if(is.null(n_samples)&all(loadings_order == "embed")){
+    n_samples = 2000
+  }
+
+  if(std_L_method=='sum_to_1'){
+    Lhat = Lhat/rowSums(Lhat)
+  }
+  if(std_L_method=='row_max_1'){
+    Lhat = Lhat/c(apply(Lhat,1,max))
+  }
+  if(std_L_method=='col_max_1'){
+    Lhat = apply(Lhat,2,function(z){z/max(z)})
+  }
+  if(std_L_method=='col_norm_1'){
+    Lhat = apply(Lhat,2,function(z){z/norm(z,'2')})
+  }
+  
+  if(!is.null(K)){
+    Lhat = Lhat[,1:K]
+    Fhat = Fhat[,1:K]
+  }
+  Fhat = matrix(1,nrow=3,ncol=ncol(Lhat))
+  if(is.null(colnames(Lhat))){
+    colnames(Lhat) <- paste0("k",1:ncol(Lhat))
+  }
+  fit_list     <- list(L = Lhat,F = Fhat)
+  class(fit_list) <- c("multinom_topic_model_fit", "list")
+  p <- structure_plot(fit_list,grouping = grouping,
+                      loadings_order = loadings_order,
+                      n = n_samples,gap = gap,verbose=F) +
+    labs(y = "loading",color = "dim",fill = "dim") + ggtitle(title)
+  if(!show_legend){
+    p <- p + theme(legend.position="none")
+  }
+  if(print_plot){
+    print(p)
+  }
+  return(p)
+}
+```
+
+### Assign documents to topics
+
+Extract the L matrix, and normalize columns to have max 1. Then 
+assign document to its maximum loading (if that exceeds 0.5).
+Note that many documents have no large loadings, which I guess means they are being modelled by the background rates. 
+
+```{r}
+L = fit_ebpmf_k20$fit_flash$L_pm[,-c(1,2)]
+F_pm = fit_ebpmf_k20$fit_flash$F_pm[,-c(1,2)]
+rownames(L)<-1:nrow(L)
+
+Lnorm = t(t(L)/apply(L,2,max))
+Fnorm = t(t(F_pm)*apply(L,2,max))
+khat = apply(Lnorm,1,which.max)
+Lmax = apply(Lnorm,1,max)
+plot(Lmax)
+khat[Lmax<0.4] = 0 # only assign documents that exceed Lmax 0.4
+```
+
+
+```{r}
+#col15 = c('#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928','black','darkgray','lightgray')
+
+structure_plot_general(Lnorm,fit_flash$F_pm,grouping = samples$journal,std_L_method = 'col_max_1')
+
+```
+
+
+## Look at Keywords
+
+Here for EBPMF I define the keywords in each factor as those that that have a more than 2-fold enrichment (so fairly modest enrichment...)
+```{r}
+key_ebpmf=list()
+for(k in 1:ncol(Fnorm)){
+  key = Fnorm[,k]>log(2)
+  key_ebpmf[[k]] = (colnames(mat)[key])[order(Fnorm[key,k],decreasing = T)]
+}
+print(key_ebpmf)
+```
+
+All the factor keywords seem quite coherent. Factor 2 captures
+abstracts that mention online supplementary material. 
+Factor 14 is abstracts that contain something about "addressing an issue", which is a bit suprising it picks that out as a factor.
+Other factors capture particular statistical topics.
+Note that there are two different "genetic" factors - one capturing gene expression studies and the other capturing genetic studies (loci, haplotype etc).
+
+```{r}
+key_topic = list()
+for(k in 1:20){
+  dat <- data.frame(postmean = de$postmean[,k],
+                  z        = de$z[,k],
+                  lfsr     = de$lfsr[,k])
+rownames(dat) <- colnames(mat)
+dat <- subset(dat,lfsr < 0.01)
+dat <- dat[order(dat$postmean,decreasing = TRUE),]
+key_topic[[k]] = head(dat,n=10)
+}
+print(key_topic)
+```
+
+The topic keywords also seem quite coherent and to capture meaningful statistical topics. The topics seem perhaps more heterogeneous than the factors.
+
+
+## Anchor Words in topic model
+
+An anchor word is one that has non-zero frequency in exactly one topic.
+Although we did not use the "anchor word assumption" in fitting the model, it turns out that many words do indeed effectively fulfill the assumption (treating any frequency <1e-8 as "effectively 0").
+Here I print out the anchor words for each topic.
+
+```{r}
+anchor_topic = list()
+wordorder = order(rowSums(fit_tm_k20$F),decreasing=TRUE)
+F_ord = fit_tm_k20$F[wordorder,]
+ntopic= rowSums(F_ord>1e-8) #use 1e-8 as cutoff for 0
+
+anchor_words= list()
+for(k in 1:20){
+  anchor_words[[k]] = rownames(F_ord)[(ntopic==1) & (F_ord[,k]>1e-8)]
+}
+anchor_words
+```
+
+It is notable that many of the anchor words are quite 
+"general" statistical words, like "sampl", "bound", "procedur","likelihood", "matrix" etc.
+
+It is also notable that some anchor words for the same topic
+often correspond to very different concepts. For example
+"bound" and "corrupt"; "prior" and "mixture"; "cluster" and "linkag"; "curv" and "tensor"; "classif" and "depth"; "air" and "vote";  etc.
+I think this is an indication that the topics are perhaps not
+really capturing a single concept.
+
+## Overdispersed words in the EBPMF fit
+
+Here I look at which words are most overdispersed in the EBPMF model.
+In some ways these words can be thought of as "single-word factors".
+```{r}
+sort(fit_ebpmf_k20$sigma2,decreasing = TRUE)[1:20]
+```
+
+We see "cluster" is the most overdispersed. Let's look at some
+documents that use a lot of that word. 
+```{r}
+order(mat[,"cluster"],decreasing = TRUE)[1:10]
+sla[35,]$abstract
+sla[306,]$abstract
+sla[239,]$abstract
+sla[331,]$abstract
+```
+We can see these documents are quite heteregeneous.
+
+
+We can get estimated "loadings" on these single-word factors from (mu-LF'), which are the residuals from the flash fit:
+```{r}
+resid <- flashier:::residuals.flash(fit_ebpmf_k20$fit_flash)
+hist(resid)
+```
+
+Here I threshold the "word factors" at log(5) [so looking for documents
+that are at least 5-fold enriched for each word]. 
+```{r}
+wf = Matrix(resid>log(5)) #make it sparse
+ndocs = colSums(wf)
+sort(ndocs,decreasing = TRUE)[1:20]
+```
+
+Let's look at the documents most enriched for "test". 
+This first document is clearly represented as a bunch of single-word enrichments rather than "topics":
+```{r}
+order(resid[,"test"],decreasing = TRUE)[1:10]
+sla[1687,]$abstract
+Lnorm[1687,]
+which(wf[1687,])
+```
+
+
+Same with this one:
+```{r}
+sla[1606,]$abstract
+Lnorm[1606,]
+which(wf[1606,])
+```
+
+This one is similar story, but also assigned to the genetic factor because it uses a genetic example.
+```{r}
+sla[1650,]$abstract
+Lnorm[1650,]
+which(wf[1650,])
+```
+
+
+## Correlations of word factors
+
+I wondered whether we are "missing" some topic structure by
+using the word factors. If the word factors are correlated, we might
+prefer to pick that up in some "topic" factors. Since wf is a sparse matrix I can use that to compute its correlation quicker.
+```{r}
+sparse.cor <- function(x){
+  n <- nrow(x)
+  m <- ncol(x)
+  ii <- unique(x@i)+1 # rows with a non-zero element
+
+  Ex <- colMeans(x)
+  nozero <- as.vector(x[ii,]) - rep(Ex,each=length(ii))        # colmeans
+
+  covmat <- ( crossprod(matrix(nozero,ncol=m)) +
+              crossprod(t(Ex))*(n-length(ii))
+            )/(n-1)
+  sdvec <- sqrt(diag(covmat))
+  covmat/crossprod(t(sdvec))
+}
+wf= wf[,colSums(wf)>4] # remove words with few strong enrichments
+wf.cor = sparse.cor(wf)
+diag(wf.cor)=0
+hist(wf.cor)
+max(wf.cor)
+rowmax = apply(wf.cor,1,max)
+wf.high = wf.cor[rowmax>0.5,]
+for(i in 1:nrow(wf.high)){
+  print(paste(rownames(wf.high)[i],colnames(wf.high)[wf.high[i,]>0.5]))
+}
+```
+There are some obvious pairs of words with very strong correlations -
+"dantzig selector", "eigenvalu eigenvector", "elast net", "confid interv" etc.It seems that flash is missing these "two-word" factors in the residuals. This is maybe because the flash initialization uses PCA so
+tends to favor dense factors and may miss sparse factors? Most of these
+two-word factors are not necessarily that interesting, but it makes one wonder whether what else it is missing. Maybe we can improve this (by alternative initializations?)?
+
+## Are there anchor words in the EBPMF fit?     
+
+Strictly speaking there are no anchor words in EBPMF fits. But it is possible that a word could be "effectively" an anchor word, if its estimated background frequency is very low (so when the word appears, the document has to be loaded on a factor) and then only one factor has appreciable weighting on that factor. So I took a look at this.
+
+The estimated background frequency of each word is exp(F_j2)/n_w where n_w is the total number of words. (The 1/n_w term comes in because in the implementation the size factor is set to mean word count, or document length divided by number of words.) Here I plot background against empirical word frequency to see if any words have very low background estimate relative to their empirical word frequency.
+
+```{r}
+nw = ncol(mat)
+f_emp = colSums(mat)/sum(mat)
+plot(log(f_emp), fit_ebpmf_k20$fit_flash$F_pm[,2]-log(nw))
+```
+
+So, although the background frequency can be appreciably lower than
+the empirical freuqency, no background frequency is "effectively 0".
+Which word shows the biggest difference in the estimate?
+```{r}
+which.max(log(f_emp) - fit_ebpmf_k20$fit_flash$F_pm[,2]-log(nw))
+```
+So, this is probably reflecting its overdispersion rather than it being an "anchor word". 
+
+
+
+## topic model vs ebpmf
+
+### Factor 4
+
+I wanted to see what the topic model looks like on the "multiple testing" factor (k4) from EBPMF.
+It seems that the topic 3 is the one that captures this. 
+```{r}
+cor(fit_tm_k20$L,Lnorm[,4])
+structure_plot_general(fit_tm_k20$L[khat==4,],fit_tm_k20$F,grouping = samples$journal[khat==4], gap=2)
+plot(fit_tm_k20$L[,3],Lnorm[,4])
+```
+
+I wanted to see which documents have the biggest difference. The first one looks
+like it is on testing but not "multiple testing". EBPMF seems to assign it to no factor.
+
+```{r}
+order(fit_tm_k20$L[,3]-Lnorm[,4],decreasing=TRUE)[1:10]
+sla[244,]$abstract
+Lnorm[244,]
+```
+
+The second one is really about hazard/survival analysis so EBPMF assigns it to factor 10.
+The topic model assigns it as a mix between hypothesis testing and hazard topics (3 and 10).
+```{r}
+sla[882,]$abstract
+Lnorm[882,]
+fit_tm_k20$L[882,]
+```
+
+This one is about clinical trial methods, and again both results make some sense but arguably not really about multiple testing, so suprising the topic model assigns so strongly there.
+```{r}
+sla[1603,]$abstract
+Lnorm[1603,]
+key_ebpmf[[1]]
+fit_tm_k20$L[1603,]
+key_topic[[7]]
+```
+
+
+## Factor 5
+
+This is the MCMC factor. It seems most correlated with topics 6 (Bayesian) and 8 (online algorithms).
+
+```{r}
+cor(fit_tm_k20$L,Lnorm[,5])
+structure_plot_general(fit_tm_k20$L[khat==5,],fit_tm_k20$F,grouping = samples$journal[khat==5],gap=2)
+plot(fit_tm_k20$L[,6],Lnorm[,5])
+plot(fit_tm_k20$L[,8],Lnorm[,5])
+key_ebpmf[[5]]
+key_topic[[6]]
+```
+
+Note that both topics 6 and 8 have strong frequency of "mcmc", but only factor 5 has strong "mcmc".
+
+
+```{r}
+fit_tm_k20$F[which(colnames(mat)=="mcmc"),]
+fit_ebpmf_k20$fit_flash$F_pm[which(colnames(mat)=="mcmc"),]
+```
+
+## Documents with no big loading
+
+It is a bit surprising that EBPMF seems to model many documents with just the background factor (corresponding to khat==0 in the above).
+
+Here I look at the topic model results for those documents.
+```{r}
+cor(fit_tm_k20$L,khat==0)
+structure_plot_general(fit_tm_k20$L[khat==0,],fit_tm_k20$F,grouping = samples$journal[khat==0], gap=2)
+```
+
+Doesn't give much insight so I thought I would look at the documents most strongly assigned to a topic ("purity").
+```{r}
+purity = apply(fit_tm_k20$L,1, max)
+names(purity)<-NULL
+which(purity>0.8 & khat==0)
+```
+
+This one is assigned to a topic whose keywords include wishart and graph; seems reasonable. 
+```{r}
+fit_tm_k20$L[16,]
+key_topic[[19]]
+sla[16,]$abstract
+```
+
+This one is on functional regression models, and assigned to a topic whose keywords indicage it is about nonlinear regression. Seems reasonable too.  
+```{r}
+fit_tm_k20$L[172,]
+key_topic[[15]]
+sla[172,]$abstract
+```
+
+
+This one is a bit less clear - topic 13 seems to be about classification and machine learning, but also, related, decision theory. One might prefer to separate out those as factors? This abstract is about decision theory. (I look further at topic 13 below and the "depth" keyword.)
+```{r}
+fit_tm_k20$L[186,]
+key_topic[[13]]
+sla[186,]$abstract
+```
+
+This one does not make much sense (what is this topic about? changepoints? outliers?)
+```{r}
+fit_tm_k20$L[203,]
+key_topic[[18]]
+sla[203,]$abstract
+```
+
+this topic seems to include key words relating to both climate and voting...
+```{r}
+key_topic[[which.max(fit_tm_k20$L[215,])]]
+sla[215,]$abstract
+```
+
+This is about testing, but not multiple testing and FDR
+```{r}
+key_topic[[which.max(fit_tm_k20$L[244,])]]
+sla[244,]$abstract
+```
+
+This one is kind of about survival analysis, but doen't have many of the usual key words. 
+```{r}
+key_topic[[which.max(fit_tm_k20$L[326,])]]
+sla[326,]$abstract
+key_ebpmf[[10]]
+fit_ebpmf_k20$fit_flash$F_pm["recurr",]
+```
+
+One word that occurs often in this document is "recurrance". Note that "recurr" is a key word in the "survival analysis" topic, but not in any EBPMF factor. Is this document driving the inclusion of recurr in the topic? Let's look at other documents with high rates of "recurr"?
+```{r}
+sort(mat[,"recurr"],decreasing=TRUE)[1:10]
+docs_with_recurr=order(mat[,"recurr"],decreasing=TRUE)[1:10]
+khat[docs_with_recurr]
+sla[256,]$abstract
+sla[1357,]$abstract
+sla[29,]$abstract
+Lnorm[29,]
+sla[747,]$abstract
+Lnorm[747,]
+```
+Maybe what might be happening is this (speculation). There is a "subtopic" in the survival analysis topic that is related primarily to a
+single keyword, "recurr". This gets picked up by the topic model,
+but not the EBPMF model whose
+overdispersion can be used to model the single word "recurr".
+(Note that appearance of "Markov chain Monte Carlo" seems to be enough to make have a document load on that factor, because it is 4 words, not 1....; see document 29 above)
+
+
+This one is a document related to a topic whose top keyword is "depth". This word seems to also be defining a topic on its own (13) and "depth" is  not inflated in any factor. 
+```{r}
+key_topic[[which.max(fit_tm_k20$L[365,])]]
+sla[365,]$abstract
+fit_ebpmf_k20$fit_flash$F_pm["depth",]
+sort(mat[,"depth"],decreasing=TRUE)[1:10]
+docs_with_depth=order(mat[,"depth"],decreasing=TRUE)[1:10]
+khat[docs_with_depth]
+sla[111,]$abstract
+sla[106,]$abstract
+sla[788,]$abstract
+```
+
+So is topic 13 really about "depth"? No: most of the top documents
+in this topic do not contain the word depth.
+```{r}
+sort(fit_tm_k20$L[,13],decreasing = TRUE)[1:10]
+top_k13_docs = order(fit_tm_k20$L[,13],decreasing=TRUE)[1:10]
+mat[top_k13_docs,"depth"]
+khat[top_k13_docs]
+sla[10,]$abstract
+key_ebpmf[[9]]
+sla[186,]$abstract
+sla[1833,]$abstract
+```
+
+
+## Documents with more than one big loading
+
+
+Most documents have no big loading, and others have just one. I thought I would look at ones with 2 or more to see what they look like
+
+```{r}
+nbig = rowSums(Lnorm>0.4)
+plot(nbig)
+image(Lnorm[nbig>1,])
+sla.multitopic = sla[nbig>1,]
+sla.multitopic$docnum
+sla.multitopic$abstract
+
+```
+
+
+
+## Extra code
+this is all not evaluated... it is the start of an anlysis that
+could maybe be done elsewhere
+
+Try analyzing just the documents that are assigned to no factor with EBPMF to see if they
+get assigned anything and the factors make sense....
+```{r, eval=FALSE}
+set.seed(1)
+mat2 = mat[khat==0,]
+word_to_use = which(colSums(mat2>0)>=5)
+mat2 = mat2[,word_to_use]
+temp= ebpmf_log(mat2,
+                      flash_control=list(backfit_extrapolate=T,backfit_warmstart=T,
+                                         ebnm.fn = c(ebnm::ebnm_point_exponential, ebnm::ebnm_point_exponential),
+                                         loadings_sign = 1,factors_sign=1,Kmax=10),
+                      init_control = list(n_cores=5,flash_est_sigma2=F,log_init_for_non0y=T),
+                      general_control = list(maxiter=500,save_init_val=T,save_latent_M=T),
+                      sigma2_control = list(return_sigma2_trace=T))
+
+
+#saveRDS(fit_ebpmf_K20,file='output/fit_ebpmf_K20.rds')
+```
+
+```{r, eval=FALSE}
+key_temp=list()
+for(k in 3:temp$fit_flash$n_factors){
+  key_temp[[k-2]] = (colnames(mat2)[order(temp$fit_flash$F_pm[,k],decreasing = T)[1:20]])
+}
+print(key_temp)
+```
+
+```{r, eval=FALSE}
+structure_plot_general(temp$fit_flash$L_pm[,-c(1,2)],temp$fit_flash$F_pm,std_L_method = 'col_max_1')
+```
+
