@@ -1,0 +1,406 @@
+---
+title: "02MS_minimal_ebpmf"
+author: "Matthew Stephens"
+date: "2023-09-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+I aim to put together a simple "minimal" version of EBPMF from Dongyue's code. To help this I added a facility to flashier to take V (posterior variance of mu) as a parameter when updating flash fits. Currently this updated version needs to be installed using `devtools::install_github("stephens999/flashier",ref="baseR2").
+
+Here I simulate some data for testing:
+```{r}
+set.seed(1)
+n= 10
+p = 20
+K = 4
+LL = matrix(rnorm(n*K),nrow=n)
+FF = matrix(rnorm(p*K),nrow=p)
+mu = matrix(LL %*% t(FF),ncol=p, nrow=n)
+X= matrix(rpois(n*p,exp(mu)), ncol=p, nrow=n)
+```
+
+```{r}
+library(Rfast)
+library(flashier)
+```
+
+## Main data structure
+
+My idea is to create a ebpmf fit object, which will be a list, that contains the following fields.
+```{r eval=FALSE}
+X # observed data matrix (counts)
+M  #posterior mean of mu
+V # posterior variance of mu 
+f # result of calling flash on M and V; includes posterior first and second moments of L and F and estimated tau (sigma^2), ghat etc
+n,p #the dimensions
+```
+
+The goal is code that looks something like this (note: in Dongyue's work the flash update fixes sigma2, but here we update sigma2 within flash).
+```{r, eval=FALSE}
+fit = ebpmf_init(X)
+for(i in 1:maxiter){
+  fit = ebpmf_update_mu(fit)
+  fit = ebpmf_update_flash(fit) #,flash_fn) # apply flash_fn to M, V 
+  ebpmf_obj(fit)
+}  
+  
+```
+
+## Extracting sigma2 from the fit
+
+It will be helpful to be able to extract a matrix of sigma^2 values from the fitted object. These functions do this (the first function being
+based on a similar function in Dongyue's ebpmf)
+
+```{r}
+adjust_var_shape <- function (sigma2, var_type, n, p) 
+{
+    if (var_type == 0) {
+        sigma2 = matrix(sigma2, nrow = n, ncol = p)
+    }
+    else if (var_type == 1) { #by row
+        sigma2 = matrix(sigma2, nrow = n, ncol = p, byrow = F)
+    }
+    else if (var_type == 2) { #by column
+        sigma2 = matrix(sigma2, nrow = n, ncol = p, byrow = T)
+    }
+    else {
+        stop("Non-supported var type")
+    }
+    sigma2
+}
+
+get_sigma2 = function(fit){
+  adjust_var_shape(1/fit$f$flash_fit$tau, fit$f$flash_fit$est.tau.dim, fit$n, fit$p)
+}
+
+```
+
+
+## Solving the VGA
+
+The Variational Gaussian approximation (VGA) is used to compute the posterior mean $M$ and variance $V$ for $\mu$. The $V$ can be computed analytically when we have solved for $M$, so the focus is on estimating $M$.
+
+The prior is $\mu_{ij} \sim N(Beta_{ij}, Sigma2_{ij})$
+The likelihood is $X_{ij} \sim Poi(S_{ij}\mu_{ij})$.
+The goal is to compute the posterior mean $M$ and posterior variance $V$ for $\mu$.
+
+This function from Dongyue's ebpmf 
+takes in a current guess for matrix $M$, 
+in addition to $X,S,Beta,Sigma2$, and updates it using Newton's method.
+It returns a new $M$ and the corresponding $V$.
+```{r}
+#'@title a matrix version of the vga solver using Newton's method
+#'@importFrom vebpm vga_pois_solver_bisection
+#'@importFrom Rfast Pmin
+vga_pois_solver_mat_newton = function(M,X,S,Beta,Sigma2,maxiter=1000,tol=1e-8,return_V = TRUE){
+  
+  #X = as.matrix(X)
+  const0 = (Sigma2*X+Beta + 1)
+  const1 = 1/Sigma2
+  const2 = Sigma2/2
+  const3 = Beta/Sigma2
+  
+  
+  # make sure m < sigma2*x+beta
+  M = Pmin(M,const0-1)
+  # idx = (M>(const0-1))
+  # if(sum(idx)>0){
+  #   M[idx] =suppressWarnings(vga_pois_solver_bisection(c(X[idx]),c(S[idx]),c(Beta[idx]),c(Sigma2[idx]),maxiter = 10)$m)
+  # }
+  for(i in 1:maxiter){
+    temp = (const0-M)
+    sexp = S*exp(M+const2/temp)
+    # f = X - sexp - (M-Beta)/Sigma2
+    f = X - sexp - M*const1 + const3
+    if(max(abs(f))<tol){
+      break
+    }
+    # f_grad = -sexp*(1+const2/temp^2)-const1
+    # direction = (X - sexp - (M-Beta)/Sigma2)/(-sexp*(1+const2/temp^2)-const1)
+    M = M - f/(-sexp*(1+const2/temp^2)-const1)
+    
+  }
+  #gc()
+  if(return_V){
+    return(list(M=M,V=Sigma2/temp))
+  }else{
+    return(M)
+  }
+  
+}
+```
+
+
+Here is the code from ebpmf that calls this function. I was initially puzzled why S=1 but I guess this is because S is absorbed into the fixed factors.
+```{r eval=FALSE}
+res = vga_pois_solver_mat_newton(fit_flash$flash_fit$Y,
+                                 Y,
+                                 1,
+                                 fitted(fit_flash),
+                                 adjust_var_shape(sigma2,var_type,n,p),
+                                 maxiter = vga_control$maxiter_vga,
+                                 tol=vga_control$vga_tol,return_V = TRUE)
+fit_flash$flash_fit$Y = res$M
+if(general_control$save_latent_M){
+  V = res$V
+}
+```
+
+## Initialization
+
+Initialization maybe needs a bit of attention, eg using ideas from `ebpmf_log_init`, but to get a minimal version working I wanted to start simple. Here I run the solver to get the posterior mean of mu with prior variance set to 1; then I set the posterior variance of mu to 0 and run flash on the posterior mean (which also estimates tau/sigma).
+```{r}
+# sigma2_init is the initial prior on mu; may want to estimate this by EB # as in ebpmf_log_init
+ebpmf_init= function(X,sigma2_init=1){
+  fit = list()
+  fit$X = X
+  fit$n = nrow(X)
+  fit$p = ncol(X)
+  zero_mat = matrix(0,nrow=fit$n,ncol=fit$p)
+  
+  fit$M = log(0.5+X) #a rough initial guess
+
+# first iteration  
+  res = vga_pois_solver_mat_newton(fit$M,
+                                 fit$X,
+                                 1,
+                                 zero_mat,
+                                 matrix(sigma2_init,nrow=fit$n,ncol=fit$p), 
+                                 maxiter = 1000,
+                                 tol=1e-8,return_V = TRUE)
+  fit$M = res$M
+  fit$V = zero_mat # equivalent to initializing q_mu to a point mass at M
+  fit$f = flash(fit$M, V=fit$V)
+  return(fit)
+}
+
+fit= ebpmf_init(X)
+```
+
+
+## Update $\mu$ 
+
+This function updates mu by computing the posterior mean and variance (M and V).
+```{r}
+ebpmf_update_mu = function(fit){
+  res = vga_pois_solver_mat_newton(fit$M,
+                                 fit$X,
+                                 1,
+                                 fitted(fit$f),
+                                 get_sigma2(fit),
+                                 maxiter = 1000,
+                                 tol=1e-8,return_V = TRUE)
+  fit$M = res$M
+  fit$V = res$V
+
+  return(fit)
+}
+fit = ebpmf_update_mu(fit)
+```
+
+
+# Update flash fit
+
+```{r}
+# this is backfit+greedy+nullcheck; we might want to be able to specify this
+ebpmf_update_flash = function(fit){
+  
+  ## maybe these first two lines should be part of the mu update?
+  new.flash = flash_init(fit$M, V = fit$V)
+  new.flash = flash_factors_init(new.flash, fit$f) # this doesn't work if fit$f has no factors; maybe should add this?
+  
+  new.flash = flash_backfit(new.flash,maxiter=1) # this is necessary for now because the above initialization is not valid until after backfit
+  
+  new.flash = flash_greedy(new.flash) #or new.flash = do.call(flash_fn,new.flash)
+  new.flash = flash_nullcheck(new.flash)
+  
+  fit$f = new.flash
+  return(fit)
+}
+
+fit= ebpmf_update_flash(fit)
+```
+
+
+## Objective function
+
+From the EBPMF draft (7) the objective is
+$$E \log p(y|\mu) - E\log(N(\mu; M,V)) + F_{EBMF}(M,V)$$
+The first term = $ym - sexp(m+v/2)$ [where we are assuming s=1 here for now; I want to come back to this...] the second is $1/2 log(2\pi v+1)$
+and the last term is the flash objective for data $M$ and parameter $V$.
+
+Note that after running `ebpmf_update_mu` this objective computation is not valid until ebpmf_update_flash has been run.  We might want to consider
+modifying ebpnmf_update_mu to change this (which would involve updating
+the data, R2 and elbo in fit$f with fit$M, but I don't have an easy way to do that yet.) 
+```{r}
+ebpmf_obj = function(fit){ 
+  sum(fit$X * fit$M - exp(fit$M+fit$V/2) + 0.5*(log(2*pi*fit$V)+1) ) + fit$f$elbo
+}
+```
+
+## Put it together
+
+Now run it and check the objective is increasing:
+```{r}
+fit = ebpmf_init(X)
+for(i in 1:10){
+  fit = ebpmf_update_mu(fit)
+  fit = ebpmf_update_flash(fit) #,flash_fn) # apply flash_fn to M, V 
+  print(ebpmf_obj(fit))
+}  
+```
+
+
+## Notes for myself
+
+In developing the above I extracted some of the main functions from Dongyue's ebpmf code; I include some of them here.
+
+
+
+
+
+
+```{r eval=FALSE}
+#'@title Calc elbo
+calc_ebpmf_log_obj = function(n,p,sym,ssexp,slogv,sv,sigma2,R2,KL_LF,const,ss,a0,b0){
+  val = sym - ssexp + slogv + 0.5*n*p - sum(ss*log(2*pi*sigma2)/2)- sum(sv/2/sigma2) - sum(R2/2/sigma2) + const+ KL_LF - sum((a0+1)*log(sigma2)) - sum(b0/sigma2)
+  # val = sum(Y*M - S*exp(M+V/2)   + log(2*pi*V)/2 + 0.5 ) - sum(ss*log(2*pi*sigma2)/2)- sum(sv/2/sigma2) - sum(R2/2/sigma2) + const+ KL_LF
+  return(val)
+}
+
+
+
+#'@title get posterior variance of b_ij = sum_j l_ik * f_jk
+get_var_b = function(fit_flash){
+  n = nrow(fit_flash$flash_fit$Y)
+  p = ncol(fit_flash$flash_fit$Y)
+  Vb = matrix(nrow=n,ncol=p)
+  for(i in 1:n){
+    for(j in 1:p){
+      temp = fit_flash$L_pm[i,]^2*(fit_flash$F_psd[j,]^2) + fit_flash$F_pm[j,]^2*(fit_flash$L_psd[i,]^2)
+      Vb[i,j] = sum(temp)
+    }
+  }
+  Vb
+}
+
+
+
+#'@title this function fits flash during ebpmf log iterations
+#'@param fit_flash An object from running flash()
+ebpmf_log_flash_update = function(fit_flash,sigma2,ones_n,ones_p,iter,loadings_sign,factors_sign,ebnm_fn,ebnm_fn.offset,
+                                  S_dim,verbose_flash,fix_l0,fix_f0,Kmax,add_greedy_extrapolate,maxiter_backfitting,
+                                  add_greedy_every,add_greedy_Kmax,add_greedy_warmstart,
+                                  backfit_extrapolate,backfit_warmstart,
+                                  init_fn.flash,no_backfit_kset){
+  
+  ## create an init flash_fit obj for flash_init.factor
+  ## use flash_fit for init can also init the posterior second moment
+  ## Also init the prior g
+  flash_fit_init = fit_flash$flash_fit[c('EF','EF2','g')]
+  class(flash_fit_init) = c("flash_fit","list")
+  
+  
+  l0 = flash_fit_init$EF[[1]][,1,drop=FALSE]
+  f0 = flash_fit_init$EF[[2]][,2,drop=FALSE]
+  flash_fit_init$EF[[1]] = flash_fit_init$EF[[1]][,-c(1,2),drop=FALSE]
+  flash_fit_init$EF2[[1]] = flash_fit_init$EF2[[1]][,-c(1,2),drop=FALSE]
+  flash_fit_init$EF[[2]] = flash_fit_init$EF[[2]][,-c(1,2),drop=FALSE]
+  flash_fit_init$EF2[[2]] = flash_fit_init$EF2[[2]][,-c(1,2),drop=FALSE]
+  
+  ebnm.fixed.l0 = function(x,s,g_init,fix_g,output){
+    return(list(posterior=list(mean=l0,second_moment = l0^2),
+                fitted_g = NULL,
+                log_likelihood=sum(dnorm(x,l0,s,log=T))))
+  }
+  
+  ebnm.fixed.f0 = function(x,s,g_init,fix_g,output){
+    return(list(posterior=list(mean=f0,second_moment = f0^2),
+                fitted_g = NULL,
+                log_likelihood=sum(dnorm(x,f0,s,log=T))))
+  }
+  
+  fit_flash = flash_init(fit_flash$flash_fit$Y, S = sqrt(sigma2), var_type = NULL, S_dim = S_dim) %>%
+    flash_set_verbose(verbose_flash)
+  
+  if(fix_l0){
+    fit_flash = flash_factors_init(fit_flash,list(l0, ones_p),ebnm_fn = ebnm.fixed.l0) %>%
+      flash_factors_fix(kset = 1, which_dim = "factors")
+  }else{
+    fit_flash = flash_factors_init(fit_flash,list(l0, ones_p),ebnm_fn = ebnm_fn.offset) %>%
+      flash_factors_fix(kset = 1, which_dim = "factors")
+  }
+  
+  if(fix_f0){
+    fit_flash = flash_factors_init(fit_flash,list(ones_n, f0),ebnm_fn = ebnm.fixed.f0) %>%
+      flash_factors_fix(kset = 2, which_dim = "loadings")
+  }else{
+    fit_flash = flash_factors_init(fit_flash,list(ones_n, f0),ebnm_fn = ebnm_fn.offset) %>%
+      flash_factors_fix(kset = 2, which_dim = "loadings")
+  }
+  fit_flash = flash_factors_init(fit_flash,flash_fit_init,ebnm_fn = ebnm_fn)
+  fit_flash$flash_fit$g = flash_fit_init$g
+  if(iter%%add_greedy_every==0 & fit_flash$n_factors < Kmax){
+    fit_flash = flash_greedy(fit_flash, Kmax = add_greedy_Kmax,
+                             ebnm_fn=ebnm_fn,init_fn = init_fn.flash,
+                             warmstart = add_greedy_warmstart,
+                             extrapolate = add_greedy_extrapolate)
+  }
+  
+  kset_backfit = (1:fit_flash$n_factors)[!(1:fit_flash$n_factors)%in%no_backfit_kset]
+  fit_flash = suppressWarnings(flash_backfit(fit_flash, kset = kset_backfit,maxiter = maxiter_backfitting,extrapolate = backfit_extrapolate,warmstart = backfit_warmstart)%>%
+                                 flash_nullcheck(kset=kset_backfit))
+  
+  
+  fit_flash
+  
+  
+}
+
+
+
+res = vga_pois_solver_mat_newton(fit_flash$flash_fit$Y,
+                                 Y,
+                                 1,
+                                 fitted(fit_flash),
+                                 adjust_var_shape(sigma2,var_type,n,p),
+                                 maxiter = vga_control$maxiter_vga,
+                                 tol=vga_control$vga_tol,return_V = TRUE)
+fit_flash$flash_fit$Y = res$M
+if(general_control$save_latent_M){
+  V = res$V
+}
+
+### These are for ELBO calculation later ###
+############################################################
+sym = sum(Y*res$M)
+ssexp = sum(exp(res$M+res$V/2))
+slogv = sum(log(res$V)/2+0.9189385)
+
+### This is for estimating sigma2
+if(var_type=='constant'){
+  v_sum =sum(res$V)
+}else if(var_type=='by_col'){
+  v_sum =colSums(res$V)
+}else if(var_type=='by_row'){
+  v_sum =rowSums(res$V)
+}
+############################################################
+if(sigma2_control$est_sigma2){
+  sigma2=ebpmf_log_update_sigma2(fit_flash,sigma2,v_sum,var_type,
+                                 sigma2_control$cap_var_mean_ratio,sigma2_control$a0,sigma2_control$b0,n,p)
+}
+
+fit_flash = ebpmf_log_flash_update(fit_flash,sigma2,ones_n,ones_p,iter,flash_control$loadings_sign,flash_control$factors_sign,
+                                   flash_control$ebnm.fn,flash_control$ebnm.fn.offset,
+                                   S.dim,flash_control$verbose_flash,flash_control$fix_l0,flash_control$fix_f0,flash_control$Kmax,
+                                   flash_control$add_greedy_extrapolate,flash_control$maxiter_backfitting,flash_control$add_greedy_every,
+                                   flash_control$add_greedy_Kmax,flash_control$add_greedy_warmstart,
+                                   flash_control$backfit_extrapolate,flash_control$backfit_warmstart,
+                                   flash_control$init.fn.flash,flash_control$no_backfit_kset)
+```
+
