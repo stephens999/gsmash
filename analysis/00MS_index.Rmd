@@ -1,0 +1,24 @@
+---
+title: "00MS_index"
+author: "Matthew Stephens"
+date: "2023-09-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Index of MS additional files
+
+I wanted to provide a list of the additional files I have added to this repo.
+
+
+* [00MS_run_methods](00MS_run_methods.html) uses Dongyue Xie's code to run EBPMF and topic models on the SLA data
+
+* [01MS_sla_exploration](01MS_sla_exploration.html) follows up on the above and looks at keywords, plots etc.
+
+
+* [00MS_ebpmf_residuals](00MS_ebpmf_residuals.html) runs non-negative flash on residuals from a very simple EBPMF fit (with K=1)
+
+* [01MS_ebpmf_residuals](01MS_ebpmf_residuals.html) follows up on the above and looks at keywords, plots etc.
+
+* [02MS_minimal_ebpmf](02MS_minimal_ebpmf.html) is my initial attempt to create a minimal version of EBPMF based on Dongyue's core code for solving the VGA, flashier, and some simple update functions.
